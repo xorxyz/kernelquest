@@ -1,0 +1,32 @@
+.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center.justify-center
+  .flex
+    .black-60.bg-parchment.mv3.ph3.pv2.shadow-2.br1
+      span 📍 
+      span.mh2 Valley of the King
+  .flex.w-100.h-100.flex.items-center.justify-center
+    div.relative
+      div.absolute.top0.pa4.z-3.clickthrough
+        div.flex.flex-column
+          for row in [[1,2,3,'🧙',5,6,7,8],[1,2,3,4,'🧙🏽‍♂️',6,7,8],[1,2,3,4,5,6,7,8],[1,2,'🧙🏽',4,5,0,7,8],[1,2,3,4,5,'🧙🏼',7,8],[1,2,3,4,5,6,7,8],[1,'🧙🏿‍♀️',3,4,5,6,7,8],[1,2,3,4,5,6,7,8]]
+            .h2.flex
+              for cell in row
+                .w2.flex.b--black-10(class=typeof cell === 'number' ? 'clickthrough' : '')
+                  div.w2.h2.pa1
+                    if typeof cell !== 'number'
+                      .bg-black.br2.shadow-1.w-100.h-100.pa05.clickable.wiggle
+                        .f4 #{cell}
+      div.flex.bg-white-70.flex-column.pa4.shadow-2.br1.ba.b--black-20
+        div.br1.shadow-2.pa0
+          div
+            for row in rows
+              div.flex.w-100.justify-around
+                for cell in row
+                  div.w3.h3.pa0.flex.justify-center.items-center.relative.ba.b--black-10(
+                    class=cell.b === 'red' ? 'bg-red' : ''
+                    class=cell.b === 'blue' ? 'bg-blue' : ''
+                    class=cell.b === 'green' ? 'bg-green' : ''
+                    class=cell.b === 'beige' ? 'bg-beige' : ''
+                    class=cell.e ? 'hover-b--black-30' : ''
+                  )
+                    .absolute.w-100.h-100
+                      div.relative.f1.ma1 #{cell.e}
