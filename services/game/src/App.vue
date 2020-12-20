@@ -1,17 +1,17 @@
 <template lang="pug">
   .flex.flex-column.w-100.items-center
-    .container.flex.flex-column.h-100.ph4.w-100.pa4.justify-center.items-center
+    .container.flex.flex-column.h-100.ph4.w-100.pa2.justify-center.items-center
       main.b--blue.flex.flex-column.w-100
         #top-part.flex.flex-row.w-100
           .mr1.w-70.flex.flex-column
-            GameMap
+            GameMap(state="this")
           .ml1.w-30.flex.flex-column
-            Sidebar
+            Sidebar(state="this")
         #bottom-part.mv2.flex.flex-row.w-100
           .mr1.w-70
-            Chat
+            Chat(state="this")
           .ml1.w-30
-            Stats
+            Stats(state="this")
 
 </template>
 

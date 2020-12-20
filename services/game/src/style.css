@@ -103,12 +103,17 @@ main {
   background-color: #b1c1a9;
 }
 
+.bg-forest {
+  background-color: #b1c1a9;
+}
+
+
 .bg-blue {
   background-color: #a9c1b9;
 }
 
 .bg-red {
-  background-color: #c1afa9;
+  background-color: #df5f81;
 }
 
 .over {
@@ -126,4 +131,48 @@ main {
 .pa05 {
   padding-top: 0.0625rem;
   padding-left: 0.0625rem;
+}
+
+.tooltip-text {
+  position: absolute; 
+  opacity: 0;
+  visibility: hidden;
+  margin-top: -100%;
+  left: -50%;
+  transition: 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes glowing {
+  0% { opacity: 0.90; }
+  100% { opacity: 1; }
+}
+.glowing :not(.tooltip-text) {
+  animation: glowing 0.3s alternate infinite;
+}
+
+@keyframes pulsing {
+  0% { transform: scale3d(1, 1, 1); transform: translate3d(0,0,0); }
+  50% { transform: scale3d(1, 1.1, 1.1); transform: translate3d(0,10%,0); }
+  100% { transform: scale3d(1, 1, 1); transform: translate3d(0,0,0); }
+}
+.pulsing-slow :not(.tooltip-text) {
+  animation: pulsing 0.9s ease-in infinite;
+}
+.pulsing-fast :not(.tooltip-text) {
+  animation: pulsing 0.3s alternate infinite;
+}
+
+@keyframes squeazing {
+  0% { transform: scale3d(1, 1, 1); }
+  25% { transform: scale3d(1.4, 0.9, 1); }
+  50% { transform: scale3d(1, 1, 1); }
+  75% { transform: scale3d(0.9, 1.4, 1); }
+}
+.squeazing :not(.tooltip-text) {
+  animation: squeazing 1.5s ease-in infinite;
 }
