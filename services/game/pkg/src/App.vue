@@ -7,11 +7,11 @@
             GameMap(state="this")
           .ml1.w-30.flex.flex-column
             Sidebar(state="this")
-        #bottom-part.mv2.flex.flex-row.w-100
-          .mr1.w-70
-            Chat(state="this")
-          .ml1.w-30
-            Stats(state="this")
+        //- #bottom-part.mv2.flex.flex-row.w-100
+        //-   .mr1.w-70
+        //-     Chat(state="this")
+        //-   .ml1.w-30
+        //-     Stats(state="this")
 
 </template>
 

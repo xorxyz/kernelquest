@@ -1,3 +1,7 @@
+body > div {
+  zoom: 1.5;
+}
+
 html, body {
   font-family: 'Open Sans' !important; 
   background-color: #281C3E;
@@ -31,12 +35,10 @@ nav { background-color: #150D24; }
   color: #fff;
 }
 
-main {
+/* main {
   max-width: 48rem;
-}
-.browser, .sidebar, .map {
-  height: 48ex;
-}
+} */
+
 .chat, .stats {
   height: 24ex;
 }
@@ -169,10 +171,22 @@ main {
 
 @keyframes squeazing {
   0% { transform: scale3d(1, 1, 1); }
-  25% { transform: scale3d(1.4, 0.9, 1); }
+  25% { transform: scale3d(1.2, 0.9, 1); }
   50% { transform: scale3d(1, 1, 1); }
-  75% { transform: scale3d(0.9, 1.4, 1); }
+  75% { transform: scale3d(0.9, 1.2, 1); }
 }
 .squeazing :not(.tooltip-text) {
   animation: squeazing 1.5s ease-in infinite;
+}
+.squeazing-slow :not(.tooltip-text) {
+  animation: squeazing 3.4s ease-in-out infinite;
+}
+
+.bw05 {
+  border-width: 0.0125rem
+}
+
+.floatable:hover {
+  transform: translate3d(0, -0.125rem, 0);
+  transition: 0.4s;
 }

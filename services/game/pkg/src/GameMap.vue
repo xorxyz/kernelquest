@@ -4,7 +4,8 @@
     .black-60.bg-parchment.mv3.ph3.pv2.shadow-2.br1
       span 📍
       span.mh2.black-90 Valley of the King
-  .flex.w-100.h-100.flex.items-center.justify-center
+
+  .flex.w-100.h-100.flex.items-center.justify-center.mv4
     div.relative
       div.absolute.top0.pa4.z-3.clickthrough.ba
         div.flex.flex-column
@@ -13,10 +14,10 @@
               v-for="(e, index) in (row.map(hash => entityOf(hash)))"
               :key="index"
             )
-              div.w2.h2.pa1
+              div.w2.h2.pa1.ba.b--black-10.hover-bg-black-10.bw05
                 .br2.shadow-1.w-100.h-100.pa05.clickable.tooltip.relative.dib(
                   v-if="e.emoji"
-                  :class="{ 'bg-yellow pulsing-slow': e.type === 'npc', 'bg-black-80 pulsing-slow': e.type === 'player', 'bg-black-50 glowing': e.type === 'item', 'bg-hot-pink squeazing': e.type === 'enemy', 'bg-purple glowing': e.type === 'corpse' }"
+                  :class="{ 'bg-black-50 pulsing-fast': e.type === 'critter', 'bg-yellow pulsing-slow': e.type === 'npc', 'bg-black-80 pulsing-slow': e.type === 'player', 'bg-black-50 glowing': e.type === 'item', 'bg-hot-pink squeazing': e.type === 'enemy', 'bg-purple glowing': e.type === 'corpse' }"
                 )
                   emoji.f4 {{ e.emoji }}
                   .tooltip-text.bg-white-80.black.br1.pa1.f7.top-0.ph2
@@ -43,7 +44,7 @@ const emptyEntity = {
 
 const playerHash = '0🧙'
 const avatars = ['🧙','🧙🏽‍♂️']
-const Solids = ['player', 'enemy', 'npc']
+const Solids = ['player', 'enemy', 'npc', 'critter']
 
 let interval
 
@@ -85,16 +86,16 @@ export default Vue.extend({
       }
     },
     nextAvatar () {
-      var emoji = this.playerHash.slice(1)
-      var index = avatars.findIndex(a => a === emoji);
+      const emoji = this.playerHash.slice(1)
+      const index = avatars.findIndex(a => a === emoji);
       const nextIndex = index >= avatars.length - 1
         ? 0 
         : index + 1;
       var next = avatars[nextIndex];
 
       const pos = this.findPlayer()
+
       this.playerHash = '0' + next
-      // write player at new position
       this.rows[pos.y][pos.x] = this.playerHash;
     },
     entityOf (entityHash) {
@@ -129,7 +130,6 @@ export default Vue.extend({
       if (isOccupied(entityAtNextPos)) {
         return false
       }
-
 
       // erase at old position
       this.rows[pos.y][pos.x] = pos.x;
@@ -166,11 +166,13 @@ export default Vue.extend({
     findPlayer () {
       const y = this.rows.findIndex(r => r.includes(this.playerHash));
       const x = this.rows[y].findIndex(c => c === this.playerHash);
+
       return { x, y }
     },
     findEntity (hash) {
       const y = this.rows.findIndex(r => r.includes(hash));
       const x = this.rows[y].findIndex(c => c === hash);
+
       return { x, y }
     },
     handleEnemyMovement() {
@@ -179,7 +181,7 @@ export default Vue.extend({
         y: coinFlip()
       }
 
-      this.moveX('7🕷', next.x, next.y)
+      this.moveX('7🐇', next.x, next.y)
     }
   },
   data() {
@@ -193,7 +195,7 @@ export default Vue.extend({
         '4': { name: 'anonymous', type: 'player' },
         '5': { name: 'anonymous', type: 'player' },
         '6': { name: 'anonymous', type: 'player' },
-        '7': { name: 'spider', type: 'enemy' },
+        '7': { name: 'rabbit', type: 'critter' },
         '8': { name: 'john\'s body', type: 'corpse' } 
       },
       rows: [
@@ -203,7 +205,7 @@ export default Vue.extend({
         [1,2,3,4,5,0,7,8],
         [1,2,3,4,5,6,7,8],
         [1,2,3,4,5,6,'1💰',8],
-        [1,2,3,4,'7🕷',6,7,8],
+        [1,2,3,4,'7🐇',6,7,8],
         [1,2,3,4,5,'8☠️',7,8]
       ],
       tiles: [
