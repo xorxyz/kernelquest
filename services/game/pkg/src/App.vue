@@ -4,9 +4,9 @@
       main.b--blue.flex.flex-column.w-100
         #top-part.flex.flex-row.w-100
           .mr1.w-70.flex.flex-column
-            GameMap(state="this")
+            GameMap(state="this" @select="handleSelect")
           .ml1.w-30.flex.flex-column
-            Sidebar(state="this")
+            Sidebar(:selected="selected")
         //- #bottom-part.mv2.flex.flex-row.w-100
         //-   .mr1.w-70
         //-     Chat(state="this")
@@ -32,8 +32,14 @@ export default Vue.extend({
     Chat,
     Stats
   },
+  methods: {
+    handleSelect (entity) {
+      this.selected = entity
+    }
+  },
   data() {
     return {
+      selected: { type: 'player' }
     };
   }
 });

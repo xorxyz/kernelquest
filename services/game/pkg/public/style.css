@@ -190,3 +190,16 @@ nav { background-color: #150D24; }
   transform: translate3d(0, -0.125rem, 0);
   transition: 0.4s;
 }
+
+.hover-b--white:hover {
+  border-color: rgba(255,255,255,0.3);
+  background-color: rgba(0,0,0,0);
+}
+
+.hover-bg-black-50:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+
+.bg-place {
+  background-color: #c1baa9;
+}

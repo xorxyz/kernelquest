@@ -1,5 +1,5 @@
 <template lang="pug">
-.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center.justify-center
+.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center.justify-center(@keyup="onTab")
   .flex
     .black-60.bg-parchment.mv3.ph3.pv2.shadow-2.br1
       span 📍
@@ -14,29 +14,26 @@
               v-for="(e, index) in (row.map(hash => entityOf(hash)))"
               :key="index"
             )
-              div.w2.h2.pa1.ba.b--black-10.hover-bg-black-10.bw05
-                .br2.shadow-1.w-100.h-100.pa05.clickable.tooltip.relative.dib(
-                  v-if="e.emoji"
-                  :class="{ 'bg-black-50 pulsing-fast': e.type === 'critter', 'bg-yellow pulsing-slow': e.type === 'npc', 'bg-black-80 pulsing-slow': e.type === 'player', 'bg-black-50 glowing': e.type === 'item', 'bg-hot-pink squeazing': e.type === 'enemy', 'bg-purple glowing': e.type === 'corpse' }"
-                )
-                  emoji.f4 {{ e.emoji }}
-                  .tooltip-text.bg-white-80.black.br1.pa1.f7.top-0.ph2
-                    | {{ e.name }}
+              Avatar(:e="e" @select="select")
       div.flex.bg-white-90.flex-column.pa4.shadow-2.br1.ba.b--black-20
         div.br1.shadow-2.pa0
           div
             div.flex.w-100.justify-around(v-for="row in tiles")
               div.w3.h3.pa0.flex.justify-center.items-center.relative.ba.b--black-10(
                 v-for="tile in row"
-                :class="{ 'bg-forest': tile.bg === 'forest', 'bg-green': ['green'].includes(tile.bg) , 'bg-red': tile.bg === 'red', 'bg-blue': tile.bg === 'blue', 'bg-beige': tile.bg === 'beige', 'hover-b--black-30': tile.e }"
+                @click="select(tile)"
+                :class="{ 'bg-forest': tile.bg === 'forest', 'bg-green': ['green'].includes(tile.bg) , 'bg-red': tile.bg === 'red', 'bg-blue': tile.bg === 'blue', 'bg-beige': tile.bg === 'beige', 'hover-b--black-30': tile.e, 'bg-place': tile.bg === 'place'}"
               )
                 .absolute.w-100.h-100
-                  emoji.relative.f1.ma1 {{tile.e}}
+                  emoji.relative.f1.ma1(
+                    :class="{'squeazing-slow': tile.type === 'place' }"
+                  ) {{tile.e}}
 
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import Avatar from './Avatar.vue';
 
 const emptyEntity = {
   name: 'Nothing'
@@ -49,8 +46,11 @@ const Solids = ['player', 'enemy', 'npc', 'critter']
 let interval
 
 export default Vue.extend({
+  components: {
+    Avatar
+  },
   mounted () {
-    window.addEventListener("keyup", this.handleKey);
+    window.addEventListener('keyup', this.handleKey);
     interval = setInterval(() => {
       this.handleEnemyMovement()
     }, 2000)
@@ -62,6 +62,14 @@ export default Vue.extend({
     window.removeEventListener('keyup', this.handleKey);
   },
   methods: {
+    onTab(e) {
+      console.log(e)
+    },
+    select (entity) {
+      if (!entity.type) return false
+      if (!['player','place'].includes(entity.type)) return false
+      this.$emit('select', entity)
+    },
     handleKey (e) {
       e.preventDefault()
 
@@ -120,7 +128,6 @@ export default Vue.extend({
       }
 
       if (isOffbounds(nextPos)) {
-        console.log('offbounds', isOffbounds(nextPos))
         return false
       }
 
@@ -189,23 +196,23 @@ export default Vue.extend({
       playerHash: playerHash,
       entities: {
         '0': { name: 'john', type: 'player' },
-        '1': { name: 'cash', type: 'item' },
+        '1': {  type: 'item' },
         '2': { name: 'anonymous', type: 'player' },
-        '3': { name: 'anonymous', type: 'npc' },
-        '4': { name: 'anonymous', type: 'player' },
-        '5': { name: 'anonymous', type: 'player' },
-        '6': { name: 'anonymous', type: 'player' },
-        '7': { name: 'rabbit', type: 'critter' },
-        '8': { name: 'john\'s body', type: 'corpse' } 
+        '3': { name: 'mrdetective', type: 'player' },
+        '4': { name: 'farmer', type: 'npc' },
+        '5': { name: 'some_elf12', type: 'player' },
+        '6': { name: 'fae123', type: 'player' },
+        '7': { type: 'critter' },
+        '8': { type: 'corpse' } 
       },
       rows: [
         [1,2,3,playerHash,5,6,7,8],
         [1,2,3,4,5,6,7,'3🕵️'],
         [1,2,3,4,5,6,7,8],
         [1,2,3,4,5,0,7,8],
-        [1,2,3,4,5,6,7,8],
-        [1,2,3,4,5,6,'1💰',8],
-        [1,2,3,4,'7🐇',6,7,8],
+        [1,2,3,'4🧑‍🌾',5,6,7,8],
+        [1,2,3,4,'6🧚',6,'1💰',8],
+        [1,'5🧝',3,4,'7🐇',6,7,8],
         [1,2,3,4,5,'8☠️',7,8]
       ],
       tiles: [
@@ -213,7 +220,7 @@ export default Vue.extend({
           {bg: 'green', e:'🌳'},
           {bg: 'beige', e:'🏔'},
           {bg: 'green', e:''},
-          {bg: 'green', e:'🏰'}
+          {bg: 'place', e:'🏰', type: 'place', name: 'Castle', level: 3, flags: 0}
         ],
         [
           {bg: 'forest', e:'🍄'},
@@ -229,7 +236,7 @@ export default Vue.extend({
         ],
         [
           {bg: 'green',e:''},
-          {bg: 'beige',e:'🏘'},
+          {bg: 'place',e:'🏘', type: 'place', name: 'Village', level: 1, flags: 0},
           {bg: 'green',e:'🌳'},
           {bg: 'blue',e:''}
         ]
