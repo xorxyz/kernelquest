@@ -1,9 +1,6 @@
-body > div {
-  zoom: 1.5;
-}
-
 html, body {
   font-family: 'Open Sans' !important; 
+  height: 100%;
   background-color: #281C3E;
   cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABFklEQVRYR9WXURLDIAhE6/0PbSdOtUpcd1Gnpv1KGpTHBpCE1/cXq+vrMph7dGvXZTtpfW10DCA5jrH1H0Jhs5E0hnZdCR+vb5S8Nn8mQCeS9BdSalYJqMBjAGzq59xAESN7VFVUgV8AZB/dZBR7QTFDCqGquvUBVVoEtgIwpQRzmANSFHgWQKExHdIrPeuMvQNDarXe6nC/AutgV3JW+6bgqQLeV8FekRtgV+ToDKEKnACYKsfZjjkam7a0ZpYTytwmgainpC3HvwBocgKOxqRjehoR9DFKNFYtOwCGYCszobeCbl26N6yyQ6g8X/Wex/rBPsNEV6qAMaJPMynIHQCoSqS9JSMmwef51LflTgCRszU7DvAGiV6mHWfsaVUAAAAASUVORK5CYII=),auto;
 }
@@ -38,6 +35,10 @@ nav { background-color: #150D24; }
 /* main {
   max-width: 48rem;
 } */
+
+#game-map {
+  zoom: 1.5;
+}
 
 .chat, .stats {
   height: 24ex;
@@ -159,21 +160,21 @@ nav { background-color: #150D24; }
 
 @keyframes pulsing {
   0% { transform: scale3d(1, 1, 1); transform: translate3d(0,0,0); }
-  50% { transform: scale3d(1, 1.1, 1.1); transform: translate3d(0,10%,0); }
+  50% { transform: scale3d(1, 1.1, 1.1); transform: translate3d(0,-3%,0); }
   100% { transform: scale3d(1, 1, 1); transform: translate3d(0,0,0); }
 }
 .pulsing-slow :not(.tooltip-text) {
-  animation: pulsing 0.9s ease-in infinite;
+  animation: pulsing 1.5s ease-in infinite;
 }
 .pulsing-fast :not(.tooltip-text) {
-  animation: pulsing 0.3s alternate infinite;
+  animation: pulsing 0.5s alternate infinite;
 }
 
 @keyframes squeazing {
   0% { transform: scale3d(1, 1, 1); }
-  25% { transform: scale3d(1.2, 0.9, 1); }
+  25% { transform: scale3d(1.1, 0.9, 1); }
   50% { transform: scale3d(1, 1, 1); }
-  75% { transform: scale3d(0.9, 1.2, 1); }
+  75% { transform: scale3d(0.9, 1.1, 1); }
 }
 .squeazing :not(.tooltip-text) {
   animation: squeazing 1.5s ease-in infinite;
@@ -201,5 +202,5 @@ nav { background-color: #150D24; }
 }
 
 .bg-place {
-  background-color: #c1baa9;
+  background-color: #ceca9f;
 }

@@ -1,6 +1,6 @@
 <template lang="pug">
   div.sidebar.flex.flex-column.ma0.bg-light-eggplant.pa3.br2.shadow-2
-    Player(v-if="selected && selected.type === 'player'" :selected="selected")
+    Player(v-if="selected && (selected.type === 'player' || selected.type === 'npc')" :selected="selected")
     Place(v-if="selected && selected.type === 'place'" :selected="selected")
 
 </template>

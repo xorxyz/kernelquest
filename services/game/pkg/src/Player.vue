@@ -5,19 +5,18 @@
         span.bg-black-50.w3.h3.pa1.br2.f1.flex.items-center.justify-center
           emoji.w2.h2.pa1.br2.f3.flex.items-center.justify-center.b--black-30.pulsing-slow(:x="selected") {{ selected.emoji }}
 
-      div
-        span.mr2.w3 Name
+      div.flex.f6.mv1
+        span.w3 Name
         span.mh2 {{ selected.name }}
-      div.mv1
-        span.mr2.w3 Guild
+      div.flex.f6.mv1
+        span.w3 Guild
         span.mh2.o-10 None
-      div.mv1
-        span.mr2.w3 Level
+      div.flex.f6.mv1
+        span.w3 Level
         span.mh2 {{ selected.level || 1 }}
 
-    br
 
-    div.mt3
+    div.mt4
       div.mv3
         span.bg-black-50.br1.pa1.grayscale
           emoji.o-10 👤

@@ -1,0 +1,56 @@
+🏕 campsite
+🏗 construction zone
+🏚 broken house
+🏠 house
+🏡 house with garden
+🏥 hospital
+🏦 bank 
+🏨 hotel
+🏭 factory
+🏰 castle
+🎪 circus
+⛺ tent
+⛲ fountain
+🪐 planets
+⭐ stars
+🏟 stadium
+🏛 temple
+
+💪 bicep
+🦾 Mechanical Arm
+🦿 Mechanical Leg
+🦵 Leg
+🦶 Foot
+👂 Ear
+🦻 Ear with Hearing Aid
+👃 Nose
+🧠 Brain
+🦷 Tooth
+🦴 Bone
+👀 Eyes
+👁️ Eye
+👅 Tongue
+👄 Mouth
+
+🧑 Person
+👱 Person: Blond Hair
+👨 Man
+🧔 Person: Beard
+👨‍🦰 Man: Red Hair
+👨‍🦱 Man: Curly Hair
+👨‍🦳 Man: White Hair
+👨‍🦲 Man: Bald
+👩 Woman
+👩‍🦰 Woman: Red Hair
+🧑‍🦰 Person: Red Hair
+👩‍🦱 Woman: Curly Hair
+🧑‍🦱 Person: Curly Hair
+👩‍🦳 Woman: White Hair
+🧑‍🦳 Person: White Hair
+👩‍🦲 Woman: Bald
+🧑‍🦲 Person: Bald
+👱‍♀️ Woman: Blond Hair
+👱‍♂️ Man: Blond Hair
+🧓 Older Person
+👴 Old Man
+👵 Old Woman

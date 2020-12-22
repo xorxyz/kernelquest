@@ -1,12 +1,12 @@
 <template lang="pug">
-.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center.justify-center(@keyup="onTab")
-  .flex
+.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center(@keyup="onTab")
+  .flex.items-center.justify-center.w-100.f4
     .black-60.bg-parchment.mv3.ph3.pv2.shadow-2.br1
       span 📍
       span.mh2.black-90 Valley of the King
 
-  .flex.w-100.h-100.flex.items-center.justify-center.mv4
-    div.relative
+  #game-map.flex.w-100.h-100.flex.justify-center
+    div.relative.mv3
       div.absolute.top0.pa4.z-3.clickthrough.ba
         div.flex.flex-column
           .h2.flex(v-for="(row, index) in rows" :index="index")
@@ -67,7 +67,7 @@ export default Vue.extend({
     },
     select (entity) {
       if (!entity.type) return false
-      if (!['player','place'].includes(entity.type)) return false
+      if (!['player', 'place', 'npc'].includes(entity.type)) return false
       this.$emit('select', entity)
     },
     handleKey (e) {
@@ -197,20 +197,27 @@ export default Vue.extend({
       entities: {
         '0': { name: 'john', type: 'player' },
         '1': {  type: 'item' },
-        '2': { name: 'anonymous', type: 'player' },
+        '2': { name: 'bot', type: 'npc' },
         '3': { name: 'mrdetective', type: 'player' },
-        '4': { name: 'farmer', type: 'npc' },
+        '4': { name: 'Farmer', type: 'npc' },
         '5': { name: 'some_elf12', type: 'player' },
         '6': { name: 'fae123', type: 'player' },
         '7': { type: 'critter' },
-        '8': { type: 'corpse' } 
+        '8': { type: 'corpse' },
+        '9': { name: 'goblin',type: 'enemy' },
+        'A': { name: 'ogre', type: 'enemy' },
+        'B': { name: 'poo', type: 'enemy' },
+        'C': { name: 'devil', type: 'enemy' },
+        'D': { type: 'enemy' },
+        'E': { type: 'corpse' },
+        'F': { type: 'corpse' }  
       },
       rows: [
         [1,2,3,playerHash,5,6,7,8],
-        [1,2,3,4,5,6,7,'3🕵️'],
+        [1,2,'9🦟','A🦟','C🦟',6,7,'3🕵️'],
         [1,2,3,4,5,6,7,8],
         [1,2,3,4,5,0,7,8],
-        [1,2,3,'4🧑‍🌾',5,6,7,8],
+        [1,'2🤖',3,'4🧑‍🌾',5,6,7,8],
         [1,2,3,4,'6🧚',6,'1💰',8],
         [1,'5🧝',3,4,'7🐇',6,7,8],
         [1,2,3,4,5,'8☠️',7,8]
