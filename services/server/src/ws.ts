@@ -9,21 +9,25 @@ const sockets = new WebSocket.Server({
 
 export default websockets;
 
-function websockets(server, app) {
+function websockets(server) {
   server.on('upgrade', (request, socket, head) => {
     console.debug('upgrade');
 
-    sessionParser(request, {}, () => {
-      if (!request.session.userId) {
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
-        return;
-      }
-
-      sockets.handleUpgrade(request, socket, head, (client) => {
-        client.emit('connection', client, request);
-      });
+    sockets.handleUpgrade(request, socket, head, (client) => {
+      client.emit('connection', client, request);
     });
+
+    // sessionParser(request, {}, () => {
+    //   if (!request.session.userId) {
+    //     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+    //     socket.destroy();
+    //     return;
+    //   }
+
+    //   sockets.handleUpgrade(request, socket, head, (client) => {
+    //     client.emit('connection', client, request);
+    //   });
+    // });
   });
 
   sockets.on('connection', (client, request) => {

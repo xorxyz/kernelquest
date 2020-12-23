@@ -1,12 +1,18 @@
 <template lang="pug">
-.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column.items-center(@keyup="onTab")
-  .flex.items-center.justify-center.w-100.f4
-    .black-60.bg-parchment.mv3.ph3.pv2.shadow-2.br1
+.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column(@keyup="onTab")
+  .flex.items-center.justify-center.w-100.f7
+    .white.mv2.ph3.pv1.shadow-2.br1
       span 📍
-      span.mh2.black-90 Valley of the King
+      span.mh1 Valley of the King
+    div.mv1.white.mh3
+      emoji 🌓 
+      span.mh2 12th 3/4 moon
+    div.mv1.white.mh3
+      emoji ⏳
+      span.mh2 43 minutes left
 
   #game-map.flex.w-100.h-100.flex.justify-center
-    div.relative.mv3
+    div.relative
       div.absolute.top0.pa4.z-3.clickthrough.ba
         div.flex.flex-column
           .h2.flex(v-for="(row, index) in rows" :index="index")
@@ -214,12 +220,12 @@ export default Vue.extend({
       },
       rows: [
         [1,2,3,playerHash,5,6,7,8],
-        [1,2,'9🦟','A🦟','C🦟',6,7,'3🕵️'],
+        [1,2,'9🦟','A🦟','C🦟',6,7,9],
         [1,2,3,4,5,6,7,8],
         [1,2,3,4,5,0,7,8],
         [1,'2🤖',3,'4🧑‍🌾',5,6,7,8],
-        [1,2,3,4,'6🧚',6,'1💰',8],
-        [1,'5🧝',3,4,'7🐇',6,7,8],
+        [1,2,'5🧝','3🕵️','6🧚',6,'1💰',8],
+        [1,2,3,4,'7🐇',6,7,8],
         [1,2,3,4,5,'8☠️',7,8]
       ],
       tiles: [
