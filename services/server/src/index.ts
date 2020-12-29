@@ -6,12 +6,6 @@ import * as cors from 'cors';
 import sessionParser from './session';
 import createWSS from './sockets';
 
-declare module 'express-session' {
-  interface SessionData {
-    userId: string;
-  }
-}
-
 const PORT = 3000;
 const app = express();
 

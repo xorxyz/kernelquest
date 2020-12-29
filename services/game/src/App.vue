@@ -4,8 +4,9 @@
       main.w-100.h-100.b--blue.flex.flex-column
         #top-part.w-100.h-100.flex.flex-row
           .mr1.w-70.flex.flex-column.relative
-            GameMap(state="this" @select="handleSelect")
-            div.absolute.bottom-0.w-100.pa2.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl" style="height: 12rem;")
+            Terminal(v-if="showTerminal")
+            GameMap(v-if="!showTerminal" state="this" @select="handleSelect")
+            div.absolute.bottom-0.w-100.pa2.bg-black-60.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl" style="height: 12rem;")
               div.mb1
                 div(v-for="message in messages") {{ message }}
               form.w-100(@submit.prevent="handleMessage")
@@ -23,6 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Terminal from './components/Terminal.vue';
 import GameMap from './views/GameMap.vue';
 import Sidebar from './views/Sidebar.vue';  
 import Stats from './views/Stats.vue';
@@ -30,6 +32,7 @@ import ws from './sockets';
 
 export default Vue.extend({
   components: {
+    Terminal,
     GameMap,
     Sidebar,
     Stats
@@ -75,6 +78,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      showTerminal: false,
       input: '',
       messages: [
         'older at the top',

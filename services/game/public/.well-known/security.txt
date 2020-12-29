@@ -1,0 +1,4 @@
+# If you would like to report a security issue,
+# please send me an email:
+
+Contact: mailto:jonathan@diagonal.sh

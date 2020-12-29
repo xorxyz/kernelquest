@@ -21,7 +21,13 @@ function createWSS(app) {
     const isAuthorized = await authorize(req);
     if (!isAuthorized) { return dropSocket(socket); }
 
-    wss.handleUpgrade(req, socket, head, onUpgrade);
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      if (!connections.has(req.session.userId)) {
+        addConnection(ws, req.session.userId);
+      }
+
+      console.log('done upgrade');
+    });
 
     return true;
   });
@@ -32,7 +38,7 @@ function createWSS(app) {
 async function validate(req): Promise<boolean> {
   const { pathname } = url.parse(req.url);
   const isValidRequest = (
-    (pathname === '/')
+    (pathname === '/') || (pathname === '/sh')
   );
   console.log('isValidRequest:', isValidRequest);
 
@@ -74,14 +80,6 @@ function parseSession(req) {
       return resolve(null);
     });
   });
-}
-
-function onUpgrade(ws, req) {
-  if (!connections.has(req.session.userId)) {
-    addConnection(ws, 'test-id');
-  }
-
-  console.log('done upgrade');
 }
 
 function addConnection(ws: WebSocket, userId: string) {

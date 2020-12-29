@@ -28,12 +28,12 @@
               div.w3.h3.pa0.flex.justify-center.items-center.relative.ba.b--black-10(
                 v-for="tile in row"
                 @click="select(tile)"
-                :class="{ 'bg-stone': tile.bg === 'stone', 'bg-ice': tile.bg === 'ice', 'bg-forest': tile.bg === 'forest', 'bg-green': ['green'].includes(tile.bg) , 'bg-red': tile.bg === 'red', 'bg-blue': tile.bg === 'blue', 'bg-beige': tile.bg === 'beige', 'hover-b--black-30': tile.e, 'bg-place': tile.bg === 'place'}"
+                :class="{ 'bg-stone': places[tile].bg === 'stone', 'bg-ice': places[tile].bg === 'ice', 'bg-forest': places[tile].bg === 'forest', 'bg-green': ['green'].includes(places[tile].bg) , 'bg-red': places[tile].bg === 'red', 'bg-blue': places[tile].bg === 'blue', 'bg-beige': places[tile].bg === 'beige', 'hover-b--black-30': tile.emoji, 'bg-place': places[tile].bg === 'place'}"
               )
                 .absolute.w-100.h-100
                   emoji.relative.f1.ma1(
                     :class="{'squeazing-slow': tile.type === 'place' }"
-                  ) {{tile.e}}
+                  ) {{places[tile].emoji}}
 
 </template>
 
@@ -45,9 +45,27 @@ const emptyEntity = {
   name: 'Nothing'
 }
 
-const playerHash = '0🧙'
+const playerHash = '1'
 const avatars = ['🧙','🧙🏽‍♂️']
 const Solids = ['player', 'enemy', 'npc', 'critter']
+
+const rows = [
+  'FFF00FFF',
+  'F010000F',
+  'F000000F',
+  'F000000F',
+  'F000000F',
+  'F070090F',
+  'F000000F',
+  'FFFFFFFF'
+]
+
+var tiles = [
+  '0001',
+  '0000',
+  '0000',
+  '0020',
+]
 
 let interval
 
@@ -100,7 +118,7 @@ export default Vue.extend({
       }
     },
     nextAvatar () {
-      const emoji = this.playerHash.slice(1)
+      const emoji = this.entities['1'].emoji
       const index = avatars.findIndex(a => a === emoji);
       const nextIndex = index >= avatars.length - 1
         ? 0 
@@ -109,19 +127,12 @@ export default Vue.extend({
 
       const pos = this.findPlayer()
 
-      this.playerHash = '0' + next
-      this.rows[pos.y][pos.x] = this.playerHash;
+      this.entities['1'].emoji = next;
     },
     entityOf (entityHash) {
-      if (typeof entityHash !== 'string' || entityHash.length < 2) {
-        return emptyEntity
-      }
+      const entity = this.entities[entityHash]
 
-      const id = entityHash.slice(0, 1);
-      const emoji = entityHash.slice(1);
-      const entity = this.entities[id];
-
-      return { ...entity, emoji }
+      return entity
     },
     nameOf (entityId) {
       return this.entities[entityId]?.name
@@ -145,7 +156,7 @@ export default Vue.extend({
       }
 
       // erase at old position
-      this.rows[pos.y][pos.x] = pos.x;
+      this.rows[pos.y][pos.x] = '0';
       // // write at new position
       this.rows[nextPos.y][nextPos.x] = entityHash;
       // // overwrite state
@@ -167,18 +178,18 @@ export default Vue.extend({
 
       if (isOccupied(entityAtNextPos)) {
         return false 
-        }
+      }
 
       // erase player
-      this.rows[pos.y][pos.x] = pos.x;
+      this.rows[pos.y][pos.x] = '0';
       // write player at new position
       this.rows[nextPos.y][nextPos.x] = this.playerHash;
       // overwrite state
       this.rows = [ ...this.rows ];
     },
     findPlayer () {
-      const y = this.rows.findIndex(r => r.includes(this.playerHash));
-      const x = this.rows[y].findIndex(c => c === this.playerHash);
+      const y = this.rows.findIndex(r => r.includes('1'));
+      const x = this.rows[y].findIndex(c => c === '1');
 
       return { x, y }
     },
@@ -194,66 +205,37 @@ export default Vue.extend({
         y: coinFlip()
       }
 
-      this.moveX('7🐇', next.x, next.y)
+      this.moveX('7', next.x, next.y)
     }
   },
   data() {
     return {
       playerHash: playerHash,
       entities: {
-        '0': { name: 'john', type: 'player' },
-        '1': {  type: 'item' },
-        '2': { name: 'bot', type: 'npc' },
-        '3': { name: 'mrdetective', type: 'player' },
-        '4': { name: 'Santa', type: 'npc' },
+        '0': { emoji: '', name: '', type: '' },
+        '1': { emoji: avatars[0], name: 'john', type: 'player' },
+        '2': { name: 'money', emoji: '💰', type: 'item' },
+        '3': { name: 'bot', type: 'npc' },
+        '4': { name: 'mrdetective', type: 'player' },
         '5': { name: 'some_elf12', type: 'player' },
         '6': { name: 'fae123', type: 'player' },
-        '7': { type: 'critter' },
+        '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
         '8': { type: 'corpse' },
-        '9': { name: 'goblin',type: 'enemy' },
+        '9': { emoji: '👺', name: 'goblin', type: 'enemy' },
         'A': { name: 'ogre', type: 'enemy' },
         'B': { name: 'poo', type: 'enemy' },
         'C': { name: 'devil', type: 'enemy' },
         'D': { type: 'enemy' },
         'E': { type: 'corpse' },
-        'F': { type: 'corpse' }  
+        'F': { emoji: '🧱', type: 'wall', solid: true }
       },
-      rows: [
-        [1,2,3,4,5,6,7,8],
-        [1,2,playerHash,4,5,6,7,'C🦟'],
-        [1,2,3,4,5,6,7,8],
-        [1,2,3,4,5,0,7,8],
-        [1,'2🤖',3,'4🎅',5,6,7,8],
-        [1,2,'5🧝','3🕵️','6🧚',6,'1💰',8],
-        [1,2,3,4,'7🐇',6,7,8],
-        [1,2,3,4,5,'8☠️',7,8]
-      ],
-      tiles: [
-        [
-          {bg: 'ice', e:'🎄'},
-          {bg: 'stone', e:'🏔'},
-          {bg: 'white', e:''},
-          {bg: 'white', e:''}
-        ],
-        [
-          {bg: 'stone', e:'⛄'},
-          {bg: 'white', e:''},
-          {bg: 'white', e:'🎶'},
-          {bg: 'white', e:''}
-        ],
-        [
-          {bg: 'ice', e:''},
-          {bg: 'ice', e:''},
-          {bg: 'white', e:''},
-          {bg: 'white', e:'❄️'}
-        ],
-        [
-          {bg: 'white',e:''},
-          {bg: 'stone',e:'🏗️', type: 'place', name: 'Construction', level: 1, flags: 0},
-          {bg: 'white',e:'🎄'},
-          {bg: 'ice',e:''}
-        ]
-      ]
+      places: {
+        '0': { emoji: '', bg: 'white', type: 'ground' },
+        '1': { emoji: '', bg: 'stone', type: 'ground' },
+        '2': { emoji: '🏠', bg: 'place', type: 'place', data: {} },
+      },
+      rows: rows.map(x => x.split('')),
+      tiles: tiles.map(x => x.split(''))
     };
   }
 });
@@ -265,7 +247,6 @@ function coinFlip () {
 }
 
 function isOffbounds (pos) {
-
   return (
     pos.x < 0 ||
     pos.x > 7 ||

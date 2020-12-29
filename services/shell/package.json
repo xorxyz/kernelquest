@@ -1,0 +1,16 @@
+{
+  "name": "xor4-shell",
+  "version": "0.0.0",
+  "description": "nope",
+  "main": "index.js",
+  "author": "kareniel",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "devDependencies": {
+  }
+}

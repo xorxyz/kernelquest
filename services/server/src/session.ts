@@ -3,6 +3,12 @@ import * as redis from 'redis';
 
 import * as Store from 'connect-redis';
 
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
+
 const SESSION_SECRET = '3A7BPfyKYCgoyw3u6-0stcYXtjbeVJkMH2.ugAKHZpf';
 const RedisStore = Store(session);
 const redisClient = redis.createClient({
