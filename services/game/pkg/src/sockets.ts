@@ -1,18 +1,51 @@
-import { io } from 'socket.io-client';
+/* eslint-disable func-names */
+/* eslint-disable prefer-arrow-callback */
 
-const socket = io('ws://localhost:3000', {
-  path: '/ws',
-  withCredentials: true,
-});
+// eslint-disable-next-line no-undef
+import Vue from 'vue';
 
-socket.connect();
+const ws = new WebSocket('ws://localhost:3000/');
 
-socket.on('disconnect', () => {
-  console.log(socket.id);
-});
+const bus = new Vue();
 
-socket.on('connect_error', (error) => {
-  console.error(error);
-});
+ws.onopen = function (e) {
+  console.log('open');
+};
 
-export default socket;
+ws.onerror = function (e) {
+  console.error(e);
+};
+
+ws.onmessage = function (e) {
+  console.log('message:', e.data);
+  try {
+    const parsed = JSON.parse(e.data);
+    bus.$emit('message', parsed);
+  } catch (err) {
+    console.error('oops, json error', err);
+  }
+};
+
+const sockets = {
+  bus,
+  say(message) {
+    ws.send(JSON.stringify({
+      cmd: 'say',
+      args: [message],
+    }));
+  },
+  move(direction) {
+    ws.send(JSON.stringify({
+      cmd: 'move',
+      args: [direction],
+    }));
+  },
+  send(cmd, ...args) {
+    ws.send(JSON.stringify({
+      cmd,
+      args,
+    }));
+  },
+};
+
+export default sockets;

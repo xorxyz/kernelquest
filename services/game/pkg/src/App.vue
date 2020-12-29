@@ -5,7 +5,7 @@
         #top-part.w-100.h-100.flex.flex-row
           .mr1.w-70.flex.flex-column.relative
             GameMap(state="this" @select="handleSelect")
-            div.absolute.bottom-0.w-100.pa2.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl")
+            div.absolute.bottom-0.w-100.pa2.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl" style="height: 12rem;")
               div.mb1
                 div(v-for="message in messages") {{ message }}
               form.w-100(@submit.prevent="handleMessage")
@@ -23,22 +23,28 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import GameMap from './GameMap.vue';
-import Sidebar from './Sidebar.vue';
-import Chat from './Chat.vue';
-import Stats from './Stats.vue';
+import GameMap from './views/GameMap.vue';
+import Sidebar from './views/Sidebar.vue';  
+import Stats from './views/Stats.vue';
+import ws from './sockets';
 
 export default Vue.extend({
   components: {
     GameMap,
     Sidebar,
-    Chat,
     Stats
   },
   mounted () {
     const { boxEl } = this.$refs
 
     boxEl.addEventListener('click', this.focusInput)
+
+    ws.bus.$on('message', e => {
+      console.log('message in app!', e)
+      if (e.message) {
+        this.messages.push(e.message)
+      }
+    })
   },
   methods: {
     focusInput () {
@@ -53,14 +59,33 @@ export default Vue.extend({
       const el = this.$refs.inputEl
 
       el.blur()
+
+      const txt: string = el.value 
       
-      this.messages.push(el.value)
+      this.messages.push(txt)
+
+      if (txt.startsWith('/')) {
+        const tokens = txt.slice(1).split(' ')
+        const cmd = tokens[0]
+        const args = tokens.slice(1)
+        ws.send(cmd, ...args)
+      } else {
+        ws.say(txt)
+      }
     }
   },
   data() {
     return {
       input: '',
       messages: [
+        'older at the top',
+        'text goes here',
+        'hi',
+        'this is more recent',
+        'older at the top',
+        'text goes here',
+        'hi',
+        'this is more recent',
         'older at the top',
         'text goes here',
         'hi',

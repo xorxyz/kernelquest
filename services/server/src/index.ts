@@ -1,67 +1,56 @@
 import * as http from 'http';
 import * as express from 'express';
 import * as uuid from 'uuid';
-
-import * as io from 'socket.io';
+import * as cors from 'cors';
 
 import sessionParser from './session';
+import createWSS from './sockets';
+
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
 
 const PORT = 3000;
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:1234',
+  credentials: true,
+}));
+
+app.use(sessionParser);
+
+app.use(express.json({
+  limit: '100b',
+  strict: true,
+}));
+
 const server = http.createServer(app);
 
-const ws = new io.Server(server, {
-  allowUpgrades: true,
-  path: '/ws',
-  cors: {
-    credentials: true,
-    origin: 'http://localhost:1234',
-    preflightContinue: true,
-  },
-  serveClient: false,
-  maxHttpBufferSize: 1e6,
-  cookie: false,
-  // allowRequest(req, callback) {
-  //   callback('500', false);
-  // },
+createWSS(server);
+
+app.get('/login', function (req, res) {
+  console.log('login, session:', req.session);
+
+  req.session.userId = uuid.v4();
+
+  console.log('new user id:', req.session.userId);
+
+  res.end();
 });
 
-ws.use(async (socket, next) => {
-  console.log('ws middle');
-  next();
+app.get('/me', function (req, res) {
+  res.json(req.session);
 });
 
-ws.on('connection', (socket: io.Socket) => {
-  console.log(socket.id);
-
-  socket.on('disconnecting', (reason) => {
-    console.log('disconnecting', reason);
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    console.error('destroy err:', err);
   });
 
-  socket.on('disconnect', (reason) => {
-    console.log('disconnect', reason);
-  });
+  res.end('ok');
 });
 
 server.listen(PORT, () => console.log('listening on ', PORT));
-
-// app.use(sessionParser);
-// app.use(express.json({
-//   limit: '1kb',
-//   strict: true,
-//   inflate: true,
-//   type: 'application/json',
-// }));
-
-// app.use((req, res, next) => {
-//   if (!req.session.userId) {
-//     req.session.userId = uuid.v4();
-//   }
-
-//   next();
-// });
-
-// app.get('/logout', (req, res) => {
-//   req.session.destroy();
-//   res.end('ok');
-// });

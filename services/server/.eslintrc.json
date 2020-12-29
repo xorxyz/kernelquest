@@ -38,6 +38,8 @@
     "no-use-before-define": "off",
     "no-new": "off",
     "lines-between-class-members": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "func-names": "off",
+    "prefer-arrow-callback": "off"
   }
 }

@@ -1,14 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import Emoji from './Emoji.vue';
-
-import socket from './sockets.ts';
-
-global.ws = socket;
-
-socket.on('connect', () => {
-  console.log(socket.id);
-});
+import Emoji from './components/Emoji.vue';
 
 Vue.component('emoji', Emoji);
 

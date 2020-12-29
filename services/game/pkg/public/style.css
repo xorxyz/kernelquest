@@ -32,12 +32,21 @@ nav { background-color: #150D24; }
   color: #fff;
 }
 
+.b--eggplant {
+  border-color: #281C3E;
+}
+
+.bg-vlight-eggplant {
+  background-color: #805acc;
+  color: #fff;
+}
+
 /* main {
   max-width: 48rem;
 } */
 
 #game-map {
-  zoom: 1.5;
+  zoom: 1.4;
 }
 
 .chat, .stats {
@@ -203,4 +212,12 @@ nav { background-color: #150D24; }
 
 .bg-place {
   background-color: #ceca9f;
+}
+
+.bg-ice {
+  background-color: #b9cdd2;
+}
+
+.bg-stone {
+  background-color: #99a9ad;
 }

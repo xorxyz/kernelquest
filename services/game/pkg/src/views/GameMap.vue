@@ -3,7 +3,7 @@
   .flex.items-center.justify-center.w-100.f7
     .white.mv2.ph3.pv1.shadow-2.br1
       span 📍
-      span.mh1 Valley of the King
+      span.mh1 Santa's Valley
     div.mv1.white.mh3
       emoji 🌓 
       span.mh2 12th 3/4 moon
@@ -28,7 +28,7 @@
               div.w3.h3.pa0.flex.justify-center.items-center.relative.ba.b--black-10(
                 v-for="tile in row"
                 @click="select(tile)"
-                :class="{ 'bg-forest': tile.bg === 'forest', 'bg-green': ['green'].includes(tile.bg) , 'bg-red': tile.bg === 'red', 'bg-blue': tile.bg === 'blue', 'bg-beige': tile.bg === 'beige', 'hover-b--black-30': tile.e, 'bg-place': tile.bg === 'place'}"
+                :class="{ 'bg-stone': tile.bg === 'stone', 'bg-ice': tile.bg === 'ice', 'bg-forest': tile.bg === 'forest', 'bg-green': ['green'].includes(tile.bg) , 'bg-red': tile.bg === 'red', 'bg-blue': tile.bg === 'blue', 'bg-beige': tile.bg === 'beige', 'hover-b--black-30': tile.e, 'bg-place': tile.bg === 'place'}"
               )
                 .absolute.w-100.h-100
                   emoji.relative.f1.ma1(
@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Avatar from './Avatar.vue';
+import Avatar from '../components/Avatar.vue';
 
 const emptyEntity = {
   name: 'Nothing'
@@ -205,7 +205,7 @@ export default Vue.extend({
         '1': {  type: 'item' },
         '2': { name: 'bot', type: 'npc' },
         '3': { name: 'mrdetective', type: 'player' },
-        '4': { name: 'Farmer', type: 'npc' },
+        '4': { name: 'Santa', type: 'npc' },
         '5': { name: 'some_elf12', type: 'player' },
         '6': { name: 'fae123', type: 'player' },
         '7': { type: 'critter' },
@@ -219,39 +219,39 @@ export default Vue.extend({
         'F': { type: 'corpse' }  
       },
       rows: [
-        [1,2,3,playerHash,5,6,7,8],
-        [1,2,'9🦟','A🦟','C🦟',6,7,9],
+        [1,2,3,4,5,6,7,8],
+        [1,2,playerHash,4,5,6,7,'C🦟'],
         [1,2,3,4,5,6,7,8],
         [1,2,3,4,5,0,7,8],
-        [1,'2🤖',3,'4🧑‍🌾',5,6,7,8],
+        [1,'2🤖',3,'4🎅',5,6,7,8],
         [1,2,'5🧝','3🕵️','6🧚',6,'1💰',8],
         [1,2,3,4,'7🐇',6,7,8],
         [1,2,3,4,5,'8☠️',7,8]
       ],
       tiles: [
         [
-          {bg: 'green', e:'🌳'},
-          {bg: 'beige', e:'🏔'},
-          {bg: 'green', e:''},
-          {bg: 'place', e:'🏰', type: 'place', name: 'Castle', level: 3, flags: 0}
+          {bg: 'ice', e:'🎄'},
+          {bg: 'stone', e:'🏔'},
+          {bg: 'white', e:''},
+          {bg: 'white', e:''}
         ],
         [
-          {bg: 'forest', e:'🍄'},
-          {bg: 'green', e:''},
-          {bg: 'green', e:''},
-          {bg: 'green', e:'🌱'}
+          {bg: 'stone', e:'⛄'},
+          {bg: 'white', e:''},
+          {bg: 'white', e:'🎶'},
+          {bg: 'white', e:''}
         ],
         [
-          {bg: 'beige', e:''},
-          {bg: 'beige', e:''},
-          {bg: 'green', e:'🌿'},
-          {bg: 'green', e:'🌼'}
+          {bg: 'ice', e:''},
+          {bg: 'ice', e:''},
+          {bg: 'white', e:''},
+          {bg: 'white', e:'❄️'}
         ],
         [
-          {bg: 'green',e:''},
-          {bg: 'place',e:'🏘', type: 'place', name: 'Village', level: 1, flags: 0},
-          {bg: 'green',e:'🌳'},
-          {bg: 'blue',e:''}
+          {bg: 'white',e:''},
+          {bg: 'stone',e:'🏗️', type: 'place', name: 'Construction', level: 1, flags: 0},
+          {bg: 'white',e:'🎄'},
+          {bg: 'ice',e:''}
         ]
       ]
     };

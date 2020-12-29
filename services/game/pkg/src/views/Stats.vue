@@ -9,6 +9,15 @@
           div.f7.black {{ hero.hp * 10 }}%
 
   div.mv1.flex.w-100
+    emoji.f3.mh2 ✨
+    div.mh2.w-100.items-center.flex
+      div.bg-black-70.w-100.h2.flex.br2
+        div.bg-vlight-eggplant.br2.flex.items-center.justify-center.bb.bw2.b--eggplant(
+          :class="getClassMap(hero.sp)")
+          div.f7.black {{ hero.sp * 10 }}%
+
+
+  div.mv1.flex.w-100
     emoji.f3.mh2 👟 
     div.mh2.w-100.items-center.flex
       div.bg-black-70.w-100.h2.flex.br2
