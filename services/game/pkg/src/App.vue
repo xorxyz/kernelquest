@@ -40,9 +40,8 @@ export default Vue.extend({
     boxEl.addEventListener('click', this.focusInput)
 
     ws.bus.$on('message', e => {
-      console.log('message in app!', e)
-      if (e.message) {
-        this.messages.push(e.message)
+      if (e.type && e.type === 'event:log' && e.payload && e.payload.message) {
+        this.messages.push(e.payload.message)
       }
     })
   },

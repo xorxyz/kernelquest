@@ -3,30 +3,7 @@ import { Response } from 'express';
 import * as WebSocket from 'ws';
 import * as url from 'url';
 import sessionParser from './session';
-
-import queues from './queues';
-
-class PlayerConnection {
-  public userId: string
-  private ws: WebSocket
-
-  constructor(ws: WebSocket, userId: string) {
-    console.log('new connection', userId);
-    this.ws = ws;
-    this.userId = userId;
-
-    ws.on('message', (message: string) => {
-      console.log('got message:', message);
-      try {
-        const o = JSON.parse(message);
-        console.log('parsed message:', o);
-        ws.send(JSON.stringify({ message }));
-      } catch (err) {
-        console.error(`message from ${this.userId} is not json:`, message);
-      }
-    });
-  }
-}
+import PlayerConnection from './connection';
 
 const connections = new Map();
 
