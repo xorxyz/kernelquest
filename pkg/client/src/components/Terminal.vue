@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.bg-black.br2.pt3.pb4.ph2.ba(ref="term")
+  div.bg-black.ph2(ref="term" style="height: 11rem;")
 </template>
 
 <script>
@@ -14,19 +14,19 @@ export default {
     var socket = new WebSocket(endpoint)
     var fitAddon = new FitAddon()
     var term = new Terminal({
-      cursorBlink: true
+      cursorBlink: true,
     })
 
     term.loadAddon(fitAddon)
     term.open(this.$refs.term)
-    // term.write('Loading...')
+    term.write('Loading...')
     term.focus()
 
     fitAddon.fit()
 
     socket.onopen = e => {
       socket.send('hi')
-      // term.loadAddon(new AttachAddon(socket))
+      term.loadAddon(new AttachAddon(socket))
     }
   }
 }

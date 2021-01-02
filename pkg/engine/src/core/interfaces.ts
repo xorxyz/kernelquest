@@ -4,3 +4,5 @@ export interface IComponent {
   type: ComponentType
   data: ComponentDataSchema
 }
+
+export interface CommandPayload {}

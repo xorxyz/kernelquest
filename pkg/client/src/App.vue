@@ -4,12 +4,16 @@
       main.w-100.h-100.b--blue.flex.flex-column
         #top-part.w-100.h-100.flex.flex-row
           .mr1.w-70.flex.flex-column.relative
-            Terminal(v-if="showTerminal")
-            GameMap(v-if="!showTerminal" state="this" @select="handleSelect")
-            div.absolute.bottom-0.w-100.pa2.bg-black-60.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl" style="height: 12rem;")
-              div.mb1
-                div(v-for="message in messages") {{ message }}
-              Sockets
+            //- Terminal(v-if="showTerminal")
+            div
+              GameMap(v-if="!showTerminal" state="this" @select="handleSelect")
+            div.pv2
+              div.bg-black.br2.pv2
+                Terminal
+            //- div.absolute.bottom-0.w-100.pa2.bg-black-60.white-70.code.f5.flex.justify-end.flex-column.overflow-y-scroll(ref="boxEl" style="height: 12rem;")
+              //- div.mb1
+              //-   div(v-for="message in messages") {{ message }}
+              //- Sockets
           .ml1.w-30.h-100.flex.flex-column
             div.h-100
               Sidebar.h-100(:selected="selected")

@@ -21,6 +21,22 @@ for game design doc look in [`/notes`](/notes/README.md).
 docker run -it --rm redis redis-cli -h redis
 ```
 
+## localstack
+
+- IAM
+- STS
+- Route53
+- S3
+- CloudWatch
+- Secrets Manager
+- Lambda
+- DynamoDB
+- API Gateway
+- KMS
+- SQS
+- SES
+- StepFunctions
+
 ## see also
 
 - [`/notes/README.md`](notes/.md)

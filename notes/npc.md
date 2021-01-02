@@ -1,7 +1,4 @@
-# xor 4 notes
-
-multiplayer strategy rpg
-
+# npc
 
 npc dialogue
 
@@ -15,17 +12,3 @@ narrative
   reaction: react to results of player actions 
     attributive: directly credits the player
     situational: without crediting
-
-event conditions:
-what 
-where 
-who 
-when
-
-items
-
-consumables
-ingredients
-
-
-

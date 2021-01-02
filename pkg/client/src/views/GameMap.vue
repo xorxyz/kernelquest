@@ -11,7 +11,7 @@
       emoji ⏳
       span.mh2 10 minutes left
 
-  #game-map.flex.w-100.h-100.flex.justify-center
+  #game-map.flex.w-100.h-100.flex.justify-center.mt2.mb3
     div.relative
       div.absolute.top0.pa4.z-3.clickthrough.ba
         div.flex.flex-column
@@ -53,7 +53,7 @@ const system = {
     '0': { emoji: '', name: '', type: '' },
     '1': { emoji: '👻', name: 'john', type: 'player' },
     '2': { emoji: '🪦', name: 'john\'s headstone', type: 'item', locked: true },
-    '3': { emoji: '⛵', name: 'gateway', type: 'item' },
+    '3': { emoji: '⛵', name: 'boat', type: 'item' },
     '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
     '9': { emoji: '🎃', name: 'jack o\'ferry', type: 'npc' },
     'A': { emoji: '🕷️', name: 'spider', type: 'enemy' },
@@ -70,17 +70,17 @@ const system = {
   },
   rows: [
     'FF000FFF',
-    '0020000F',
+    '0000000F',
+    'F020000F',
     'F010000F',
-    'F000000F',
     'F000000F',
     'F0000009',
     'F0000003',
     'FFFFFFFF'
   ],
   tiles: [
-    '5511',
-    '5511',
+    '1111',
+    '1511',
     '1555',
     '1553',
   ]
