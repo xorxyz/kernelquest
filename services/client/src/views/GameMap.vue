@@ -28,7 +28,7 @@
               div.w3.h3.pa0.flex.justify-center.items-center.relative.ba.b--black-10(
                 v-for="tile in row"
                 @click="select(tile)"
-                :class="{ 'bg-stone': places[tile].bg === 'stone', 'bg-ice': places[tile].bg === 'ice', 'bg-forest': places[tile].bg === 'forest', 'bg-green': ['green'].includes(places[tile].bg) , 'bg-red': places[tile].bg === 'red', 'bg-blue': places[tile].bg === 'blue', 'bg-beige': places[tile].bg === 'beige', 'hover-b--black-30': tile.emoji, 'bg-place': places[tile].bg === 'place'}"
+                :class="{ 'bg-stone': places[tile].bg === 'stone', 'bg-ice': places[tile].bg === 'ice', 'bg-forest': places[tile].bg === 'forest', 'bg-green': ['green'].includes(places[tile].bg) , 'bg-red': places[tile].bg === 'red', 'bg-blue': places[tile].bg === 'blue', 'bg-beige': places[tile].bg === 'beige', 'bg-grass': places[tile].bg === 'grass', 'hover-b--black-30': tile.emoji, 'bg-place': places[tile].bg === 'place'}"
               )
                 .absolute.w-100.h-100
                   emoji.relative.f1.ma1(
@@ -46,37 +46,43 @@ const emptyEntity = {
 }
 
 const playerHash = '1'
-const avatars = ['🧙','🧙🏽‍♂️']
 const Solids = ['player', 'enemy', 'npc', 'critter']
 
 const system = {
   entities: {
     '0': { emoji: '', name: '', type: '' },
-    '1': { emoji: avatars[0], name: 'john', type: 'player' },
+    '1': { emoji: '👻', name: 'john', type: 'player' },
+    '2': { emoji: '🪦', name: 'john\'s headstone', type: 'item', locked: true },
+    '3': { emoji: '⛵', name: 'gateway', type: 'item' },
     '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
-    '9': { emoji: '👺', name: 'goblin', type: 'enemy' },
-    'F': { emoji: '🧱', type: 'wall', solid: true }
+    '9': { emoji: '🎃', name: 'jack o\'ferry', type: 'npc' },
+    'A': { emoji: '🕷️', name: 'spider', type: 'enemy' },
+    'B': { emoji: '🦇', name: 'bat', type: 'enemy' },
+    'F': { emoji: ' ', type: 'wall', solid: true }
   },
   places: {
     '0': { emoji: '', bg: 'white', type: 'ground' },
-    '1': { emoji: '', bg: 'green', type: 'ground' },
-    '2': { emoji: '🏠', bg: 'place', type: 'place', data: {} },
+    '1': { emoji: '', bg: 'forest', type: 'ground' },
+    '2': { emoji: '', bg: 'place', type: 'ground' },
+    '3': { emoji: '', bg: 'blue', type: 'ground' },
+    '4': { emoji: '', bg: 'beige', type: 'ground' },
+    '5': { emoji: '', bg: 'grass', type: 'ground' },
   },
   rows: [
-    'FFF00FFF',
+    'FF000FFF',
+    '0020000F',
     'F010000F',
     'F000000F',
     'F000000F',
-    'F000000F',
-    'F070090F',
-    'F000000F',
+    'F0000009',
+    'F0000003',
     'FFFFFFFF'
   ],
   tiles: [
-    '0001',
-    '0000',
-    '0000',
-    '0020',
+    '5511',
+    '5511',
+    '1555',
+    '1553',
   ]
 }
 

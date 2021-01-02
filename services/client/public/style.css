@@ -116,12 +116,15 @@ nav { background-color: #150D24; }
 }
 
 .bg-forest {
-  background-color: #b1c1a9;
+  background-color: #a6c17b;
 }
 
+.bg-grass {
+  background-color: #c7d7b7;
+}
 
 .bg-blue {
-  background-color: #a9c1b9;
+  background-color: hsla(184, 35%, 73%, 1);
 }
 
 .bg-red {
@@ -211,7 +214,7 @@ nav { background-color: #150D24; }
 }
 
 .bg-place {
-  background-color: #ceca9f;
+  background-color: #d9d49b;
 }
 
 .bg-ice {

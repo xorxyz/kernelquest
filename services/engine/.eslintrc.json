@@ -1,0 +1,49 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "airbnb-base"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src", "test"],
+        "extensions": [".ts"]
+      }
+    }
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "arrow-body-style": "off",
+    "max-classes-per-file": "off",
+    "no-plusplus": "off",
+    "import/extensions": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "vars": "all",
+      "args": "after-used",
+      "ignoreRestSiblings": false
+    }],
+    "no-use-before-define": "off",
+    "no-new": "off",
+    "lines-between-class-members": "off",
+    "no-console": "off",
+    "func-names": "off",
+    "prefer-arrow-callback": "off"
+  }
+}
