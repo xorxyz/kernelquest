@@ -50,7 +50,7 @@ const Solids = ['player', 'enemy', 'npc', 'critter']
 
 const system = {
   entities: {
-    '0': { emoji: '', name: '', type: '' },
+    '0': { emoji: ' ', name: '', type: '' },
     '1': { emoji: '👻', name: 'john', type: 'player' },
     '2': { emoji: '🪦', name: 'john\'s headstone', type: 'item', locked: true },
     '3': { emoji: '⛵', name: 'boat', type: 'item' },
@@ -61,12 +61,12 @@ const system = {
     'F': { emoji: ' ', type: 'wall', solid: true }
   },
   places: {
-    '0': { emoji: '', bg: 'white', type: 'ground' },
-    '1': { emoji: '', bg: 'forest', type: 'ground' },
-    '2': { emoji: '', bg: 'place', type: 'ground' },
-    '3': { emoji: '', bg: 'blue', type: 'ground' },
-    '4': { emoji: '', bg: 'beige', type: 'ground' },
-    '5': { emoji: '', bg: 'grass', type: 'ground' },
+    '0': { emoji: ' ', bg: 'white', type: 'ground' },
+    '1': { emoji: ' ', bg: 'forest', type: 'ground' },
+    '2': { emoji: ' ', bg: 'place', type: 'ground' },
+    '3': { emoji: ' ', bg: 'blue', type: 'ground' },
+    '4': { emoji: ' ', bg: 'beige', type: 'ground' },
+    '5': { emoji: ' ', bg: 'grass', type: 'ground' },
   },
   rows: [
     'FF000FFF',
