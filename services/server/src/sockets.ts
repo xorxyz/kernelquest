@@ -5,7 +5,7 @@ import * as url from 'url';
 import sessionParser from './session';
 import PlayerConnection from './connection';
 
-const connections = new Map();
+export const connections = new Map();
 
 export default createWSS;
 

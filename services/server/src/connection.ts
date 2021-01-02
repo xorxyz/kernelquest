@@ -15,6 +15,14 @@ export default class PlayerConnection {
     this.ws.on('message', this.handleMessage.bind(this));
   }
 
+  emit(userId: string, action: string, payload: any) {
+    this.ws.send(JSON.stringify({
+      userId,
+      payload,
+      type: `event:${action}`,
+    }));
+  }
+
   log(message: string) {
     this.ws.send(JSON.stringify({
       type: 'event:log',

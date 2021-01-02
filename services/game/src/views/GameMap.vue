@@ -1,15 +1,15 @@
 <template lang="pug">
-.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column(@keyup="onTab")
+.map.shadow-2.h-100.bg-black-60.br2.flex.flex-column
   .flex.items-center.justify-center.w-100.f7
     .white.mv2.ph3.pv1.shadow-2.br1
       span 📍
-      span.mh1 Santa's Valley
+      span.mh1 Intro
     div.mv1.white.mh3
       emoji 🌓 
-      span.mh2 12th 3/4 moon
+      span.mh2 1st 1/4 moon
     div.mv1.white.mh3
       emoji ⏳
-      span.mh2 43 minutes left
+      span.mh2 10 minutes left
 
   #game-map.flex.w-100.h-100.flex.justify-center
     div.relative
@@ -49,23 +49,37 @@ const playerHash = '1'
 const avatars = ['🧙','🧙🏽‍♂️']
 const Solids = ['player', 'enemy', 'npc', 'critter']
 
-const rows = [
-  'FFF00FFF',
-  'F010000F',
-  'F000000F',
-  'F000000F',
-  'F000000F',
-  'F070090F',
-  'F000000F',
-  'FFFFFFFF'
-]
+const system = {
+  entities: {
+    '0': { emoji: '', name: '', type: '' },
+    '1': { emoji: avatars[0], name: 'john', type: 'player' },
+    '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
+    '9': { emoji: '👺', name: 'goblin', type: 'enemy' },
+    'F': { emoji: '🧱', type: 'wall', solid: true }
+  },
+  places: {
+    '0': { emoji: '', bg: 'white', type: 'ground' },
+    '1': { emoji: '', bg: 'green', type: 'ground' },
+    '2': { emoji: '🏠', bg: 'place', type: 'place', data: {} },
+  },
+  rows: [
+    'FFF00FFF',
+    'F010000F',
+    'F000000F',
+    'F000000F',
+    'F000000F',
+    'F070090F',
+    'F000000F',
+    'FFFFFFFF'
+  ],
+  tiles: [
+    '0001',
+    '0000',
+    '0000',
+    '0020',
+  ]
+}
 
-var tiles = [
-  '0001',
-  '0000',
-  '0000',
-  '0020',
-]
 
 let interval
 
@@ -75,9 +89,6 @@ export default Vue.extend({
   },
   mounted () {
     window.addEventListener('keyup', this.handleKey);
-    interval = setInterval(() => {
-      this.handleEnemyMovement()
-    }, 2000)
   },
   created() {
     window.addEventListener('keyup', this.handleKey);
@@ -86,9 +97,6 @@ export default Vue.extend({
     window.removeEventListener('keyup', this.handleKey);
   },
   methods: {
-    onTab(e) {
-      console.log(e)
-    },
     select (entity) {
       if (!entity.type) return false
       if (!['player', 'place', 'npc'].includes(entity.type)) return false
@@ -98,9 +106,6 @@ export default Vue.extend({
       e.preventDefault()
 
       switch (e.key) {
-        case 'n': 
-          this.nextAvatar()
-          break
         case 'ArrowUp': 
           this.move(0, -1)
           break
@@ -117,18 +122,6 @@ export default Vue.extend({
           break
       }
     },
-    nextAvatar () {
-      const emoji = this.entities['1'].emoji
-      const index = avatars.findIndex(a => a === emoji);
-      const nextIndex = index >= avatars.length - 1
-        ? 0 
-        : index + 1;
-      var next = avatars[nextIndex];
-
-      const pos = this.findPlayer()
-
-      this.entities['1'].emoji = next;
-    },
     entityOf (entityHash) {
       const entity = this.entities[entityHash]
 
@@ -138,7 +131,7 @@ export default Vue.extend({
       return this.entities[entityId]?.name
     },
     moveX (entityHash, x, y) {
-      const pos = this.findEntity(entityHash);
+      const pos = this.findEntityPosition(entityHash);
       const nextPos = {
         x: pos.x + x,
         y: pos.y + y
@@ -163,7 +156,7 @@ export default Vue.extend({
       this.rows = [ ...this.rows ];
     },
     move (x, y) {
-      const pos = this.findPlayer();
+      const pos = this.findPlayerPosition();
       const nextPos = {
         x: pos.x + x,
         y: pos.y + y
@@ -183,59 +176,26 @@ export default Vue.extend({
       // erase player
       this.rows[pos.y][pos.x] = '0';
       // write player at new position
-      this.rows[nextPos.y][nextPos.x] = this.playerHash;
+      this.rows[nextPos.y][nextPos.x] = '1';
       // overwrite state
       this.rows = [ ...this.rows ];
     },
-    findPlayer () {
-      const y = this.rows.findIndex(r => r.includes('1'));
-      const x = this.rows[y].findIndex(c => c === '1');
-
-      return { x, y }
+    findPlayerPosition () {
+      return this.findEntityPosition('1')
     },
-    findEntity (hash) {
+    findEntityPosition (hash: string) {
       const y = this.rows.findIndex(r => r.includes(hash));
       const x = this.rows[y].findIndex(c => c === hash);
 
       return { x, y }
     },
-    handleEnemyMovement() {
-      const next = {
-        x: coinFlip(),
-        y: coinFlip()
-      }
-
-      this.moveX('7', next.x, next.y)
-    }
   },
   data() {
     return {
-      playerHash: playerHash,
-      entities: {
-        '0': { emoji: '', name: '', type: '' },
-        '1': { emoji: avatars[0], name: 'john', type: 'player' },
-        '2': { name: 'money', emoji: '💰', type: 'item' },
-        '3': { name: 'bot', type: 'npc' },
-        '4': { name: 'mrdetective', type: 'player' },
-        '5': { name: 'some_elf12', type: 'player' },
-        '6': { name: 'fae123', type: 'player' },
-        '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
-        '8': { type: 'corpse' },
-        '9': { emoji: '👺', name: 'goblin', type: 'enemy' },
-        'A': { name: 'ogre', type: 'enemy' },
-        'B': { name: 'poo', type: 'enemy' },
-        'C': { name: 'devil', type: 'enemy' },
-        'D': { type: 'enemy' },
-        'E': { type: 'corpse' },
-        'F': { emoji: '🧱', type: 'wall', solid: true }
-      },
-      places: {
-        '0': { emoji: '', bg: 'white', type: 'ground' },
-        '1': { emoji: '', bg: 'stone', type: 'ground' },
-        '2': { emoji: '🏠', bg: 'place', type: 'place', data: {} },
-      },
-      rows: rows.map(x => x.split('')),
-      tiles: tiles.map(x => x.split(''))
+      entities: system.entities,
+      places: system.places,
+      rows: system.rows.map(x => x.split('')),
+      tiles: system.tiles.map(x => x.split(''))
     };
   }
 });
