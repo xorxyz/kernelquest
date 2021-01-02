@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "run-p watch:*",
-    "watch:client": "cd packages/client && npm start",
-    "watch:server": "cd packages/server && npm start"
+    "watch:client": "cd pkg/client && npm start",
+    "watch:server": "cd pkg/server && npm start"
   },
   "workspaces": [
     "./packages/client",

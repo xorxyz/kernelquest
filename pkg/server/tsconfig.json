@@ -23,15 +23,13 @@
     "strictPropertyInitialization":false,
     "typeRoots": [
       "./node_modules/@types",
+      "../../node_modules/@types",
 		]
   },
 	"include": [
-		"src/**/*.ts",
-		"bin/**/*.ts",
+		"src/**/*.ts"
 	],
 	"exclude": [
 		"node_modules",
-		"build",
-		"cdk.out"
 	]
 }
