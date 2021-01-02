@@ -29,11 +29,10 @@
   },
 	"include": [
 		"src/**/*.ts",
-		"bin/**/*.ts",
+		"tests/**/*.ts"
 	],
 	"exclude": [
 		"node_modules",
-		"build",
-		"cdk.out"
+		"build"
 	]
 }
