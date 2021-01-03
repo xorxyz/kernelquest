@@ -1,8 +1,3 @@
-import { ComponentType, ComponentDataSchema } from './types';
-
-export interface IComponent {
-  type: ComponentType
-  data: ComponentDataSchema
-}
+import { ObjectSchema } from 'joi';
 
 export interface CommandPayload {}

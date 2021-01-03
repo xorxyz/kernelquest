@@ -1,7 +1,8 @@
 {
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "browser": true
   },
   "extends": [
     "airbnb-base"
@@ -9,12 +10,13 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src", "bin"],
+        "paths": ["src", "tests"],
         "extensions": [".ts"]
       }
     }
   },
   "globals": {
+    "twemoji": true,
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },

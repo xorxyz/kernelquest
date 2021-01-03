@@ -19,7 +19,7 @@ export default Vue.extend({
     var vnode = this.$slots.default[0]
     var text = vnode.text || ''
 
-    this.html = global.twemoji.parse(text)
+    this.html = window.twemoji.parse(text)
   }
 })
 </script>

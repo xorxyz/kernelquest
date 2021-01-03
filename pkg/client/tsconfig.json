@@ -2,12 +2,13 @@
   "compilerOptions": {
     "noEmit": true,
     "outDir": "build",
-    "target":"es2015",
+    "target":"es2016",
     "module": "commonjs",
     "lib": [
-      "es2018",
+      "ES6",
       "DOM",
-      "DOM.Iterable"
+      "DOM.Iterable",
+      "ScriptHost"
     ],
     "declaration": true,
     "strict": true,

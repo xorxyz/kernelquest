@@ -1,10 +1,11 @@
-import { IComponent } from '../core/interfaces';
-import { JSType } from '../core/types';
+import joi from 'joi';
+import { Component } from '../core/classes';
 
-export default class Position implements IComponent {
-  type = 'position'
-  data = {
-    x: JSType.Number,
-    y: JSType.Number,
+export default class Position extends Component {
+  constructor() {
+    super(joi.object({
+      x: joi.number().min(0),
+      y: joi.number().min(0)
+    }))
   }
 }

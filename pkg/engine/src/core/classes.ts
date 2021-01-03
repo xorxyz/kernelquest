@@ -1,12 +1,26 @@
 import uuid from 'uuid';
-import { IComponent } from './interfaces';
+import { ObjectSchema } from 'joi';
 import { ComponentType, UpdateFn } from './types';
+
+export class Component {
+  public readonly schema: ObjectSchema
+  public readonly data: object
+
+  constructor (schema: ObjectSchema, data) {
+    if (!schema.validate(data)) {
+      throw new Error('data does not match schema')
+    }
+
+    this.schema = schema;
+    this.data = {}
+  }
+}
 
 export class Entity {
   id: string
-  components: Array<IComponent>
+  components: Array<Component>
 
-  constructor(components: Array<IComponent>) {
+  constructor(components: Array<Component>) {
     this.id = uuid.v4();
     this.components = components;
   }
