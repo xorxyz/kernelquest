@@ -9,7 +9,7 @@
                 :rows="rows" 
                 :tiles="tiles")
             div.pv2
-              div.bg-black.br2.pv2
+              div.bg-black-60.br2.pv2
                 Terminal
           .ml1.w-30.h-100.flex.flex-column
             div.h-100

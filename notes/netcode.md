@@ -33,3 +33,16 @@ trade network latency tolerance for more accurate game state update, or vice ver
 
 how tolerant on input that arrives late?
 (player with ping > P ms wont be able to play the game)
+
+
+--
+network speed?
+
+9600 baud
+
+const throttle = require('@sitespeed.io/throttle');
+// Returns a promise
+throttle.start({up: 360, down: 780, rtt: 200}).then(() => ...
+
+Crashes
+Errors

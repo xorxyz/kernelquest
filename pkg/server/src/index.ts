@@ -1,50 +1,32 @@
-import * as http from 'http';
-import * as express from 'express';
-import * as uuid from 'uuid';
-import * as cors from 'cors';
+import * as cluster from 'cluster';
+import * as os from 'os';
+import server from './server';
 
-import sessionParser from './session';
-import createWSS from './sockets';
+const isProd = process.env.NODE_ENV === 'production';
+const numCPUs = isProd ? os.cpus().length : 2;
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000;
-const app = express();
+if (cluster.isMaster) {
+  runAsManager();
+} else {
+  runAsWorker();
+}
 
-app.use(cors({
-  origin: 'http://localhost:1234',
-  credentials: true,
-}));
+function runAsManager() {
+  console.log(`Master ${process.pid} is running`);
 
-app.use(sessionParser);
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-app.use(express.json({
-  limit: '100b',
-  strict: true,
-}));
-
-const server = http.createServer(app);
-
-createWSS(server);
-
-app.get('/login', function (req, res) {
-  console.log('login, session:', req.session);
-
-  req.session.userId = uuid.v4();
-
-  console.log('new user id:', req.session.userId);
-
-  res.end();
-});
-
-app.get('/me', function (req, res) {
-  res.json(req.session);
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    console.error('destroy err:', err);
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died with code ${code} and signal ${signal}`);
   });
+}
 
-  res.end('ok');
-});
+function runAsWorker() {
+  console.log(`Worker ${process.pid} started`);
+  const app = server();
 
-server.listen(PORT, () => console.log('listening on ', PORT));
+  app.listen(Number(PORT), () => console.log('listening on ', PORT));
+}

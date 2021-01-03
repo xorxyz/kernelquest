@@ -1,33 +1,30 @@
 <template lang="pug">
-  div.bg-black.ph2(ref="term" style="height: 11rem;")
+  div.ph2(ref="term" style="height: 11rem;")
 </template>
 
-<script>
+<script lang="ts">
 import { Terminal } from 'xterm'
-import { AttachAddon } from 'xterm-addon-attach'
 import { FitAddon } from 'xterm-addon-fit'
 
-const endpoint = `ws://localhost:3000/sh`
+import LineEditor from '../services/LineEditor'
+
+const lineEditor = new LineEditor();
 
 export default {
   mounted () {
-    var socket = new WebSocket(endpoint)
-    var fitAddon = new FitAddon()
-    var term = new Terminal({
-      cursorBlink: true,
-    })
+    const fitAddon = new FitAddon()
+    const term = new Terminal({ cursorBlink: true })
 
     term.loadAddon(fitAddon)
     term.open(this.$refs.term)
-    term.write('Loading...')
     term.focus()
 
-    fitAddon.fit()
+    term.onKey(lineEditor.handleKey.bind(lineEditor))
 
-    socket.onopen = e => {
-      socket.send('hi')
-      term.loadAddon(new AttachAddon(socket))
-    }
+    lineEditor.on('write', (str) => term.write(str))
+    lineEditor.on('line', (line) => term.writeln(line))
+
+    fitAddon.fit()
   }
 }
 </script>

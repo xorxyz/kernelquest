@@ -18,7 +18,14 @@ export default Vue.extend({
   },
   methods: {
     getClasses (e) {
-      return { 'bg-gray pulsing-fast': e.type === 'critter', 'bg-yellow pulsing-slow': e.type === 'npc', 'bg-black-80 pulsing-slow': e.type === 'player', 'bg-black-50 glowing': e.type === 'item', 'bg-hot-pink squeazing': e.type === 'enemy', 'bg-purple glowing': e.type === 'corpse' }
+      return { 
+        'bg-gray pulsing-fast': e.type === 'critter', 
+        'bg-yellow pulsing-slow': e.type === 'npc', 
+        'bg-black-80 pulsing-slow': e.type === 'player', 
+        'bg-black-50 glowing': e.type === 'item', 
+        'bg-hot-pink squeazing': e.type === 'enemy', 
+        'bg-purple glowing': e.type === 'corpse'
+      }
     }
   }
 })

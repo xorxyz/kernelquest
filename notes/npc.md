@@ -12,3 +12,4 @@ narrative
   reaction: react to results of player actions 
     attributive: directly credits the player
     situational: without crediting
+
