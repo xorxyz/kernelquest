@@ -13,7 +13,7 @@
               div.bg-black.br2.pv2
                 Terminal(@line="handleLine")
             div.h-100.flex.flex-column.mt1
-              GameMap(:rows="rows" :tiles="tiles")
+              GameMap(:rows="rows")
 </template>
 
 <script lang="ts">
@@ -26,40 +26,29 @@ import Stats from './components/Stats.vue';
 
 const area = {
   entities: {
-    '0': { emoji: ' ', name: '', type: '' },
-    '1': { emoji: '👻', name: 'john', type: 'player' },
-    '2': { emoji: '🪦', name: 'john\'s headstone', type: 'item', locked: true },
-    '3': { emoji: '⛵', name: 'boat', type: 'item' },
-    '7': { emoji: '🐇', name: 'rabbit', type: 'critter' },
-    '9': { emoji: '🎃', name: 'jack', type: 'npc' },
-    'A': { emoji: '🕷️', name: 'spider', type: 'enemy' },
-    'B': { emoji: '🦇', name: 'bat', type: 'enemy' },
-    'F': { emoji: ' ', type: 'wall', solid: true }
-  },
-  places: {
-    '0': { emoji: ' ', bg: 'white', type: 'ground' },
-    '1': { emoji: ' ', bg: 'forest', type: 'ground' },
-    '2': { emoji: ' ', bg: 'place', type: 'ground' },
-    '3': { emoji: ' ', bg: 'blue', type: 'ground' },
-    '4': { emoji: ' ', bg: 'beige', type: 'ground' },
-    '5': { emoji: ' ', bg: 'grass', type: 'ground' },
+    '0': { bg: 'grass', emoji: ' ', name: '', type: '' },
+    '1': { bg: 'grass', emoji: '👻', name: 'john', type: 'player' },
+    '2': { bg: 'grass', emoji: '🪦', name: 'john\'s headstone', type: 'item', locked: true },
+    '3': { bg: 'water', emoji: '⛵', name: 'boat', type: 'item' },
+    '4': { bg: 'water', emoji: ' ', name: '', type: 'wall', solid: true },
+    '5': { bg: 'forest', emoji: ' ', name: '', type: '' },
+    '7': { bg: 'forest', emoji: '🐇', name: 'rabbit', type: 'critter' },
+    '9': { bg: 'grass', emoji: '🎃', name: 'jack', type: 'npc' },
+    'A': { bg: 'forest', emoji: '🕷️', name: 'spider', type: 'enemy' },
+    'B': { bg: 'forest', emoji: '🦇', name: 'bat', type: 'enemy' },
+    'F': { bg: 'forest', emoji: ' ', type: 'wall', solid: true }
   },
   rows: [
-    'FF000FFF',
-    '0000000F',
-    'F020000F',
-    'F010000F',
-    'F000000F',
-    'F0000009',
-    'F0000003',
-    'FFFFFFFF'
+    '555555555',
+    '555000555',
+    '55F000555',
+    '55F020555',
+    '55F010555',
+    '55F000005',
+    'FFF000005',
+    'FFF000009',
+    '444444443'
   ],
-  tiles: [
-    '1111',
-    '1511',
-    '1555',
-    '1553',
-  ]
 }
 
 export default Vue.extend({
@@ -71,8 +60,6 @@ export default Vue.extend({
   },
   data () {
     return {
-      tiles: area.tiles
-        .map(x => x.split('').map(id => area.places[id])),
       rows: area.rows
         .map(x => x.split('').map(id => area.entities[id]))
     }
