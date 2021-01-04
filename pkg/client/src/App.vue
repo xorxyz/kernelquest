@@ -9,10 +9,10 @@
             div.mt2
               Stats
           .ml1.w-70.flex.flex-column
-            div
+            div.mb1
               div.bg-black.br2.pv2
                 Terminal(@line="handleLine")
-            div.pv2
+            div.h-100.flex.flex-column.mt1
               GameMap(:rows="rows" :tiles="tiles")
 </template>
 
