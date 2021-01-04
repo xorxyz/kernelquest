@@ -1,4 +1,4 @@
-// readline
+// line discipline
 // line-editing and history capabilities
 // responsible for local echo, line editing, processing of input modes, processing of output modes, and character mapping
 //   move the text cursor
@@ -15,6 +15,10 @@ export default class LineDiscipline extends EventEmitter {
   history: Array<string>
   cursor: { x: number, y: number } = { x: 0, y: 0 }
   mode: 'raw'|'cooked' = 'cooked'
+
+  read() {
+    return this.line;
+  }
 
   resetBuffer() {
     this.line = '';
@@ -42,8 +46,9 @@ export default class LineDiscipline extends EventEmitter {
   submit() {
     const clearLine = ctrl('[2K');
     const lineStart = ctrl('[G');
-    this.emit('line', clearLine + lineStart + this.line);
-    console.log('line', this.line);
+
+    this.emit('write', clearLine + lineStart);
+    this.emit('line', this.line);
     this.resetBuffer();
   }
 
@@ -92,14 +97,20 @@ export default class LineDiscipline extends EventEmitter {
     this.cursor.y++;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  tab() {}
+
   handleKey({ key, domEvent }): void {
     if (this.mode === 'raw') {
-      this.emit('char', key);
+      this.char(key);
 
       return;
     }
 
     switch (domEvent.key) {
+      case 'Tab':
+        this.tab();
+        break;
       case 'Backspace':
         this.backspace();
         break;

@@ -1,7 +1,5 @@
 <template lang="pug">
 .map.shadow-2.h-100.bg-black-60.br2.flex.flex-column
-  .flex.items-center.justify-center.w-100.f7
-    StatusBar
   #game-map.flex.w-100.h-100.flex.justify-center.mt2.mb3
     div.relative
       div.absolute.top0.pa4.z-3.clickthrough.ba
@@ -21,11 +19,9 @@
 import Vue from 'vue';
 import Cell from './Cell.vue';
 import Tile from './Tile.vue';
-import StatusBar from './StatusBar.vue';
 
 export default Vue.extend({
   components: {
-    StatusBar,
     Cell,
     Tile
   },

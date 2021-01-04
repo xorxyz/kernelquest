@@ -41,12 +41,8 @@ nav { background-color: #150D24; }
   color: #fff;
 }
 
-/* main {
-  max-width: 48rem;
-} */
-
 #game-map {
-  zoom: 1.4;
+  zoom: 1.49;
 }
 
 .chat, .stats {

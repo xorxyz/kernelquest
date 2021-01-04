@@ -1,7 +1,7 @@
 import * as WebSocket from 'ws';
 import * as uuid from 'uuid';
 
-import queues from './queues';
+import commandsJob from './jobs/process-commands';
 
 export default class PlayerConnection {
   public userId: string
@@ -25,7 +25,7 @@ export default class PlayerConnection {
 
   log(message: string) {
     this.ws.send(JSON.stringify({
-      type: 'event:log',
+      action: 'event:log',
       payload: {
         message,
       },
@@ -33,11 +33,10 @@ export default class PlayerConnection {
   }
 
   handleMessage(message: string) {
-    console.log('got message:', message);
     try {
       const o = JSON.parse(message);
       console.log('parsed message:', o);
-      const job = queues.actions.createJob({
+      const job = commandsJob.queue.createJob({
         userId: this.userId,
         cmd: o.cmd,
         args: o.args,
@@ -49,8 +48,6 @@ export default class PlayerConnection {
       });
 
       job.setId(uuid.v4()).save();
-
-      this.log(`Got your message! job id: ${job.id}`);
     } catch (err) {
       console.error(`message from ${this.userId} is not json:`, message);
     }

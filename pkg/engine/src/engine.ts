@@ -1,6 +1,5 @@
 import Clock from './clock';
-import { Entity, GameSystem } from './core/classes';
-import { IComponent } from './core/interfaces';
+import { Component, Entity, GameSystem } from './core/classes';
 import { ComponentMap, SystemComponentMap } from './core/types';
 import movementSystem from './systems/movement';
 
@@ -8,8 +7,8 @@ export default class Engine {
   private clock: Clock = new Clock()
 
   private entities: Array<Entity> = []
-  private components: Array<IComponent> = []
-  private systems: Array<GameSystem> = [movementSystem]
+  private components: Array<Component> = []
+  private systems: Array<GameSystem> = []
 
   private systemComponents: SystemComponentMap = new Map()
 
@@ -25,8 +24,12 @@ export default class Engine {
   start() { this.clock.start(); }
   pause() { this.clock.pause(); }
 
+  register (gameSystem: GameSystem) {
+    this.systems.push(gameSystem)
+  }
+
   componentsOf(gameSystem: GameSystem): ComponentMap {
-    const components: Map<string, Array<IComponent>> = new Map();
+    const components: Map<string, Array<Component>> = new Map();
 
     gameSystem.componentTypes.forEach((type) => {
       components.set(type, this.components.filter((component) => {
@@ -37,7 +40,7 @@ export default class Engine {
     return components;
   }
 
-  create(components: Array<IComponent>) {
+  create(components: Array<Component>) {
     const entity = new Entity(components);
 
     this.entities.push(entity);

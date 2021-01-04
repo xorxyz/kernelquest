@@ -3,19 +3,17 @@
     .container.w-100.h-100.flex.flex-column.h-100.pa2.justify-center.items-center
       main.w-100.h-100.b--blue.flex.flex-column
         #top-part.w-100.h-100.flex.flex-row
-          .mr1.w-70.flex.flex-column.relative
-            div
-              GameMap(
-                :rows="rows" 
-                :tiles="tiles")
-            div.pv2
-              div.bg-black-60.br2.pv2
-                Terminal
-          .ml1.w-30.h-100.flex.flex-column
+          .mr1.w-30.h-100.flex.flex-column
             div.h-100
               Sidebar.h-100
             div.mt2
               Stats
+          .ml1.w-70.flex.flex-column
+            div
+              div.bg-black.br2.pv2
+                Terminal(@line="handleLine")
+            div.pv2
+              GameMap(:rows="rows" :tiles="tiles")
 </template>
 
 <script lang="ts">
@@ -71,13 +69,18 @@ export default Vue.extend({
     Sidebar,
     Stats,
   },
-   data () {
-     return {
-        tiles: area.tiles
-          .map(x => x.split('').map(id => area.places[id])),
-        rows: area.rows
-          .map(x => x.split('').map(id => area.entities[id]))
-     }
-   }
+  data () {
+    return {
+      tiles: area.tiles
+        .map(x => x.split('').map(id => area.places[id])),
+      rows: area.rows
+        .map(x => x.split('').map(id => area.entities[id]))
+    }
+  },
+  methods: {
+    handleLine (line) {
+      console.log('handleline got line:', line)
+    }
+  }
 });
 </script>
