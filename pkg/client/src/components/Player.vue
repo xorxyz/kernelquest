@@ -34,15 +34,6 @@
 
     div.flex.flex-column.f7.bg-black-50.pa2.br2
       div.flex.items-center.mb1
-      //-   div.pa2.br1
-      //-     emoji 📜
-      //-   span.mr1 1x
-      //-   span RFC7530
-      //- div.flex.items-center.mb1
-      //-   div.pa2.br1
-      //-     emoji 🕯
-      //-   span.mr1 3x
-      //-   span Candle
       //- div.flex.items-center.mb1
       //-   div.pa2.br1
       //-     emoji 🗝
