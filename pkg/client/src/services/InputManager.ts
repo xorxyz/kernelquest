@@ -13,7 +13,7 @@ export default class InputManager {
 
     switch (e.key) {
       case 'ArrowUp':
-        // this.move(0, -1)
+
         break;
       case 'ArrowRight':
         // this.move(1, 0)

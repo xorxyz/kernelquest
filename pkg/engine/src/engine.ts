@@ -9,18 +9,21 @@ export default class Engine extends EventEmitter {
 
   private entities: Array<Entity> = []
   private components: Array<Component> = []
-  private systems: Array<GameSystem> = []
+  private systems: Array<GameSystem>
 
   private systemComponents: SystemComponentMap = new Map()
 
-  constructor() {
+  constructor(systems: Array<GameSystem>) {
     super()
-    this.clock.on('tick', this.update.bind(this));
+
+    this.systems = systems
 
     this.systems.forEach((system) => {
       const componentMap = this.componentsOf(system);
       this.systemComponents.set(system, componentMap);
     });
+
+    this.clock.on('tick', this.update.bind(this));
   }
 
   start() { this.clock.start(); }
@@ -50,13 +53,9 @@ export default class Engine extends EventEmitter {
 
   update() {
     this.systems.forEach((system) => {
-      const componentMap = this.systemComponents.get(system);
-      if (!componentMap) {
-        console.error('missing components for system:', system);
-        return false;
-      }
+      const components = this.systemComponents.get(system);
 
-      return system.update(componentMap);
+      return system.update(components);
     });
   }
 
