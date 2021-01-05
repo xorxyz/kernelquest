@@ -1,20 +1,27 @@
 import uuid from 'uuid';
 import { ObjectSchema } from 'joi';
-import { ComponentType, UpdateFn } from './types';
+
+/* Components */
+
+export type ComponentType = string
 
 export class Component {
+  public readonly type: ComponentType
   public readonly schema: ObjectSchema
   public readonly data: object
 
-  constructor (schema: ObjectSchema, data) {
+  constructor (type: ComponentType, schema: ObjectSchema, data: object) {
     if (!schema.validate(data)) {
       throw new Error('data does not match schema')
     }
 
+    this.type = type;
     this.schema = schema;
-    this.data = {}
+    this.data = data
   }
 }
+
+/* Entities */
 
 export class Entity {
   id: string
@@ -26,9 +33,13 @@ export class Entity {
   }
 }
 
-export class EntityManager {
-  entities: Record<string, Entity> = {}
-}
+export type EntityMap = Map<string, Entity>
+
+
+/* Systems */
+
+export type SystemComponents = Map<string, Array<Component>>
+export type UpdateFn = (components: SystemComponents) => void
 
 export class GameSystem {
   public readonly id: string
@@ -41,3 +52,5 @@ export class GameSystem {
     this.update = update;
   }
 }
+
+export type SystemComponentMap = Map<GameSystem, SystemComponents>

@@ -1,13 +1,12 @@
 import joi from 'joi';
 import { Component, ComponentType } from '../../lib/ecs';
 
-export const type: ComponentType = 'command';
+export const type: ComponentType = 'health';
 export const schema: joi.ObjectSchema = joi.object({
-  type: joi.string(),
-  payload: joi.object()
-});
+  hp: joi.number().min(0),
+})
 
-export default class Command extends Component {
+export default class Health extends Component {
   constructor(data) {
     super(type, schema, data)
   }

@@ -1,9 +1,10 @@
+import { EventEmitter } from 'events';
 import Clock from './clock';
-import { Component, Entity, GameSystem } from './core/classes';
-import { ComponentMap, SystemComponentMap } from './core/types';
-import movementSystem from './systems/movement';
+import { 
+  Component, Entity, GameSystem, SystemComponents, SystemComponentMap
+} from '../lib/ecs';
 
-export default class Engine {
+export default class Engine extends EventEmitter {
   private clock: Clock = new Clock()
 
   private entities: Array<Entity> = []
@@ -13,6 +14,7 @@ export default class Engine {
   private systemComponents: SystemComponentMap = new Map()
 
   constructor() {
+    super()
     this.clock.on('tick', this.update.bind(this));
 
     this.systems.forEach((system) => {
@@ -28,8 +30,8 @@ export default class Engine {
     this.systems.push(gameSystem)
   }
 
-  componentsOf(gameSystem: GameSystem): ComponentMap {
-    const components: Map<string, Array<Component>> = new Map();
+  componentsOf(gameSystem: GameSystem): SystemComponents {
+    const components: SystemComponents = new Map();
 
     gameSystem.componentTypes.forEach((type) => {
       components.set(type, this.components.filter((component) => {

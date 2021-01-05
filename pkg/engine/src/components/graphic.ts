@@ -1,10 +1,13 @@
 import joi from 'joi'
-import { Component } from '../core/classes';
+import { Component, ComponentType } from '../../lib/ecs';
+
+export const type: ComponentType = 'graphic';
+export const schema: joi.ObjectSchema = joi.object({
+  emoji: joi.string()
+});
 
 export default class Graphic extends Component {
-  constructor () {
-    super(joi.object({
-      emoji: joi.string()
-    }))
+  constructor(data) {
+    super(type, schema, data)
   }
 }
