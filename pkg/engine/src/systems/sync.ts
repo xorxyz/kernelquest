@@ -1,7 +1,6 @@
 import { GameSystem, SystemComponents } from '../../lib/ecs';
-import CommandComponent from '../components/command';
 
-export default class CommandSystem extends GameSystem {
+export default class SyncSystem extends GameSystem {
 
 }
 // 'command', [CommandComponent.type], updateFn

@@ -1,10 +1,16 @@
 import { GameSystem, SystemComponents } from '../../lib/ecs';
+import PositionComponent from '../components/position';
 
-const types = ['position'];
+const id = 'movement'
 
-export default new GameSystem('movement', types, updateFn);
+export default class MovementSystem extends GameSystem {
+  constructor () {
+    super(id, [PositionComponent])
+  }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function updateFn(components: SystemComponents) {
-  // todo
+  updateFn(entity: Entity) {
+    components.get(id)
+  }
 }
+// 'command', [CommandComponent.type], updateFn
+// eslint-disable-next-line @typescript-eslint/no-unused-vars

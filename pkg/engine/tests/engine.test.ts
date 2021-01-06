@@ -1,6 +1,6 @@
 import Engine from '../src/engine';
 
-const engine = new Engine();
+const engine = new Engine({}, []);
 
 engine.start();
 

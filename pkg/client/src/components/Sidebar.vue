@@ -1,16 +1,18 @@
 <template lang="pug">
-  div.sidebar.flex.flex-column.ma0.bg-light-eggplant.pa3.br2.shadow-2
-    Player
-
+  div.flex.flex-column.mw5
+    Player.mb2
+    Stats
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Player from './Player.vue';
+import Stats from './Stats.vue';
 
 export default Vue.extend({
   components: {
-    Player
+    Player,
+    Stats
   }
 })
 </script>

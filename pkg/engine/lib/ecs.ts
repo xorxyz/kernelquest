@@ -1,20 +1,17 @@
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import * as joi from 'joi';
 
 /* Components */
 
-export class Component {
-  static type: string
-  static schema: joi.ObjectSchema
+export abstract class Component {
+  public readonly data: object = {}
+  public readonly type: string
 
-  public readonly data: object
+  private readonly schema: object
 
-  constructor (data: object) {
-    if (!Component.schema.validate(data)) {
-      throw new Error('data does not match schema')
-    }
-
-    this.data = data
+  constructor (type: string, schema: object) {
+    this.type = type
+    this.schema = schema
   }
 }
 
@@ -35,18 +32,32 @@ export type EntityMap = Map<string, Entity>
 /* Systems */
 
 export type SystemComponents = Map<string, Array<Component>>
-export type UpdateFn = (components: SystemComponents) => void
 
-export class GameSystem {
+export abstract class GameSystem {
   public readonly id: string
   public readonly componentTypes: Array<string>
-  public readonly update: UpdateFn
 
-  constructor(id: string, types: Array<string>, update: UpdateFn) {
-    this.id = id;
-    this.componentTypes = types;
-    this.update = update;
+  private _entities : Array<Entity>
+
+  get entities () {
+    return this._entities
   }
+
+  constructor (id: string, types: Array<string>) {
+    this.id = id
+    this.componentTypes = types
+  }
+
+  load (entities: Array<Entity>) {
+    const filtered = entities.filter(entity => {
+      const componentTypes = entity.components.map(c => c.type)
+      return this.componentTypes.every(type => componentTypes.includes(type))
+    })
+
+    this._entities = filtered
+  }
+
+  update: (deltaTime: number) => void
 }
 
 export type SystemComponentMap = Map<GameSystem, SystemComponents>

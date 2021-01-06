@@ -1,21 +1,26 @@
 <template lang="pug">
-  div.ph2(ref="term" style="height: 11rem;")
+  div.br2.pa2(style="background-color: #0A0310;")
+    div(ref="term" style="height: 11rem;")
 </template>
 
 <script lang="ts">
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 
-import WebSocketClient from '../services/WebSocketClient'
 import LineEditor from '../services/LineEditor'
 
 const lineEditor = new LineEditor();
-const ws = new WebSocketClient()
 
 export default {
   mounted () {
     const fitAddon = new FitAddon()
-    const term = new Terminal({ cursorBlink: true })
+    const term = new Terminal({ 
+      cursorBlink: true, 
+      allowTransparency: true,
+      theme: {
+        background: '#0A0310'
+      }
+    })
 
     term.loadAddon(fitAddon)
     term.open(this.$refs.term)
@@ -25,7 +30,8 @@ export default {
     lineEditor.on('write', (str) => term.write(str))
     lineEditor.on('line', (line) => {
       term.writeln(line)
-      ws.sendCommand(line)
+      // ws.sendCommand(line)
+      this.$emit('line', line)
     })
 
     ws.on('message', ({ action, payload }) => {

@@ -4,8 +4,14 @@ import {
   Component, Entity, GameSystem, SystemComponents, SystemComponentMap
 } from '../lib/ecs';
 
+const DEFAUT_CLOCK_RATE = 2
+
+export interface EngineOptions {
+  rate?: number
+}
+
 export default class Engine extends EventEmitter {
-  private clock: Clock = new Clock()
+  private clock: Clock
 
   private entities: Array<Entity> = []
   private components: Array<Component> = []
@@ -13,9 +19,10 @@ export default class Engine extends EventEmitter {
 
   private systemComponents: SystemComponentMap = new Map()
 
-  constructor(systems: Array<GameSystem>) {
+  constructor(opts: EngineOptions, systems: Array<GameSystem>) {
     super()
 
+    this.clock = new Clock(opts.rate || DEFAUT_CLOCK_RATE)
     this.systems = systems
 
     this.systems.forEach((system) => {
@@ -51,11 +58,13 @@ export default class Engine extends EventEmitter {
     this.entities.push(entity);
   }
 
-  update() {
+  update(delta) {
     this.systems.forEach((system) => {
       const components = this.systemComponents.get(system);
 
-      return system.update(components);
+      if (!components) return;
+
+      return system.update(delta);
     });
   }
 

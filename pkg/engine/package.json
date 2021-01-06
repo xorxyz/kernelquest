@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/engine.js",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "nodemon src/index.ts",
+    "test": "jest"
   },
   "author": "kareniel",
   "license": "UNLICENSED",
