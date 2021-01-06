@@ -33,15 +33,11 @@ export type EntityMap = Map<string, Entity>
 
 export type SystemComponents = Map<string, Array<Component>>
 
-export abstract class GameSystem {
+export abstract class GameSystem { 
   public readonly id: string
   public readonly componentTypes: Array<string>
 
-  private _entities : Array<Entity>
-
-  get entities () {
-    return this._entities
-  }
+  entities: Array<Entity> = []
 
   constructor (id: string, types: Array<string>) {
     this.id = id
@@ -49,15 +45,18 @@ export abstract class GameSystem {
   }
 
   load (entities: Array<Entity>) {
-    const filtered = entities.filter(entity => {
-      const componentTypes = entity.components.map(c => c.type)
-      return this.componentTypes.every(type => componentTypes.includes(type))
+    if (!this.componentTypes.length) return false
+
+    this.entities = entities.filter((entity: Entity) => {
+      const types = entity.components.map(c => c.type)
+  
+      return this.componentTypes.every(type => types.includes(type))
     })
 
-    this._entities = filtered
+    return true
   }
 
-  update: (deltaTime: number) => void
+  abstract update (number): void
 }
 
 export type SystemComponentMap = Map<GameSystem, SystemComponents>

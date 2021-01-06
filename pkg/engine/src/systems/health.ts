@@ -1,13 +1,11 @@
-import { GameSystem, SystemComponents } from '../../lib/ecs';
-import HealthComponent from '../components/health';
+import { GameSystem } from '../../lib/ecs';
 
-export const types = [HealthComponent.type];
+export default class HealthSystem extends GameSystem {
+  constructor () {
+    super('health', ['health'])
+  }
 
-const healthSystem = new GameSystem('health', types, updateFn);
+  update(delta) {
 
-export default healthSystem
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function updateFn(components: SystemComponents) {
-  // todo
+  }
 }
