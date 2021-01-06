@@ -17,12 +17,12 @@ export default class WebSocketClient extends EventEmitter {
     this.ws = ws;
   }
 
-  sendCommand(command: string) {
+  sendCommand(frameId, cmd: string, args: Array<string>) {
     this.ws.send(JSON.stringify({
-      action: 'command',
-      payload: {
-        command,
-      },
+      timestamp: Date.now(),
+      frameId,
+      cmd,
+      args,
     }));
   }
 

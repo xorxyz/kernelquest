@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.sidebar.flex.flex-column.bg-light-eggplant.br2.shadow-2.pv2.ph3
+  div.bg-light-eggplant.flex.flex-column.br2.shadow-2.pv2.ph3.w-100
     div.mv2.f6
       div.mb3
         span.bg-black-50.w2.h2.pa3.br2.f1.flex.items-center.justify-center

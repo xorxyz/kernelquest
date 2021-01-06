@@ -23,7 +23,7 @@ export default class PlayerConnection {
     }));
   }
 
-  log(message: string) {
+  sendLog(message: string) {
     this.ws.send(JSON.stringify({
       action: 'event:log',
       payload: {
@@ -35,19 +35,20 @@ export default class PlayerConnection {
   handleMessage(message: string) {
     try {
       const o = JSON.parse(message);
-      console.log('parsed message:', o);
+
       const job = commandsJob.queue.createJob({
         userId: this.userId,
+        frameId: o.frameId,
+        timestamp: Date.now(),
         cmd: o.cmd,
         args: o.args,
       });
 
       job.on('succeeded', (result) => {
-        console.log('succeeded:', result);
-        this.log(result);
+        if (result) { this.sendLog(result); }
       });
 
-      job.setId(uuid.v4()).save();
+      job.save();
     } catch (err) {
       console.error(`message from ${this.userId} is not json:`, message);
     }

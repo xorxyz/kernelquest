@@ -15,12 +15,13 @@ async function processCommand(job, done) {
 
   // const { userId, action, payload } = job.data;
 
-  const message = 'command not found';
+  let message = 'command not found';
 
   switch (job.data.cmd) {
-    case 'say': {
-      // console.log('say:', payload);
+    case 'move': {
       // broadcast(connections, userId, action, payload);
+      console.log('move!', job.data);
+      message = '';
 
       break;
     }

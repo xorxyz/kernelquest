@@ -1,16 +1,13 @@
 <template lang="pug">
-  .flex.flex-column.w-100.h-100.items-center
-    .container.w-100.h-100.flex.flex-column.h-100.pa2.justify-center.items-center
-      main.w-100.h-100.b--blue.flex.flex-column.justify-center.items-center
-        .w-100.h-100.flex.flex-row.justify-center
-          .mr1.h-100.flex.flex-column.items-end
-            div.h-100
-              Sidebar.h-100
-          .ml1.flex.flex-column
-            div.mb1
-              Terminal(@line="handleLine")
-            div.h-100.flex.flex-column.mt1
-              GameMap(:rows="rows")
+  div.flex.flex-column.h-100.items-center.pa2
+    div.w-100.h-100.flex
+      main.w-100.h-100.b--blue.flex.justify-center
+        div.mr1.flex.flex-column.items-end
+          Player.mb2
+          Stats.w5
+        div.ml1.flex.flex-column
+          GameMap.mb2(:rows="rows")
+          Terminal(@line="handleLine")
 </template>
 
 <script lang="ts">
@@ -18,8 +15,8 @@ import Vue from 'vue';
 
 import Terminal from './components/Terminal.vue';
 import GameMap from './components/GameMap.vue';
-import Sidebar from './components/Sidebar.vue';  
-import Stats from './components/Stats.vue';
+import Player from './components/Player.vue';  
+import Stats from './components/Stats.vue';  
 
 const area = {
   entities: {
@@ -53,7 +50,7 @@ export default Vue.extend({
   components: {
     Terminal,
     GameMap,
-    Sidebar,
+    Player,
     Stats,
   },
   data () {
@@ -65,6 +62,8 @@ export default Vue.extend({
   methods: {
     handleLine (line) {
       console.log('handleline got line:', line)
+
+      this.$ws.sendCommand(line)
     }
   }
 });

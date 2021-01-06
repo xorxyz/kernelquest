@@ -1,5 +1,5 @@
 <template lang="pug">
-.flex.flex-column.bg-light-eggplant.pv2.br2.shadow-2.h-100.ph2.f6
+div.flex.flex-column.bg-light-eggplant.pv2.br2.shadow-2.h-100.ph2.f6
   div.flex.w-100
     emoji.mh2.w2.h2.flex.items-center.justify-center 🌓
     div.flex.items-center.mh1 2038, First quarter moon

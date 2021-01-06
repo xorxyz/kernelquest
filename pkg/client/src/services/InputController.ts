@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { Vector } from '../../../engine/lib/math';
 
 export default class InputController extends EventEmitter {
   constructor() {
@@ -20,16 +19,16 @@ export default class InputController extends EventEmitter {
 
     switch (e.key) {
       case 'ArrowUp':
-        this.emit('move', new Vector(0, -1));
+        this.emit('move', 'north');
         break;
       case 'ArrowRight':
-        this.emit('move', new Vector(1, 0));
+        this.emit('move', 'east');
         break;
       case 'ArrowDown':
-        this.emit('move', new Vector(0, 1));
+        this.emit('move', 'south');
         break;
       case 'ArrowLeft':
-        this.emit('move', new Vector(-1, 0));
+        this.emit('move', 'west');
         break;
       default:
         break;

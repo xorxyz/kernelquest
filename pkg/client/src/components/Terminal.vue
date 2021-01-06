@@ -30,11 +30,11 @@ export default {
     lineEditor.on('write', (str) => term.write(str))
     lineEditor.on('line', (line) => {
       term.writeln(line)
-      // ws.sendCommand(line)
+
       this.$emit('line', line)
     })
 
-    ws.on('message', ({ action, payload }) => {
+    this.$ws.on('message', ({ action, payload }) => {
       if (action === 'event:log') {
         term.writeln(payload.message)
       }
@@ -42,7 +42,7 @@ export default {
 
     fitAddon.fit()
 
-    ws.init()
+    this.$ws.init()
   }
 }
 </script>
