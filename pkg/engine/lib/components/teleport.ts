@@ -1,5 +1,5 @@
-import { Component } from '../../lib/ecs';
-import { Vector } from '../../lib/math';
+import { Component } from '../../src/ecs';
+import { Vector } from '../../src/math';
 
 export default class TeleportComponent extends Component {
   constructor () {

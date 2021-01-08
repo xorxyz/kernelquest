@@ -1,4 +1,4 @@
-import { SingletonComponent } from '../../lib/ecs';
+import { SingletonComponent } from '../../src/ecs';
 
 export default class BackstageComponent extends SingletonComponent {
   constructor () {

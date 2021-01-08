@@ -1,4 +1,4 @@
-import { Component } from '../../lib/ecs';
+import { Component } from '../../src/ecs';
 
 export default class VisualComponent extends Component {
   constructor () {

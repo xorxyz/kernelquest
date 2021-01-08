@@ -1,4 +1,4 @@
-import { Entity } from "../../lib/ecs";
+import { Entity } from "../../src/ecs";
 import ActorComponent from "../components/actor";
 import InputComponent from "../components/input";
 import HealthComponent from '../components/health'

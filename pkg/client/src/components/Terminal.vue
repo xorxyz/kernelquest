@@ -7,9 +7,9 @@
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 
-import LineEditor from '../services/LineEditor'
+import LineDiscipline from '../services/line-discipline'
 
-const lineEditor = new LineEditor();
+const lineEditor = new LineDiscipline();
 
 export default {
   mounted () {

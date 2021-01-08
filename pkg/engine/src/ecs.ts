@@ -1,5 +1,4 @@
 import * as uuid from 'uuid';
-import * as joi from 'joi';
 
 /* Components */
 

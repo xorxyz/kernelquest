@@ -1,5 +1,5 @@
-import { Vector } from '../../lib/math';
-import { Component } from '../../lib/ecs';
+import { Vector } from '../../src/math';
+import { Component } from '../../src/ecs';
 
 export default class TransformComponent extends Component {
   constructor () {

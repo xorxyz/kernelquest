@@ -1,5 +1,5 @@
-import Engine from '../../../engine/src';
-import MovementSystem from '../../../engine/src/systems/movement';
+import Engine from '../../../engine/src/engine';
+import MovementSystem from '../../../engine/lib/systems/movement';
 
 const engine: Engine = new Engine({}, [
   new MovementSystem(),

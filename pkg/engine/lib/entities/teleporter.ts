@@ -1,4 +1,4 @@
-import { Entity } from "../../lib/ecs";
+import { Entity } from "../../src/ecs";
 import TeleportComponent from "../components/teleport";
 import TransformComponent from "../components/transform";
 import VisualComponent from "../components/visual";

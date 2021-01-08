@@ -1,4 +1,4 @@
-import { GameSystem } from '../../lib/ecs';
+import { GameSystem } from '../../src/ecs';
 
 export default class HealthSystem extends GameSystem {
   constructor () {

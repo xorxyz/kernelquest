@@ -1,4 +1,4 @@
-import { GameSystem } from '../../lib/ecs';
+import { GameSystem } from '../../src/ecs';
 
 const frameActions: Map<string, object> = new Map()
 

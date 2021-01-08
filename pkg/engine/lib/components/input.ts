@@ -1,4 +1,4 @@
-import { Component } from '../../lib/ecs';
+import { Component } from '../../src/ecs';
 
 interface Input {
   line: string,

@@ -1,4 +1,4 @@
-import { Component } from '../../lib/ecs';
+import { Component } from '../../src/ecs';
 
 export default class SceneComponent extends Component {
   constructor () {
