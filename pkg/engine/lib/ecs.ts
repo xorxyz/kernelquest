@@ -15,15 +15,22 @@ export abstract class Component {
   }
 }
 
+export abstract class SingletonComponent extends Component {
+  
+}
+
 /* Entities */
 
 export class Entity {
   id: string
-  components: Array<Component>
+  components: Map<string, Component> = new Map()
 
   constructor(components: Array<Component>) {
     this.id = uuid.v4();
-    this.components = components;
+
+    components.forEach(component => {
+      this.components.set(component.type, component)
+    })
   }
 }
 
@@ -47,13 +54,18 @@ export abstract class GameSystem {
   load (entities: Array<Entity>) {
     if (!this.componentTypes.length) return false
 
-    this.entities = entities.filter((entity: Entity) => {
-      const types = entity.components.map(c => c.type)
-  
-      return this.componentTypes.every(type => types.includes(type))
-    })
+    this.entities = entities
+      .filter((entity: Entity) => {
+        const types = entity.components.map(c => c.type)
+    
+        return this.componentTypes.every(type => types.includes(type))
+      })
 
     return true
+  }
+
+  schedule (playerAction: PlayerAction) {
+    
   }
 
   abstract update (number): void

@@ -63,7 +63,12 @@ export default Vue.extend({
     handleLine (line) {
       console.log('handleline got line:', line)
 
-      this.$ws.sendCommand(line)
+      const frame = 1
+      const tokens = line.split(' ')
+      const cmd = tokens[0]
+      const args = tokens.slice(1)
+
+      this.$ws.sendCommand(frame, cmd, args)
     }
   }
 });

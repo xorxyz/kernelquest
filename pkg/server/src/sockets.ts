@@ -2,7 +2,7 @@
 import { Response } from 'express';
 import * as WebSocket from 'ws';
 import * as url from 'url';
-import sessionParser from './session';
+import sessionParser from './session-parser';
 import PlayerConnection from './connection';
 
 export const connections: Map<string, any> = new Map();

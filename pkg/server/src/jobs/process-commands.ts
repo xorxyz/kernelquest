@@ -1,6 +1,9 @@
 import * as Queue from 'bee-queue';
-// import { broadcast } from '../utils';
-// import { connections } from '../sockets';
+import engine from '../engine';
+
+const helpMessage = `
+hi! welcome to xor.
+`;
 
 const queue = new Queue('commands');
 
@@ -13,15 +16,23 @@ export default {
 async function processCommand(job, done) {
   console.log('processing command:', job.id);
 
-  // const { userId, action, payload } = job.data;
-
   let message = 'command not found';
 
   switch (job.data.cmd) {
+    case 'help': {
+      message = helpMessage;
+
+      break;
+    }
+    case 'whoami': {
+      message = job.data.userId;
+
+      break;
+    }
     case 'move': {
-      // broadcast(connections, userId, action, payload);
-      console.log('move!', job.data);
       message = '';
+
+      // todo: move
 
       break;
     }

@@ -2,7 +2,7 @@ import * as http from 'http';
 import * as express from 'express';
 import * as uuid from 'uuid';
 import * as cors from 'cors';
-import sessionParser from './session';
+import sessionParser from './session-parser';
 import createWSS from './sockets';
 
 export default function () {

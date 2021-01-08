@@ -6,6 +6,8 @@ export default class HealthSystem extends GameSystem {
   }
 
   update(delta) {
-
+    this.entities.forEach(entity => {
+      const health = entity.components.get('health')
+    })
   }
 }

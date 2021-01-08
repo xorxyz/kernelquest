@@ -12,17 +12,19 @@ export interface EngineOptions {
 
 export default class Engine extends EventEmitter {
   private clock: Clock
+  private frame: number = 0
 
   private entities: Array<Entity> = []
   private components: Array<Component> = []
   private systems: Array<GameSystem>
 
   private systemComponents: SystemComponentMap = new Map()
+  private queue: Array<object> = [];
 
   constructor(opts: EngineOptions, systems: Array<GameSystem>) {
     super()
 
-    this.clock = new Clock(opts.rate || DEFAUT_CLOCK_RATE)
+    this.clock = new Clock(opts.rate)
     this.systems = systems
 
     this.systems.forEach((system) => {
@@ -35,6 +37,33 @@ export default class Engine extends EventEmitter {
 
   start() { this.clock.start(); }
   pause() { this.clock.pause(); }
+
+  get currentFrame () {
+    return this.frame
+  }
+
+  update() {
+    const frame = this.frame++
+
+    this.systems.forEach((system) => {
+      const components = this.systemComponents.get(system);
+
+      if (!components) return;
+
+      return system.update(frame);
+    });
+  }
+
+  schedule (playerAction) {
+    const frame = this.frame
+
+    this.queue.push({ 
+      frame, 
+      ...playerAction
+    })
+
+    console.log('engine: got job to schedule:', playerAction)
+  }
 
   register (gameSystem: GameSystem) {
     this.systems.push(gameSystem)
@@ -56,16 +85,6 @@ export default class Engine extends EventEmitter {
     const entity = new Entity(components);
 
     this.entities.push(entity);
-  }
-
-  update(delta) {
-    this.systems.forEach((system) => {
-      const components = this.systemComponents.get(system);
-
-      if (!components) return;
-
-      return system.update(delta);
-    });
   }
 
   destroy(id) {

@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+/* Translate user input into command and arguments */
+
 export default class InputController extends EventEmitter {
   constructor() {
     super();

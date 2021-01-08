@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
 
 import Engine from '../../../engine/src';
-import InputController from '../services/InputController';
-import WebSocketClient from '../services/WebSocketClient';
+import InputController from '../services/input-controller';
+import WebSocketClient from '../services/websocket-client';
+import engine from '../services/local-engine';
 
 declare module 'vue/types/vue' {
   interface VueConstructor {
@@ -18,12 +19,11 @@ const gamePlugin = {
   install(V) {
     const ws = new WebSocketClient();
     const inputs = new InputController();
-    const engine = new Engine({}, []);
-
-    const frameId = 1;
 
     inputs.on('move', (direction: string) => {
-      ws.sendCommand(frameId, 'move', [direction]);
+      const playerAction = { cmd: 'move', args: [direction] };
+      engine.schedule(playerAction);
+      ws.sendCommand(engine.currentFrame, 'move', [direction]);
     });
 
     V.prototype.$ws = ws;

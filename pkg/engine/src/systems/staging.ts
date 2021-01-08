@@ -2,14 +2,14 @@ import { GameSystem } from '../../lib/ecs';
 
 const id = 'movement'
 
-export default class MovementSystem extends GameSystem {
+export default class StagingSystem extends GameSystem {
   constructor () {
-    super(id, ['transform'])
+    super(id, [ 'scene', 'backstage'])
   }
 
   update() {
     this.entities.forEach(entity => {
-      const transform = entity.components.get('transform')
+
     })
   }
 }

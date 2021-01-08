@@ -36,11 +36,13 @@ export default class PlayerConnection {
     try {
       const o = JSON.parse(message);
 
+      console.log(o);
+
       const job = commandsJob.queue.createJob({
         userId: this.userId,
-        frameId: o.frameId,
-        timestamp: Date.now(),
         cmd: o.cmd,
+        frameId: o.frameId,
+        timestamp: o.timestamp,
         args: o.args,
       });
 

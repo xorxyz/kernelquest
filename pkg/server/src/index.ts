@@ -6,12 +6,11 @@ const isProd = process.env.NODE_ENV === 'production';
 const numCPUs = isProd ? os.cpus().length : 2;
 const PORT = process.env.PORT || 3000;
 
-runAsWorker();
-// if (cluster.isMaster) {
-//   runAsManager();
-// } else {
-//   runAsWorker();
-// }
+if (isProd && cluster.isMaster) {
+  runAsManager();
+} else {
+  runAsWorker();
+}
 
 function runAsManager() {
   console.log(`Master ${process.pid} is running`);

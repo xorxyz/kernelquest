@@ -1,8 +1,8 @@
 import { GameSystem } from '../../lib/ecs';
 
-export default class CommandSystem extends GameSystem {
+export default class StatsSystem extends GameSystem {
   constructor () {
-    super('command', ['command'])
+    super('stats', ['stats'])
   }
 
   update(delta) {
