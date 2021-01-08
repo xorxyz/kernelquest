@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import Clock from './clock';
 import { 
   Component, Entity, GameSystem, SystemComponents, SystemComponentMap
-} from '../lib/ecs';
+} from './ecs';
 
 const DEFAUT_CLOCK_RATE = 2
 
