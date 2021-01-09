@@ -38,6 +38,11 @@ export type EntityMap = Map<string, Entity>
 /* Systems */
 
 export type SystemComponents = Map<string, Array<Component>>
+export type IPlayerCommand = {
+  frame?: number,
+  timestamp? :string
+  line: string
+}
 
 export abstract class GameSystem { 
   public readonly id: string
@@ -53,21 +58,16 @@ export abstract class GameSystem {
   load (entities: Array<Entity>) {
     if (!this.componentTypes.length) return false
 
-    this.entities = entities
-      .filter((entity: Entity) => {
-        const types = entity.components.map(c => c.type)
-    
-        return this.componentTypes.every(type => types.includes(type))
-      })
+    this.entities = entities.filter((entity: Entity) => {
+      const types = Array.from(entity.components.values()).map(c => c.type)
+  
+      return this.componentTypes.every(type => types.includes(type))
+    })
 
     return true
   }
 
-  schedule (playerAction: PlayerAction) {
-    
-  }
-
-  abstract update (number): void
+  abstract update (frame: number, commands: Array<IPlayerCommand>): void
 }
 
 export type SystemComponentMap = Map<GameSystem, SystemComponents>

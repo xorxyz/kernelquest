@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { IPlayerCommand } from '../../../engine/src/ecs';
 
 const URL = 'ws://localhost:3000';
 
@@ -17,13 +18,8 @@ export default class WebSocketClient extends EventEmitter {
     this.ws = ws;
   }
 
-  sendCommand(frame: number, cmd: string, args: Array<string>) {
-    this.ws.send(JSON.stringify({
-      timestamp: Date.now(),
-      frame,
-      cmd,
-      args,
-    }));
+  sendCommand(command: IPlayerCommand) {
+    this.ws.send(JSON.stringify(command));
   }
 
   // eslint-disable-next-line class-methods-use-this

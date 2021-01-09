@@ -16,21 +16,29 @@ export default class InputController extends EventEmitter {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  handleKey(e) {
+  handleKey(e: KeyboardEvent) {
     e.preventDefault();
 
     switch (e.key) {
       case 'ArrowUp':
-        this.emit('move', 'north');
+        if (e.shiftKey) {
+          this.emit('move', 'north');
+        }
         break;
       case 'ArrowRight':
-        this.emit('move', 'east');
+        if (e.shiftKey) {
+          this.emit('move', 'east');
+        }
         break;
       case 'ArrowDown':
-        this.emit('move', 'south');
+        if (e.shiftKey) {
+          this.emit('move', 'south');
+        }
         break;
       case 'ArrowLeft':
-        this.emit('move', 'west');
+        if (e.shiftKey) {
+          this.emit('move', 'west');
+        }
         break;
       default:
         break;

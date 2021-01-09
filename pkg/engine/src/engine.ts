@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
 import { 
-  Component, Entity, GameSystem, SystemComponents, SystemComponentMap
+  Component, Entity, GameSystem, SystemComponents, SystemComponentMap, IPlayerCommand
 } from './ecs';
 
 const DEFAUT_CLOCK_RATE = 2
@@ -16,21 +16,14 @@ export default class Engine extends EventEmitter {
 
   private entities: Array<Entity> = []
   private components: Array<Component> = []
-  private systems: Array<GameSystem>
+  private systems: Array<GameSystem> = []
 
-  private systemComponents: SystemComponentMap = new Map()
-  private queue: Array<object> = [];
+  private queue: Array<IPlayerCommand> = [];
 
-  constructor(opts: EngineOptions, systems: Array<GameSystem>) {
+  constructor(opts: EngineOptions) {
     super()
 
-    this.clock = new Clock(opts.rate)
-    this.systems = systems
-
-    this.systems.forEach((system) => {
-      const componentMap = this.componentsOf(system);
-      this.systemComponents.set(system, componentMap);
-    });
+    this.clock = new Clock(opts.rate);
 
     this.clock.on('tick', this.update.bind(this));
   }
@@ -44,25 +37,23 @@ export default class Engine extends EventEmitter {
 
   update() {
     const frame = this.frame++
+    const queue = this.queue.filter(action => action?.frame === frame)
 
     this.systems.forEach((system) => {
-      const components = this.systemComponents.get(system);
-
-      if (!components) return;
-
-      return system.update(frame);
+      return system.update(frame, queue);
     });
   }
 
-  schedule (playerAction) {
+  scheduleCommand (command: IPlayerCommand) {
     const frame = this.frame
 
-    this.queue.push({ 
-      frame, 
-      ...playerAction
-    })
+    if (command.frame !== frame) return false
 
-    console.log('engine: got job to schedule:', playerAction)
+    console.log('engine: got player command to schedule:', command)
+
+    this.queue.push(command)
+
+    return true
   }
 
   register (gameSystem: GameSystem) {

@@ -9,6 +9,7 @@
         .tooltip-text.bg-white-80.black.br1.pa1.f7.top-0.ph2(v-if="e.name")
           | {{ e.name }}
 </template>
+
 <script lang="ts">
 import Vue from 'vue'
 
