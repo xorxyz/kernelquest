@@ -1,8 +1,6 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
-import { 
-  Component, Entity, GameSystem, SystemComponents, SystemComponentMap, IPlayerCommand
-} from './ecs';
+import * as ecs from './ecs';
 import createPlayerEntity from '../lib/entities/player'
 
 const DEFAUT_CLOCK_RATE = 2
@@ -15,10 +13,10 @@ export default class Engine extends EventEmitter {
   private clock: Clock
   private frame: number = 0
 
-  private entities: Array<Entity> = []
-  private systems: Array<GameSystem> = []
+  private entities: Array<ecs.Entity> = []
+  private systems: Array<ecs.GameSystem> = []
 
-  private queue: Array<IPlayerCommand> = [];
+  private commandQueue: Array<ecs.IPlayerCommand> = [];
 
   constructor(opts: EngineOptions) {
     super()
@@ -43,16 +41,21 @@ export default class Engine extends EventEmitter {
 
   update() {
     this.loadEntities()
-    console.log(JSON.stringify(this.entities, null, 2))
-    this.queue = this.queue.filter(action => action?.frame === this.frame)
-    
+
+    this.commandQueue = this.commandQueue
+      .filter(action => action?.frame === this.frame)
+
     this.systems.forEach((system) => {
-      return system.update(frame, this.queue);
+      return system.update(frame, this.commandQueue);
     });
 
     const frame = this.frame++
 
     console.log(this)
+  }
+
+  findEntities (types: Array<string>) {
+    return this.entities.filter(e => types.some(type => e.components.has(type)))
   }
 
   loadEntities () {
@@ -61,33 +64,21 @@ export default class Engine extends EventEmitter {
     });
   }
 
-  scheduleCommand (command: IPlayerCommand) {
+  scheduleCommand (command: ecs.IPlayerCommand) {
     if (command.frame !== this.frame) return false
 
     console.log('engine: got player command to schedule:', command)
 
-    this.queue.push(command)
+    this.commandQueue.push(command)
 
     return true
   }
 
-  register (gameSystem: GameSystem) {
+  register (gameSystem: ecs.GameSystem) {
     this.systems.push(gameSystem)
   }
 
-  componentsOf(gameSystem: GameSystem): SystemComponents {
-    const components: SystemComponents = new Map();
-
-    gameSystem.componentTypes.forEach((type) => {
-      components.set(type, this.components.filter((component) => {
-        return component.type === type;
-      }));
-    });
-
-    return components;
-  }
-
-  create(factoryFn: () => Entity) {
+  create(factoryFn: () => ecs.Entity) {
     const entity = factoryFn();
 
     this.entities.push(entity);

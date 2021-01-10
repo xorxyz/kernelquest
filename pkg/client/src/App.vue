@@ -57,10 +57,21 @@ export default Vue.extend({
     Player,
     Stats,
   },
+  computed: {
+    rows () {
+      console.log(this.$engine.findEntities(['transform', 'visual']))
+
+      return Array(9).fill(Array(9).fill(0)).map((row, y) => {
+        return row.map((_, x) => {
+          return area.entities['0']
+        })
+      })
+    }
+  },
   data () {
     return {
-      rows: area.rows
-        .map(x => x.split('').map(id => area.entities[id]))
+      // rows: area.rows
+      //   .map(x => x.split('').map(id => area.entities[id]))
     }
   },
   methods: {
