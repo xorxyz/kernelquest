@@ -1,10 +1,19 @@
 import { Component } from '../../src/ecs';
 
+interface ISchema {
+  userId: string,
+  command: string
+}
+
+const schema: ISchema = {
+  userId: '',
+  command: ''
+}
+
 export default class CommandComponent extends Component {
-  constructor () {
-    super('health', { 
-      cmd: '',
-      args: []
-    })
+  data: ISchema
+
+  constructor (userId: string) {
+    super('command', { ...schema, userId })
   }
 }

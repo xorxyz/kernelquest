@@ -11,6 +11,10 @@ export abstract class Component {
   constructor (type: string, schema: object) {
     this.type = type
     this.schema = schema
+    
+    Object.entries(schema).forEach(([key, Type]) => {
+      this.data[key] = Type
+    })
   }
 }
 
@@ -39,6 +43,7 @@ export type EntityMap = Map<string, Entity>
 
 export type SystemComponents = Map<string, Array<Component>>
 export type IPlayerCommand = {
+  userId?: string,
   frame?: number,
   timestamp? :string
   line: string

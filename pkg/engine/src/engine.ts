@@ -3,6 +3,7 @@ import Clock from './clock';
 import { 
   Component, Entity, GameSystem, SystemComponents, SystemComponentMap, IPlayerCommand
 } from './ecs';
+import createPlayerEntity from '../lib/entities/player'
 
 const DEFAUT_CLOCK_RATE = 2
 
@@ -15,7 +16,6 @@ export default class Engine extends EventEmitter {
   private frame: number = 0
 
   private entities: Array<Entity> = []
-  private components: Array<Component> = []
   private systems: Array<GameSystem> = []
 
   private queue: Array<IPlayerCommand> = [];
@@ -26,6 +26,12 @@ export default class Engine extends EventEmitter {
     this.clock = new Clock(opts.rate);
 
     this.clock.on('tick', this.update.bind(this));
+
+    this.reset()
+  }
+
+  reset() {
+    this.create(createPlayerEntity)
   }
 
   start() { this.clock.start(); }
@@ -36,18 +42,27 @@ export default class Engine extends EventEmitter {
   }
 
   update() {
-    const frame = this.frame++
-    const queue = this.queue.filter(action => action?.frame === frame)
-
+    this.loadEntities()
+    console.log(JSON.stringify(this.entities, null, 2))
+    this.queue = this.queue.filter(action => action?.frame === this.frame)
+    
     this.systems.forEach((system) => {
-      return system.update(frame, queue);
+      return system.update(frame, this.queue);
+    });
+
+    const frame = this.frame++
+
+    console.log(this)
+  }
+
+  loadEntities () {
+    this.systems.forEach((system) => {
+      return system.load(this.entities);
     });
   }
 
   scheduleCommand (command: IPlayerCommand) {
-    const frame = this.frame
-
-    if (command.frame !== frame) return false
+    if (command.frame !== this.frame) return false
 
     console.log('engine: got player command to schedule:', command)
 
@@ -72,8 +87,8 @@ export default class Engine extends EventEmitter {
     return components;
   }
 
-  create(components: Array<Component>) {
-    const entity = new Entity(components);
+  create(factoryFn: () => Entity) {
+    const entity = factoryFn();
 
     this.entities.push(entity);
   }
