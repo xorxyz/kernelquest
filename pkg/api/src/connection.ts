@@ -1,7 +1,7 @@
 import * as WebSocket from 'ws';
-import * as uuid from 'uuid';
+import * as BeeQueue from 'bee-queue';
 
-import commandsJob from './jobs/process-commands';
+const commandQueue = new BeeQueue('command');
 
 export default class PlayerConnection {
   public userId: string
@@ -34,16 +34,13 @@ export default class PlayerConnection {
 
   handleMessage(message: string) {
     try {
-      const o = JSON.parse(message);
+      const parsed = JSON.parse(message);
 
-      console.log(o);
-
-      const job = commandsJob.queue.createJob({
+      const job = commandQueue.createJob({
         userId: this.userId,
-        cmd: o.cmd,
-        frameId: o.frameId,
-        timestamp: o.timestamp,
-        args: o.args,
+        timestamp: parsed.timestamp,
+        frameId: parsed.frameId,
+        line: parsed.line,
       });
 
       job.on('succeeded', (result) => {

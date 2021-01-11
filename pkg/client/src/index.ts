@@ -20,6 +20,8 @@ systems.forEach((system) => {
   engine.register(system);
 });
 
+engine.start();
+
 Vue.component('emoji', Emoji);
 
 Vue.use(enginePlugin(engine));

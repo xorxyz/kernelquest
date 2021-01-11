@@ -1,9 +1,9 @@
 import { Component } from '../../src/ecs';
 
 export default class SceneComponent extends Component {
-  constructor () {
+  constructor() {
     super('scene', {
-      actors: Array
-    })
+      actors: Array,
+    });
   }
 }

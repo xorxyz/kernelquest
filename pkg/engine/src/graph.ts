@@ -6,45 +6,41 @@ interface INode {
 export default class Graph {
   private nodes: Array<INode> = []
 
-  get values (): Array<INode> {
-    return this.nodes.map(node => node.value)
+  get values(): Array<INode> {
+    return this.nodes.map((node) => node.value);
   }
 
-  addNode (value: any): ThisType<Graph> {
+  addNode(value: any): ThisType<Graph> {
     this.nodes.push({
       value,
-      edges: []
-    })
+      edges: [],
+    });
 
-    return this
+    return this;
   }
 
-  removeNode (value: any): ThisType<Graph> {
-    var index = this.nodes.findIndex(node => {
-      return node.value === value
-    })
+  removeNode(value: any): ThisType<Graph> {
+    const index = this.nodes.findIndex((node) => node.value === value);
 
-    this.nodes.splice(index, 1)
+    this.nodes.splice(index, 1);
 
-    return this
+    return this;
   }
 
-  find (value: any): INode {
-    return this.nodes.find(node => {
-      return node.value === value
-    })
+  find(value: any): INode | undefined {
+    return this.nodes.find((node) => node.value === value);
   }
 
-  addLine (fromValue: any, toValue: any): ThisType<Graph> {
-    var fromNode = this.find(fromValue)
-    var toNode = this.find(toValue)
+  addLine(fromValue: any, toValue: any): ThisType<Graph> {
+    const fromNode = this.find(fromValue);
+    const toNode = this.find(toValue);
 
     if (!fromNode || !toNode) {
-      throw new Error('Both nodes need to exist')
+      throw new Error('Both nodes need to exist');
     }
 
-    fromNode.edges.push(toNode)
+    fromNode.edges.push(toNode);
 
-    return this
+    return this;
   }
 }

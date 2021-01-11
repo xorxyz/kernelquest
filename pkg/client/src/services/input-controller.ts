@@ -22,22 +22,22 @@ export default class InputController extends EventEmitter {
     switch (e.key) {
       case 'ArrowUp':
         if (e.shiftKey) {
-          this.emit('move', 'north');
+          this.emit('command', { line: 'move north' });
         }
         break;
       case 'ArrowRight':
         if (e.shiftKey) {
-          this.emit('move', 'east');
+          this.emit('command', { line: 'move east' });
         }
         break;
       case 'ArrowDown':
         if (e.shiftKey) {
-          this.emit('move', 'south');
+          this.emit('command', { line: 'move south' });
         }
         break;
       case 'ArrowLeft':
         if (e.shiftKey) {
-          this.emit('move', 'west');
+          this.emit('command', { line: 'move west' });
         }
         break;
       default:

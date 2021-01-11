@@ -1,11 +1,21 @@
-import { SingletonComponent } from '../../src/ecs';
+import { Component } from '../../src/ecs';
 
-export default class BackstageComponent extends SingletonComponent {
-  constructor () {
-    super('backstage', {
-      actors: Array,
-      items: Array,
-      cells: Array
-    })
+interface ISchema {
+  actors: Array<string>,
+  items: Array<string>,
+  cells: Array<string>
+}
+
+const schema: ISchema = {
+  actors: [],
+  items: [],
+  cells: [],
+};
+
+export default class BackstageComponent extends Component {
+  data: ISchema
+
+  constructor() {
+    super('transform', schema);
   }
 }

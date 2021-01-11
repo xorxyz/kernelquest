@@ -1,15 +1,15 @@
 import { GameSystem } from '../../src/ecs';
 
-const id = 'movement'
+const id = 'movement';
 
 export default class StagingSystem extends GameSystem {
-  constructor () {
-    super(id, [ 'scene', 'backstage'])
+  constructor() {
+    super(id, ['scene', 'backstage']);
   }
 
   update() {
-    this.entities.forEach(entity => {
+    this.entities.forEach((entity) => {
 
-    })
+    });
   }
 }

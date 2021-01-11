@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
 import * as ecs from './ecs';
-import createPlayerEntity from '../lib/entities/player'
+import createPlayerEntity from '../lib/entities/player';
 
-const DEFAUT_CLOCK_RATE = 2
+const DEFAUT_CLOCK_RATE = 1 / 1000;
 
 export interface EngineOptions {
   rate?: number
@@ -18,64 +18,65 @@ export default class Engine extends EventEmitter {
 
   private commandQueue: Array<ecs.IPlayerCommand> = [];
 
-  constructor(opts: EngineOptions) {
-    super()
+  constructor(opts: EngineOptions) {
+    super();
 
-    this.clock = new Clock(opts.rate);
+    this.clock = new Clock(opts.rate || DEFAUT_CLOCK_RATE);
 
     this.clock.on('tick', this.update.bind(this));
 
-    this.reset()
+    this.reset();
   }
 
-  reset() {
-    this.create(createPlayerEntity)
+  reset() {
+    this.clock.pause();
+    this.clock.reset();
+
+    this.entities = [];
+    this.systems = [];
+    this.commandQueue = [];
+
+    this.create(createPlayerEntity);
   }
 
   start() { this.clock.start(); }
   pause() { this.clock.pause(); }
 
-  get currentFrame () {
-    return this.frame
+  get currentFrame() {
+    return this.frame;
   }
 
   update() {
-    this.loadEntities()
+    this.loadEntities();
 
     this.commandQueue = this.commandQueue
-      .filter(action => action?.frame === this.frame)
+      .filter((action) => action?.frame === this.frame);
 
-    this.systems.forEach((system) => {
-      return system.update(frame, this.commandQueue);
-    });
+    this.systems.forEach((system) => system.update(frame, this.commandQueue));
 
-    const frame = this.frame++
-
-    console.log(this)
+    const frame = this.frame++;
   }
 
-  findEntities (types: Array<string>) {
-    return this.entities.filter(e => types.some(type => e.components.has(type)))
+  findEntities(types: Array<string>) {
+    return this.entities.filter((e) => types.some((type) => e.components.has(type)));
   }
 
-  loadEntities () {
-    this.systems.forEach((system) => {
-      return system.load(this.entities);
-    });
+  loadEntities() {
+    this.systems.forEach((system) => system.load(this.entities));
   }
 
-  scheduleCommand (command: ecs.IPlayerCommand) {
-    if (command.frame !== this.frame) return false
+  scheduleCommand(command: ecs.IPlayerCommand) {
+    if (command.frame !== this.frame) return false;
 
-    console.log('engine: got player command to schedule:', command)
+    console.log('engine: got player command to schedule:', command);
 
-    this.commandQueue.push(command)
+    this.commandQueue.push(command);
 
-    return true
+    return true;
   }
 
-  register (gameSystem: ecs.GameSystem) {
-    this.systems.push(gameSystem)
+  register(gameSystem: ecs.GameSystem) {
+    this.systems.push(gameSystem);
   }
 
   create(factoryFn: () => ecs.Entity) {

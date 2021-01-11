@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as uuid from 'uuid';
 import * as cors from 'cors';
 import sessionParser from './session-parser';
-import createWSS from './sockets';
+import createWSS from './wss';
 
 export default function () {
   const app = express();

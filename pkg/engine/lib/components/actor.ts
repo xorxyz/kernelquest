@@ -1,9 +1,9 @@
 import { Component } from '../../src/ecs';
 
 export default class ActorComponent extends Component {
-  constructor () {
+  constructor() {
     super('actor', {
-      type: String
-    })
+      type: String,
+    });
   }
 }

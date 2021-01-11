@@ -1,7 +1,7 @@
 import * as session from 'express-session';
 import * as redis from 'redis';
-
 import * as Store from 'connect-redis';
+import { SESSION_SECRET } from './constants';
 
 declare module 'express-session' {
   interface SessionData {
@@ -9,7 +9,6 @@ declare module 'express-session' {
   }
 }
 
-const SESSION_SECRET = '3A7BPfyKYCgoyw3u6-0stcYXtjbeVJkMH2.ugAKHZpf';
 const RedisStore = Store(session);
 const redisClient = redis.createClient({
   host: 'localhost',

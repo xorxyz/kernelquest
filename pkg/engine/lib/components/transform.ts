@@ -6,15 +6,15 @@ interface ISchema {
   velocity: Vector
 }
 
-const schema: ISchema = { 
+const schema: ISchema = {
   position: new Vector(),
-  velocity: new Vector()
-}
+  velocity: new Vector(),
+};
 
 export default class TransformComponent extends Component {
   data: ISchema
 
-  constructor () {
-    super('transform', schema)
+  constructor() {
+    super('transform', schema);
   }
 }

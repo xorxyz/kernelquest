@@ -1,9 +1,9 @@
 import { Component } from '../../src/ecs';
 
 export default class StaminaComponent extends Component {
-  constructor () {
+  constructor() {
     super('stamina', {
       sp: Number,
-    })
+    });
   }
 }

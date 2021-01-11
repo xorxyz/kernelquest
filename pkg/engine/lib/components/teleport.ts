@@ -2,10 +2,10 @@ import { Component } from '../../src/ecs';
 import { Vector } from '../../src/math';
 
 export default class TeleportComponent extends Component {
-  constructor () {
+  constructor() {
     super('teleport', {
       area: String,
-      position: Vector
-    })
+      position: Vector,
+    });
   }
 }

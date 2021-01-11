@@ -1,8 +1,6 @@
 import * as Queue from 'bee-queue';
-import engine from '../engine';
 
-const helpMessage = `
-hi! welcome to xor.
+const helpMessage = `hi! welcome to xor.
 `;
 
 const queue = new Queue('commands');

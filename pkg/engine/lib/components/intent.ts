@@ -12,13 +12,13 @@ interface ISchema {
 
 const schema: ISchema = {
   intent: IntentType.NONE,
-  args: []
-}
+  args: [],
+};
 
 export default class IntentComponent extends Component {
   data: ISchema
 
-  constructor () {
-    super('intent', schema)
+  constructor() {
+    super('intent', schema);
   }
 }

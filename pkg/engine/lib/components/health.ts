@@ -1,9 +1,9 @@
 import { Component } from '../../src/ecs';
 
 export default class HealthComponent extends Component {
-  constructor () {
-    super('health', { 
+  constructor() {
+    super('health', {
       hp: Number,
-    })
+    });
   }
 }

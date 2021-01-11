@@ -1,28 +1,33 @@
 import { Entity, GameSystem, IPlayerCommand } from '../../src/ecs';
-import IntentComponent, { IntentType } from '../components/intent';
 import CommandComponent from '../components/command';
 
 export default class CommandSystem extends GameSystem {
-  constructor () {
-    super('command', ['command'])
+  constructor() {
+    super('command', ['command']);
   }
 
-  update (frame: number, queue: Array<IPlayerCommand>) {
-    console.log('update system:', this.id)
-    queue.forEach(action => {
-      console.log('entities:', this.entities, action)
-      const entity = this.entities
-        .find(e => (e.components.get('command') as CommandComponent)?.data.userId === action.userId)
+  update(frame: number, queue: Array<IPlayerCommand>) {
+    console.log('update system:', this.id);
 
-      console.log('entity:', entity)
+    queue.forEach((command) => {
+      console.log('entities:', this.entities, command);
+      const entity = this.entitiesById[command.playerId];
 
-      if (entity) { this.inputCommand(entity, action.line) }
-    })
+      if (!entity) {
+        throw new Error(`command system: could not found entity for: ${command}`);
+      }
+
+      updateCommand(entity, command);
+    });
+  }
+}
+
+function updateCommand(entity: Entity, command: IPlayerCommand) {
+  const component = entity.components.get('command') as CommandComponent;
+
+  if (command) {
+    component.data.line = command.line;
   }
 
-  inputCommand (entity: Entity, line: string) {
-    const command = entity.components.get('command') as CommandComponent
-
-    command.data.command = line
-  }
+  return true;
 }

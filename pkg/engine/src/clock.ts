@@ -11,6 +11,10 @@ export default class Clock extends EventEmitter {
     this.rate = rate;
   }
 
+  reset() {
+    this.tick = 0;
+  }
+
   step() {
     this.tick++;
   }
