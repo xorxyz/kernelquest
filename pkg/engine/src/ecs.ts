@@ -50,12 +50,12 @@ export type IPlayerCommand = {
 
 export abstract class GameSystem {
   public readonly id: string
-  public readonly componentTypes: Array<string>
+  public readonly componentTypes: Array<ComponentType>
 
   entities: Array<Entity> = []
   entitiesById: Map<string, Entity> = new Map()
 
-  constructor(id: string, types: Array<string>) {
+  constructor(id: string, types: Array<ComponentType>) {
     this.id = id;
     this.componentTypes = types;
   }
@@ -81,8 +81,8 @@ export abstract class GameSystem {
   load(entities: Array<Entity>) {
     if (!this.componentTypes.length) return false;
 
-    this.entities = entities.filter((entity: Entity) => {
-      const types = Array.from(entity.components.values()).map((c) => c.type);
+    this.entities = entities.filter((entity: Entity) => {
+      const types = Array.from(entity.components.values()).map((c) => c.type);
 
       return this.componentTypes.every((type) => types.includes(type));
     });

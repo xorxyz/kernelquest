@@ -1,5 +1,7 @@
 import * as Queue from 'bee-queue';
 
+console.log('hi');
+
 const helpMessage = `hi! welcome to xor.
 `;
 

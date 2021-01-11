@@ -2,12 +2,12 @@ export class Vector {
   x: number
   y: number
 
-  constructor(x = 0, y = 0) {
+  constructor(x: number = 0, y: number = 0) {
     this.x = x;
     this.y = y;
   }
 
-  static from(obj) {
+  static from(obj: { x: number, y: number }) {
     return new Vector(obj.x, obj.y);
   }
 
@@ -15,75 +15,75 @@ export class Vector {
     return new Vector(this.x, this.y);
   }
 
-  setXY(x, y) {
+  setXY(x: number, y: number) {
     this.x = x;
     this.y = y;
     return this;
   }
 
-  setX(x) {
+  setX(x: number) {
     this.x = x;
     return this;
   }
 
-  setY(y) {
+  setY(y: number) {
     this.y = y;
     return this;
   }
 
-  copyX(v) {
+  copyX(v: Vector) {
     this.x = v.x;
     return this;
   }
 
-  copyY(v) {
+  copyY(v: Vector) {
     this.y = v.y;
     return this;
   }
 
-  copy(v) {
+  copy(v: Vector) {
     this.x = v.x;
     this.y = v.y;
     return this;
   }
 
-  addX(x) {
+  addX(x: number) {
     this.x += x;
     return this;
   }
 
-  addY(y) {
+  addY(y: number) {
     this.y += y;
     return this;
   }
 
-  add(v) {
+  add(v: Vector) {
     this.x += v.x;
     this.y += v.y;
     return this;
   }
 
-  subX(x) {
+  subX(x: number) {
     this.x -= x;
     return this;
   }
 
-  subY(y) {
+  subY(y: number) {
     this.y -= y;
     return this;
   }
 
-  sub(v) {
+  sub(v: Vector) {
     this.x -= v.x;
     this.y -= v.y;
     return this;
   }
 
-  equals(v) {
+  equals(v: Vector) {
     return this.x === v.x && this.y === v.y;
   }
 
-  opposes(v) {
+  opposes(v: Vector) {
     return (
       (this.x && v.x && Math.sign(this.x) !== Math.sign(v.x))
       || (this.y && v.y && Math.sign(this.y) !== Math.sign(v.y))

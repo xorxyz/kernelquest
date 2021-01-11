@@ -1,14 +1,16 @@
 import { EventEmitter } from 'events';
 import { IPlayerCommand } from '../../../engine/src/ecs';
 
-const URL = 'ws://localhost:3000';
+const BASE_DELAY = 5000;
+const API_URL = 'ws://localhost:3000';
 
 export default class WebSocketClient extends EventEmitter {
   ws: WebSocket
-  delay: number = 5000;
+  delay: number = BASE_DELAY;
+  tries: number = 1
 
   init() {
-    const ws = new WebSocket(URL);
+    const ws = new WebSocket(API_URL);
 
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
@@ -25,6 +27,8 @@ export default class WebSocketClient extends EventEmitter {
   // eslint-disable-next-line class-methods-use-this
   onOpen() {
     console.log('ws open');
+    this.tries = 1;
+    this.delay = BASE_DELAY;
   }
 
   onClose(e) {
@@ -36,7 +40,7 @@ export default class WebSocketClient extends EventEmitter {
 
     setTimeout(() => {
       this.init();
-    }, this.delay);
+    }, this.delay * (this.tries));
   }
 
   // eslint-disable-next-line class-methods-use-this

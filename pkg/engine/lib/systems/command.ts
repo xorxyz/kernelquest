@@ -1,9 +1,10 @@
 import { Entity, GameSystem, IPlayerCommand } from '../../src/ecs';
+import { ComponentType } from '../components';
 import CommandComponent from '../components/command';
 
 export default class CommandSystem extends GameSystem {
   constructor() {
-    super('command', ['command']);
+    super('command', [ComponentType.Command]);
   }
 
   update(frame: number, queue: Array<IPlayerCommand>) {
