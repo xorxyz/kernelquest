@@ -1,18 +1,18 @@
 import { GameSystem } from '../../src/ecs';
-import { Vector } from '../../src/math';
+import { SystemType, ComponentType } from '../components';
 import TransformComponent from '../components/transform';
 
-const id = 'movement';
+const { Transform } = ComponentType;
 
 export default class MovementSystem extends GameSystem {
   constructor() {
-    super(id, ['transform']);
+    super(SystemType.Movement, [Transform]);
   }
 
   update() {
     console.log('update system:', this.id);
     this.entities.forEach((entity) => {
-      const transform = entity.components.get('transform') as TransformComponent;
+      const transform = entity.components.get(Transform) as TransformComponent;
 
       transform.data.position.add(transform.data.velocity);
 

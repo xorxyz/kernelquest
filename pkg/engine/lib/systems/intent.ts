@@ -1,8 +1,10 @@
 import { GameSystem } from '../../src/ecs';
 import { Vector } from '../../src/math';
+import { ComponentType } from '../components';
 import CommandComponent from '../components/command';
-import IntentComponent, { IntentType } from '../components/intent';
 import TransformComponent from '../components/transform';
+
+const { Command, Intent, Transform } = ComponentType;
 
 const directions = ['north', 'east', 'south', 'west'];
 const directionVectors = {
@@ -14,13 +16,13 @@ const directionVectors = {
 
 export default class IntentSystem extends GameSystem {
   constructor() {
-    super('intent', ['command', 'intent', 'transform']);
+    super('intent', [Command, Intent, Transform]);
   }
 
   update() {
     console.log('update system:', this.id);
     this.entities.forEach((entity) => {
-      const command = entity.components.get('command') as CommandComponent;
+      const command = entity.components.get(ComponentType.Command) as CommandComponent;
 
       let args;
 
@@ -29,7 +31,7 @@ export default class IntentSystem extends GameSystem {
         const direction = args[0];
 
         if (directions.includes(direction)) {
-          const transform = entity.components.get('transform') as TransformComponent;
+          const transform = entity.components.get(Transform) as TransformComponent;
 
           const vector = directionVectors[direction];
           transform.data.velocity.copy(vector);

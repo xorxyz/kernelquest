@@ -20,9 +20,10 @@ export default function enginePlugin(engine: Engine) {
       const inputs = new InputController();
 
       inputs.on('move', (direction: string) => {
-        const userId = '96a2c440-9415-47f7-871c-f41f631699a1';
+        const playerId = '96a2c440-9415-47f7-871c-f41f631699a1';
         const command: IPlayerCommand = {
-          userId,
+          playerId,
+          timestamp: Date.now(),
           frame: engine.currentFrame,
           line: `move ${direction}`,
         };
