@@ -1,39 +1,17 @@
 # xor4 notes 
 
-this is the game design docs.
-developer docs is in [`the main README file`](../README.md). 
+these are game design notes.
+development docs is in [`the main README file`](../README.md). 
 
----
+# what 
 
-expression, combination, abstraction
+- sandbox multiplayer puzzle game with light RPG mechanics
 
-procedure/data
+# tools
 
-evaluation
-global environment
-associating values with symbols
+- https://www.inklewriter.com
 
-application
-
----
-
-documents:
-
-0. README (this file)
-1. commands
-2. controls 
-3. flags
-4. level-design
-5. lore
-6. netcode
-7. npc
-8. places
-9. spells
-10. systems
-11. time
-12. what
-
-## reference
+# reference
 
 - https://www.rockpapershotgun.com/2015/01/22/how-to-make-a-puzzle-game/
 - https://timonpost.medium.com/game-networking-0-introduction-b07a46b40e22

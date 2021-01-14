@@ -1,0 +1,5 @@
+# modals
+
+- paperdoll
+- inventory
+- spellbook
