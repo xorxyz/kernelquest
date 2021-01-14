@@ -17,7 +17,7 @@ we seem to have forgotten all about the Maintainers.
 
 and yet Magic is all around us, and within us.
 we conjure spirits in a crystal ball with our spells.
-spirits of wizards, elves and fairies.
+the spirits of wizards, elves and fairies.
 
 as spirits evolve, they transform matter.
 the evolution of a spirit is directed by a pattern of rules called a spell.

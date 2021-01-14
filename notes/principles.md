@@ -6,19 +6,6 @@ these ideas should be embodied by the game mechanics, or taught through quests, 
 2. Given enough time for the preparation of an exploit, nonexploitability is the exception, not the rule
 3. Humans aren't good at handling complexity
 
-
-states
-initial state
-final states
-input and output alphabets
-state transition function
-Phrack, Uninformed,
-Defcon/Recon/Shmoocon/Toorcon
-
-phrack58:9
-{bugtraq-gera-2000-10-30
-trust
-
 hacking 
 the capability & skill set to expose and verify
 trust (security, control) assumptions

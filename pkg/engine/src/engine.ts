@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
 import * as ecs from './ecs';
+import createWorldEntity from '../lib/entities/world';
+import createZoneEntity from '../lib/entities/zone';
 import createPlayerEntity from '../lib/entities/player';
 
 const DEFAUT_CLOCK_RATE = 1 / 1000;
@@ -36,6 +38,8 @@ export default class Engine extends EventEmitter {
     this.systems = [];
     this.commandQueue = [];
 
+    this.create(createWorldEntity);
+    this.create(createZoneEntity);
     this.create(createPlayerEntity);
   }
 
