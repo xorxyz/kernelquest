@@ -1,5 +1,6 @@
+import { SystemType } from '.';
 import { GameSystem } from '../../src/ecs';
-import { SystemType, ComponentType } from '../components';
+import { ComponentType } from '../components';
 import TransformComponent from '../components/transform';
 
 const { Transform } = ComponentType;

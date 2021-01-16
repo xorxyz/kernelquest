@@ -7,11 +7,12 @@ import TransformComponent from '../components/transform';
 import VisualComponent from '../components/visual';
 import ManaComponent from '../components/mana';
 import StaminaComponent from '../components/stamina';
+import { EntityType } from '.';
 
 export default createPlayerEntity;
 
 function createPlayerEntity(userId = '96a2c440-9415-47f7-871c-f41f631699a1') {
-  const playerEntity = new Entity([
+  const playerEntity = new Entity(EntityType.Player, [
     new CommandComponent(userId),
     new IntentComponent(),
     new ActorComponent(),

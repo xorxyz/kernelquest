@@ -1,5 +1,5 @@
 <template lang="pug">
-.map.shadow-2.h-100.bg-white-80.br2.flex.flex-column
+.map.shadow-2.h-100.bg-black-50.br2.flex.flex-column
   #game-map.flex.w-100.h-100.flex.justify-start.mb2
     div.flex.justify-center.items-center.w-100
       div.bg-black-10.shadow-2.br2.ba.b--black-20

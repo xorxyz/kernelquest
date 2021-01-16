@@ -1,6 +1,5 @@
 <template lang="pug">
-  div.w-100
-    Dev
+  div.w-100.pa2
     div.flex.flex-column.h-100.items-center
       div.w-100.h-100.flex
         main.w-100.h-100.b--blue.flex.justify-center
@@ -9,13 +8,14 @@
             Stats.w5
           div.ml1.flex.flex-column
             GameMap.mb2(:rows="rows")
+            Toolbar
             Terminal(@line="handleLine")
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
-import Dev from './components/Dev.vue';
+import Toolbar from './components/Toolbar.vue';
 import Terminal from './components/Terminal.vue';
 import GameMap from './components/GameMap.vue';
 import Player from './components/Player.vue';  
@@ -38,7 +38,7 @@ const area = {
   },
   rows: [
     '555555555',
-    '555000555',
+    '55555555',
     '555000555',
     '555020555',
     '555010555',
@@ -51,7 +51,7 @@ const area = {
 
 export default Vue.extend({
   components: {
-    Dev,
+    Toolbar,
     Terminal,
     GameMap,
     Player,
@@ -63,7 +63,8 @@ export default Vue.extend({
 
       return Array(9).fill(Array(9).fill(0)).map((row, y) => {
         return row.map((_, x) => {
-          return area.entities['0']
+          const hash = area.rows[y][x]
+          return area.entities[hash || '0']
         })
       })
     }

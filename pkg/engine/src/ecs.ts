@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import * as uuid from 'uuid';
 import { ComponentType } from '../lib/components';
+import { EntityType } from '../lib/entities';
 
 /* Components */
 
@@ -26,9 +27,11 @@ export abstract class SingletonComponent extends Component {
 export class Entity {
   id: string
   components: Map<ComponentType, Component> = new Map()
+  type: EntityType
 
-  constructor(components: Array<Component>) {
+  constructor(type: EntityType, components: Array<Component>) {
     this.id = uuid.v4();
+    this.type = type;
 
     components.forEach((component) => {
       this.components.set(component.type, component);

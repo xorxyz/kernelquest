@@ -1,7 +1,7 @@
 <template lang="pug">
-  div.pa1.flex.w-100.f7.ba.bg-gray.b--black-70.mb1
+  div.pa1.flex.w-100.f7.bg-white-20.mb1.br1
     button.prevent.mh1(@click="login") login
-    input.mh1(:value="apiUrl")
+    input.mh1.br1.bw0.pa1(:value="apiUrl")
     button.prevent.mh1(@click="step") step
     span.white.pa1 frame: {{ frame }}
 

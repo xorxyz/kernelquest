@@ -13,14 +13,3 @@ export enum ComponentType {
   Visual = 'visual',
   World = 'world'
 }
-
-export enum SystemType {
-  Command = 'command',
-  Health = 'health',
-  Intent = 'intent',
-  Inventory = 'inventory',
-  Movement = 'movement',
-  Stamina = 'stamina',
-  Stats = 'stats',
-  Zone = 'zone'
-}
