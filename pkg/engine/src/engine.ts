@@ -6,7 +6,7 @@ import createWorldEntity from '../lib/entities/world';
 import createZoneEntity from '../lib/entities/zone';
 import createPlayerEntity from '../lib/entities/player';
 
-const DEFAUT_CLOCK_RATE = 1 / 1000;
+const DEFAUT_CLOCK_RATE = 1 / 2;
 
 export interface EngineOptions {
   rate?: number
@@ -53,6 +53,7 @@ export default class Engine extends EventEmitter {
   }
 
   update() {
+    console.log('tick');
     this.loadEntities();
 
     const queue = this.commandQueue.filter((c) => c?.frame === this.frame);
@@ -77,8 +78,6 @@ export default class Engine extends EventEmitter {
 
   scheduleCommand(command: ecs.IPlayerCommand) {
     if (command.frame !== this.frame) return false;
-
-    console.log('engine: got player command to schedule:', command);
 
     this.commandQueue.push(command);
 

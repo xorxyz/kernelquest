@@ -19,14 +19,14 @@ export default function enginePlugin(engine: Engine) {
       const ws = new WebSocketClient();
       const inputs = new InputController();
 
-      inputs.on('command', (line) => {
-        const playerId = '96a2c440-9415-47f7-871c-f41f631699a1';
+      inputs.on('command', ({ line }) => {
         const command: IPlayerCommand = {
-          playerId,
+          playerId: '0',
           line,
           timestamp: Date.now(),
           frame: engine.currentFrame,
         };
+
         engine.scheduleCommand(command);
         ws.sendCommand(command);
       });

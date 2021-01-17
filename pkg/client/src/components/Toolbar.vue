@@ -3,12 +3,13 @@
     button.prevent.mh1(@click="login") login
     input.mh1.br1.bw0.pa1(:value="apiUrl")
     button.prevent.mh1(@click="step") step
-    span.white.pa1 frame: {{ frame }}
+    span.white.pa1 frame: {{ getFrame() }}
 
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { reactive, isReactive } from 'vue'
 
 export default Vue.extend({
   components: {
@@ -18,14 +19,13 @@ export default Vue.extend({
   },
   data () {
     return {
-      apiUrl: 'http://localhost:3000',
-      frame: 0
+      apiUrl: 'http://localhost:3000'
     }
   },
-  mounted () {
-
-  },
   methods: {
+    getFrame () {
+      return this.$engine.frame
+    },
     step () {
       this.$engine.update()
       // this.frame = this.$engine.frame

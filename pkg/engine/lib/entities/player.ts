@@ -11,9 +11,9 @@ import { EntityType } from '.';
 
 export default createPlayerEntity;
 
-function createPlayerEntity(userId = '96a2c440-9415-47f7-871c-f41f631699a1') {
+function createPlayerEntity() {
   const playerEntity = new Entity(EntityType.Player, [
-    new CommandComponent(userId),
+    new CommandComponent('0'),
     new IntentComponent(),
     new ActorComponent(),
     new HealthComponent(),

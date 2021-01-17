@@ -16,8 +16,6 @@ export default class MovementSystem extends GameSystem {
       const transform = entity.components.get(Transform) as TransformComponent;
 
       transform.data.position.add(transform.data.velocity);
-
-      console.log(transform.data.velocity, transform.data.position);
     });
   }
 }

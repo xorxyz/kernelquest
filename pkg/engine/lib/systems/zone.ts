@@ -4,7 +4,7 @@ import ActorComponent from '../components/actor';
 import WorldComponent from '../components/world';
 
 const {
-  World, Actor, Scene, Backstage,
+  World, Actor, Stage, Backstage,
 } = ComponentType;
 
 /*
@@ -24,14 +24,11 @@ const {
 
 export default class ZoneSystem extends GameSystem {
   constructor() {
-    super('zone', [World, Scene, Backstage, Actor]);
+    super('zone', [World, Stage, Backstage, Actor]);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   update() {
-    const world = this.findSingletonComponent(World) as WorldComponent;
-    const actors = this.findEntitiesWith(Actor);
-
-    actors.forEach((actor: ActorComponent) => {
-    });
+    // TODO
   }
 }

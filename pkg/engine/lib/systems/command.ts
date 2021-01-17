@@ -2,29 +2,35 @@ import { Entity, GameSystem, IPlayerCommand } from '../../src/ecs';
 import { ComponentType } from '../components';
 import CommandComponent from '../components/command';
 
+const { Command } = ComponentType;
+
 export default class CommandSystem extends GameSystem {
   constructor() {
-    super('command', [ComponentType.Command]);
+    super('command', [Command]);
   }
 
-  update(frame: number, queue: Array<IPlayerCommand>) {
-    console.log('update system:', this.id);
+  update(frame: number, commands: Array<IPlayerCommand>) {
+    this.entities.forEach((entity) => {
+      const command = commands.find((c) => c.playerId === entity.components.get(Command)?.data.playerId);
 
-    queue.forEach((command) => {
-      console.log('entities:', this.entities, command);
-      const entity = this.entitiesById[command.playerId];
-
-      updateCommand(entity, command);
+      if (command) {
+        console.log('got command:', command);
+        updateCommand(entity, command);
+      }
     });
   }
 }
 
 function updateCommand(entity: Entity, command: IPlayerCommand) {
-  const component = entity.components.get('command') as CommandComponent;
+  const component = entity.components.get(Command) as CommandComponent;
 
-  if (command) {
-    component.data.line = command.line;
+  if (!command) {
+    console.warn('there should be a command here:', entity);
+    return false;
   }
+
+  component.data.previousLine = component.data.line;
+  component.data.line = command.line;
 
   return true;
 }

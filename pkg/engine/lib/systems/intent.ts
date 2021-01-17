@@ -21,6 +21,7 @@ export default class IntentSystem extends GameSystem {
 
   update() {
     console.log('update system:', this.id);
+
     this.entities.forEach((entity) => {
       const command = entity.components.get(ComponentType.Command) as CommandComponent;
 
@@ -37,6 +38,9 @@ export default class IntentSystem extends GameSystem {
           transform.data.velocity.copy(vector);
         }
       }
+
+      command.data.previousLine = command.data.line;
+      command.data.line = '';
     });
   }
 }

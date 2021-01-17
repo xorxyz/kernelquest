@@ -66,6 +66,16 @@ export default Vue.extend({
         })
       })
     }
+  },
+  data () {
+    return {
+    }
+  },
+  methods: {
+    handleLine (line) {
+      console.log('handleline got line:', line)
+      // this.$ws.sendCommand({ line })
+    }
   }
 });
 </script>
