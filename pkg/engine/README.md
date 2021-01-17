@@ -2,6 +2,9 @@
 
 the xor4 engine.
 
+- entity-component-systems pattern
+- extensible
+
 # usage
 
 ```ts

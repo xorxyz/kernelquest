@@ -1,49 +1,29 @@
 # xor4
 
 this is the developer docs.
-for game design doc look in [`/notes`](/notes/README.md). 
+for game design doc look in [`/notes`](/notes/README.md).
 
-## engine
+packages:
 
-[`docs`](/pkg/engine/README.md). 
-
-- entity-component-systems pattern
-- extensible
-
-## client
-
-[`docs`](/pkg/client/README.md). 
-
-- served at `localhost:1234`
-- vue app, no router, 1 page
-- runs a local copy of the engine
-
-## api
-
-[`docs`](/pkg/api/README.md). 
-
-- served at `localhost:3000`
-- `UPGRADE /` websockets server, protected
-- `GET /login` send creds here to get a session
-- `GET /logout` destroy session
-
-## worker
-
-[`docs`](/pkg/worker/README.md). 
-
-- wip
-- processes the jobs
-- runs a copy of the engine
+1. [`engine`](/pkg/engine/README.md). 
+1. [`client`](/pkg/client/README.md). 
+1. [`api`](/pkg/api/README.md). 
+1. [`worker`](/pkg/worker/README.md). 
 
 ## redis
 
-- sessions
-- game state
-- job queues
+make sure it's running:
 
 ```
 docker run -it --rm redis redis-cli -h redis
 ```
+
+it stores: 
+
+1. sessions
+2. game state
+3. job queues
+
 
 ## localstack
 
