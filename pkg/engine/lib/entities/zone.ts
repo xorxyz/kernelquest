@@ -1,7 +1,7 @@
 import { EntityType } from '.';
 import { Entity } from '../../src/ecs';
 import BackstageComponent from '../components/backstage';
-import SceneComponent from '../components/scene';
+import SceneComponent from '../components/stage';
 import TransformComponent from '../components/transform';
 
 export default createZone;

@@ -3,13 +3,13 @@
     div.flex.flex-column.h-100.items-center
       div.w-100.h-100.flex
         main.w-100.h-100.b--blue.flex.justify-center
-          div.mr1.flex.flex-column.items-end
-            Player.mb2
-            Stats.w5
-          div.ml1.flex.flex-column
-            GameMap.mb2(:rows="rows")
+          div.flex.flex-column
+            GameMap(:rows="rows")
             Toolbar
             Terminal(@line="handleLine")
+          div.flex.flex-column.items-end
+            Paperdoll
+            Stats
 </template>
 
 <script lang="ts">
@@ -18,7 +18,7 @@ import Vue from 'vue';
 import Toolbar from './components/Toolbar.vue';
 import Terminal from './components/Terminal.vue';
 import GameMap from './components/GameMap.vue';
-import Player from './components/Player.vue';  
+import Paperdoll from './components/Paperdoll.vue';  
 import Stats from './components/Stats.vue';  
 
 const area = {
@@ -54,31 +54,17 @@ export default Vue.extend({
     Toolbar,
     Terminal,
     GameMap,
-    Player,
+    Paperdoll,
     Stats,
   },
   computed: {
     rows () {
-      console.log(this.$engine.findEntities(['transform', 'visual']))
-
       return Array(9).fill(Array(9).fill(0)).map((row, y) => {
         return row.map((_, x) => {
           const hash = area.rows[y][x]
           return area.entities[hash || '0']
         })
       })
-    }
-  },
-  data () {
-    return {
-      // rows: area.rows
-      //   .map(x => x.split('').map(id => area.entities[id]))
-    }
-  },
-  methods: {
-    handleLine (line) {
-      console.log('handleline got line:', line)
-      this.$ws.sendCommand({ line })
     }
   }
 });

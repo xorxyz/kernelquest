@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.br2.pa2(style="background-color: #0A0310;")
+  div.pa2(style="background-color: #0A0310;")
     div(ref="term" style="height: 11rem;")
 </template>
 

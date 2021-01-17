@@ -14,10 +14,6 @@ export default class CommandSystem extends GameSystem {
       console.log('entities:', this.entities, command);
       const entity = this.entitiesById[command.playerId];
 
-      if (!entity) {
-        throw new Error(`command system: could not found entity for: ${command}`);
-      }
-
       updateCommand(entity, command);
     });
   }

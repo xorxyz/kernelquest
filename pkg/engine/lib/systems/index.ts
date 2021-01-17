@@ -9,3 +9,5 @@ export enum SystemType {
   Stats = 'stats',
   Zone = 'zone'
 }
+
+export default {};

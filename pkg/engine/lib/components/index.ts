@@ -6,7 +6,7 @@ export enum ComponentType {
   Health = 'health',
   Intent = 'intent',
   Mana = 'mana',
-  Scene = 'scene',
+  Stage = 'stage',
   Stamina = 'stamina',
   Teleport = 'teleport',
   Transform = 'transform',

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.pa1.flex.w-100.f7.bg-white-20.mb1.br1
+  div.pa1.flex.w-100.f7.bg-white-20
     button.prevent.mh1(@click="login") login
     input.mh1.br1.bw0.pa1(:value="apiUrl")
     button.prevent.mh1(@click="step") step
@@ -28,7 +28,7 @@ export default Vue.extend({
   methods: {
     step () {
       this.$engine.update()
-      this.frame = this.$engine.frame
+      // this.frame = this.$engine.frame
     },
     login () {
       fetch(this.apiUrl + '/login', { credentials: 'include' })

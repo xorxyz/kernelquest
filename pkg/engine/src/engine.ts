@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
 import * as ecs from './ecs';
+
 import createWorldEntity from '../lib/entities/world';
 import createZoneEntity from '../lib/entities/zone';
 import createPlayerEntity from '../lib/entities/player';
@@ -34,9 +35,10 @@ export default class Engine extends EventEmitter {
     this.clock.pause();
     this.clock.reset();
 
-    this.entities = [];
-    this.systems = [];
-    this.commandQueue = [];
+    this.entities.length = 0;
+    this.systems.length = 0;
+
+    this.commandQueue.length = 0;
 
     this.create(createWorldEntity);
     this.create(createZoneEntity);
@@ -53,12 +55,16 @@ export default class Engine extends EventEmitter {
   update() {
     this.loadEntities();
 
-    this.commandQueue = this.commandQueue
-      .filter((action) => action?.frame === this.frame);
-
-    this.systems.forEach((system) => system.update(frame, this.commandQueue));
-
+    const queue = this.commandQueue.filter((c) => c?.frame === this.frame);
     const frame = this.frame++;
+
+    this.systems.forEach((system) => {
+      try {
+        system.update(frame, queue);
+      } catch (err) {
+        console.error('system error', system, err);
+      }
+    });
   }
 
   findEntities(types: Array<string>) {
