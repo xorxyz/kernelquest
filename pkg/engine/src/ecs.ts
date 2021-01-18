@@ -63,6 +63,9 @@ export abstract class GameSystem {
     this.componentTypes = types;
   }
 
+  abstract init (): void
+  abstract update (frame: number, commands: Array<IPlayerCommand>): void
+
   findSingletonComponent(componentType: ComponentType) {
     const entities = this.entities.filter((e) => e.components.has(componentType));
 
@@ -96,8 +99,6 @@ export abstract class GameSystem {
 
     return true;
   }
-
-  abstract update (frame: number, commands: Array<IPlayerCommand>): void
 }
 
 export type SystemComponentMap = Map<GameSystem, SystemComponents>

@@ -38,3 +38,6 @@ types
 7. comic reflection
   humor but shows bad idea decisions for what they are
   helps reduce idiot ideas
+
+# 🎃 jack the healer (tutor)
+

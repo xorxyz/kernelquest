@@ -3,3 +3,5 @@
 - paperdoll
 - inventory
 - spellbook
+- editor
+- browser

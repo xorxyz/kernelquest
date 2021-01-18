@@ -1,56 +1,52 @@
 🏕 campsite
-🏗 construction zone
 🏚 broken house
 🏠 house
 🏡 house with garden
-🏥 hospital
 🏦 bank 
-🏨 hotel
-🏭 factory
+🏟 stadium
+🏛 temple
 🏰 castle
 🎪 circus
 ⛺ tent
 ⛲ fountain
 🪐 planets
 ⭐ stars
-🏟 stadium
-🏛 temple
 
-💪 bicep
-🦾 Mechanical Arm
-🦿 Mechanical Leg
-🦵 Leg
-🦶 Foot
-👂 Ear
-🦻 Ear with Hearing Aid
-👃 Nose
-🧠 Brain
-🦷 Tooth
-🦴 Bone
-👀 Eyes
-👁️ Eye
-👅 Tongue
-👄 Mouth
+🦶 Foot (Walk)
+👀 Eyes (Look)
+👂 Ear (Listen)
+👄 Mouth (Say)
+
+💪 Bicep (Strength)
+🦵 Leg (Dexterity)
+🦴 Bone (Constitution)
+🧠 Brain (Intelligence)
+🦷 Tooth (Wisdom)
+👁️ Eye (Charisma)
+
+👅 Tongue 
 
 🧑 Person
-👱 Person: Blond Hair
-👨 Man
+🧓 Older Person
 🧔 Person: Beard
-👨‍🦰 Man: Red Hair
+🧑‍🦱 Person: Curly Hair
+🧑‍🦰 Person: Red Hair
+👱 Person: Blond Hair
+🧑‍🦳 Person: White Hair
+🧑‍🦲 Person: Bald
+
+👨 Man
+👴 Old Man
 👨‍🦱 Man: Curly Hair
+👨‍🦰 Man: Red Hair
+👱‍♂️ Man: Blond Hair
 👨‍🦳 Man: White Hair
 👨‍🦲 Man: Bald
+
 👩 Woman
-👩‍🦰 Woman: Red Hair
-🧑‍🦰 Person: Red Hair
-👩‍🦱 Woman: Curly Hair
-🧑‍🦱 Person: Curly Hair
-👩‍🦳 Woman: White Hair
-🧑‍🦳 Person: White Hair
-👩‍🦲 Woman: Bald
-🧑‍🦲 Person: Bald
-👱‍♀️ Woman: Blond Hair
-👱‍♂️ Man: Blond Hair
-🧓 Older Person
-👴 Old Man
 👵 Old Woman
+👩‍🦱 Woman: Curly Hair
+👩‍🦰 Woman: Red Hair
+👱‍♀️ Woman: Blond Hair
+👩‍🦳 Woman: White Hair
+👩‍🦲 Woman: Bald

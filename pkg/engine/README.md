@@ -20,3 +20,14 @@ systems.forEach(s => {
 engine.start();
 
 ```
+
+# systems
+
+every GameSystem subclass needs to implement the `init` and `update` functions.
+
+```ts
+init ()
+
+update ()
+
+``` 
