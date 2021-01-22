@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   aws:
-    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    container_name: "${LOCALSTACK_DOCKER_NAME-xor-localstack_main}"
     image: localstack/localstack
     ports:
       - "4566:4566"
@@ -21,7 +21,7 @@ services:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
 
   redis:
-    container_name: redis
+    container_name: redis-xor
     image: redis:6-alpine
     volumes:
       - ./data/redis:/data
