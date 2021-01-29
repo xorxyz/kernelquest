@@ -6,6 +6,7 @@ development docs is in [`the main README file`](../README.md).
 # what 
 
 - sandbox multiplayer puzzle game with light RPG mechanics
+- teach principles through play
 
 # tools
 
@@ -19,3 +20,7 @@ development docs is in [`the main README file`](../README.md).
 - https://www.gabrielgambetta.com/entity-interpolation.html
 - https://medium.com/@qingweilim/how-do-multiplayer-game-sync-their-state-part-2-d746fa303950
 - http://www.linusakesson.net/programming/tty/
+- [The Jargon File](http://www.catb.org/~esr/jargon/html/index.html) - hacker slang illuminating many aspects of hackish tradition, folklore, and humor. 
+- [Lions' Commentary on UNIX 6th Edition (PDF)](https://cs3210.cc.gatech.edu/r/unix6.pdf)
+- [Unix Operating System Source Code Level 6](http://www.v6.cuzuco.com/v6.pdf)
+- [Unix First Edition Manual pages](http://man.cat-v.org/unix-1st/)
