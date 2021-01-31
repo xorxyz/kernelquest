@@ -10,6 +10,7 @@ packages:
 1. [`engine`](/pkg/engine/README.md). 
 1. [`client`](/pkg/client/README.md). 
 1. [`api`](/pkg/api/README.md). 
+1. [`web`](/pkg/worker/README.md). 
 1. [`worker`](/pkg/worker/README.md). 
 
 ## redis
