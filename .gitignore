@@ -3,4 +3,4 @@ dist
 .cache
 build
 data/
-var
+var/redis
