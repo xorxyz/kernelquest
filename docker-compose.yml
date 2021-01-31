@@ -24,6 +24,6 @@ services:
     container_name: redis
     image: redis:6-alpine
     volumes:
-      - ./data/redis:/data
+      - ./var/redis:/data
     ports:
       - 6379:6379

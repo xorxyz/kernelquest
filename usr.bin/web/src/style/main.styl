@@ -1,0 +1,513 @@
+@import 'style/vendor/tachyons-custom-v4-9.styl'
+@import 'style/vendor/xterm.css'
+
+$pale=#D1D1D8
+$light=#414161
+$dark=#38344E //#303043
+$darker=#25203D//#1F1F33
+$light-purple=#7676FF
+$purple=#6464D8
+$blue=#357edd
+$darkest=#131023 // #181529 //#14142C
+
+$window=#1C1C35
+$term=#070714
+$sidebar=#14142C
+$border=#383865
+
+.bg-window
+  background-color: $window
+.bg-term
+  background-color: $term
+  ::-moz-selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+  ::selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+.bg-darkest
+  background-color: $darkest
+  
+.emoji
+  @extends .w1, .dib
+  &.is-large
+    @extends .w3
+    
+.is-icon
+  .emoji
+    width: 1.6rem !important
+    
+.is-medium
+  .emoji
+    @extends .w2
+    
+.is-large
+  .emoji
+    @extends .w3
+    
+.lh-0
+  line-height: 0
+
+.purple
+  color: $light-purple
+.hover-purple
+  transition: 0.3s
+.hover-purple:hover
+  transition: 0.3s
+  color: $light-purple
+
+.bg-sidebar
+  background-color: $sidebar
+.b--border
+  border-color: $border
+.b--purple
+  border-color: $purple
+.b--transparent
+  border-color: transparent
+  
+.border-box
+  box-sizing: border-box
+
+.shadow
+  box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2)
+
+.has-hover-no-filter
+  transition: 0.3s
+  
+.has-hover-no-filter:hover
+  -webkit-filter: none !important
+  filter: none !important
+  transition: 1s
+
+body
+  overflow-y: scroll
+
+#app
+  @extends .pt5
+  min-height: 100vh
+  font-family: 'Nunito Sans', sans-serif
+
+#nav
+  @extends .fixed, .top-0
+  height: 4rem
+  .tab
+    border-color: $darkest
+    &.is-active
+      border-color: $purple
+
+#content
+  min-height: calc(75vh - 4rem/2)
+  height: 100%
+  font-size: 21px
+
+#footer
+  // min-height: calc(25vh - 4rem/2)
+  min-height: calc(15vh)
+
+#mobile-only
+  width: 100vw
+  height: 100vh
+  font-size: 21px
+  padding: 1rem
+  opacity: 0
+  display: none
+
+@media only screen and (max-width: 960px)
+  #app
+    display: none
+    opacity: 0
+  #mobile-only
+    opacity: 1 
+    display: flex
+  
+
+::-moz-selection 
+  background: $dark
+  color: #fff
+::selection 
+  background: $dark
+  color: #fff
+
+.bg-darker
+  background-color: $darker
+  
+.bg-dark, .bg-darker, .bg-darkest
+  a
+    color: white
+  a:focus
+    color: white
+    
+
+.bg-white
+  a
+    color: $blue
+  a:focus
+    color: $blue
+    
+.b--darker 
+  border-color: $darker
+
+.b--light
+  border-color: $light
+  
+.bg-light
+  background-color: $light
+
+.bg-dark
+  background-color: $dark
+  
+.bg-purple
+  background-color: $purple
+
+.container
+  width: 1096px
+
+.card
+  @extends .bg-dark, .br3, .mv4
+  @extends .mb4
+  padding: 2rem
+  box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2)
+
+.equip-row
+  @extends .flex, .flex-row, .items-center, .mb3
+
+.equip-box
+  @extends .ba, .bw1, .br2, .b--black-40
+  @extends .w3, .h3, .mh2
+  @extends .bg-dark
+  @extends .flex, .justify-center, .items-center
+  @extends .f2
+  cursor: move
+  cursor: -webkit-grab
+  cursor: -moz-grab
+  cursor: grab
+  transition: 0.15s
+  &.small
+    @extends .w2, .h2
+    @extends .f4
+    background: none
+    border: none
+  &:hover
+    @extends .bg-white-10
+    transition: 0.15s
+
+.panel
+  .is-selected
+    border-left-color: white
+
+.table
+  tr
+    @extends .lh-copy
+    @extends .f4
+    th:not(:nth-child(1))
+      @extends .ph2
+    
+  tbody tr
+    transition: 0.3s
+    @extends .mb2
+    td
+      @extends .ph3, .pv2
+  &.is-striped
+    tbody tr
+        &:nth-child(odd)
+          @extends .bg-dark
+          &:hover
+            // @extends .bg-white-20
+            transition: 0.3s
+      &.has-hover
+        &:hover
+          // @extends .bg-white-10
+          transition: 0.3s
+
+select
+  @extends .h2,.mv2,.w-100,.bw1,.b--solid,.br2,.f3,.fw3
+
+.button
+  @extends .bg-blue, .pv1, .ph3, .br3
+  cursor: pointer
+  box-shadow: 0px 7px 0px 0px rgba(0,0,0,0.3)
+  display:inline-block
+  &.is-secondary
+    @extends .bg-darker
+    box-shadow: 0px 7px 0px 0px rgba(0,0,0,0.5)
+  &:hover
+    animation: btn 0.15s ease 0.05s both
+  
+.button:disabled, form:invalid .button
+  background-color: #777
+  cursor: not-allowed
+  transform: translate(0px, 3px)
+  box-shadow: 0px 4px 0px 0px rgba(0,0,0,0.3)
+  &:hover
+    animation: none
+
+@keyframes btn
+  0%
+    transform: translate(0px, 0px)
+  100%
+    transform: translate(0px, 3px)
+    box-shadow: 0px 4px 0px 0px rgba(0,0,0,0.3)
+
+.avatar
+  @extends .w2, .h2
+  @extends .dib 
+  @extends .br-pill, .ba, .bw1, .b--border
+  background-color: $light
+  background-image: url('/kareniel.png?set=set5&gravatar=yes') 
+  background-size: contain
+  transition: 0.3s
+  &.is-empty
+    background-image: url('/empty-avatar.png') !important
+    
+
+ul.list li ul li
+  list-style-type:none
+  
+.monospace
+  font-family: monospace !important
+
+$progressbar-height=0.7rem
+
+progress 
+  display: inline-block
+  border-radius: 10px
+  height: $progressbar-height
+
+progress::-webkit-progress-bar
+  height: $progressbar-height
+  @extends .ba, .bw0, .b--black-20
+  box-sizing: border-box
+  border-radius: 10px
+  @extends .bg-black-30
+
+progress::-webkit-progress-value
+  height: $progressbar-height
+  background-color: $pale
+  border: 1px solid $light
+  border-radius: 10px
+
+.skilltree
+  li
+    line-height: 2rem
+    
+.grayscale
+  -webkit-filter: grayscale(100%)
+  filter: grayscale(100%)
+  
+.bluescale
+  filter: sepia(100%) hue-rotate(190deg) brightness(80%) saturate(500%)
+.redscale
+  filter: sepia(100%) hue-rotate(280deg) brightness(45%) saturate(1000%) 
+.purplescale
+  filter: sepia(100%) hue-rotate(220deg) brightness(60%) saturate(400%) 
+
+.flipped
+  transform: scale(-1, -1)
+
+.rotate-45
+  transform: rotate3d(0, 0, 1, 0deg)
+  
+.rotate-90
+  transform: rotate(0, 0, 1, 90deg)
+  
+.tag
+  @extends .bg-darkest, .ph3, .pv1, .dib, .mr2, .mv2, .br3
+  color: white
+  cursor: pointer
+  transition: 0.15s
+  &:hover
+    @extends .bg-term 
+    transition: 0.15s
+    
+.animated-ellipsis span
+  animation-name: blinking
+  animation-duration: 0.8s
+  animation-iteration-count: infinite
+  animation-fill-mode: both
+    
+.animated-ellipsis span:nth-child(1)
+  opacity: 0
+.animated-ellipsis span:nth-child(2)
+  opacity: 0
+  animation-delay: .2s
+.animated-ellipsis span:nth-child(3)
+  opacity: 0
+  animation-delay: .4s
+  
+@keyframes blinking
+  from
+    opacity: 1
+  49%
+    opacity: 1
+  50% 
+    opacity: 0
+
+.brtl3
+  border-top-left-radius: 0.5rem
+.brtr3
+  border-top-right-radius: 0.5rem
+.brbl3
+  border-bottom-left-radius: 0.5rem
+.brbr3
+  border-bottom-right-radius: 0.5rem
+
+.window
+  @extends .bg-darker, .shadow
+  
+a:hover .avatar
+  @extends .b--white
+  transition: 0.3s
+
+#user-menu-dropdown 
+  @extends .dn
+input[type="checkbox"]#user-menu-toggle:checked ~ #user-menu-dropdown
+  @extends .flex
+
+
+.hover-bg-purple
+  transition: 0.3s
+
+.hover-bg-purple:hover
+  transition: 0.3s
+  background-color: $purple
+  color: white
+
+.rotating
+  animation: 2s rotating linear infinite 
+
+@keyframes rotating
+  from
+    transform: rotate3d(0, 0, 1, 0deg)
+  to
+    transform: rotate3d(0, 0, 1, 360deg)
+
+.slide-down-enter-active
+  animation: slide-down-in 0.3s ease-out
+  animation-fill-mode: both
+
+.slide-down-leave-active 
+  animation: slide-down-in .3s ease-in reverse
+  animation-fill-mode: both
+
+@keyframes slide-down-in 
+  0%
+    transform: translate(0, -100%)
+    height: 0px
+    opacity: 0
+  100% 
+    transform: translate(0, 0%)
+    height: 4rem
+    opacity: 1
+
+.slide-up-enter-active
+  animation: slide-up-in 0.1s 0s ease-out
+  animation-fill-mode: both
+
+.slide-up-leave-active 
+  animation: slide-up-in 0.1s 0s ease-in reverse
+  animation-fill-mode: both
+
+@keyframes slide-up-in 
+  0%
+    transform: translate(0, 100%)
+    opacity: 0
+  100% 
+    transform: translate(0, 0)
+    opacity: 1
+
+.fade-enter-active
+  animation: fade-in 0.1s 0s ease-out
+  animation-fill-mode: both
+
+.fade-leave-active 
+  animation: fade-in 0.1s 0s ease-in reverse
+  animation-fill-mode: both
+
+@keyframes fade-in 
+  0%
+    opacity: 0
+  100% 
+    opacity: 1
+
+.error-enter-active
+  animation: error 0.35s 0s ease-out
+  animation-fill-mode: both
+
+.error-leave-active 
+  animation: error 0.5s 0s ease-in reverse
+  animation-fill-mode: both
+
+@keyframes error 
+  0%
+    opacity: 0
+    transform: translate3d(0, -30%, 0)
+  60% 
+    transform: translate3d(0, 5%, 0)
+  80% 
+    transform: translate3d(0, -2.5%, 0)
+  100% 
+    opacity: 1
+    transform: translate3d(0, 0, 0)
+
+
+.pushdown
+  transition: 1.1s ease-out
+  @extends .mt5
+  
+.button.is-primary
+  @extends .bg-purple
+
+.button.is-loading
+  color: transparent
+  position: relative
+
+.button.is-loading:after
+  display: inline-block
+  content: ''
+  border: 4px solid white
+  width: 1rem
+  height: 1rem
+  border-radius: 999999px
+  border-right-color: transparent
+  border-top-color: transparent
+  position: absolute !important
+  left: calc(50% - (1rem / 2))
+  top: calc(50% - (1rem / 2))
+  animation: rotating 0.8s linear infinite
+
+input[type="text"], input[type="email"], input[type="password"] 
+  @extends .fw2,.f4,.w-100,.br2,.bw1,.b--solid,.b--black-30,.mv2,.pa1
+  &:focus
+    outline-color: $purple
+  &:focus:required:invalid
+    animation: grey-to-red 3s 5s ease-out
+    animation-fill-mode: both
+  &:required:valid
+    @extends .b--black-30
+  
+.notification
+  @extends .top-0, .right-0, .ma3, .ph4, .pv4
+  @extends .bg-red, .white, .z-5, .shadow
+  transition: 0.3s
+  &:hover
+    opacity: 0.9
+    transition: 0.3s
+    cursor: pointer
+
+@keyframes grey-to-red
+  from
+    border-color: rgba(0, 0, 0, 0.3)
+  to
+    border-color: #EA0101
+
+.notifications
+  pointer-events: none
+  @extends .fixed, .vh-100, .vh-100, .z-5, .right-0, .top-0
+  .notification
+    pointer-events: auto
+
+.pe-none
+  pointer-events: none
+
+.pe-auto
+  pointer-events: auto
