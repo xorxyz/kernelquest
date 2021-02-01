@@ -24,11 +24,8 @@
   ................................  R empty
   ................................  A empty
 
-
-9x 60 characters lines                                      ;
+8x 60 characters lines                                      ;
                                                             ;
-There is a sign here you can read.                          ;
-A wooden chest is here                                      ;  
                                                             ;  L 99
                                                             ;  X 100%
                                                             ;  H 100%
@@ -37,14 +34,6 @@ A wooden chest is here                                      ;
                                                             ;  $ 100000000
 $_
 ```
-
-Testycre's workroom [e,d]
-You are standing in the workroom of the mighty Testycre!
-You may return to the Creators' Hall by going down.
-A sample room is east.
-There is a sign here you can read.
-There is a sheet here you can read.
-A wooden chest is here.
 
 # notes
 
