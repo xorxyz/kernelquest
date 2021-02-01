@@ -1,5 +1,5 @@
-import { Actor } from "./actors"
-import { Item } from "./items"
+import { Actor } from './actors';
+import { Item } from './items';
 
 enum Heading { North, East, South, West }
 
@@ -8,7 +8,7 @@ export class Port {
 }
 
 export class Cell {
-  actor?: Actor 
+  actor?: Actor
   stack: Array<Item>
   ports: Array<Port>
 }

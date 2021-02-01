@@ -1,20 +1,20 @@
-import { Player } from './actors'
-import { Cell, Room } from "./places"
-import { soundBuffer } from './sound'
-import { GameLog, prompt } from './ui'
+import { Player } from './actors';
+import { Cell } from './places';
+import { soundBuffer } from './sound';
+import { GameLog, prompt } from './ui';
 
-const logs = new GameLog()
-const player = new Player()
-const ctx = { 
-  room: { 
-    name: 'King Valley', 
-    layout: new Array(8).fill(0).map(z => 
-      new Array(8).fill(0).map(z => new Cell())) 
-  }, 
-  moon: '2nd 1/2' 
-}
+const logs = new GameLog();
+const player = new Player();
+const ctx = {
+  room: {
+    name: 'King Valley',
+    layout: new Array(8).fill(0).map(() => new Array(8).fill(0).map(() => new Cell())),
+  },
+  moon: '2nd 1/2',
+};
 
-const template = `^xor4  ${player.name} @ ${ctx.room.name}  T 2038, ${ctx.moon} 
+// eslint-disable-next-line import/prefer-default-export
+export const template = `^xor4  ${player.name} @ ${ctx.room.name}  T 2038, ${ctx.moon} 
 ${soundBuffer}
 
   ${ctx.room.layout[0]}  ${player.emoji.bytes}
@@ -35,4 +35,4 @@ ${logs.buffer[5]}  S ${player.sp}%
 ${logs.buffer[6]}  M ${player.mp}%
 ${logs.buffer[7]}  $ ${player.gp}
 ${prompt}
-`
+`;

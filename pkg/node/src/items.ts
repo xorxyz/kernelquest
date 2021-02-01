@@ -4,9 +4,9 @@ export class Item {
   owner: Actor
 }
 
-export abstract class Weapon extends Item {} 
-export abstract class Clothing extends Item {} 
-export abstract class Relic extends Item {} 
+export abstract class Weapon extends Item {}
+export abstract class Clothing extends Item {}
+export abstract class Relic extends Item {}
 
 /* generates random values, costs mana to use */
 export class DiceItem extends Item {

@@ -33,6 +33,7 @@ export default class Engine extends EventEmitter {
     return this.frame;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   update() {
 
   }

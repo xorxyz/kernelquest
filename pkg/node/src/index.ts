@@ -1,5 +1,5 @@
-import Engine from "./engine";
+import Engine from './engine';
 
-const engine = new Engine()
+const engine = new Engine({});
 
-engine.start()
+engine.start();
