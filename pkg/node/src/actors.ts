@@ -1,5 +1,5 @@
 import { Item } from './items';
-import { Vector } from './math';
+import { Vector } from '../lib/math';
 import { Health, Stamina, Mana, Job, Gold, Emoji } from './caps';
 import { Weapon, Clothing, Relic } from './items';
 
