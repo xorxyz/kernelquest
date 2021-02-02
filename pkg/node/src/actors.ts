@@ -3,7 +3,7 @@ import {
 } from './items';
 import {
   Health, Stamina, Mana, Wealth, Look, Transform,
-} from './caps';
+} from './capabilities';
 import { Job } from './jobs';
 import { Action } from './actions';
 

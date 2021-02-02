@@ -1,6 +1,6 @@
 import { Stack } from '../lib/stack';
 import { Actor } from './actors';
-import { Port, Transform } from './caps';
+import { Port, Transform } from './capabilities';
 import { Item } from './items';
 
 /*

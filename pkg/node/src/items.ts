@@ -1,5 +1,5 @@
 import { Actor } from './actors';
-import { Durability } from './caps';
+import { Durability } from './capabilities';
 import { Spell } from './spells';
 
 export abstract class Item {
