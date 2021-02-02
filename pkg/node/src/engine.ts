@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import Clock from './clock';
+import { World } from './places';
 
 const DEFAUT_CLOCK_RATE = 1 / 2;
 
@@ -10,6 +11,8 @@ export interface EngineOptions {
 export default class Engine extends EventEmitter {
   private clock: Clock
   private frame: number = 0
+
+  private world: World
 
   constructor(opts: EngineOptions) {
     super();

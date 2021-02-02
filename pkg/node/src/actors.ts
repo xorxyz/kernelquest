@@ -1,27 +1,28 @@
 import {
-  Item, Weapon, Clothing, Relic,
+  Item, Weapon, Clothes, Relic,
 } from './items';
 import { Vector } from '../lib/math';
 import {
-  Health, Stamina, Mana, Job, Gold, Emoji,
+  Health, Stamina, Mana, Wealth, Look, HasHealth,
 } from './caps';
+import { Job } from './jobs';
 
-export class Actor {
+export class Actor implements HasHealth {
   name: string
   job: Job
 
-  emoji: Emoji
-  hp: Health
-  sp: Stamina
-  mp: Mana
-  gp: Gold
+  look: Look
+  health: Health
+  stamina: Stamina
+  mana: Mana
+  wealth: Wealth
 
   position: Vector
   velocity: Vector
   direction: Vector
 
   wield: Weapon | null
-  wear: Clothing | null
+  wear: Clothes | null
   hold: Relic | null
 
   items: Array<Item>

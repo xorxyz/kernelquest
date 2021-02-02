@@ -1,38 +1,45 @@
-/* actor capabilities */
+/*  capabilities  */
 
-export abstract class Job {
-  name: string
-  level: number
-  xp: number
+/* Unique identifiers */
+export class Id {
+  id: string
 }
 
-/* player jobs */
-export class FarmerJob extends Job {}
-export class FairyJob extends Job {}
-export class WizardJob extends Job {}
-export class ElfJob extends Job {}
-
-/* what something looks like */
-export class Emoji {
-  bytes: string
+/* What a thing looks like */
+export class Look {
+  emoji?: string
+  description: string
 }
 
-/* chance of crashing */
-export class Health {
-  current: number
+export abstract class Points {
+  value: number = 100
+  cap: number = 99999999
+
+  increase(amount: number) {
+    this.value = Math.min(this.value + amount, this.cap);
+  }
+
+  decrease(amount: number) {
+    this.value = Math.max(this.value - amount, 0);
+  }
 }
 
-/* chance of failing a throw */
-export class Stamina {
-  current: number
+/* Determines if you are alive or dead. */
+export class Health extends Points {}
+
+/* Throttles the actor's actions every turn. */
+export class Stamina extends Points {}
+
+/* Limits the kind of program you are allowed to run.  */
+export class Mana extends Points {}
+
+/* Points to buy things. */
+export class Wealth extends Points {}
+
+export interface HasHealth {
+  health: Health
 }
 
-/* compute credits */
-export class Mana {
-  current: number
-}
-
-/* buy things */
-export class Gold {
-  current: number
+export interface HasMana {
+  mana: Mana
 }

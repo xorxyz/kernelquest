@@ -1,3 +1,4 @@
+import { Vector } from '../lib/math';
 import { Actor } from './actors';
 import { Item } from './items';
 
@@ -8,9 +9,14 @@ export class Port {
 }
 
 export class Cell {
-  actor?: Actor
+  position: Vector
   stack: Array<Item>
   ports: Array<Port>
+  actor?: Actor
+
+  constructor(x: number, y: number) {
+    this.position = new Vector(x, y);
+  }
 }
 
 export class Room {
@@ -24,10 +30,13 @@ export abstract class Place {
   width: number = 8
 }
 
+export class World {
+  places: Array<Place>
+  width: number = 8
+}
+
 export class Town extends Place {}
 
 export class Dungeon extends Place {}
 
 export class Zone extends Place {}
-
-export class World extends Place {}
