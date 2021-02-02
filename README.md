@@ -1,7 +1,5 @@
 # xor4
 
-this fs is made to be overlaid with another unix-like fs. 
-
 this is the developer docs.
 for game design doc look in [`/notes`](/notes/README.md).
 
