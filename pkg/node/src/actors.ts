@@ -3,7 +3,7 @@ import {
 } from './items';
 import { Vector } from '../lib/math';
 import {
-  Health, Stamina, Mana, Wealth, Look,
+  Health, Stamina, Mana, Wealth, Look, Transform,
 } from './caps';
 import { Job } from './jobs';
 
@@ -11,15 +11,13 @@ export class Actor {
   name: string
   job: Job
 
+  transform: Transform
+
   look: Look
   health: Health
   stamina: Stamina
   mana: Mana
   wealth: Wealth
-
-  position: Vector
-  velocity: Vector
-  direction: Vector
 
   wield: Weapon | null
   wear: Clothes | null

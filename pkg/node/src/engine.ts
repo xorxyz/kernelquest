@@ -38,6 +38,16 @@ export default class Engine extends EventEmitter {
 
   // eslint-disable-next-line class-methods-use-this
   update() {
+    this.world.zones.forEach((zone) => {
+      zone.rooms.forEach((room) => {
+        room.cells.forEach((cell) => {
+          const { actor } = cell;
 
+          if (!actor) return;
+
+          actor.transform.position.add(actor.transform.velocity);
+        });
+      });
+    });
   }
 }

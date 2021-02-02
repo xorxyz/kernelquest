@@ -1,10 +1,10 @@
 import { Actor } from './actors';
-import { Health } from './caps';
+import { Durability } from './caps';
 import { Spell } from './spells';
 
 export abstract class Item {
   owner: Actor
-  health: Health
+  durability: Durability
 
   abstract use(user, target?): Boolean
 }

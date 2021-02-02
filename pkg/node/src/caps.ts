@@ -1,11 +1,26 @@
 /*  capabilities  */
 
+import { Vector } from '../lib/math';
+import { Heading } from './constants';
+
 /* Unique identifiers */
 export class Id {
   id: string
 }
 
-/* What a thing looks like */
+/* Where is it? */
+export class Transform {
+  direction: Heading
+  position: Vector
+  velocity: Vector
+}
+
+/* Connect things to other things */
+export class Port {
+  value: number | null
+}
+
+/* What it looks like */
 export class Look {
   emoji?: string
   description: string
@@ -36,10 +51,17 @@ export class Mana extends Points {}
 /* Points to buy things. */
 export class Wealth extends Points {}
 
+/* Items break. */
+export class Durability extends Points {}
+
 export interface HasHealth {
   health: Health
 }
 
 export interface HasMana {
   mana: Mana
+}
+
+export interface ITargetable {
+  id: Id
 }
