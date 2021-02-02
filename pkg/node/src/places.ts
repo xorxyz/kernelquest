@@ -21,6 +21,7 @@ export class Cell {
 export abstract class Room {
   name: String
   readonly cells: Array<Cell>
+  readonly actors: Array<Actor>
 }
 
 export class EmptyRoom extends Room {}

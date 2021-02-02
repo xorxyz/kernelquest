@@ -1,4 +1,7 @@
 import { EventEmitter } from 'events';
+import { Vector } from '../lib/math';
+import { Action } from './actions';
+import { Actor } from './actors';
 import Clock from './clock';
 import { World } from './places';
 
@@ -38,16 +41,22 @@ export default class Engine extends EventEmitter {
 
   // eslint-disable-next-line class-methods-use-this
   update() {
-    this.world.zones.forEach((zone) => {
-      zone.rooms.forEach((room) => {
-        room.cells.forEach((cell) => {
-          const { actor } = cell;
+    const actions: Array<Action> = [];
 
-          if (!actor) return;
+    this.world.zones.forEach(({ rooms }) => {
+      rooms.forEach(({ actors }) => {
+        actors.forEach((actor: Actor) => {
+          const action = actor.takeTurn();
 
-          actor.transform.position.add(actor.transform.velocity);
+          if (action) {
+            actions.push(action);
+          }
         });
       });
     });
   }
+}
+
+function isWithinBounds(v: Vector) {
+  return v.x >= 0 && v.x < 8 && v.y >= 0 && v.y < 8;
 }

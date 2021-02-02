@@ -1,13 +1,13 @@
 import {
   Item, Weapon, Clothes, Relic,
 } from './items';
-import { Vector } from '../lib/math';
 import {
   Health, Stamina, Mana, Wealth, Look, Transform,
 } from './caps';
 import { Job } from './jobs';
+import { Action } from './actions';
 
-export class Actor {
+export abstract class Actor {
   name: string
   job: Job
 
@@ -24,9 +24,30 @@ export class Actor {
   hold: Relic | null
 
   items: Array<Item>
+
+  abstract takeTurn(): Action | null
 }
 
-export class Critter extends Actor {}
-export class Player extends Actor {}
-export class Monster extends Actor {}
-export class NPC extends Actor {}
+export class Critter extends Actor {
+  takeTurn() {
+    return null;
+  }
+}
+
+export class Player extends Actor {
+  takeTurn() {
+    return null;
+  }
+}
+
+export class Monster extends Actor {
+  takeTurn() {
+    return null;
+  }
+}
+
+export class NPC extends Actor {
+  takeTurn() {
+    return null;
+  }
+}
