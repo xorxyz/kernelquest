@@ -3,11 +3,11 @@ import {
 } from './items';
 import { Vector } from '../lib/math';
 import {
-  Health, Stamina, Mana, Wealth, Look, HasHealth,
+  Health, Stamina, Mana, Wealth, Look,
 } from './caps';
 import { Job } from './jobs';
 
-export class Actor implements HasHealth {
+export class Actor {
   name: string
   job: Job
 
