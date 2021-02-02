@@ -4,8 +4,18 @@ export abstract class Job {
   xp: number
 }
 
-/* player jobs */
-export class FarmerJob extends Job {}
-export class FairyJob extends Job {}
-export class WizardJob extends Job {}
-export class ElfJob extends Job {}
+export class FarmerJob extends Job {
+  name: 'farmer'
+}
+
+export class FairyJob extends Job {
+  name: 'fairy'
+}
+
+export class WizardJob extends Job {
+  name: 'wizard'
+}
+
+export class ElfJob extends Job {
+  name: 'elf'
+}
