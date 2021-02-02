@@ -4,7 +4,7 @@ import { Port, Transform } from './capabilities';
 import { Item } from './items';
 
 /*
- * world > zone > room > cell
+ * Cell -> Room -> Zone -> World
  */
 
 export class Cell {
