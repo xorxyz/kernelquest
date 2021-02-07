@@ -1,3 +1,7 @@
+/*
+ * the engine generates views to send to players
+ */
+
 import { Player, Monster } from './actors';
 
 type Caster = Player | Monster

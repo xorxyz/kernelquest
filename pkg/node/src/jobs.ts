@@ -1,3 +1,7 @@
+/*
+ * Actors can have a job, gain xp and level up.
+ */
+
 export abstract class Job {
   name: string
   level: number

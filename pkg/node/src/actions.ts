@@ -1,3 +1,7 @@
+/*
+ * actors can take actions
+ */
+
 import { Vector } from '../lib/math';
 
 export abstract class Action {

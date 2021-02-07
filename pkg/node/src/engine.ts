@@ -1,3 +1,7 @@
+/*
+ * the game engine
+ */
+
 import { EventEmitter } from 'events';
 import { Vector } from '../lib/math';
 import { Action } from './actions';
@@ -39,7 +43,6 @@ export default class Engine extends EventEmitter {
     return this.frame;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   update() {
     const actions: Array<Action> = [];
 

@@ -1,3 +1,8 @@
+/*
+ *  simple clock
+ *
+ */
+
 import { EventEmitter } from 'events';
 
 export default class Clock extends EventEmitter {

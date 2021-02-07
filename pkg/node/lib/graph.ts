@@ -1,4 +1,4 @@
-interface INode {
+export interface INode {
   value: any,
   edges: Array<INode>
 }

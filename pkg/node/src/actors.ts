@@ -1,3 +1,8 @@
+/*
+ * living entities are called actors
+ *
+ */
+
 import {
   Item, Weapon, Clothes, Relic,
 } from './items';
@@ -46,7 +51,7 @@ export class Monster extends Actor {
   }
 }
 
-export class NPC extends Actor {
+export class Npc extends Actor {
   takeTurn() {
     return null;
   }

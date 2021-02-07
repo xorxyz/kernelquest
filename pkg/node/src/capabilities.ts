@@ -1,4 +1,6 @@
-/*  capabilities  */
+/*
+ * actors have capabilities
+ */
 
 import { Vector } from '../lib/math';
 import { Heading } from './constants';

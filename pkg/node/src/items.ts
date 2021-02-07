@@ -1,3 +1,7 @@
+/*
+ * actors can take actions every tick
+ */
+
 import { Actor } from './actors';
 import { Durability } from './capabilities';
 import { Spell } from './spells';

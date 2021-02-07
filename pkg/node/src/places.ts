@@ -1,11 +1,12 @@
+/*
+ * Places:
+ * Cell -> Room -> Zone -> World
+ */
+
 import { Stack } from '../lib/stack';
 import { Actor } from './actors';
 import { Port, Transform } from './capabilities';
 import { Item } from './items';
-
-/*
- * Cell -> Room -> Zone -> World
- */
 
 export class Cell {
   transform: Transform

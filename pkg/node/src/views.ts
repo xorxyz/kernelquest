@@ -1,3 +1,7 @@
+/*
+ * the engine generates views to send to players
+ */
+
 import { Player } from './actors';
 import { Cell } from './places';
 import { soundBuffer } from './sound';
