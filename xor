@@ -9,7 +9,7 @@ XOR_DIR="$(
 export XOR_DIR
 
 if [ "$1" = "" ]; then
-  SCRIPT="help"
+  SCRIPT="play"
 fi
 
 sh "$XOR_DIR/bin/$SCRIPT" "$@"

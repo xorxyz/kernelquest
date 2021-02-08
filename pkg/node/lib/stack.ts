@@ -1,7 +1,11 @@
 export class Stack<T> {
   list: Array<T>
 
-  push(value) {
+  constructor() {
+    this.list = [];
+  }
+
+  push(value: T) {
     this.list.push(value);
   }
 

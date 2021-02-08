@@ -10,11 +10,7 @@ export default class Shell {
     this.interpreter = new Interpreter();
   }
 
-  handleLine(line: string): Array<string> {
-    console.log('Shell: handleLine:', line);
-
-    const output = this.interpreter.eval(line);
-
-    return output;
+  handleLine(line: string) {
+    this.interpreter.eval(line);
   }
 }

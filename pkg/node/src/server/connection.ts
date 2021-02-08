@@ -28,12 +28,8 @@ export default class Connection extends EventEmitter {
 
     this.lineDiscipline.on('line', (line) => {
       this.socket?.write(`${line}`);
-      const outputs = this.shell.handleLine(line);
 
-      outputs.forEach((output) => {
-        console.log('output:', output);
-        this.socket?.write(output);
-      });
+      this.shell.handleLine(line);
     });
 
     this.lineDiscipline.on('SIGINT', () => {

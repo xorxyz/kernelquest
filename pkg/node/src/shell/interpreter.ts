@@ -1,36 +1,41 @@
+import { info } from 'console';
+import { debug } from '../../lib/logging';
 import { Stack } from '../../lib/stack';
-
-type Literal = number;
-type Operator = Function;
-type Quotation = Array<Literal | Operator>;
-
-type DataStack = Stack<Literal | Operator | Quotation>
+import {
+  DataStack,
+  StringLiteral,
+} from './types';
 
 export default class Interpreter {
   private stack: DataStack
 
-  eval(expr: string): Array<string> {
-    console.log('eval():', expr);
+  constructor() {
+    this.stack = new Stack();
+  }
 
-    const words = expr.split(' ').filter((x) => x !== ' ');
-    const outputs: Array<string> = [];
+  eval(expr: string) {
+    debug(`"${expr}" expr eval`);
 
-    console.log('words:', words);
+    const words = expr.split(' ').filter((x) => x);
 
-    words.forEach((word, i) => {
-      console.log('word:', i, word);
+    words.forEach((word) => {
       switch (word) {
         case '':
+          /* noop */
           break;
         case 'ping':
-          outputs.push('pong.');
+          this.stack.push(new StringLiteral('pong'));
+          break;
+        case 'dup':
+          this.stack.push(this.stack.peek());
+          break;
+        case 'ls':
+          info(this.stack.list.map((x) => `${x}\n`));
           break;
         default:
-          outputs.push('command unknown.');
+          console.error(`\`${word}\` "unhandled word"`);
           break;
       }
     });
-
-    return outputs;
   }
 }
