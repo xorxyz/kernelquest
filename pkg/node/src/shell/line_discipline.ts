@@ -1,13 +1,11 @@
 import { EventEmitter } from 'events';
 
 const ctrl = (str) => `\u001B${str}`;
-const prompt = '$ ';
 
 export default class LineDiscipline extends EventEmitter {
   line: string = ''
   history: Array<string>
   cursor: { x: number, y: number } = { x: 0, y: 0 }
-  mode: 'raw'|'cooked' = 'cooked'
 
   read() {
     return this.line;

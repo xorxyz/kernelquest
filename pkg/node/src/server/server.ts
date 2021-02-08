@@ -24,7 +24,7 @@ export default class GameServer {
       this.connections.delete(connection);
     });
 
-    connection.connect(socket);
+    connection.connect(this.engine, socket);
 
     this.connections.add(connection);
   }

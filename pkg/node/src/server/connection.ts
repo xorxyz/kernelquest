@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
 import { EventEmitter } from 'events';
+import { write } from 'fs';
 import Shell from '../shell/shell';
 import { debug } from '../../lib/logging';
 import LineDiscipline from '../shell/line_discipline';
+import Engine from '../engine/engine';
 
 export default class Connection extends EventEmitter {
   public connected = false
@@ -11,10 +13,8 @@ export default class Connection extends EventEmitter {
   private lineDiscipline: LineDiscipline | null = null
   private socket: Socket | null = null
 
-  connect(socket: Socket): void {
-    debug('client connected');
-
-    this.shell = new Shell();
+  connect(engine: Engine, socket: Socket): void {
+    this.shell = new Shell(engine);
     this.lineDiscipline = new LineDiscipline();
     this.socket = socket;
 
@@ -27,15 +27,18 @@ export default class Connection extends EventEmitter {
     });
 
     this.lineDiscipline.on('line', (line) => {
-      console.log(`line: ${line}`);
-      this.socket?.write(line);
+      this.socket?.write(`${line}`);
+      const outputs = this.shell.handleLine(line);
+
+      outputs.forEach((output) => {
+        console.log('output:', output);
+        this.socket?.write(output);
+      });
     });
 
     this.lineDiscipline.on('SIGINT', () => {
       this.socket?.end();
     });
-
-    this.lineDiscipline.clearLine();
 
     this.socket.on('end', this.onDisconnect.bind(this));
 
