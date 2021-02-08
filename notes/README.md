@@ -35,3 +35,4 @@ development docs is in [`the main README file`](../README.md).
 - [Comma is a Product: the Algebra of Concatenative Programming](https://suhr.github.io/papers/calg.html)
 - [Concatenative Programming: From Ivory to Metal](https://web.stanford.edu/class/ee380/Abstracts/171115-slides.pdf)
 - [The Theory of Concatenative Combinators](http://nsl.com/misc/papers/The%20Theory%20of%20Concatenative%20Combinators.htm)
+- [Mathematical foundations of Joy](http://www.kevinalbrecht.com/code/joy-mirror/j02maf.html)

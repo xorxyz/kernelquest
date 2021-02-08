@@ -1,0 +1,16 @@
+#!/bin/bash
+# print this help message
+
+SCRIPT_DIR="$XOR_DIR/bin"
+scripts=($(find $SCRIPT_DIR -type f -maxdepth 1))
+
+cat << EOF 
+available commands:
+
+EOF
+
+for script in "${scripts[@]}"; do
+  name=$(basename "$script")
+  definition=$(sed -n '2p' "$script" | sed 's/#//')
+  printf "%s\t %s\n" "$name" "$definition"
+done

@@ -3,7 +3,6 @@
  */
 
 import { EventEmitter } from 'events';
-import { Vector } from '../lib/math';
 import { Action } from './actions';
 import { Actor } from './actors';
 import Clock from './clock';
@@ -17,14 +16,14 @@ export interface EngineOptions {
 
 export default class Engine extends EventEmitter {
   private clock: Clock
-  private frame: number = 0
-
   private world: World
+  private frame: number = 0
 
   constructor(opts: EngineOptions) {
     super();
 
     this.clock = new Clock(opts.rate || DEFAUT_CLOCK_RATE);
+    this.world = new World();
 
     this.clock.on('tick', this.update.bind(this));
 
@@ -58,8 +57,4 @@ export default class Engine extends EventEmitter {
       });
     });
   }
-}
-
-function isWithinBounds(v: Vector) {
-  return v.x >= 0 && v.x < 8 && v.y >= 0 && v.y < 8;
 }

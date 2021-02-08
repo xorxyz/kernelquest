@@ -1,0 +1,16 @@
+#!/bin/bash
+# run the game client
+
+DELAY=3
+
+printf "xor4\n"
+
+while true
+do
+  clear
+  stty raw -echo
+  nc localhost 3000
+  printf "\ndisconnected. reconnecting..."
+  stty sane
+  sleep "$DELAY"
+done

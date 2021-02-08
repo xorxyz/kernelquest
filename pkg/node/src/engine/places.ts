@@ -1,9 +1,9 @@
 /*
  * Places:
- * Cell -> Room -> Zone -> World
+ * Cell -> Screen -> Zone -> World
  */
 
-import { Stack } from '../lib/stack';
+import { Stack } from '../../lib/stack';
 import { Actor } from './actors';
 import { Port, Transform } from './capabilities';
 import { Item } from './items';
@@ -19,18 +19,18 @@ export class Cell {
   }
 }
 
-export abstract class Room {
+export abstract class Screen {
   name: String
   readonly cells: Array<Cell>
   readonly actors: Array<Actor>
 }
 
-export class EmptyRoom extends Room {}
+export class EmptyScreen extends Screen {}
 
 export abstract class Zone {
   name: String
   size: number = 8
-  readonly rooms: Array<Room>
+  readonly rooms: Array<Screen>
 
   abstract $update(): void
 
@@ -66,4 +66,8 @@ export class Tower extends Zone {
 export class World {
   zones: Array<Zone>
   size: number = 1
+
+  constructor() {
+    this.zones = [];
+  }
 }

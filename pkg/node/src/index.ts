@@ -3,8 +3,14 @@
  * Copyright Diagonal Systems Inc.
  */
 
-import Engine from './engine';
+import Engine from './engine/engine';
+import GameServer from './server/server';
+
+const PORT = process.env.PORT || 3000;
 
 const engine = new Engine({});
+const server = new GameServer(engine);
 
-engine.start();
+server.listen(PORT, () => {
+  console.log('listening on', PORT);
+});

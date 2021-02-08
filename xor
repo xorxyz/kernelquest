@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SCRIPT=$1
+
+XOR_DIR="$( 
+  cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd 
+)"
+
+export XOR_DIR
+
+if [ "$1" = "" ]; then
+  SCRIPT="help"
+fi
+
+sh "$XOR_DIR/bin/$SCRIPT" "$@"
