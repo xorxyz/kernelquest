@@ -1,41 +1,42 @@
-import { info } from 'console';
+/*
+ * interpret the player's intention by evaluating expressions
+ */
+import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
 import { Stack } from '../../lib/stack';
-import {
-  DataStack,
-  StringLiteral,
-} from './types';
+import VirtualMachine from './vm';
+import { DataStack } from './types';
+import operators from './operators';
 
-export default class Interpreter {
+export default class Interpreter extends EventEmitter {
   private stack: DataStack
+  private vm: VirtualMachine
 
-  constructor() {
+  constructor(vm: VirtualMachine) {
+    super();
+
+    this.vm = vm;
     this.stack = new Stack();
   }
 
-  eval(expr: string) {
-    debug(`"${expr}" expr eval`);
-
+  eval(expr: string): DataStack {
+    debug(`$> ${expr}`);
     const words = expr.split(' ').filter((x) => x);
 
-    words.forEach((word) => {
-      switch (word) {
-        case '':
-          /* noop */
-          break;
-        case 'ping':
-          this.stack.push(new StringLiteral('pong'));
-          break;
-        case 'dup':
-          this.stack.push(this.stack.peek());
-          break;
-        case 'ls':
-          info(this.stack.list.map((x) => `${x}\n`));
-          break;
-        default:
-          console.error(`\`${word}\` "unhandled word"`);
-          break;
+    words.map((x) => x.replace('\n', '')).forEach((word) => {
+      if (!word) return;
+
+      const operator = operators[word];
+
+      if (operator) {
+        debug(`exec: '${word}'`);
+        operator(this.stack);
+      } else {
+        debug(`push: '${word}'`);
+        this.stack.push(word);
       }
     });
+
+    return this.stack;
   }
 }

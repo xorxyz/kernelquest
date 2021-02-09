@@ -1,16 +1,65 @@
-import Engine from '../engine/engine';
+/*
+ * the player's interface to the game
+ */
+import { Socket } from 'net';
+import VirtualMachine from './vm';
 import Interpreter from './interpreter';
+import Engine from '../engine/engine';
+import { render } from './view';
+import LineDiscipline from './line_discipline';
+
+interface IInputLog {
+  line: string
+}
 
 export default class Shell {
-  private engine: Engine
+  private vm: VirtualMachine
   private interpreter: Interpreter
+  private engine: Engine
+  private lineDiscipline: LineDiscipline
+  private socket: Socket
+  private logs: Array<IInputLog>
 
-  constructor(engine: Engine) {
+  constructor(engine: Engine, socket: Socket) {
     this.engine = engine;
-    this.interpreter = new Interpreter();
+    this.socket = socket;
+
+    this.lineDiscipline = new LineDiscipline();
+    this.vm = new VirtualMachine();
+    this.interpreter = new Interpreter(this.vm);
+
+    this.socket.on('data', (buf) => {
+      this.lineDiscipline.handleBuffer(buf);
+    });
+
+    this.lineDiscipline.on('write', (str) => {
+      this.socket.write(str);
+    });
+
+    this.lineDiscipline.on('line', (line) => {
+      if (line === '\u001b[2K\u001b[G') return;
+
+      this.socket.write(`${line}`);
+
+      this.handleLine(line);
+    });
+
+    this.lineDiscipline.on('SIGINT', () => {
+      this.socket.end();
+    });
   }
 
   handleLine(line: string) {
     this.interpreter.eval(line);
+    this.vm.stdout.push(line);
+
+    const cmds = render({
+      logs: this.vm.stdout,
+      input: this.lineDiscipline.line,
+    });
+
+    cmds.forEach((cmd) => {
+      this.socket.write(cmd);
+    });
   }
 }

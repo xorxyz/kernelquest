@@ -2,8 +2,8 @@
  * actors have capabilities
  */
 
-import { Vector } from '../lib/math';
-import { Heading } from './constants';
+import { Vector } from '../../lib/math';
+import { Heading } from '../constants';
 
 /* Unique identifiers */
 export class Id {

@@ -44,6 +44,8 @@
     "func-names": "off",
     "prefer-arrow-callback": "off",
     "import/prefer-default-export": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off"
   }
 }

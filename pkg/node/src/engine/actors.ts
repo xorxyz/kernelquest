@@ -14,44 +14,51 @@ import { Action } from './actions';
 
 export abstract class Actor {
   name: string
-  job: Job
+  abstract job: Job
 
-  transform: Transform
+  transform: Transform = new Transform()
 
-  look: Look
-  health: Health
-  stamina: Stamina
-  mana: Mana
-  wealth: Wealth
+  look: Look = new Look()
+  health: Health = new Health()
+  stamina: Stamina = new Stamina()
+  mana: Mana = new Mana()
+  wealth: Wealth = new Wealth()
 
-  wield: Weapon | null
-  wear: Clothes | null
-  hold: Relic | null
+  wield: Weapon | null = null
+  wear: Clothes | null = null
+  hold: Relic | null = null
 
-  items: Array<Item>
+  items: Array<Item> = []
 
   abstract takeTurn(): Action | null
 }
 
+class CritterJob extends Job {}
+class NoviceJob extends Job {}
+
 export class Critter extends Actor {
+  job = new CritterJob()
   takeTurn() {
     return null;
   }
 }
 
 export class Player extends Actor {
+  job = new NoviceJob()
   takeTurn() {
     return null;
   }
 }
 
 export class Monster extends Actor {
+  job = new NoviceJob()
   takeTurn() {
     return null;
   }
 }
 
 export class Npc extends Actor {
+  job = new NoviceJob()
   takeTurn() {
     return null;
   }

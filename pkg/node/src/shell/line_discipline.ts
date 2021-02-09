@@ -1,6 +1,9 @@
-import { EventEmitter } from 'events';
+/*
+ * edit lines before before evaluating them as expressions
+ */
 
-const ctrl = (str) => `\u001B${str}`;
+import { EventEmitter } from 'events';
+import * as ctrl from './control';
 
 export default class LineDiscipline extends EventEmitter {
   line: string = ''
@@ -22,7 +25,7 @@ export default class LineDiscipline extends EventEmitter {
     }
 
     this.cursor.x--;
-    this.emit('write', ctrl('[1D'));
+    this.emit('write', ctrl.cursor.moveLeft);
   }
 
   right() {
@@ -31,14 +34,11 @@ export default class LineDiscipline extends EventEmitter {
     }
 
     this.cursor.x++;
-    this.emit('write', ctrl('[1C'));
+    this.emit('write', ctrl.cursor.moveRight);
   }
 
   clearLine() {
-    const clearLine = ctrl('[2K');
-    const lineStart = ctrl('[G');
-
-    this.emit('line', clearLine + lineStart);
+    this.emit('line', ctrl.line.clear + ctrl.line.start);
   }
 
   submit() {
@@ -57,14 +57,12 @@ export default class LineDiscipline extends EventEmitter {
     this.line = [...chars.slice(0, x - 1), ...chars.slice(x)].join('');
     this.line = this.line.slice(0, this.line.length);
 
-    const moveLeft = ctrl('[1D');
-    const eraseRight = ctrl('[K');
     const rest = [...chars.slice(x)].join('');
 
-    let str = moveLeft + eraseRight + rest;
+    let str = ctrl.cursor.moveLeft + ctrl.cursor.eraseRight + rest;
 
     if (rest) {
-      const moveBackLeft = ctrl(`[${rest.length}D`);
+      const moveBackLeft = ctrl.escStr(`[${rest.length}D`);
       str += moveBackLeft;
     }
 
@@ -76,7 +74,7 @@ export default class LineDiscipline extends EventEmitter {
     const { x } = this.cursor;
     const str = x >= this.line.length
       ? key
-      : ctrl(`[1@${key}`);
+      : ctrl.escStr(`[1@${key}`);
 
     this.line = [...chars.slice(0, x), key, ...chars.slice(x)].join('');
     this.cursor.x++;

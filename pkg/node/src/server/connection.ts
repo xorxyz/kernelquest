@@ -9,32 +9,12 @@ import Engine from '../engine/engine';
 
 export default class Connection extends EventEmitter {
   public connected = false
-  private shell: Shell
-  private lineDiscipline: LineDiscipline | null = null
   private socket: Socket | null = null
+  private shell: Shell
 
   connect(engine: Engine, socket: Socket): void {
-    this.shell = new Shell(engine);
-    this.lineDiscipline = new LineDiscipline();
+    this.shell = new Shell(engine, socket);
     this.socket = socket;
-
-    this.socket.on('data', (buf) => {
-      this.lineDiscipline?.handleBuffer(buf);
-    });
-
-    this.lineDiscipline.on('write', (str) => {
-      this.socket?.write(str);
-    });
-
-    this.lineDiscipline.on('line', (line) => {
-      this.socket?.write(`${line}`);
-
-      this.shell.handleLine(line);
-    });
-
-    this.lineDiscipline.on('SIGINT', () => {
-      this.socket?.end();
-    });
 
     this.socket.on('end', this.onDisconnect.bind(this));
 
