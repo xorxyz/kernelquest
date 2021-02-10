@@ -1,4 +1,4 @@
-import { Vector } from '../../../lib/math';
+import { Vector } from '../../lib/math';
 import * as term from './term';
 
 export interface IState {

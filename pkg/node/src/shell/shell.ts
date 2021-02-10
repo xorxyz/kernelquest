@@ -5,9 +5,9 @@ import { Socket } from 'net';
 import VirtualMachine from './vm';
 import Interpreter from './interpreter';
 import Engine from '../engine/engine';
-import { render } from './ui/view';
-import { SIGINT, ENTER, InputField } from './ui/input';
-import * as term from './ui/term';
+import { render } from '../ui/view';
+import { SIGINT, ENTER, InputField } from '../ui/input';
+import * as term from '../ui/term';
 
 export const CURSOR_OFFSET = 3;
 

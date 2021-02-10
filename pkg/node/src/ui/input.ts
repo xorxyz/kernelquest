@@ -1,7 +1,7 @@
 /*
 * edit lines before before evaluating them as expressions
 */
-import { Vector } from '../../../lib/math';
+import { Vector } from '../../lib/math';
 
 export const ARROW_UP = '1b5b41';
 export const ARROW_DOWN = '1b5b42';
