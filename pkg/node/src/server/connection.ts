@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
 import { EventEmitter } from 'events';
-import { write } from 'fs';
 import Shell from '../shell/shell';
 import { debug } from '../../lib/logging';
-import LineDiscipline from '../shell/line_discipline';
 import Engine from '../engine/engine';
+import LineEditor from '../shell/ui/line_editor';
 
 export default class Connection extends EventEmitter {
   public connected = false

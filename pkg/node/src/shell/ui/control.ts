@@ -1,7 +1,13 @@
 export const ESC = '\u001B';
 export const escStr = (str: string) => `${ESC}${str}`;
 
+export const screen = {
+  clear: escStr('[2J'),
+};
+
 export const line = {
+  clearAfter: escStr('[0K'),
+  clearBefore: escStr('[1L'),
   clear: escStr('[2K'),
   start: escStr('[G'),
 };

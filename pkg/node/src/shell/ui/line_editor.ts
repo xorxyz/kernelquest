@@ -5,7 +5,7 @@
 import { EventEmitter } from 'events';
 import * as ctrl from './control';
 
-export default class LineDiscipline extends EventEmitter {
+export default class LineEditor extends EventEmitter {
   line: string = ''
   history: Array<string>
   cursor: { x: number, y: number } = { x: 0, y: 0 }
@@ -38,7 +38,8 @@ export default class LineDiscipline extends EventEmitter {
   }
 
   clearLine() {
-    this.emit('line', ctrl.line.clear + ctrl.line.start);
+    this.emit('write', ctrl.line.start);
+    this.emit('write', ctrl.line.clearAfter);
   }
 
   submit() {
@@ -97,7 +98,7 @@ export default class LineDiscipline extends EventEmitter {
     this.emit('SIGINT');
   }
 
-  handleBuffer(buf?: Buffer): void {
+  handleInput(buf?: Buffer): void {
     if (!buf) return;
 
     switch (buf.toString('hex')) {

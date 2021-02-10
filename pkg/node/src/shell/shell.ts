@@ -5,8 +5,9 @@ import { Socket } from 'net';
 import VirtualMachine from './vm';
 import Interpreter from './interpreter';
 import Engine from '../engine/engine';
-import { render } from './view';
-import LineDiscipline from './line_discipline';
+import { render } from './ui/view';
+import LineDiscipline from './ui/line_editor';
+import { ESC } from './ui/control';
 
 interface IInputLog {
   line: string
@@ -16,7 +17,6 @@ export default class Shell {
   private vm: VirtualMachine
   private interpreter: Interpreter
   private engine: Engine
-  private lineDiscipline: LineDiscipline
   private socket: Socket
   private logs: Array<IInputLog>
 
@@ -24,12 +24,13 @@ export default class Shell {
     this.engine = engine;
     this.socket = socket;
 
-    this.lineDiscipline = new LineDiscipline();
     this.vm = new VirtualMachine();
     this.interpreter = new Interpreter(this.vm);
 
+    this.lineEditor = new LineEditor();
+
     this.socket.on('data', (buf) => {
-      this.lineDiscipline.handleBuffer(buf);
+      this.lineDiscipline.handleInput(buf);
     });
 
     this.lineDiscipline.on('write', (str) => {
@@ -37,9 +38,10 @@ export default class Shell {
     });
 
     this.lineDiscipline.on('line', (line) => {
-      if (line === '\u001b[2K\u001b[G') return;
+      if (line.includes(ESC)) return;
+      console.log([line]);
 
-      this.socket.write(`${line}`);
+      this.socket.write(line);
 
       this.handleLine(line);
     });
