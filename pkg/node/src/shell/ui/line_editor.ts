@@ -3,132 +3,61 @@
  */
 
 import { EventEmitter } from 'events';
-import * as ctrl from './control';
+
+const ARROW_UP = '1b5b41';
+const ARROW_DOWN = '1b5b42';
+const ARROW_LEFT = '1b5b44';
+const ARROW_RIGHT = '1b5b43';
+const ENTER = '0d';
+const BACKSPACE = '7f';
 
 export default class LineEditor extends EventEmitter {
   line: string = ''
   history: Array<string>
   cursor: { x: number, y: number } = { x: 0, y: 0 }
 
-  read() {
-    return this.line;
-  }
-
-  resetBuffer() {
-    this.line = '';
-    this.cursor.x = 0;
-  }
-
-  left() {
-    if (this.cursor.x === 0) {
-      return;
-    }
-
-    this.cursor.x--;
-    this.emit('write', ctrl.cursor.moveLeft);
-  }
-
-  right() {
-    if (this.cursor.x === this.line.length) {
-      return;
-    }
-
-    this.cursor.x++;
-    this.emit('write', ctrl.cursor.moveRight);
-  }
-
-  clearLine() {
-    this.emit('write', ctrl.line.start);
-    this.emit('write', ctrl.line.clearAfter);
-  }
-
-  submit() {
-    this.emit('line', this.line);
-    this.resetBuffer();
-    this.clearLine();
-  }
-
-  backspace() {
-    if (!this.line.length) return;
-
+  handleInput(buf: Buffer): void {
     const chars = this.line.split('');
+    const key = buf.toString();
     const { x } = this.cursor;
-
-    this.cursor.x--;
-    this.line = [...chars.slice(0, x - 1), ...chars.slice(x)].join('');
-    this.line = this.line.slice(0, this.line.length);
-
-    const rest = [...chars.slice(x)].join('');
-
-    let str = ctrl.cursor.moveLeft + ctrl.cursor.eraseRight + rest;
-
-    if (rest) {
-      const moveBackLeft = ctrl.escStr(`[${rest.length}D`);
-      str += moveBackLeft;
-    }
-
-    this.emit('write', str);
-  }
-
-  char(key): void {
-    const chars = this.line.split('');
-    const { x } = this.cursor;
-    const str = x >= this.line.length
-      ? key
-      : ctrl.escStr(`[1@${key}`);
-
-    this.line = [...chars.slice(0, x), key, ...chars.slice(x)].join('');
-    this.cursor.x++;
-
-    this.emit('write', str);
-  }
-
-  prev() {
-    this.cursor.y--;
-  }
-
-  next() {
-    this.cursor.y++;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  tab() {}
-
-  sigInt() {
-    this.emit('SIGINT');
-  }
-
-  handleInput(buf?: Buffer): void {
-    if (!buf) return;
 
     switch (buf.toString('hex')) {
       case '03':
-        this.sigInt();
+        this.emit('SIGINT');
         break;
       case '09':
-        this.tab();
         break;
-      case '7f':
-        this.backspace();
+      case BACKSPACE:
+        if (!this.line.length) return;
+        this.cursor.x--;
+        this.line = [...chars.slice(0, x - 1), ...chars.slice(x)].join('');
+        this.line = this.line.slice(0, this.line.length);
         break;
-      case '1b5b41':
-        this.prev();
+      case ARROW_UP:
         break;
-      case '1b5b42':
-        this.next();
+      case ARROW_DOWN:
         break;
-      case '1b5b44':
-        this.left();
+      case ARROW_LEFT:
+        if (this.cursor.x === 0) return;
+        this.cursor.x--;
         break;
-      case '1b5b43':
-        this.right();
+      case ARROW_RIGHT:
+        if (this.cursor.x === this.line.length) return;
+        this.cursor.x++;
         break;
-      case '0d':
-        this.submit();
+      case ENTER:
+        this.line = '';
+        this.cursor.x = 0;
         break;
       default:
-        this.char(buf.toString());
+        this.line = [...chars.slice(0, x), key, ...chars.slice(x)].join('');
+        this.cursor.x++;
         break;
     }
+
+    this.emit('update', {
+      line: this.line,
+      cursor: this.cursor,
+    });
   }
 }
