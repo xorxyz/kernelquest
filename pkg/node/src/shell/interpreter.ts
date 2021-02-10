@@ -5,8 +5,18 @@ import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
 import { Stack } from '../../lib/stack';
 import VirtualMachine from './vm';
-import { DataStack } from './types';
-import operators from './operators';
+import { DataStack, BooleanLiteral } from './types';
+
+const operators = {
+  t: (stack: DataStack) => {
+    stack.push(new BooleanLiteral(true));
+    return stack;
+  },
+  f: (stack: DataStack) => {
+    stack.push(new BooleanLiteral(false));
+    return stack;
+  },
+};
 
 export default class Interpreter extends EventEmitter {
   private stack: DataStack

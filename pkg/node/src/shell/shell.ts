@@ -6,70 +6,70 @@ import VirtualMachine from './vm';
 import Interpreter from './interpreter';
 import Engine from '../engine/engine';
 import { render } from './ui/view';
-import LineEditor from './ui/line_editor';
+import { SIGINT, ENTER, InputField } from './ui/input';
 import * as term from './ui/term';
-import { debug } from '../../lib/logging';
 
-interface IInputLog {
-  line: string
-}
+export const CURSOR_OFFSET = 3;
 
 export default class Shell {
   private vm: VirtualMachine
   private interpreter: Interpreter
   private engine: Engine
-  private logs: Array<IInputLog>
-  private lineEditor: LineEditor
+  private input: InputField
   private socket: Socket | null = null
 
   constructor(engine: Engine) {
     this.engine = engine;
 
     this.vm = new VirtualMachine();
-    this.lineEditor = new LineEditor();
+    this.input = new InputField();
     this.interpreter = new Interpreter(this.vm);
   }
 
   connect(socket: Socket) {
     this.socket = socket;
 
-    this.socket.on('data', (buf) => {
-      this.lineEditor.handleInput(buf);
-    });
+    this.socket.on('data', this.handleInput.bind(this));
 
-    this.lineEditor.on('update', ({ line }) => {
-      if (!this.socket) {
-        debug('update: socket was missing');
-        return;
-      }
-
-      this.handleLine(line);
-    });
-
-    this.lineEditor.on('SIGINT', () => {
-      if (!this.socket) {
-        debug('SIGINT: socket was missing');
-        return;
-      }
-
-      this.socket.end();
-    });
+    this.render();
   }
 
-  handleLine(line: string) {
-    if (!this.socket) {
-      debug('handleLine: socket was missing');
+  handleInput(buf: Buffer) {
+    if (!this.socket) return;
+
+    const hexCode = buf.toString('hex');
+
+    if (hexCode === SIGINT) {
+      this.socket.end();
       return;
     }
 
-    this.vm.stdout.push(line);
-    this.interpreter.eval(line);
+    if (hexCode === ENTER) {
+      this.vm.stdout.push(this.input.line);
+      this.interpreter.eval(this.input.line);
+      this.render();
+    }
 
-    const bytes = render({
+    if (this.input.insert(buf)) {
+      this.socket.write(
+        term.cursor.setXY(CURSOR_OFFSET, 24) +
+        term.line.clearAfter +
+        this.input.line +
+        term.cursor.setXY(CURSOR_OFFSET + this.input.cursor.x, 24),
+      );
+    }
+  }
+
+  render() {
+    if (!this.socket) return;
+
+    const state = {
       logs: this.vm.stdout,
-      input: this.lineEditor.line,
-    });
+      input: this.input.line,
+    };
 
-    this.socket.write(bytes);
+    const output = render(state);
+
+    this.socket.write(output);
   }
 }
