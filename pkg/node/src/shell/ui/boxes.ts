@@ -1,5 +1,5 @@
 import { Vector } from '../../../lib/math';
-import * as ctrl from './control';
+import * as term from './term';
 
 export interface IState {
   logs: Array<string>,
@@ -23,13 +23,13 @@ export class UiBox {
   }
 
   print(state) {
-    const reset = ctrl.cursor.setXY(this.pos.x, this.pos.y);
+    const reset = term.cursor.setXY(this.pos.x, this.pos.y);
     const lines = this.render(state);
     const offset = (
-      ctrl.cursor.down(1) +
-      ctrl.line.start +
-      ctrl.cursor.right(this.pos.x - 1) +
-      ctrl.line.clearAfter
+      term.cursor.down(1) +
+      term.line.start +
+      term.cursor.right(this.pos.x - 1) +
+      term.line.clearAfter
     );
 
     return (

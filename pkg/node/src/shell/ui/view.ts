@@ -4,9 +4,9 @@
 import {
   IState, navBox, outputBox, promptBox, roomBox, sideBox, statsBox,
 } from './boxes';
-import * as ctrl from './control';
+import * as term from './term';
 
-export function render(state: IState): Array<string> {
+export function render(state: IState): string {
   const boxes = [
     navBox,
     roomBox,
@@ -18,6 +18,6 @@ export function render(state: IState): Array<string> {
 
   return [
     ...boxes.map((box) => box.print(state)),
-    ctrl.cursor.setXY(3, 24),
-  ];
+    term.cursor.setXY(3, 24),
+  ].join('');
 }

@@ -1,8 +1,8 @@
 /*
  * edit lines before before evaluating them as expressions
  */
-
 import { EventEmitter } from 'events';
+import { debug } from '../../../lib/logging';
 
 const ARROW_UP = '1b5b41';
 const ARROW_DOWN = '1b5b42';
@@ -10,6 +10,8 @@ const ARROW_LEFT = '1b5b44';
 const ARROW_RIGHT = '1b5b43';
 const ENTER = '0d';
 const BACKSPACE = '7f';
+const TAB = '09';
+const SIGINT = '03';
 
 export default class LineEditor extends EventEmitter {
   line: string = ''
@@ -19,13 +21,16 @@ export default class LineEditor extends EventEmitter {
   handleInput(buf: Buffer): void {
     const chars = this.line.split('');
     const key = buf.toString();
+    const hex = buf.toString('hex');
     const { x } = this.cursor;
 
-    switch (buf.toString('hex')) {
-      case '03':
+    debug(`got char: ${key}`);
+
+    switch (hex) {
+      case SIGINT:
         this.emit('SIGINT');
         break;
-      case '09':
+      case TAB:
         break;
       case BACKSPACE:
         if (!this.line.length) return;

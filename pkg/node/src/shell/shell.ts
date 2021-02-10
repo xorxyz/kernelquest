@@ -6,8 +6,9 @@ import VirtualMachine from './vm';
 import Interpreter from './interpreter';
 import Engine from '../engine/engine';
 import { render } from './ui/view';
-import LineDiscipline from './ui/line_editor';
-import { ESC } from './ui/control';
+import LineEditor from './ui/line_editor';
+import * as term from './ui/term';
+import { debug } from '../../lib/logging';
 
 interface IInputLog {
   line: string
@@ -17,51 +18,58 @@ export default class Shell {
   private vm: VirtualMachine
   private interpreter: Interpreter
   private engine: Engine
-  private socket: Socket
   private logs: Array<IInputLog>
+  private lineEditor: LineEditor
+  private socket: Socket | null = null
 
-  constructor(engine: Engine, socket: Socket) {
+  constructor(engine: Engine) {
     this.engine = engine;
-    this.socket = socket;
 
     this.vm = new VirtualMachine();
-    this.interpreter = new Interpreter(this.vm);
-
     this.lineEditor = new LineEditor();
+    this.interpreter = new Interpreter(this.vm);
+  }
+
+  connect(socket: Socket) {
+    this.socket = socket;
 
     this.socket.on('data', (buf) => {
-      this.lineDiscipline.handleInput(buf);
+      this.lineEditor.handleInput(buf);
     });
 
-    this.lineDiscipline.on('write', (str) => {
-      this.socket.write(str);
-    });
-
-    this.lineDiscipline.on('line', (line) => {
-      if (line.includes(ESC)) return;
-      console.log([line]);
-
-      this.socket.write(line);
+    this.lineEditor.on('update', ({ line }) => {
+      if (!this.socket) {
+        debug('update: socket was missing');
+        return;
+      }
 
       this.handleLine(line);
     });
 
-    this.lineDiscipline.on('SIGINT', () => {
+    this.lineEditor.on('SIGINT', () => {
+      if (!this.socket) {
+        debug('SIGINT: socket was missing');
+        return;
+      }
+
       this.socket.end();
     });
   }
 
   handleLine(line: string) {
-    this.interpreter.eval(line);
+    if (!this.socket) {
+      debug('handleLine: socket was missing');
+      return;
+    }
+
     this.vm.stdout.push(line);
+    this.interpreter.eval(line);
 
-    const cmds = render({
+    const bytes = render({
       logs: this.vm.stdout,
-      input: this.lineDiscipline.line,
+      input: this.lineEditor.line,
     });
 
-    cmds.forEach((cmd) => {
-      this.socket.write(cmd);
-    });
+    this.socket.write(bytes);
   }
 }
