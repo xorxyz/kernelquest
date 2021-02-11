@@ -9,7 +9,7 @@ import { render } from '../ui/view';
 import { SIGINT, ENTER, InputField } from '../ui/input';
 import * as term from '../ui/term';
 
-export const CURSOR_OFFSET = 3;
+export const CURSOR_OFFSET = 4;
 
 export default class Shell {
   private vm: VirtualMachine

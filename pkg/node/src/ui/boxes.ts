@@ -38,11 +38,11 @@ export class UiBox {
   }
 }
 
-export const navBox = new UiBox(0, 0, 80, 1, () => [
-  '^xor4> John @ King\'s Valley T 1st 1/4 moon, 2038',
+export const navBox = new UiBox(2, 0, 80, 1, () => [
+  'xor4>    John @ King\'s Valley    1st 1/4 moon, 2038    0 points',
 ]);
 
-export const roomBox = new UiBox(18, 3, 16, 9, () => [
+export const roomBox = new UiBox(18, 4, 16, 9, () => [
   '   x0 x1 x2 x3 x4 x5 x6 x7',
   'x0 .. .. .. .. .. .. .. ..',
   'x1 .. .. .. .. .. .. .. ..',
@@ -54,7 +54,7 @@ export const roomBox = new UiBox(18, 3, 16, 9, () => [
   'x7 .. .. .. .. .. .. .. ..',
 ]);
 
-export const sideBox = new UiBox(18 + 32 + 13, 3, 10, 8, () => [
+export const sideBox = new UiBox(56, 4, 10, 8, () => [
   '🧙',
   'name: John',
   'job: Wizard',
@@ -63,17 +63,18 @@ export const sideBox = new UiBox(18 + 32 + 13, 3, 10, 8, () => [
   'X: nothing',
   'Y: nothing',
   'A: nothing',
+  'B: nothing',
 ]);
 
-export const outputBox = new UiBox(1, 13, MAX_LINE_LENGTH, 10, (state) => {
+export const outputBox = new UiBox(2, 16, MAX_LINE_LENGTH, 10, (state) => {
   const { logs } = state;
 
   return logs
-    .slice(-10)
+    .slice(-8)
     .map((line) => line.padEnd(MAX_LINE_LENGTH, ' '));
 });
 
-export const statsBox = new UiBox(63, 17, 10, 10, () => [
+export const statsBox = new UiBox(56, 18, 10, 10, () => [
   'L: 1',
   'X: 0 ',
   'H: 100% ',
@@ -82,6 +83,6 @@ export const statsBox = new UiBox(63, 17, 10, 10, () => [
   '$: 0 ',
 ]);
 
-export const promptBox = new UiBox(1, 24, MAX_LINE_LENGTH, 1, ({ input }) => [
+export const promptBox = new UiBox(2, 24, MAX_LINE_LENGTH, 1, ({ input }) => [
   (prompt + input).padEnd(MAX_LINE_LENGTH, ' '),
 ]);
