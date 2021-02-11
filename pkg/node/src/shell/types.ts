@@ -1,7 +1,7 @@
 /*
  * the shell language types
  */
-import { Stack } from '../../lib/stack';
+import { Stack } from './stack';
 
 export abstract class Word {}
 
@@ -53,14 +53,7 @@ export abstract class Operator extends Word {
   }
 
   pullOperands(stack: DataStack) {
-    const items: Array<any> = [];
-
-    stack.list.slice(0, this.arity).forEach(() => {
-      if (!stack.length) return;
-
-      const item = stack.pop();
-      items.push(item);
-    });
+    const items = stack.popN(this.arity);
 
     return items;
   }
@@ -69,7 +62,7 @@ export abstract class Operator extends Word {
 export abstract class Quotation extends Word {
   list: Array<Word>
 
-  constructor(list) {
+  constructor(list: Array<Word>) {
     super();
     this.list = list;
   }

@@ -39,7 +39,7 @@ export class UiBox {
 }
 
 export const navBox = new UiBox(0, 0, 80, 1, () => [
-  '^xor4:John @ King\'s Valley T 1st 1/4 moon, 2038',
+  '^xor4> John @ King\'s Valley T 1st 1/4 moon, 2038',
 ]);
 
 export const roomBox = new UiBox(18, 3, 16, 9, () => [

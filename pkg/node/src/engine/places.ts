@@ -3,7 +3,7 @@
  * Cell -> Screen -> Zone -> World
  */
 
-import { Stack } from '../../lib/stack';
+import { Stack } from '../shell/stack';
 import { Actor } from './actors';
 import { Port, Transform } from './capabilities';
 import { Item } from './items';

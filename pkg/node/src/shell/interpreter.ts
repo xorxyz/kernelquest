@@ -3,7 +3,7 @@
  */
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
-import { Stack } from '../../lib/stack';
+import { Stack } from './stack';
 import VirtualMachine from './vm';
 import { DataStack, BooleanLiteral } from './types';
 
