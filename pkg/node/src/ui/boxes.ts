@@ -3,6 +3,7 @@ import { Vector } from '../../lib/math';
 import * as term from './term';
 
 export interface IGameState {
+  username: string,
   logs: Array<string>,
   input: string
 }

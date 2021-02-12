@@ -3,33 +3,33 @@ import * as term from './term';
 
 export const LINE_LENGTH = 60;
 export const N_OF_LINES = 10;
-export const prompt = '$ ';
 export const CURSOR_OFFSET = 3;
 
 export const navBox = new UiBox(80, 1, 1, 1, () => [
   term.style.invert +
   [
     ' xor4>',
-    'John @ King\'s Valley',
+    'King\'s Valley (0,0)',
     '1st 1/4 moon, 2038',
     '0 points',
   ].join('    ').padEnd(80, ' ') +
   term.style.reset,
 ]);
 
-export const roomBox = new UiBox(16, 9, 18, 4, () => [
-  '   x0 x1 x2 x3 x4 x5 x6 x7',
-  'x0 .. .. .. .. .. .. .. ..',
-  'x1 .. .. .. .. .. .. .. ..',
-  'x2 .. 🌵 .. .. .. .. .. ..',
-  'x3 .. .. .. .. .. .. .. ..',
-  'x4 .. .. .. .. 🧙 .. .. ..',
-  'x5 .. .. .. .. .. .. .. ..',
-  'x6 .. .. .. .. .. .. .. ..',
-  'x7 .. .. .. .. .. .. .. ..',
+export const roomBox = new UiBox(32, 18, 3, 4, () => [
+  '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 xA xB xC xD xE xF',
+  'x0 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x1 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x2 .. 🌵 .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x3 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x4 .. .. .. .. 🧙 .. .. .. .. .. .. .. .. .. .. ..',
+  'x5 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x6 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x7 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
+  'x8 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..',
 ]);
 
-export const sideBox = new UiBox(10, 8, 56, 4, () => [
+export const sideBox = new UiBox(10, 8, LINE_LENGTH + 2, 4, () => [
   '🧙',
   'name: John',
   'job: Wizard',
@@ -41,7 +41,7 @@ export const sideBox = new UiBox(10, 8, 56, 4, () => [
   'B: nothing',
 ]);
 
-export const outputBox = new UiBox(LINE_LENGTH, N_OF_LINES, 2, 16, (state) => {
+export const outputBox = new UiBox(LINE_LENGTH, N_OF_LINES, 3, 16, (state) => {
   const { logs } = state;
 
   return logs
@@ -49,7 +49,7 @@ export const outputBox = new UiBox(LINE_LENGTH, N_OF_LINES, 2, 16, (state) => {
     .map((line) => line.padEnd(LINE_LENGTH, ' '));
 });
 
-export const statsBox = new UiBox(10, N_OF_LINES, 56, 18, () => [
+export const statsBox = new UiBox(10, N_OF_LINES, LINE_LENGTH + 2, 18, () => [
   'L: 1',
   'X: 0 ',
   'H: 100% ',
@@ -58,6 +58,15 @@ export const statsBox = new UiBox(10, N_OF_LINES, 56, 18, () => [
   '$: 0 ',
 ]);
 
-export const promptBox = new UiBox(LINE_LENGTH, 2, 1, 24, ({ input }) => [
-  (prompt + input).padEnd(LINE_LENGTH, ' '),
-]);
+export const promptBox = new UiBox(LINE_LENGTH, 2, 1, 24, (state) => {
+  const { input } = state;
+  const prompt = formatPrompt();
+
+  return [
+    (prompt + input).padEnd(LINE_LENGTH, ' '),
+  ];
+});
+
+function formatPrompt() {
+  return '$ ';
+}

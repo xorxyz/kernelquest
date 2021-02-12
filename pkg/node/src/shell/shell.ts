@@ -64,6 +64,7 @@ export default class Shell {
     if (!this.socket) return;
 
     const state: IGameState = {
+      username: 'John',
       logs: this.vm.stdout,
       input: this.input.line,
     };
