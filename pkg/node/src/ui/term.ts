@@ -1,6 +1,11 @@
 export const ESC = '\u001B';
 export const escStr = (str: string) => `${ESC}${str}`;
 
+export const style = {
+  invert: escStr('[7m'),
+  reset: escStr('[0m'),
+};
+
 export const screen = {
   clear: escStr('[2J'),
 };

@@ -1,13 +1,19 @@
 /*
  * the engine generates a view to send to each player
  */
-import { CURSOR_OFFSET } from '../shell/shell';
-import {
-  IState, navBox, outputBox, promptBox, roomBox, sideBox, statsBox,
-} from './boxes';
 import * as term from './term';
+import { IGameState } from './boxes';
+import {
+  navBox,
+  outputBox,
+  promptBox,
+  roomBox,
+  sideBox,
+  statsBox,
+  CURSOR_OFFSET,
+} from './ui';
 
-export function render(state: IState): string {
+export function render(state: IGameState): string {
   const boxes = [
     navBox,
     roomBox,

@@ -8,8 +8,7 @@ import Engine from '../engine/engine';
 import { render } from '../ui/view';
 import { SIGINT, ENTER, InputField } from '../ui/input';
 import * as term from '../ui/term';
-
-export const CURSOR_OFFSET = 4;
+import { CURSOR_OFFSET } from '../ui/ui';
 
 export default class Shell {
   private vm: VirtualMachine
