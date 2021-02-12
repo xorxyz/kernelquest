@@ -1,3 +1,33 @@
+# mechanics of character classes
+
+```
+farmers
+  transform 🌾 natural resources into 🍚 goods
+  gather 🔧 tools in their 🧰 toolbox
+  slow
+elves
+  shoot ↗️ magic arrows with their 🏹 magic bow
+  fast
+fairies
+  heal others by shooting ✨ magic charms
+  fast 
+wizards
+  summon spirit using 🔮 orbs
+  write 📜 spells in their 📖 spellbook
+  slow
+```
+
+# health
+
+Health models the capacity to take damage, or loss.
+
+Health multiplier per path at level 50:
+
+Farmer  2x
+Fairy   1.5x
+Wizard  1x
+Elf     0.5x
+
 # battles
 
 players battle monsters by casting spells, throwing projectiles 

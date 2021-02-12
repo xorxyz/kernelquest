@@ -3,7 +3,6 @@
 computers are made out of game world objects.
 conversation and magic let players interact with the computers.
 
-
 minimum involved in running code:
 📮 inputs (words of power, reageants)
 📜 a script

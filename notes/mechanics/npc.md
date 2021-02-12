@@ -13,7 +13,6 @@ narrative
     attributive: directly credits the player
     situational: without crediting
 
-
 types
 
 1. the guide
