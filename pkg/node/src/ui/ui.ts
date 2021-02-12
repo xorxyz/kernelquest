@@ -2,7 +2,7 @@ import { UiBox } from './boxes';
 import * as term from './term';
 
 export const LINE_LENGTH = 60;
-export const N_OF_LINES = 10;
+export const N_OF_LINES = 8;
 export const CURSOR_OFFSET = 3;
 
 export const navBox = new UiBox(80, 1, 1, 1, () => [
@@ -45,7 +45,7 @@ export const outputBox = new UiBox(LINE_LENGTH, N_OF_LINES, 3, 16, (state) => {
   const { logs } = state;
 
   return logs
-    .slice(-8)
+    .slice(-N_OF_LINES)
     .map((line) => line.padEnd(LINE_LENGTH, ' '));
 });
 
