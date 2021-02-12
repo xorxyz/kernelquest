@@ -9,6 +9,7 @@ import { render } from '../ui/view';
 import { SIGINT, ENTER, InputField } from '../ui/input';
 import * as term from '../ui/term';
 import { CURSOR_OFFSET } from '../ui/ui';
+import { IGameState } from '../ui/boxes';
 
 export default class Shell {
   private vm: VirtualMachine
@@ -62,13 +63,11 @@ export default class Shell {
   render() {
     if (!this.socket) return;
 
-    const state = {
+    const state: IGameState = {
       logs: this.vm.stdout,
       input: this.input.line,
     };
 
-    const output = render(state);
-
-    this.socket.write(output);
+    this.socket.write(render(state));
   }
 }

@@ -5,7 +5,7 @@
 import { EventEmitter } from 'events';
 import { Action } from './actions';
 import { Actor } from './actors';
-import Clock from './clock';
+import Clock from '../../lib/clock';
 import { World } from './places';
 
 const DEFAUT_CLOCK_RATE = 1 / 2;
