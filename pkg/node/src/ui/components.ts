@@ -1,19 +1,19 @@
-import { UiBox } from './boxes';
-import * as term from './term';
+import { UiBox } from './lib';
+import * as esc from '../../lib/esc';
 
 export const LINE_LENGTH = 60;
 export const N_OF_LINES = 8;
 export const CURSOR_OFFSET = 3;
 
 export const navBox = new UiBox(80, 1, 1, 1, () => [
-  term.style.invert +
+  esc.style.invert +
   [
     ' xor4>',
     'King\'s Valley (0,0)',
     '1st 1/4 moon, 2038',
     '0 points',
   ].join('    ').padEnd(80, ' ') +
-  term.style.reset,
+  esc.style.reset,
 ]);
 
 export const roomBox = new UiBox(32, 18, 3, 4, () => [
@@ -42,9 +42,9 @@ export const sideBox = new UiBox(10, 8, LINE_LENGTH + 2, 4, () => [
 ]);
 
 export const outputBox = new UiBox(LINE_LENGTH, N_OF_LINES, 3, 16, (state) => {
-  const { logs } = state;
+  const { stdout } = state;
 
-  return logs
+  return stdout
     .slice(-N_OF_LINES)
     .map((line) => line.padEnd(LINE_LENGTH, ' '));
 });
@@ -59,14 +59,7 @@ export const statsBox = new UiBox(10, N_OF_LINES, LINE_LENGTH + 2, 18, () => [
 ]);
 
 export const promptBox = new UiBox(LINE_LENGTH, 2, 1, 24, (state) => {
-  const { input } = state;
-  const prompt = formatPrompt();
+  const { line, prompt } = state;
 
-  return [
-    (prompt + input).padEnd(LINE_LENGTH, ' '),
-  ];
+  return [(prompt + line).padEnd(LINE_LENGTH, ' ')];
 });
-
-function formatPrompt() {
-  return '$ ';
-}

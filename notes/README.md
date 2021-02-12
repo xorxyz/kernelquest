@@ -36,3 +36,5 @@ development docs is in [`the main README file`](../README.md).
 - [Concatenative Programming: From Ivory to Metal](https://web.stanford.edu/class/ee380/Abstracts/171115-slides.pdf)
 - [The Theory of Concatenative Combinators](http://nsl.com/misc/papers/The%20Theory%20of%20Concatenative%20Combinators.htm)
 - [Mathematical foundations of Joy](http://www.kevinalbrecht.com/code/joy-mirror/j02maf.html)
+- [Concept of materials](https://simplifier.neocities.org/materials.html)
+- [Concept of surfaces](https://simplifier.neocities.org/surfaces.html)
