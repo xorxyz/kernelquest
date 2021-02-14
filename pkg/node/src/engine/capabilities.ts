@@ -3,7 +3,6 @@
  */
 
 import { Vector } from '../../lib/math';
-import { Heading } from '../constants';
 
 /* Unique identifiers */
 export class Id {
@@ -12,9 +11,7 @@ export class Id {
 
 /* Where is it? */
 export class Transform {
-  direction: Heading
   position: Vector
-  velocity: Vector
 }
 
 /* Connect things to other things */

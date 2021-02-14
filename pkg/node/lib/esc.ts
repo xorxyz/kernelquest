@@ -4,6 +4,7 @@ export const escStr = (str: string) => `${ESC}${str}`;
 export const style = {
   invert: escStr('[7m'),
   reset: escStr('[0m'),
+  white: escStr('[37m'),
 };
 
 export const screen = {
@@ -18,6 +19,7 @@ export const line = {
 };
 
 export const cursor = {
+  blink: escStr('[5;m'),
   eraseRight: escStr('[K'),
   moveLeft: escStr('[1D'),
   moveRight: escStr('[1C'),

@@ -3,7 +3,6 @@
  * Cell -> Screen -> Zone -> World
  */
 
-import { Vector } from '../../lib/math';
 import { Stack } from '../shell/stack';
 import { Actor } from './actors';
 import { Port, Transform } from './capabilities';

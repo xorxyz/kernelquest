@@ -10,7 +10,6 @@ import {
   Health, Stamina, Mana, Wealth, Look, Transform,
 } from './capabilities';
 import { Job } from './jobs';
-import { Action } from './actions';
 
 export abstract class Actor {
   name: string
@@ -30,7 +29,7 @@ export abstract class Actor {
 
   items: Array<Item> = []
 
-  abstract takeTurn(): Action | null
+  abstract takeTurn()
 }
 
 class CritterJob extends Job {}

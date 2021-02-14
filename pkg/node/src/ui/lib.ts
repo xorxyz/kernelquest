@@ -16,7 +16,7 @@ export const TAB = '09';
 export const SIGINT = '03';
 
 export abstract class UiBox {
-  private position: Vector
+  position: Vector
 
   abstract print(state: IShellState):Array<string>
 

@@ -8,22 +8,25 @@ import {
   StatsBox,
   PromptBox,
 } from './components';
+import { UiBox } from './lib';
 
-export default class View {
-  render(state: IShellState) {
-    const boxes = [
-      new NavBox(1, 1),
-      new RoomBox(15, 4),
-      new SideBox(LINE_LENGTH + 2, 4),
-      new OutputBox(3, 16),
-      new StatsBox(LINE_LENGTH + 2, 16),
-      new PromptBox(1, 24),
-    ];
+export abstract class View {
+  abstract boxes: Record<string, UiBox>
 
-    const output = [
-      ...boxes.map((box) => box.render(state)),
-    ].join('');
+  render(state: IShellState): string {
+    return Object.values(this.boxes)
+      .map((box) => box.render(state))
+      .join('');
+  }
+}
 
-    return output;
+export class MainView extends View {
+  boxes = {
+    nav: new NavBox(1, 1),
+    room: new RoomBox(15, 4),
+    side: new SideBox(LINE_LENGTH + 2, 4),
+    output: new OutputBox(3, 16),
+    stats: new StatsBox(LINE_LENGTH + 2, 16),
+    prompt: new PromptBox(1, 24),
   }
 }

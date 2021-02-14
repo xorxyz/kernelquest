@@ -4,6 +4,7 @@ import * as esc from '../../lib/esc';
 export const LINE_LENGTH = 60;
 export const N_OF_LINES = 8;
 export const CURSOR_OFFSET = 3;
+export const CELL_WIDTH = 3;
 
 export class NavBox extends UiBox {
   print() {
@@ -21,20 +22,26 @@ export class NavBox extends UiBox {
 }
 
 export class RoomBox extends UiBox {
-  print() {
+  print({ cursor }) {
     return [
       '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9',
       'x0 .. .. .. .. .. .. .. .. .. ..',
       'x1 .. .. .. .. .. .. .. .. .. ..',
       'x2 .. 🌵 .. .. .. .. .. .. .. ..',
       'x3 .. .. .. .. .. .. .. .. .. ..',
-      'x4 .. .. .. .. 🧙 .. .. .. .. ..',
+      'x4 .. .. .. .. .. .. .. .. .. ..',
       'x5 .. .. .. .. .. .. .. .. .. ..',
       'x6 .. .. .. .. .. .. .. .. .. ..',
       'x7 .. .. .. .. .. .. .. .. .. ..',
       'x8 .. .. .. .. .. .. .. .. .. ..',
       'x9 .. .. .. .. .. .. .. .. .. ..',
-    ];
+    ].map((line, y) => ((y !== cursor.y)
+      ? line
+      : [
+        ...line.slice(0, cursor.x),
+        '🧙',
+        ...line.slice(cursor.x + 2),
+      ].join('')));
   }
 }
 
