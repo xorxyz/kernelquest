@@ -9,3 +9,9 @@
 - 1kg computer can do 10^51 ops/sec and store 10^31 bits
 - the universe can store 10^92 bits of information
 - max n of operations done by universe so far 10^123
+
+
+chemistry:
+
+- ferrous iron is soluble in tannin solutions
+- ferric iron produces an insoluble black resin

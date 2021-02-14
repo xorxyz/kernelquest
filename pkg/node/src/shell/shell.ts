@@ -5,25 +5,43 @@ import { Socket } from 'net';
 import VirtualMachine from './vm';
 import Interpreter from './interpreter';
 import Engine from '../engine/engine';
-import { render } from '../ui/view';
-import { SIGINT, ENTER, InputField } from '../ui/input';
-import * as term from '../ui/term';
-import { CURSOR_OFFSET } from '../ui/ui';
-import { IGameState } from '../ui/boxes';
+import * as term from '../../lib/esc';
+import { ENTER, SIGINT, InputField } from '../ui/lib';
+import View from '../ui/view';
+import { CURSOR_OFFSET } from '../ui/components';
+
+export interface IState {
+  mode: 'control' | 'terminal'
+  username: string,
+  prompt: string,
+  line: string,
+  stdout: Array<string>,
+}
 
 export default class Shell {
   private vm: VirtualMachine
   private interpreter: Interpreter
   private engine: Engine
+  private view: View
   private input: InputField
   private socket: Socket | null = null
+  private state: IState
 
   constructor(engine: Engine) {
     this.engine = engine;
 
     this.vm = new VirtualMachine();
-    this.input = new InputField();
     this.interpreter = new Interpreter(this.vm);
+    this.input = new InputField();
+    this.view = new View();
+
+    this.state = {
+      mode: 'control',
+      username: 'john',
+      prompt: '$ ',
+      line: '',
+      stdout: [],
+    };
   }
 
   connect(socket: Socket) {
@@ -31,7 +49,7 @@ export default class Shell {
 
     this.socket.on('data', this.handleInput.bind(this));
 
-    this.render();
+    this.render(this.state);
   }
 
   handleInput(buf: Buffer) {
@@ -45,30 +63,31 @@ export default class Shell {
     }
 
     if (hexCode === ENTER) {
-      this.vm.stdout.push(this.input.line);
-      this.interpreter.eval(this.input.line);
-      this.render();
+      this.state.stdout.push(this.input.value);
+      this.interpreter.eval(this.input.value);
+      this.render(this.state);
     }
 
     if (this.input.insert(buf)) {
-      this.socket.write(
+      const line = (
         term.cursor.setXY(CURSOR_OFFSET, 24) +
         term.line.clearAfter +
-        this.input.line +
-        term.cursor.setXY(CURSOR_OFFSET + this.input.cursor.x, 24),
+        this.input.value +
+        term.cursor.setXY(CURSOR_OFFSET + this.input.x, 24)
       );
+
+      this.state.line = line;
+
+      this.render(this.state);
     }
   }
 
-  render() {
+  render(state: IState) {
     if (!this.socket) return;
 
-    const state: IGameState = {
-      username: 'John',
-      logs: this.vm.stdout,
-      input: this.input.line,
-    };
+    const cursorPosition = term.cursor.setXY(CURSOR_OFFSET + this.input.x, 24);
+    const output = this.view.render(state) + cursorPosition;
 
-    this.socket.write(render(state));
+    this.socket.write(output);
   }
 }

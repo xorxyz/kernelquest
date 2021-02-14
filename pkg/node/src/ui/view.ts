@@ -1,8 +1,4 @@
-/*
- * the engine generates a view to send to each player
- */
-import * as term from './term';
-import { IGameState } from './boxes';
+import { IState } from '../shell/shell';
 import {
   navBox,
   outputBox,
@@ -10,21 +6,23 @@ import {
   roomBox,
   sideBox,
   statsBox,
-  CURSOR_OFFSET,
-} from './ui';
+} from './components';
 
-export function render(state: IGameState): string {
-  const boxes = [
-    navBox,
-    roomBox,
-    sideBox,
-    outputBox,
-    statsBox,
-    promptBox,
-  ];
+export default class View {
+  render(state: IState) {
+    const boxes = [
+      navBox,
+      roomBox,
+      sideBox,
+      outputBox,
+      statsBox,
+      promptBox,
+    ];
 
-  return [
-    ...boxes.map((box) => box.print(state)),
-    term.cursor.setXY(CURSOR_OFFSET, 24),
-  ].join('');
+    const output = [
+      ...boxes.map((box) => box.render(state)),
+    ].join('');
+
+    return output;
+  }
 }

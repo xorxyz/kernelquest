@@ -1,7 +1,10 @@
-/*
-* edit lines before before evaluating them as expressions
-*/
+/**
+ * - ui boxes: numbering starts at 1.
+ * - input fields - edit lines before before evaluating them as expressions
+ */
 import { Vector } from '../../lib/math';
+import * as term from '../../lib/esc';
+import { IState } from '../shell/shell';
 
 export const ARROW_UP = '1b5b41';
 export const ARROW_DOWN = '1b5b42';
@@ -12,9 +15,52 @@ export const BACKSPACE = '7f';
 export const TAB = '09';
 export const SIGINT = '03';
 
+export type PrintFn = (state: IState) => Array<string>
+
+export class UiBox {
+  public print: PrintFn
+
+  private size: Vector
+  private position: Vector
+
+  constructor(w: number, h: number, x: number, y: number, printFn: PrintFn) {
+    this.size = new Vector(w, h);
+    this.position = new Vector(x, y);
+    this.print = printFn;
+  }
+
+  render(state: IState): string {
+    const offset = (
+      term.cursor.down(1) +
+      term.line.start +
+      term.cursor.right(this.position.x - 1) +
+      term.line.clearAfter
+    );
+
+    const lines = this.print(state).map((line) => line + offset);
+
+    return (
+      term.cursor.setXY(this.position.x, this.position.y) +
+      lines.join('')
+    );
+  }
+}
+
 export class InputField {
-  line: string = ''
-  cursor: Vector = new Vector()
+  private line: string = ''
+  private cursor: Vector = new Vector()
+
+  get value() {
+    return this.line;
+  }
+
+  get x() {
+    return this.cursor.x;
+  }
+
+  get y() {
+    return this.cursor.y;
+  }
 
   /* returns true if input box needs an update */
   insert(buf: Buffer): boolean {
