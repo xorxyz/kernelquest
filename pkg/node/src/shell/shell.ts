@@ -85,7 +85,8 @@ export default class Shell {
   render(state: IState) {
     if (!this.socket) return;
 
-    const output = this.view.render(state);
+    const cursorPosition = term.cursor.setXY(CURSOR_OFFSET + this.input.x, 24);
+    const output = this.view.render(state) + cursorPosition;
 
     this.socket.write(output);
   }

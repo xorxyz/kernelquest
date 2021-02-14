@@ -3,6 +3,7 @@
  * Cell -> Screen -> Zone -> World
  */
 
+import { Vector } from '../../lib/math';
 import { Stack } from '../shell/stack';
 import { Actor } from './actors';
 import { Port, Transform } from './capabilities';
@@ -19,18 +20,18 @@ export class Cell {
   }
 }
 
-export abstract class Screen {
+export abstract class Room {
   name: String
   readonly cells: Array<Cell>
   readonly actors: Array<Actor>
 }
 
-export class EmptyScreen extends Screen {}
+export class EmptyRoom extends Room {}
 
 export abstract class Zone {
   name: String
   size: number = 8
-  readonly rooms: Array<Screen>
+  readonly rooms: Array<Room>
 
   abstract $update(): void
 
