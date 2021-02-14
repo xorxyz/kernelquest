@@ -1,22 +1,23 @@
-import { IState } from '../shell/shell';
+import { IShellState } from '../shell/shell';
 import {
-  navBox,
-  outputBox,
-  promptBox,
-  roomBox,
-  sideBox,
-  statsBox,
+  LINE_LENGTH,
+  NavBox,
+  RoomBox,
+  SideBox,
+  OutputBox,
+  StatsBox,
+  PromptBox,
 } from './components';
 
 export default class View {
-  render(state: IState) {
+  render(state: IShellState) {
     const boxes = [
-      navBox,
-      roomBox,
-      sideBox,
-      outputBox,
-      statsBox,
-      promptBox,
+      new NavBox(1, 1),
+      new RoomBox(15, 4),
+      new SideBox(LINE_LENGTH + 2, 4),
+      new OutputBox(3, 16),
+      new StatsBox(LINE_LENGTH + 2, 16),
+      new PromptBox(1, 24),
     ];
 
     const output = [

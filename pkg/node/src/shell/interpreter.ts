@@ -4,7 +4,6 @@
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
 import { Stack } from './stack';
-import VirtualMachine from './vm';
 import { DataStack, BooleanLiteral } from './types';
 
 const operators = {
@@ -20,12 +19,10 @@ const operators = {
 
 export default class Interpreter extends EventEmitter {
   private stack: DataStack
-  private vm: VirtualMachine
 
-  constructor(vm: VirtualMachine) {
+  constructor() {
     super();
 
-    this.vm = vm;
     this.stack = new Stack();
   }
 

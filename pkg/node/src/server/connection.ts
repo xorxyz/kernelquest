@@ -1,33 +1,30 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
 import { EventEmitter } from 'events';
+import * as uuid from 'uuid';
 import Shell from '../shell/shell';
 import { debug } from '../../lib/logging';
 import Engine from '../engine/engine';
 
 export default class Connection extends EventEmitter {
-  public connected = false
-  private socket: Socket | null = null
+  private id: string = uuid.v4()
   private shell: Shell | null = null
 
   connect(engine: Engine, socket: Socket): void {
-    this.shell = new Shell(engine);
-    this.socket = socket;
+    const context = Object.freeze({
+      id: this.id,
+    });
 
+    this.shell = new Shell(context, engine);
     this.shell.connect(socket);
 
-    this.socket.on('end', this.onDisconnect.bind(this));
-
-    this.connected = true;
-    this.emit('connect');
+    socket.on('end', this.disconnect.bind(this));
     debug('client connected');
   }
 
-  private onDisconnect(): void {
+  private disconnect(): void {
     debug('client disconnected');
-    this.connected = false;
     this.shell = null;
-    this.socket = null;
     this.emit('disconnect');
   }
 }

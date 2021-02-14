@@ -20,13 +20,13 @@ export default class GameServer {
   async onConnection(socket: Socket) {
     const connection = new Connection();
 
+    this.connections.add(connection);
+
     connection.on('disconnect', () => {
       this.connections.delete(connection);
     });
 
     connection.connect(this.engine, socket);
-
-    this.connections.add(connection);
   }
 
   listen(...args): void {

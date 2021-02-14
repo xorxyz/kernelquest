@@ -1,10 +1,10 @@
 /**
- * - ui boxes: numbering starts at 1.
+ * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
 import { Vector } from '../../lib/math';
 import * as term from '../../lib/esc';
-import { IState } from '../shell/shell';
+import { IShellState } from '../shell/shell';
 
 export const ARROW_UP = '1b5b41';
 export const ARROW_DOWN = '1b5b42';
@@ -15,21 +15,16 @@ export const BACKSPACE = '7f';
 export const TAB = '09';
 export const SIGINT = '03';
 
-export type PrintFn = (state: IState) => Array<string>
-
-export class UiBox {
-  public print: PrintFn
-
-  private size: Vector
+export abstract class UiBox {
   private position: Vector
 
-  constructor(w: number, h: number, x: number, y: number, printFn: PrintFn) {
-    this.size = new Vector(w, h);
+  abstract print(state: IShellState):Array<string>
+
+  constructor(x: number, y: number) {
     this.position = new Vector(x, y);
-    this.print = printFn;
   }
 
-  render(state: IState): string {
+  render(state: IShellState): string {
     const offset = (
       term.cursor.down(1) +
       term.line.start +
