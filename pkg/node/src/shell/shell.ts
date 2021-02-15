@@ -9,10 +9,10 @@ import {
   ENTER, SIGINT, InputField, ARROW_DOWN, ARROW_UP, ARROW_RIGHT, ARROW_LEFT,
 } from '../ui/lib';
 import { MainView, View } from '../ui/view';
-import { CURSOR_OFFSET } from '../ui/components';
+import { CELL_WIDTH, CURSOR_OFFSET } from '../ui/components';
 import { Vector } from '../../lib/math';
 import { MoveCommand } from '../engine/commands';
-import { Actor, Player, Critter } from '../engine/actors';
+import { Actor, Player } from '../engine/actors';
 
 export interface IShellContext {
   id: string,
@@ -61,7 +61,7 @@ export default class Shell {
       line: '',
       stdout: [],
       cursor: new Vector(12, 5),
-      actors: [new Critter()],
+      actors: new Proxy(this.engine.actors, {}),
     };
   }
 
@@ -71,6 +71,10 @@ export default class Shell {
     this.socket.on('data', this.handleInput.bind(this));
 
     this.engine.actors.push(this.actor);
+
+    this.engine.on('render', () => {
+      this.render(this.state);
+    });
 
     this.render(this.state);
   }
@@ -170,8 +174,8 @@ export default class Shell {
         24,
       )
       : term.cursor.setXY(
-        this.view.boxes.room.position.x + this.state.cursor.x,
-        this.view.boxes.room.position.y + this.state.cursor.y,
+        this.view.boxes.room.position.x + this.state.player.position.x * CELL_WIDTH + CELL_WIDTH,
+        this.view.boxes.room.position.y + this.state.player.position.y + 1,
       );
 
     this.socket.write(cursorUpdate);

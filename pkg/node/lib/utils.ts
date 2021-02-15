@@ -1,3 +1,5 @@
+import { Vector } from './math';
+
 /* eslint-disable import/prefer-default-export */
 export function coinFlip() {
   return Math.floor(Math.random() * 2) === 0
@@ -12,4 +14,17 @@ export function getRandomInt(min, max) {
   max = Math.floor(max);
 
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+export function getRandomDirection() {
+  const direction = new Vector();
+  const vertical = coinFlip();
+
+  if (vertical === 1) {
+    direction.setY(coinFlip());
+  } else {
+    direction.setX(coinFlip());
+  }
+
+  return direction;
 }

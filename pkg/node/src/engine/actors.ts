@@ -8,18 +8,20 @@ import {
   Item, Weapon, Clothes, Relic,
 } from './items';
 import {
-  Health, Stamina, Mana, Wealth, Transform, SheepLook, WizardLook,
+  Health, Stamina, Mana, Wealth, SheepLook, WizardLook, Look, MonsterLook, NpcLook,
 } from './capabilities';
 import { Job, WizardJob } from './jobs';
 import { Command, MoveCommand } from './commands';
-import { RandomVector } from '../../lib/math';
+import { RandomVector, Vector } from '../../lib/math';
+import { getRandomDirection } from '../../lib/utils';
 
 export abstract class Actor {
   id: string = uuid.v4()
   name: string
   abstract job: Job
+  abstract look: Look
 
-  transform: Transform = new Transform()
+  position: Vector = new Vector()
   queue: Array<Command> = []
 
   health: Health = new Health()
@@ -38,10 +40,10 @@ export abstract class Actor {
 
     if (action) {
       console.log('turn w action');
-      action.execute(this);
+      return action.execute(this);
     }
 
-    return null;
+    return false;
   }
 }
 
@@ -52,6 +54,7 @@ export class Player extends Actor {
   name = 'AnonymousPlayer'
   commands: Array<Command> = []
   job = new NoviceJob()
+  look = new WizardLook();
 
   constructor(name?: string) {
     super();
@@ -77,22 +80,19 @@ export class Critter extends Actor {
     super();
 
     this.timer = setInterval(() => {
-      const direction = new RandomVector();
+      const direction = getRandomDirection();
 
       this.queue.push(
         new MoveCommand(direction.x, direction.y),
       );
     }, delayMs);
   }
-
-  takeTurn() {
-    return null;
-  }
 }
 
 export class Monster extends Actor {
   name = 'Monster'
   job = new NoviceJob()
+  look = new MonsterLook();
   takeTurn() {
     return null;
   }
@@ -100,6 +100,7 @@ export class Monster extends Actor {
 
 export class Npc extends Actor {
   job = new NoviceJob()
+  look = new NpcLook()
   takeTurn() {
     return null;
   }

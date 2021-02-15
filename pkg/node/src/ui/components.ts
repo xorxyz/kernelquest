@@ -1,5 +1,6 @@
 import { UiBox } from './lib';
 import * as esc from '../../lib/esc';
+import { Actor } from '../engine/actors';
 
 export const LINE_LENGTH = 60;
 export const N_OF_LINES = 8;
@@ -36,18 +37,15 @@ export class RoomBox extends UiBox {
       'x8 .. .. .. .. .. .. .. .. .. ..',
       'x9 .. .. .. .. .. .. .. .. .. ..',
     ].map((line, y) => {
-      const actors = state.actors.filter((a) => a.transform.position.y === y);
+      const actors = state.actors.filter((a) => a.position.y + 1 === y);
       if (!actors.length) return line;
 
-      console.log(y, actors);
-
-      const nextLine = line.split('');
-
-      return nextLine.map((char, x) => {
-        const actor = state.actors.find((a) => a.transform.position.x === x);
-
-        return actor?.look.emoji || char;
-      }).join('');
+      return line.split(' ').map((char, x) => {
+        const actor = actors.find((a) => a.position.x + 1 === x);
+        return actor
+          ? actor.look.emoji
+          : char;
+      }).join(' ');
     });
   }
 }

@@ -17,7 +17,7 @@ export default class Connection extends EventEmitter {
       player: new Wizard('john'),
     });
 
-    context.player.transform.position.setXY(12, 3);
+    context.player.position.setXY(0, 0);
 
     engine.actors.push(context.player);
 

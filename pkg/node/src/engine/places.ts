@@ -3,19 +3,20 @@
  * Cell -> Screen -> Zone -> World
  */
 
+import { Vector } from '../../lib/math';
 import { Stack } from '../shell/stack';
 import { Actor } from './actors';
-import { Port, Transform } from './capabilities';
+import { Port } from './capabilities';
 import { Item } from './items';
 
 export class Cell {
-  transform: Transform
+  position: Vector
   stack: Stack<Item>
   ports: Array<Port>
   actor?: Actor
 
   constructor(x: number, y: number) {
-    this.transform.position.setXY(x, y);
+    this.position.setXY(x, y);
   }
 }
 

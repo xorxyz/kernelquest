@@ -9,11 +9,6 @@ export class Id {
   id: string
 }
 
-/* Where is it? */
-export class Transform {
-  position: Vector = new Vector()
-}
-
 /* Connect things to other things */
 export class Port {
   value: number | null
@@ -33,6 +28,16 @@ export class WizardLook extends Look {
 export class SheepLook extends Look {
   emoji = '🐑'
   description = 'meeeeeeh'
+}
+
+export class MonsterLook extends Look {
+  emoji = '🐛'
+  description = 'looks dangerous'
+}
+
+export class NpcLook extends Look {
+  emoji = '💁'
+  description = 'looks like someone you know'
 }
 
 export abstract class Points {
