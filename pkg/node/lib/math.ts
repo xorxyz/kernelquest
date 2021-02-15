@@ -57,6 +57,12 @@ export class Vector {
     return this;
   }
 
+  addXY(x: number, y: number) {
+    this.x += x;
+    this.y += y;
+    return this;
+  }
+
   add(v: Vector) {
     this.x += v.x;
     this.y += v.y;

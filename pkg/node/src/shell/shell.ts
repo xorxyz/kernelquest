@@ -15,12 +15,14 @@ import { MoveCommand } from '../engine/commands';
 import { Actor, Player } from '../engine/actors';
 
 export interface IShellContext {
-  id: string
+  id: string,
+  player: Player
 }
 
 export interface IShellState {
   termMode: boolean
-  username: string,
+  player: Actor,
+  repl: Interpreter,
   prompt: string,
   line: string,
   stdout: Array<string>,
@@ -32,28 +34,28 @@ export default class Shell {
   private engine: Engine
 
   private actor: Actor
+  private repl: Interpreter
+
+  private input: InputField
+  private view: View
 
   private state: IShellState
   private socket: Socket
-
-  private interpreter: Interpreter
-  private view: View
-  private input: InputField
 
   constructor(context: IShellContext, engine: Engine) {
     this.context = context;
     this.engine = engine;
 
-    this.actor = new Player();
-
-    this.interpreter = new Interpreter();
+    this.actor = context.player;
+    this.repl = new Interpreter();
 
     this.input = new InputField();
     this.view = new MainView();
 
     this.state = {
       termMode: false,
-      username: 'john',
+      player: new Proxy(this.actor, {}),
+      repl: new Proxy(this.repl, {}),
       prompt: '$ ',
       line: '',
       stdout: [],
@@ -77,6 +79,11 @@ export default class Shell {
   handleInput(buf: Buffer) {
     if (!this.socket) return;
 
+    if (buf.toString('hex') === SIGINT) {
+      this.socket.end();
+      return;
+    }
+
     if (this.state.termMode) {
       this.handleTerminalInput(buf);
     } else {
@@ -87,14 +94,9 @@ export default class Shell {
   handleTerminalInput(buf: Buffer) {
     const hexCode = buf.toString('hex');
 
-    if (hexCode === SIGINT) {
-      this.socket.end();
-      return;
-    }
-
     if (hexCode === ENTER) {
       this.state.stdout.push(this.input.value);
-      this.interpreter.eval(this.input.value);
+      this.repl.eval(this.input.value);
       this.render(this.state);
       this.switchModes();
     }
@@ -114,23 +116,34 @@ export default class Shell {
   }
 
   handleGameInput(buf: Buffer) {
-    const hexCode = buf.toString('hex');
+    let command;
 
-    if (hexCode === ENTER) {
-      this.switchModes();
+    switch (buf.toString('hex')) {
+      case (ENTER):
+        this.switchModes();
+        break;
+      case (ARROW_UP): {
+        command = new MoveCommand(0, -1);
+        break;
+      }
+      case (ARROW_RIGHT): {
+        command = new MoveCommand(1, 0);
+        break;
+      }
+      case (ARROW_DOWN): {
+        command = new MoveCommand(0, 1);
+        break;
+      }
+      case (ARROW_LEFT): {
+        command = new MoveCommand(-1, 0);
+        break;
+      }
+      default:
+        break;
     }
 
-    if (hexCode === ARROW_UP) {
-      new MoveCommand(this.actor, 0, -1);
-    }
-    if (hexCode === ARROW_RIGHT) {
-      new MoveCommand(this.actor, 1, 0);
-    }
-    if (hexCode === ARROW_DOWN) {
-      new MoveCommand(this.actor, 0, 1);
-    }
-    if (hexCode === ARROW_LEFT) {
-      new MoveCommand(this.actor, -1, 0);
+    if (command) {
+      this.actor.queue.push(command);
     }
   }
 

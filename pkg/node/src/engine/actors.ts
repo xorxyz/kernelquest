@@ -10,10 +10,13 @@ import {
   Health, Stamina, Mana, Wealth, Look, Transform,
 } from './capabilities';
 import { Job } from './jobs';
+import { Command } from './commands';
 
 export abstract class Actor {
   name: string
   abstract job: Job
+
+  queue: Array<Command> = []
 
   transform: Transform = new Transform()
 
@@ -35,21 +38,41 @@ export abstract class Actor {
 class CritterJob extends Job {}
 class NoviceJob extends Job {}
 
+export class Player extends Actor {
+  name = 'AnonymousPlayer'
+  commands: Array<Command> = []
+  job = new NoviceJob()
+
+  constructor(name?: string) {
+    super();
+    if (name) {
+      this.name = name;
+    }
+  }
+
+  takeTurn() {
+    console.log('turn');
+    const action = this.queue.shift();
+
+    if (action) {
+      console.log('   w action');
+      action.execute(this);
+    }
+
+    return null;
+  }
+}
+
 export class Critter extends Actor {
+  name = 'Critter'
   job = new CritterJob()
   takeTurn() {
     return null;
   }
 }
 
-export class Player extends Actor {
-  job = new NoviceJob()
-  takeTurn() {
-    return null;
-  }
-}
-
 export class Monster extends Actor {
+  name = 'Monster'
   job = new NoviceJob()
   takeTurn() {
     return null;

@@ -22,7 +22,7 @@ export class NavBox extends UiBox {
 }
 
 export class RoomBox extends UiBox {
-  print({ cursor }) {
+  print(state) {
     return [
       '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9',
       'x0 .. .. .. .. .. .. .. .. .. ..',
@@ -35,12 +35,12 @@ export class RoomBox extends UiBox {
       'x7 .. .. .. .. .. .. .. .. .. ..',
       'x8 .. .. .. .. .. .. .. .. .. ..',
       'x9 .. .. .. .. .. .. .. .. .. ..',
-    ].map((line, y) => ((y !== cursor.y)
+    ].map((line, y) => ((y !== state.player.transform.position.y)
       ? line
       : [
-        ...line.slice(0, cursor.x),
+        ...line.slice(0, state.player.transform.position.x),
         '🧙',
-        ...line.slice(cursor.x + 2),
+        ...line.slice(state.player.transform.position.x + 2),
       ].join('')));
   }
 }

@@ -1,20 +1,18 @@
 /*
  *  simple clock
- *
  */
-
 import { EventEmitter } from 'events';
 
 export default class Clock extends EventEmitter {
-  private rate: number
+  private msDelay: number
   private tick: 0
   private edge: Boolean = false
   private timeoutRef: NodeJS.Timeout
 
-  constructor(rate: number = 10) {
+  constructor(msDelay: number) {
     super();
 
-    this.rate = rate;
+    this.msDelay = msDelay;
   }
 
   reset() {
@@ -28,14 +26,13 @@ export default class Clock extends EventEmitter {
   }
 
   start() {
-    const msDelay = 1000 / this.rate;
-
     this.timeoutRef = setInterval(() => {
       this.step();
+
       if (!this.edge) {
         this.emit('tick', this.tick);
       }
-    }, msDelay);
+    }, this.msDelay);
   }
 
   pause() {

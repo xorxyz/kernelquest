@@ -11,7 +11,7 @@ export class Id {
 
 /* Where is it? */
 export class Transform {
-  position: Vector
+  position: Vector = new Vector()
 }
 
 /* Connect things to other things */
