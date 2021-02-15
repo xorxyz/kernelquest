@@ -12,7 +12,7 @@ import { MainView, View } from '../ui/view';
 import { CURSOR_OFFSET } from '../ui/components';
 import { Vector } from '../../lib/math';
 import { MoveCommand } from '../engine/commands';
-import { Actor, Player } from '../engine/actors';
+import { Actor, Player, Critter } from '../engine/actors';
 
 export interface IShellContext {
   id: string,
@@ -26,7 +26,8 @@ export interface IShellState {
   prompt: string,
   line: string,
   stdout: Array<string>,
-  cursor: Vector
+  cursor: Vector,
+  actors: Array<Actor>
 }
 
 export default class Shell {
@@ -60,6 +61,7 @@ export default class Shell {
       line: '',
       stdout: [],
       cursor: new Vector(12, 5),
+      actors: [new Critter()],
     };
   }
 
@@ -67,6 +69,8 @@ export default class Shell {
     this.socket = socket;
 
     this.socket.on('data', this.handleInput.bind(this));
+
+    this.engine.actors.push(this.actor);
 
     this.render(this.state);
   }
@@ -89,6 +93,8 @@ export default class Shell {
     } else {
       this.handleGameInput(buf);
     }
+
+    this.render(this.state);
   }
 
   handleTerminalInput(buf: Buffer) {

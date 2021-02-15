@@ -20,9 +20,19 @@ export class Port {
 }
 
 /* What it looks like */
-export class Look {
-  emoji?: string
+export abstract class Look {
+  emoji: string
   description: string
+}
+
+export class WizardLook extends Look {
+  emoji = '🧙'
+  description = 'looks like a wizard'
+}
+
+export class SheepLook extends Look {
+  emoji = '🐑'
+  description = 'meeeeeeh'
 }
 
 export abstract class Points {

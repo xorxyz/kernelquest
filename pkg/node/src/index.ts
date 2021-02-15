@@ -2,7 +2,6 @@
  * Written by Jonathan Dupré
  * Copyright Diagonal Systems Inc.
  */
-
 import Engine from './engine/engine';
 import GameServer from './server/server';
 

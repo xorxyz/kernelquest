@@ -1,3 +1,5 @@
+import { getRandomInt } from './utils';
+
 export class Vector {
   x: number
   y: number
@@ -94,6 +96,15 @@ export class Vector {
       (this.x && v.x && Math.sign(this.x) !== Math.sign(v.x))
       || (this.y && v.y && Math.sign(this.y) !== Math.sign(v.y))
     );
+  }
+}
+
+export class RandomVector extends Vector {
+  constructor() {
+    super();
+
+    this.x = getRandomInt(0, 9 * 3);
+    this.y = getRandomInt(0, 9);
   }
 }
 

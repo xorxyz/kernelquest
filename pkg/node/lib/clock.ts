@@ -4,7 +4,7 @@
 import { EventEmitter } from 'events';
 
 export default class Clock extends EventEmitter {
-  private msDelay: number
+  private stepMsDelay: number
   private tick: 0
   private edge: Boolean = false
   private timeoutRef: NodeJS.Timeout
@@ -12,7 +12,7 @@ export default class Clock extends EventEmitter {
   constructor(msDelay: number) {
     super();
 
-    this.msDelay = msDelay;
+    this.stepMsDelay = msDelay / 2;
   }
 
   reset() {
@@ -32,7 +32,7 @@ export default class Clock extends EventEmitter {
       if (!this.edge) {
         this.emit('tick', this.tick);
       }
-    }, this.msDelay);
+    }, this.stepMsDelay);
   }
 
   pause() {

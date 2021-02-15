@@ -5,7 +5,7 @@ import Clock from '../../lib/clock';
 import { Actor } from './actors';
 import { World } from './places';
 
-const CLOCK_MS_DELAY = 500;
+const CLOCK_MS_DELAY = 1000;
 
 export interface EngineOptions {
   rate?: number

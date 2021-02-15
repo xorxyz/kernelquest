@@ -35,13 +35,20 @@ export class RoomBox extends UiBox {
       'x7 .. .. .. .. .. .. .. .. .. ..',
       'x8 .. .. .. .. .. .. .. .. .. ..',
       'x9 .. .. .. .. .. .. .. .. .. ..',
-    ].map((line, y) => ((y !== state.player.transform.position.y)
-      ? line
-      : [
-        ...line.slice(0, state.player.transform.position.x),
-        '🧙',
-        ...line.slice(state.player.transform.position.x + 2),
-      ].join('')));
+    ].map((line, y) => {
+      const actors = state.actors.filter((a) => a.transform.position.y === y);
+      if (!actors.length) return line;
+
+      console.log(y, actors);
+
+      const nextLine = line.split('');
+
+      return nextLine.map((char, x) => {
+        const actor = state.actors.find((a) => a.transform.position.x === x);
+
+        return actor?.look.emoji || char;
+      }).join('');
+    });
   }
 }
 

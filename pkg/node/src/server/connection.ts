@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import Shell from '../shell/shell';
 import { debug } from '../../lib/logging';
 import Engine from '../engine/engine';
-import { Player } from '../engine/actors';
+import { Wizard } from '../engine/actors';
 
 export default class Connection extends EventEmitter {
   private id: string = uuid.v4()
@@ -14,7 +14,7 @@ export default class Connection extends EventEmitter {
   connect(engine: Engine, socket: Socket): void {
     const context = Object.freeze({
       id: this.id,
-      player: new Player('john'),
+      player: new Wizard('john'),
     });
 
     context.player.transform.position.setXY(12, 3);
