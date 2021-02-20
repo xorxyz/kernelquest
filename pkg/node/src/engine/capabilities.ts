@@ -13,7 +13,7 @@ export class Port {
 }
 
 export abstract class Points {
-  value: number = 100
+  value: number = 0
   cap: number = 99999999
 
   increase(amount: number) {

@@ -24,15 +24,15 @@ export interface IState {
 }
 
 export default class Connection extends EventEmitter {
-  private engine: Engine
-  private socket: Socket
+  engine: Engine
+  state: IState
+  player: Player = new Wizard('john');
+  private view: View = new MainView()
 
+  private socket: Socket
   private timer: NodeJS.Timeout
-  private state: IState
-  private player: Player = new Wizard('john');
   private input: InputField = new InputField();
   private interpreter: Interpreter = new Interpreter()
-  private view: View = new MainView()
 
   connect(engine: Engine, socket: Socket): void {
     this.engine = engine;
@@ -48,7 +48,7 @@ export default class Connection extends EventEmitter {
     engine.actors.push(this.player);
     this.player.position.setXY(3, 2);
 
-    this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY);
+    this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 2);
 
     socket.on('close', this.handleExit.bind(this));
     socket.on('data', this.handleInput.bind(this));
@@ -72,8 +72,6 @@ export default class Connection extends EventEmitter {
       this.socket.end();
       return;
     }
-
-    console.log(`termMode: ${this.state.termMode}`);
 
     if (this.state.termMode) {
       this.handleTerminalInput(buf);
@@ -140,7 +138,7 @@ export default class Connection extends EventEmitter {
 
   renderRoom() {
     this.socket.write(
-      this.view.boxes.room.render(this.state, this.engine),
+      this.view.boxes.room.render(this),
     );
     this.drawCursor();
   }
@@ -148,7 +146,7 @@ export default class Connection extends EventEmitter {
   render() {
     if (!this.socket) return;
 
-    const output = this.view.render(this.state, this.engine);
+    const output = this.view.render(this);
 
     this.socket.write(output);
 

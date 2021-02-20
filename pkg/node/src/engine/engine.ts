@@ -60,8 +60,6 @@ export default class Engine extends EventEmitter {
         Math.min(Math.max(0, actor.position.y + actor.velocity.y), 9),
       );
 
-      if (actor instanceof Critter) console.log(next);
-
       // if there's no one there
       if (!this.actors.some((a) => a.position.equals(next))) {
         actor.position.copy(next);
@@ -72,7 +70,11 @@ export default class Engine extends EventEmitter {
       /* --- power ups --- */
       this.items.forEach((item) => {
         if (actor.position.equals(item.position)) {
-          actor.items.push(item);
+          if (item instanceof GoldItem) {
+            actor.wealth.increase(item.amount);
+          } else {
+            actor.items.push(item);
+          }
           this.items.splice(this.items.findIndex((i) => i === item));
         }
       });

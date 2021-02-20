@@ -1,5 +1,4 @@
-import Engine from '../engine/engine';
-import { IState } from '../server/connection';
+import Connection from '../server/connection';
 import {
   UiComponent,
   Navbar,
@@ -14,9 +13,9 @@ import {
 export abstract class View {
   abstract boxes: Record<string, UiComponent>
 
-  render(state: IState, engine: Engine): string {
+  render(connection: Connection): string {
     return Object.values(this.boxes)
-      .map((box) => box.render(state, engine))
+      .map((box) => box.render(connection))
       .join('');
   }
 }

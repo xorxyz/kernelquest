@@ -2,15 +2,13 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import Engine from '../engine/engine';
-import { IState } from '../server/connection';
+import Connection from '../server/connection';
 import * as esc from '../../lib/esc';
 import { Vector } from '../../lib/math';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,
   BACKSPACE,
-  ENTER,
 } from '../../lib/input';
 
 export const SCREEN_WIDTH = 60;
@@ -25,11 +23,11 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  abstract print(state: IState, engine: Engine):Array<string>
+  abstract print(connection: Connection):Array<string>
 
-  render(state: IState, engine: Engine): string {
+  render(connection: Connection): string {
     return this
-      .print(state, engine)
+      .print(connection)
       .map((line, y) => (
         esc.cursor.setXY(this.position.x, this.position.y + y) + line
       ))
@@ -72,7 +70,7 @@ export class Axis extends UiComponent {
 }
 
 export class RoomMap extends UiComponent {
-  print(state: IState, engine: Engine) {
+  print(connection: Connection) {
     return [
       '.. .. .. .. .. .. .. .. .. ..',
       '.. .. .. .. .. .. .. .. .. ..',
@@ -85,8 +83,8 @@ export class RoomMap extends UiComponent {
       '.. .. .. .. .. .. .. .. .. ..',
       '.. .. .. .. .. .. .. .. .. ..',
     ].map((line, y) => {
-      const actors = engine.actors.filter((a) => a.position.y === y);
-      const items = engine.items.filter((a) => a.position.y === y);
+      const actors = connection.engine.actors.filter((a) => a.position.y === y);
+      const items = connection.engine.items.filter((a) => a.position.y === y);
       if (!actors.length && !items.length) return line;
 
       return line.split(' ').map((char, x) => {
@@ -108,37 +106,37 @@ export class Sidebar extends UiComponent {
       '🧙 John',
       'the Wizard',
       '',
-      'X: nothing',
-      'Y: nothing',
-      'A: nothing',
-      'B: nothing',
+      `X: ${esc.style.dim}nothing${esc.style.reset}`,
+      `Y: ${esc.style.dim}nothing${esc.style.reset}`,
+      `A: ${esc.style.dim}nothing${esc.style.reset}`,
+      `B: ${esc.style.dim}nothing${esc.style.reset}`,
     ];
   }
 }
 
 export class Stats extends UiComponent {
-  print() {
+  print({ player }: Connection) {
     return [
       'L: 1',
       'X: 0 ',
       'H: 100% ',
       'S: 100% ',
       'M: 100% ',
-      '$: 0 ',
+      `$: ${player.wealth.value}`,
     ];
   }
 }
 
 export class Output extends UiComponent {
-  print({ stdout }) {
-    return stdout
+  print({ state }) {
+    return state.stdout
       .slice(-N_OF_LINES)
       .map((line) => line.padEnd(LINE_LENGTH, ' '));
   }
 }
 
 export class Input extends UiComponent {
-  print(state) {
+  print({ state }) {
     const { line, prompt } = state;
 
     return [
