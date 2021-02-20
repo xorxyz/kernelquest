@@ -1,5 +1,7 @@
 # requirements
 
+# scale
+
 alpha:
 
 - 300 concurrent players (15 environments @ 20 users each)
@@ -9,3 +11,9 @@ production:
 
 - 3,000 concurrent players (150 environments @ 20 users each)
 - 30,000 MAU
+
+# graphics
+
+reference:
+
+- https://www.unicode.org/reports/tr51/#Emoji_ZWJ_Sequences

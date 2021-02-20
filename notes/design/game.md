@@ -4,8 +4,38 @@
 > forcing you to understand what you value
 > and make a bet on that choice"
 
+1:
+- player uncovers new item or ability;
+- experiments and figures out how to use that item or ability;
+- uses it to solve puzzles that allow you to move onto the next stage;
+- each room has one main puzzle which serves as a way to teach you how to use your new abilities
+
+2:
 - short term risk in exchange for large reward
 - random parallel learning
 - expectation of failure most of the time
 - limit tool availability
 - competing objectives
+
+# mission?
+
+- toys
+- human-size computing
+- computing from first principles
+- something something faerie stories, fantasy & Tolkien
+
+# level design
+
+ideas should be embodied by the game mechanics, or taught through quests, or implied through the narrative.
+
+## exploitable systems and emergent design
+
+end goals, obstacles, tools
+
+1. define the end goal as loosely as you possibly can
+2. place obstacles in the way that prevent them from getting what they want too easily
+3. allow the player to tackle that obstacle in a variety of ways by manipulating the game systems given a complex set of tools 
+
+# quest ideas
+
+- drudgery. as a novice wizard, you are tasked with menial magical tasks like formatting `mandoc` pages by hand.

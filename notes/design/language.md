@@ -1,9 +1,10 @@
 # design of the language
 
+> "one of these Joy inspired languages"
+
 - literals of any type cause a value of that type to be pushed onto the stack
 - lists are just special cases of quoted programs
 - a function can consume any number of parameters from the stack and leave any number of results on the stack
-
 
 # datatypes
 
@@ -19,30 +20,26 @@
 
 # built-in operators and combinators
 
+- definition 
+  - == 
+  - ;
 - arithmetics
   - +  -  *  / 
 - logic
   - =  <  >  !=  <=  >=
   - not and or
 - list operations
-  - map
-  - filter
+  - map filter 
   - fold
+  - concat
 - control flow
+  - i
   - ifte
 - stack shuffling
   - swap
   - dup
   - pop
   - dip
-- i
-- id
-- cons
-- uncons
-- recursion
-  - linrec
-  - binrec
-
 
 ```xor
 

@@ -9,32 +9,6 @@
 
 - 80x24 characters screens
 
-# example
-
-```txt
-^xor4  john @ king valley  T 2038, 1st 1/4 
-028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe17
-
-  ................................  0000 0000 0000
-  ................................  name john
-  ................................  class wizard
-  ................................  level 1
-  ..............@@@@..............
-  ................................  L empty
-  ................................  R empty
-  ................................  A empty
-
-8x 60 characters lines                                      ;
-                                                            ;
-                                                            ;  L 99
-                                                            ;  X 100%
-                                                            ;  H 100%
-                                                            ;  S 100%
-                                                            ;  M 100%
-                                                            ;  $ 100000000
-$_
-```
-
 # notes
 
 - Terminal emulators almost always support ANSI escape codes
