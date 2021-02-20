@@ -17,20 +17,13 @@ export default class Connection extends EventEmitter {
       player: new Wizard('john'),
     });
 
-    context.player.position.setXY(0, 0);
+    context.player.position.setXY(3, 2);
 
     engine.actors.push(context.player);
 
     this.shell = new Shell(context, engine);
     this.shell.connect(socket);
 
-    socket.on('end', this.disconnect.bind(this));
     debug('client connected');
-  }
-
-  private disconnect(): void {
-    debug('client disconnected');
-    this.shell = null;
-    this.emit('disconnect');
   }
 }

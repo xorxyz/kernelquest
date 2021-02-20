@@ -48,3 +48,4 @@ development docs is in [`the main README file`](../README.md).
 - [Minimum description length](https://en.wikipedia.org/wiki/Minimum_description_length)
 - [Self-extracting archive](https://en.wikipedia.org/wiki/Self-extracting_archive)
 - [Kolmogorov complexity](https://en.wikipedia.org/wiki/Kolmogorov_complexity)
+- [A foundation for typed concatenative languages](https://www2.ccs.neu.edu/racket/pubs/dissertation-kleffner.pdf)

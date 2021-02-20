@@ -2,8 +2,6 @@
  * actors have capabilities
  */
 
-import { Vector } from '../../lib/math';
-
 /* Unique identifiers */
 export class Id {
   id: string
@@ -12,32 +10,6 @@ export class Id {
 /* Connect things to other things */
 export class Port {
   value: number | null
-}
-
-/* What it looks like */
-export abstract class Look {
-  emoji: string
-  description: string
-}
-
-export class WizardLook extends Look {
-  emoji = '🧙'
-  description = 'looks like a wizard'
-}
-
-export class SheepLook extends Look {
-  emoji = '🐑'
-  description = 'meeeeeeh'
-}
-
-export class MonsterLook extends Look {
-  emoji = '🐛'
-  description = 'looks dangerous'
-}
-
-export class NpcLook extends Look {
-  emoji = '💁'
-  description = 'looks like someone you know'
 }
 
 export abstract class Points {

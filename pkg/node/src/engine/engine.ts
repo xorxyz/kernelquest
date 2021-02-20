@@ -3,10 +3,12 @@
  */
 import * as EventEmitter from 'events';
 import Clock from '../../lib/clock';
-import { Actor, Critter } from './actors';
+import { Vector } from '../../lib/math';
+import { Actor, Critter, TutorNpc } from './actors';
+import { GoldItem, Item } from './items';
 import { World } from './places';
 
-const CLOCK_MS_DELAY = 300;
+export const CLOCK_MS_DELAY = 300;
 
 export interface EngineOptions {
   rate?: number
@@ -14,8 +16,9 @@ export interface EngineOptions {
 
 export default class Engine extends EventEmitter {
   actors: Array<Actor> = []
+  items: Array<Item> = []
+  clock: Clock
 
-  public clock: Clock
   private world: World
   private round: number = 0
 
@@ -25,9 +28,17 @@ export default class Engine extends EventEmitter {
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.world = new World();
 
+    const gold = new GoldItem(3);
+    gold.position.setXY(7, 7);
+    this.items.push(gold);
+
     const sheep = new Critter();
     sheep.position.setXY(9, 5);
     this.actors.push(sheep);
+
+    const tutor = new TutorNpc();
+    tutor.position.setXY(9, 9);
+    this.actors.push(tutor);
 
     this.clock.on('tick', this.update.bind(this));
   }
@@ -38,9 +49,31 @@ export default class Engine extends EventEmitter {
   update() {
     this.round++;
     this.actors.forEach((actor) => {
-      if (actor.takeTurn()) {
-        this.emit('render');
+      const command = actor.takeTurn();
+
+      if (command) command.execute(actor, this);
+
+      /* --- movement --- */
+
+      const next = new Vector(
+        Math.min(Math.max(0, actor.position.x + actor.velocity.x), 9),
+        Math.min(Math.max(0, actor.position.y + actor.velocity.y), 9),
+      );
+
+      // if there's no one there
+      if (!this.actors.some((a) => a.position.equals(next))) {
+        actor.position.copy(next);
       }
+
+      actor.velocity.sub(actor.velocity);
+
+      /* --- power ups --- */
+      this.items.forEach((item) => {
+        if (actor.position.equals(item.position)) {
+          actor.items.push(item);
+          this.items.splice(this.items.findIndex((i) => i === item));
+        }
+      });
     });
   }
 }

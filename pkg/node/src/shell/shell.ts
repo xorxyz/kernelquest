@@ -3,7 +3,7 @@
  */
 import { Socket } from 'net';
 import Interpreter from './interpreter';
-import Engine from '../engine/engine';
+import Engine, { CLOCK_MS_DELAY } from '../engine/engine';
 import * as term from '../../lib/esc';
 import {
   ENTER, SIGINT, InputField, ARROW_DOWN, ARROW_UP, ARROW_RIGHT, ARROW_LEFT,
@@ -13,6 +13,8 @@ import { CELL_WIDTH, CURSOR_OFFSET } from '../ui/components';
 import { Vector } from '../../lib/math';
 import { MoveCommand } from '../engine/commands';
 import { Actor, Player } from '../engine/actors';
+import Clock from '../../lib/clock';
+import { Item } from '../engine/items';
 
 export interface IShellContext {
   id: string,
@@ -20,6 +22,7 @@ export interface IShellContext {
 }
 
 export interface IShellState {
+  clock: Clock,
   termMode: boolean
   player: Actor,
   repl: Interpreter,
@@ -28,6 +31,7 @@ export interface IShellState {
   stdout: Array<string>,
   cursor: Vector,
   actors: Array<Actor>
+  items: Array<Item>
 }
 
 export default class Shell {
@@ -39,6 +43,7 @@ export default class Shell {
 
   private input: InputField
   private view: View
+  private timer: NodeJS.Timeout
 
   private state: IShellState
   private socket: Socket
@@ -54,6 +59,7 @@ export default class Shell {
     this.view = new MainView();
 
     this.state = {
+      clock: new Proxy(engine.clock, {}),
       termMode: false,
       player: new Proxy(this.actor, {}),
       repl: new Proxy(this.repl, {}),
@@ -62,6 +68,7 @@ export default class Shell {
       stdout: [],
       cursor: new Vector(12, 5),
       actors: new Proxy(this.engine.actors, {}),
+      items: new Proxy(this.engine.items, {}),
     };
   }
 
@@ -72,11 +79,14 @@ export default class Shell {
 
     this.engine.actors.push(this.actor);
 
-    this.engine.on('render', () => {
-      this.render(this.state);
-    });
+    // this.engine.on('render', () => {
+    // });
 
-    this.render(this.state);
+    this.timer = setInterval(() => {
+      this.render(this.state);
+    }, CLOCK_MS_DELAY);
+
+    // this.render(this.state);
   }
 
   switchModes() {

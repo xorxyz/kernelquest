@@ -1,7 +1,7 @@
 import { Actor } from './actors';
 
 export abstract class Command {
-  abstract execute(a);
+  abstract execute(a, e): Boolean;
 }
 
 export class MoveCommand extends Command {
@@ -16,11 +16,7 @@ export class MoveCommand extends Command {
   }
 
   execute(actor: Actor) {
-    actor.position.addXY(this.x, this.y);
-    actor.position.setX(Math.max(actor.position.x, 0));
-    actor.position.setY(Math.max(actor.position.y, 0));
-    actor.position.setX(Math.min(actor.position.x, 9));
-    actor.position.setY(Math.min(actor.position.y, 9));
+    actor.velocity.setXY(this.x, this.y);
     return true;
   }
 }

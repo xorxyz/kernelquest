@@ -1,18 +1,34 @@
 /*
  * living entities are called actors
- *
  */
-
 import * as uuid from 'uuid';
 import {
-  Item, Weapon, Clothes, Relic,
+  Item,
+  Weapon,
+  Clothes,
+  Relic,
 } from './items';
 import {
-  Health, Stamina, Mana, Wealth, SheepLook, WizardLook, Look, MonsterLook, NpcLook,
+  Health,
+  Stamina,
+  Mana,
+  Wealth,
 } from './capabilities';
-import { Job, WizardJob } from './jobs';
+import {
+  SheepLook,
+  WizardLook,
+  Look,
+  MonsterLook,
+  NpcLook,
+} from './looks';
+import {
+  Job,
+  CritterJob,
+  NoviceJob,
+  WizardJob,
+} from './jobs';
 import { Command, MoveCommand } from './commands';
-import { RandomVector, Vector } from '../../lib/math';
+import { Vector } from '../../lib/math';
 import { getRandomDirection } from '../../lib/utils';
 
 export abstract class Actor {
@@ -22,6 +38,8 @@ export abstract class Actor {
   abstract look: Look
 
   position: Vector = new Vector()
+  velocity: Vector = new Vector()
+
   queue: Array<Command> = []
 
   health: Health = new Health()
@@ -36,31 +54,19 @@ export abstract class Actor {
   items: Array<Item> = []
 
   takeTurn() {
-    const action = this.queue.shift();
-
-    if (action) {
-      console.log('turn w action');
-      return action.execute(this);
-    }
-
-    return false;
+    return this.queue.shift();
   }
 }
 
-class CritterJob extends Job {}
-class NoviceJob extends Job {}
-
 export class Player extends Actor {
-  name = 'AnonymousPlayer'
+  name: string
   commands: Array<Command> = []
   job = new NoviceJob()
   look = new WizardLook();
 
-  constructor(name?: string) {
+  constructor(name: string = 'AnonymousPlayer') {
     super();
-    if (name) {
-      this.name = name;
-    }
+    this.name = name;
   }
 }
 
@@ -93,15 +99,13 @@ export class Monster extends Actor {
   name = 'Monster'
   job = new NoviceJob()
   look = new MonsterLook();
-  takeTurn() {
-    return null;
-  }
 }
 
 export class Npc extends Actor {
   job = new NoviceJob()
   look = new NpcLook()
-  takeTurn() {
-    return null;
-  }
+}
+
+export class TutorNpc extends Npc {
+
 }

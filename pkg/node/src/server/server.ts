@@ -22,7 +22,7 @@ export default class GameServer {
 
     this.connections.add(connection);
 
-    connection.on('disconnect', () => {
+    socket.on('disconnect', () => {
       this.connections.delete(connection);
     });
 

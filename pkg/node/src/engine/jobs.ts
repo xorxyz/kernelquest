@@ -23,3 +23,6 @@ export class WizardJob extends Job {
 export class ElfJob extends Job {
   name: 'elf'
 }
+
+export class CritterJob extends Job {}
+export class NoviceJob extends Job {}

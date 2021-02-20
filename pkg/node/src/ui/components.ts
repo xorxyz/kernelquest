@@ -1,6 +1,7 @@
 import { UiBox } from './lib';
 import * as esc from '../../lib/esc';
 import { Actor } from '../engine/actors';
+import { IShellState } from '../shell/shell';
 
 export const LINE_LENGTH = 60;
 export const N_OF_LINES = 8;
@@ -23,7 +24,7 @@ export class NavBox extends UiBox {
 }
 
 export class RoomBox extends UiBox {
-  print(state) {
+  print(state: IShellState) {
     return [
       '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9',
       'x0 .. .. .. .. .. .. .. .. .. ..',
@@ -38,13 +39,16 @@ export class RoomBox extends UiBox {
       'x9 .. .. .. .. .. .. .. .. .. ..',
     ].map((line, y) => {
       const actors = state.actors.filter((a) => a.position.y + 1 === y);
-      if (!actors.length) return line;
+      const items = state.items.filter((a) => a.position.y + 1 === y);
+      if (!actors.length && !items.length) return line;
 
       return line.split(' ').map((char, x) => {
         const actor = actors.find((a) => a.position.x + 1 === x);
+        const item = items.find((i) => i.position.x + 1 === x);
+        // eslint-disable-next-line no-nested-ternary
         return actor
           ? actor.look.emoji
-          : char;
+          : item ? item.look.emoji : char;
       }).join(' ');
     });
   }
