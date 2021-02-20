@@ -14,18 +14,11 @@ import {
   Mana,
   Wealth,
 } from './capabilities';
-import {
-  SheepLook,
-  WizardLook,
-  Look,
-  MonsterLook,
-  NpcLook,
-} from './looks';
+import { Look, looks } from './looks';
 import {
   Job,
   CritterJob,
   NoviceJob,
-  WizardJob,
 } from './jobs';
 import { Command, MoveCommand } from './commands';
 import { Vector } from '../../lib/math';
@@ -58,11 +51,10 @@ export abstract class Actor {
   }
 }
 
-export class Player extends Actor {
+export abstract class Players extends Actor {
   name: string
   commands: Array<Command> = []
   job = new NoviceJob()
-  look = new WizardLook();
 
   constructor(name: string = 'AnonymousPlayer') {
     super();
@@ -70,17 +62,9 @@ export class Player extends Actor {
   }
 }
 
-export class Wizard extends Player {
-  job = new WizardJob();
-  look = new WizardLook();
-}
-
-export class Critter extends Actor {
-  name = 'Critter'
-  job = new CritterJob()
-  look = new SheepLook()
-
+export abstract class Critter extends Actor {
   timer: NodeJS.Timeout
+  job = new CritterJob()
 
   constructor(delayMs: number = 1000) {
     super();
@@ -95,17 +79,28 @@ export class Critter extends Actor {
   }
 }
 
-export class Monster extends Actor {
-  name = 'Monster'
+export abstract class Npc extends Actor {
   job = new NoviceJob()
-  look = new MonsterLook();
+  look = looks.npc
 }
 
-export class Npc extends Actor {
+export abstract class Bug extends Actor {
+  name = 'Bug'
   job = new NoviceJob()
-  look = new NpcLook()
+  look = looks.bug
 }
 
-export class TutorNpc extends Npc {
+/* - Instances - */
 
+export class Player extends Players {
+  look = looks.me;
+}
+
+export class Sheep extends Critter {
+  name = 'Sheep'
+  look = looks.sheep
+}
+
+export class Tutor extends Npc {
+  name = 'Tutor'
 }

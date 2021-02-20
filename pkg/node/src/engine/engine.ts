@@ -4,8 +4,10 @@
 import * as EventEmitter from 'events';
 import Clock from '../../lib/clock';
 import { Vector } from '../../lib/math';
-import { Actor, Critter, TutorNpc } from './actors';
-import { GoldItem, Item } from './items';
+import { Actor, Sheep, Tutor } from './actors';
+import {
+  GoldItem, Item, Wall, WallItem,
+} from './items';
 import { World } from './places';
 
 export const CLOCK_MS_DELAY = 300;
@@ -17,6 +19,7 @@ export interface EngineOptions {
 export default class Engine extends EventEmitter {
   actors: Array<Actor> = []
   items: Array<Item> = []
+  walls: Array<Wall> = []
   clock: Clock
 
   private world: World
@@ -32,13 +35,21 @@ export default class Engine extends EventEmitter {
     gold.position.setXY(7, 7);
     this.items.push(gold);
 
-    const sheep = new Critter();
+    const sheep = new Sheep();
     sheep.position.setXY(9, 5);
     this.actors.push(sheep);
 
-    const tutor = new TutorNpc();
+    const tutor = new Tutor();
     tutor.position.setXY(9, 9);
     this.actors.push(tutor);
+
+    const v = new Vector(5, 5);
+    const walls = new Array(6).fill(0).map(() => new WallItem());
+    walls.forEach((wall) => {
+      wall.position.copy(v);
+      this.walls.push(wall);
+      v.addXY(0, -1);
+    });
 
     this.clock.on('tick', this.update.bind(this));
   }
@@ -61,13 +72,15 @@ export default class Engine extends EventEmitter {
       );
 
       // if there's no one there
-      if (!this.actors.some((a) => a.position.equals(next))) {
+      if (!this.walls.some((a) => a.position.equals(next)) &&
+          !this.actors.some((a) => a.position.equals(next))) {
         actor.position.copy(next);
       }
 
       actor.velocity.sub(actor.velocity);
 
       /* --- power ups --- */
+
       this.items.forEach((item) => {
         if (actor.position.equals(item.position)) {
           if (item instanceof GoldItem) {

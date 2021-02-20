@@ -5,14 +5,15 @@
 import { Vector } from '../../lib/math';
 import { Actor } from './actors';
 import { Durability } from './capabilities';
-import { Look, MoneyBagLook } from './looks';
+import { looks } from './looks';
 import { Spell } from './spells';
 
 export abstract class Item {
-  owner: Actor | null
+  look: typeof looks.gold
+
   position: Vector = new Vector()
-  durability: Durability
-  look: Look
+  private owner: Actor | null = null
+  private durability: Durability = new Durability()
 
   abstract use(user, target?): Boolean
 }
@@ -20,11 +21,19 @@ export abstract class Item {
 export abstract class Weapon extends Item {}
 export abstract class Clothes extends Item {}
 export abstract class Relic extends Item {}
+export abstract class Wall extends Item {}
+
+export class WallItem extends Wall {
+  look = looks.wall
+  use() {
+    return false;
+  }
+}
 
 /* unlocks a locked door. one time use. */
 export class GoldItem extends Item {
   amount: number
-  look = new MoneyBagLook()
+  look = looks.gold
 
   constructor(amount: number) {
     super();
@@ -36,16 +45,11 @@ export class GoldItem extends Item {
   }
 }
 
-/* generates random values, costs mana to use */
-export class DiceItem extends Item {
-  use() {
-    return true;
-  }
-}
-
 /* represents the contract for the execution of a spell, costs mana to use */
 export class ScrollItem extends Item {
   spell: Spell
+  look = looks.scroll
+
   use() {
     return true;
   }
@@ -54,6 +58,8 @@ export class ScrollItem extends Item {
 /* unlocks a locked door. one time use. */
 export class KeyItem extends Item {
   color: 'blue' | 'green' | 'red'
+  look = looks.key
+
   use() {
     return true;
   }

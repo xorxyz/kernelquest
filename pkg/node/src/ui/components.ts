@@ -54,16 +54,16 @@ export class Axis extends UiComponent {
     return [
       esc.style.dim,
       '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9',
-      'x0',
-      'x1',
-      'x2',
-      'x3',
-      'x4',
-      'x5',
-      'x6',
-      'x7',
-      'x8',
-      'x9',
+      'x0 ',
+      'x1 ',
+      'x2 ',
+      'x3 ',
+      'x4 ',
+      'x5 ',
+      'x6 ',
+      'x7 ',
+      'x8 ',
+      'x9 ',
       esc.style.reset,
     ];
   }
@@ -85,16 +85,26 @@ export class RoomMap extends UiComponent {
     ].map((line, y) => {
       const actors = connection.engine.actors.filter((a) => a.position.y === y);
       const items = connection.engine.items.filter((a) => a.position.y === y);
-      if (!actors.length && !items.length) return line;
+      const walls = connection.engine.walls.filter((a) => a.position.y === y);
+      if (!actors.length && !items.length && !walls.length) return line;
 
-      return line.split(' ').map((char, x) => {
+      return line.split(' ').map((bytes, x) => {
         const actor = actors.find((a) => a.position.x === x);
-        const item = items.find((i) => i.position.x === x);
+        if (actor && actor.look) {
+          return actor.look.bytes;
+        }
 
-        // eslint-disable-next-line no-nested-ternary
-        return actor
-          ? actor.look.emoji
-          : item ? item.look.emoji : char;
+        const item = items.find((i) => i.position.x === x);
+        if (item && item.look) {
+          return item.look.bytes;
+        }
+
+        const wall = walls.find((w) => w.position.x === x);
+        if (wall && wall.look) {
+          return wall.look.bytes;
+        }
+
+        return bytes;
       }).join(' ');
     });
   }
@@ -106,7 +116,7 @@ export class Sidebar extends UiComponent {
       '🧙 John',
       'the Wizard',
       '',
-      `X: ${esc.style.dim}nothing${esc.style.reset}`,
+      'X: 🔮 M Orb',
       `Y: ${esc.style.dim}nothing${esc.style.reset}`,
       `A: ${esc.style.dim}nothing${esc.style.reset}`,
       `B: ${esc.style.dim}nothing${esc.style.reset}`,
@@ -117,12 +127,12 @@ export class Sidebar extends UiComponent {
 export class Stats extends UiComponent {
   print({ player }: Connection) {
     return [
-      'L: 1',
-      'X: 0 ',
-      'H: 100% ',
-      'S: 100% ',
-      'M: 100% ',
-      `$: ${player.wealth.value}`,
+      'LV: 1',
+      'XP: 0 of 100 ',
+      'HP: 5 of 5',
+      'SP: 5 of 5',
+      'MP: 5 of 5',
+      `GP: ${player.wealth.value}`,
     ];
   }
 }
@@ -165,14 +175,14 @@ export class InputField {
   insert(buf: Buffer): boolean {
     if (this.line.length === LINE_LENGTH) return false;
 
-    const hexCode = buf.toString('hex');
+    const hex = buf.toString('hex');
 
-    if (hexCode === BACKSPACE) return this.backspace();
-    if (hexCode === ARROW_LEFT) return this.moveLeft();
-    if (hexCode === ARROW_RIGHT) return this.moveRight();
+    if (hex === BACKSPACE) return this.backspace();
+    if (hex === ARROW_LEFT) return this.moveLeft();
+    if (hex === ARROW_RIGHT) return this.moveRight();
 
     /* catch all other ctrl sequences */
-    if (hexCode.startsWith('1b')) return false;
+    if (hex.startsWith('1b')) return false;
 
     const char = buf.toString();
     const chars = this.line.split('');

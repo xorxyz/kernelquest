@@ -3,7 +3,7 @@ import { Socket } from 'net';
 import { EventEmitter } from 'events';
 import { debug } from '../../lib/logging';
 import Engine, { CLOCK_MS_DELAY } from '../engine/engine';
-import { Player, Wizard } from '../engine/actors';
+import { Player } from '../engine/actors';
 import * as term from '../../lib/esc';
 import { MoveCommand } from '../engine/commands';
 import * as input from '../../lib/input';
@@ -26,9 +26,9 @@ export interface IState {
 export default class Connection extends EventEmitter {
   engine: Engine
   state: IState
-  player: Player = new Wizard('john');
-  private view: View = new MainView()
+  player: Player = new Player('john');
 
+  private view: View = new MainView()
   private socket: Socket
   private timer: NodeJS.Timeout
   private input: InputField = new InputField();
@@ -48,7 +48,7 @@ export default class Connection extends EventEmitter {
     engine.actors.push(this.player);
     this.player.position.setXY(3, 2);
 
-    this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 2);
+    this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
 
     socket.on('close', this.handleExit.bind(this));
     socket.on('data', this.handleInput.bind(this));
@@ -89,22 +89,18 @@ export default class Connection extends EventEmitter {
       case (input.ENTER):
         this.switchModes();
         break;
-      case (input.ARROW_UP): {
+      case (input.ARROW_UP):
         command = new MoveCommand(0, -1);
         break;
-      }
-      case (input.ARROW_RIGHT): {
+      case (input.ARROW_RIGHT):
         command = new MoveCommand(1, 0);
         break;
-      }
-      case (input.ARROW_DOWN): {
+      case (input.ARROW_DOWN):
         command = new MoveCommand(0, 1);
         break;
-      }
-      case (input.ARROW_LEFT): {
+      case (input.ARROW_LEFT):
         command = new MoveCommand(-1, 0);
         break;
-      }
       default:
         break;
     }
