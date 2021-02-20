@@ -4,7 +4,7 @@
  */
 
 import { Vector } from '../../lib/math';
-import { Stack } from '../shell/stack';
+import { Stack } from '../../lib/stack';
 import { Actor } from './actors';
 import { Port } from './capabilities';
 import { Item } from './items';

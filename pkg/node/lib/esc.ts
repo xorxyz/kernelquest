@@ -5,6 +5,7 @@ export const style = {
   invert: escStr('[7m'),
   reset: escStr('[0m'),
   white: escStr('[37m'),
+  dim: escStr('[2m'),
 };
 
 export const screen = {

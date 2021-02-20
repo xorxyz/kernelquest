@@ -1,7 +1,7 @@
 /*
  * the shell language types
  */
-import { Stack } from './stack';
+import { Stack } from '../../lib/stack';
 
 export abstract class Word {}
 

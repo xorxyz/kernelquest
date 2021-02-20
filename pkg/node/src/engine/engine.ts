@@ -60,6 +60,8 @@ export default class Engine extends EventEmitter {
         Math.min(Math.max(0, actor.position.y + actor.velocity.y), 9),
       );
 
+      if (actor instanceof Critter) console.log(next);
+
       // if there's no one there
       if (!this.actors.some((a) => a.position.equals(next))) {
         actor.position.copy(next);

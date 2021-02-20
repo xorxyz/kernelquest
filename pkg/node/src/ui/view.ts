@@ -1,32 +1,39 @@
-import { IShellState } from '../shell/shell';
+import Engine from '../engine/engine';
+import { IState } from '../server/connection';
 import {
-  LINE_LENGTH,
-  NavBox,
-  RoomBox,
-  SideBox,
-  OutputBox,
-  StatsBox,
-  PromptBox,
+  UiComponent,
+  Navbar,
+  Sidebar,
+  Axis,
+  RoomMap,
+  Stats,
+  Output,
+  Input,
 } from './components';
-import { UiBox } from './lib';
 
 export abstract class View {
-  abstract boxes: Record<string, UiBox>
+  abstract boxes: Record<string, UiComponent>
 
-  render(state: IShellState): string {
+  render(state: IState, engine: Engine): string {
     return Object.values(this.boxes)
-      .map((box) => box.render(state))
+      .map((box) => box.render(state, engine))
       .join('');
   }
 }
 
+export const boxes = {
+  nav: new Navbar(1, 1),
+  side: new Sidebar(2, 3),
+  axis: new Axis(16, 2),
+  room: new RoomMap(19, 4),
+  stats: new Stats(2, 15),
+  output: new Output(16, 15),
+  prompt: new Input(16, 20),
+};
+
+export const CURSOR_OFFSET_X = boxes.prompt.position.x + 2;
+export const CURSOR_OFFSET_Y = boxes.prompt.position.y;
+
 export class MainView extends View {
-  boxes = {
-    nav: new NavBox(1, 1),
-    room: new RoomBox(15, 4),
-    side: new SideBox(LINE_LENGTH + 2, 4),
-    output: new OutputBox(3, 16),
-    stats: new StatsBox(LINE_LENGTH + 2, 16),
-    prompt: new PromptBox(1, 24),
-  }
+  boxes = boxes
 }

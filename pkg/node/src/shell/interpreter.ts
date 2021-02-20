@@ -3,7 +3,7 @@
  */
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
-import { Stack } from './stack';
+import { Stack } from '../../lib/stack';
 import { DataStack, BooleanLiteral } from './types';
 
 const operators = {
@@ -26,7 +26,7 @@ export default class Interpreter extends EventEmitter {
     this.stack = new Stack();
   }
 
-  eval(expr: string): DataStack {
+  eval(expr: string): string {
     debug(`$> ${expr}`);
     const words = expr.split(' ').filter((x) => x);
 
@@ -44,6 +44,6 @@ export default class Interpreter extends EventEmitter {
       }
     });
 
-    return this.stack;
+    return 'command not found';
   }
 }
