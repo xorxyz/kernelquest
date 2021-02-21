@@ -49,7 +49,8 @@
 square == dup *  
 [2 5 3] 0 [+] fold
 [dup cons i] dup cons i
-
+[wall 5 2 0]
+  -> [wall 5 2 0]
 ```
 
 # notes

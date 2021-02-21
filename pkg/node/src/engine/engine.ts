@@ -4,10 +4,10 @@
 import * as EventEmitter from 'events';
 import Clock from '../../lib/clock';
 import { Vector } from '../../lib/math';
-import { Actor, Sheep, Tutor } from './actors';
 import {
-  GoldItem, Item, Wall, WallItem,
-} from './items';
+  Actor, Sheep, Tutor,
+} from './actors';
+import { GoldItem, Item, Wall } from './items';
 import { World } from './places';
 
 export const CLOCK_MS_DELAY = 300;
@@ -42,14 +42,6 @@ export default class Engine extends EventEmitter {
     const tutor = new Tutor();
     tutor.position.setXY(9, 9);
     this.actors.push(tutor);
-
-    const v = new Vector(5, 5);
-    const walls = new Array(6).fill(0).map(() => new WallItem());
-    walls.forEach((wall) => {
-      wall.position.copy(v);
-      this.walls.push(wall);
-      v.addXY(0, -1);
-    });
 
     this.clock.on('tick', this.update.bind(this));
   }

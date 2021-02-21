@@ -17,6 +17,8 @@ looks == [ name bytes appearance description? ];
 ```
 */
 
+import { style } from '../../lib/esc';
+
 export class Look {
   name: string
   bytes: string
@@ -33,7 +35,7 @@ export class Look {
 
 export const looks: Record<string, Look> = {
   me: new Look('me', '🧙', 'you look like a wizard'),
-  wall: new Look('wall', '██', 'it looks like it\'s in your way'),
+  wall: new Look('wall', style.dim('██'), 'it looks like it\'s in your way'),
   gold: new Look('gold', '💰', 'oooh shiny'),
   key: new Look('key', '🗝️', 'i could need this'),
   scroll: new Look('scroll', '📜', 'probably a magic scroll'),

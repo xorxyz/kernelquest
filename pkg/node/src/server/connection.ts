@@ -8,13 +8,15 @@ import * as term from '../../lib/esc';
 import { MoveCommand } from '../engine/commands';
 import * as input from '../../lib/input';
 import Interpreter from '../shell/interpreter';
-import { CELL_WIDTH, N_OF_LINES, InputField } from '../ui/components';
+import { CELL_WIDTH, InputField } from '../ui/components';
 import {
   CURSOR_OFFSET_X,
   CURSOR_OFFSET_Y,
   MainView,
   View,
 } from '../ui/view';
+
+const host = process.env.HOST || 'localhost:3000';
 
 export interface IState {
   termMode: boolean
@@ -32,21 +34,29 @@ export default class Connection extends EventEmitter {
   private socket: Socket
   private timer: NodeJS.Timeout
   private input: InputField = new InputField();
-  private interpreter: Interpreter = new Interpreter()
+  private interpreter: Interpreter
 
-  connect(engine: Engine, socket: Socket): void {
+  connect(id: number, engine: Engine, socket: Socket): void {
     this.engine = engine;
     this.socket = socket;
     this.state = {
       termMode: false,
       prompt: '> ',
       line: '',
-      stdout: new Array(N_OF_LINES).fill(''),
+      stdout: [
+        `xor/tcp (${host}) (tty${id})`,
+        'login: john',
+        'password:',
+        'Last login: 2038-01-01',
+        'Welcome.',
+      ],
     };
 
+    this.interpreter = new Interpreter(engine, this.player);
+
     engine.actors.push(this.player);
-    engine.actors.push(this.player);
-    this.player.position.setXY(3, 2);
+
+    this.player.position.setXY(0, 0);
 
     this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
 

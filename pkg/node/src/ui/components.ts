@@ -14,7 +14,7 @@ import {
 export const SCREEN_WIDTH = 60;
 export const LINE_LENGTH = 42;
 export const N_OF_LINES = 5;
-export const CELL_WIDTH = 3;
+export const CELL_WIDTH = 2;
 
 export abstract class UiComponent {
   position: Vector
@@ -52,43 +52,40 @@ export class Navbar extends UiComponent {
 export class Axis extends UiComponent {
   print() {
     return [
-      esc.style.dim,
-      '   x0 x1 x2 x3 x4 x5 x6 x7 x8 x9',
-      'x0 ',
-      'x1 ',
-      'x2 ',
-      'x3 ',
-      'x4 ',
-      'x5 ',
-      'x6 ',
-      'x7 ',
-      'x8 ',
-      'x9 ',
-      esc.style.reset,
-    ];
+      '  0 1 2 3 4 5 6 7 8 9',
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+    ].map((str) => esc.style.dim(str));
   }
 }
 
 export class RoomMap extends UiComponent {
   print(connection: Connection) {
     return [
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. 🌵 .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
-      '.. .. .. .. .. .. .. .. .. ..',
+      '....................',
+      '....................',
+      '..🌵................',
+      '....................',
+      '....................',
+      '....................',
+      '....................',
+      '....................',
+      '....................',
+      '....................',
     ].map((line, y) => {
       const actors = connection.engine.actors.filter((a) => a.position.y === y);
       const items = connection.engine.items.filter((a) => a.position.y === y);
       const walls = connection.engine.walls.filter((a) => a.position.y === y);
       if (!actors.length && !items.length && !walls.length) return line;
-
-      return line.split(' ').map((bytes, x) => {
+      return chunkString(line, 2).map((bytes, x) => {
         const actor = actors.find((a) => a.position.x === x);
         if (actor && actor.look) {
           return actor.look.bytes;
@@ -105,7 +102,7 @@ export class RoomMap extends UiComponent {
         }
 
         return bytes;
-      }).join(' ');
+      }).join('');
     });
   }
 }
@@ -117,9 +114,9 @@ export class Sidebar extends UiComponent {
       'the Wizard',
       '',
       'X: 🔮 M Orb',
-      `Y: ${esc.style.dim}nothing${esc.style.reset}`,
-      `A: ${esc.style.dim}nothing${esc.style.reset}`,
-      `B: ${esc.style.dim}nothing${esc.style.reset}`,
+      `Y: ${esc.style.dim('nothing')}`,
+      `A: ${esc.style.dim('nothing')}`,
+      `B: ${esc.style.dim('nothing')}`,
     ];
   }
 }
@@ -141,7 +138,7 @@ export class Output extends UiComponent {
   print({ state }) {
     return state.stdout
       .slice(-N_OF_LINES)
-      .map((line) => line.padEnd(LINE_LENGTH, ' '));
+      .map((line) => (line || '').padEnd(LINE_LENGTH, ' '));
   }
 }
 
@@ -224,4 +221,8 @@ export class InputField {
     this.cursor.x = 0;
     return true;
   }
+}
+
+function chunkString(str, length) {
+  return str.match(new RegExp(`.{1,${length}}`, 'g'));
 }

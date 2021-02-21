@@ -3,13 +3,13 @@
  */
 import { Stack } from '../../lib/stack';
 
-export abstract class Word {}
-
 export type DataStack = Stack<Word>
 
-export abstract class Literal extends Word {
-  private value: any
+export abstract class Word {
+  value: any
+}
 
+export abstract class Literal extends Word {
   constructor(value: any) {
     super();
 

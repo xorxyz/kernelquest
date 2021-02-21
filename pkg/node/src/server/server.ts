@@ -5,6 +5,7 @@ import Engine from '../engine/engine';
 export interface Params { src?: string }
 
 export default class GameServer {
+  private i: number = 0
   private engine: Engine
   private tcpServer: Server
   private connections: Set<Connection>
@@ -26,7 +27,7 @@ export default class GameServer {
       this.connections.delete(connection);
     });
 
-    connection.connect(this.engine, socket);
+    connection.connect(this.i++, this.engine, socket);
   }
 
   listen(...args): void {
