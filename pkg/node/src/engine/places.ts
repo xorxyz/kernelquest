@@ -2,7 +2,6 @@
  * Places:
  * Cell -> Screen -> Zone -> World
  */
-
 import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Actor } from './actors';

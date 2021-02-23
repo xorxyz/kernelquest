@@ -2,14 +2,10 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import Connection from '../server/connection';
 import * as esc from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import {
-  ARROW_LEFT,
-  ARROW_RIGHT,
-  BACKSPACE,
-} from '../../lib/input';
+import { Item } from '../engine/items';
+import { Terminal } from '../shell/terminal';
 
 export const SCREEN_WIDTH = 60;
 export const LINE_LENGTH = 42;
@@ -23,11 +19,11 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  abstract print(connection: Connection):Array<string>
+  abstract print(term: Terminal):Array<string>
 
-  render(connection: Connection): string {
+  render(term: Terminal): string {
     return this
-      .print(connection)
+      .print(term)
       .map((line, y) => (
         esc.cursor.setXY(this.position.x, this.position.y + y) + line
       ))
@@ -37,13 +33,13 @@ export abstract class UiComponent {
 
 export class Navbar extends UiComponent {
   print() {
+    const what = ' xor4>';
+    const time = '2038-01-01';
+    const place = 'King\'s Valley (0,0)';
+
     return [
       esc.style.invert +
-      [
-        ' xor4>',
-        'King\'s Valley (0,0)',
-        '1st 1/4 moon, 2038',
-      ].join('    ').padEnd(SCREEN_WIDTH, ' ') +
+      [what, place, time].join('            ').padEnd(SCREEN_WIDTH, ' ') +
       esc.style.reset,
     ];
   }
@@ -51,39 +47,47 @@ export class Navbar extends UiComponent {
 
 export class Axis extends UiComponent {
   print() {
-    return [
-      '  0 1 2 3 4 5 6 7 8 9',
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-    ].map((str) => esc.style.dim(str));
+    const x = '  0 1 2 3 4 5 6 7 8 9';
+    const y = x.trim().split(' ');
+
+    return [x, ...y].map((str) => esc.style.dim(str));
   }
 }
 
+const say = (str) =>
+  esc.style.fg.black(
+    esc.style.bg.white(str) + esc.style.reset,
+  );
+
+// src dest pos insert
+const insert = function (dest: string, src: string, pos: number) {
+  const a = dest.slice(0, pos);
+  const b = src;
+  const ablen = esc.stripAnsi(a).length + esc.stripAnsi(b).length;
+  const clen = dest.length - ablen;
+
+  if (clen < 0) { return a + b; }
+
+  return dest.slice(0, pos).concat(src).concat(dest.slice(pos, pos + clen));
+};
+
 export class RoomMap extends UiComponent {
-  print(connection: Connection) {
+  print(term: Terminal) {
     return [
       '....................',
-      '....................',
+      '..........-.........',
       '..🌵................',
+      insert('....................', say('oh hi there'), 4),
+      '.-..................',
       '....................',
+      insert('....................', say('coucou!'), 10),
+      '...............-....',
       '....................',
-      '....................',
-      '....................',
-      '....................',
-      '....................',
-      '....................',
+      '......-.............',
     ].map((line, y) => {
-      const actors = connection.engine.actors.filter((a) => a.position.y === y);
-      const items = connection.engine.items.filter((a) => a.position.y === y);
-      const walls = connection.engine.walls.filter((a) => a.position.y === y);
+      const actors = term.engine.actors.filter((a) => a.position.y === y);
+      const items = term.engine.items.filter((a) => a.position.y === y);
+      const walls = term.engine.walls.filter((a) => a.position.y === y);
       if (!actors.length && !items.length && !walls.length) return line;
       return chunkString(line, 2).map((bytes, x) => {
         const actor = actors.find((a) => a.position.x === x);
@@ -107,38 +111,49 @@ export class RoomMap extends UiComponent {
   }
 }
 
+export class Scroll extends UiComponent {
+  print({ me }: Terminal) {
+    return me.spells.map((spell, i: number) =>
+      `${i + 1}: ${spell.command}`.padEnd(10, ' '));
+  }
+}
+
+const nothing = esc.style.dim('nothing');
+const pick = (term: Terminal, n): Item => term.me.stack.list[n];
+
 export class Sidebar extends UiComponent {
-  print() {
+  print(term: Terminal) {
     return [
-      '🧙 John',
-      'the Wizard',
+      'N: John',
+      'P: 🧙Wizard',
       '',
-      'X: 🔮 M Orb',
-      `Y: ${esc.style.dim('nothing')}`,
-      `A: ${esc.style.dim('nothing')}`,
-      `B: ${esc.style.dim('nothing')}`,
+      `X: ${pick(term, 4)?.value.toString().padEnd(10, ' ') || nothing}`,
+      `Y: ${pick(term, 3)?.value.toString().padEnd(10, ' ') || nothing}`,
+      `A: ${pick(term, 2)?.value.toString().padEnd(10, ' ') || nothing}`,
+      `B: ${pick(term, 1)?.value.toString().padEnd(10, ' ') || nothing}`,
+      `C: ${pick(term, 0)?.value.toString().padEnd(10, ' ') || nothing}`,
     ];
   }
 }
 
 export class Stats extends UiComponent {
-  print({ player }: Connection) {
+  print({ me }: Terminal) {
     return [
       'LV: 1',
       'XP: 0 of 100 ',
-      'HP: 5 of 5',
-      'SP: 5 of 5',
-      'MP: 5 of 5',
-      `GP: ${player.wealth.value}`,
+      `HP: ${esc.style.fg.black(esc.style.bg.red('5 of 5'))}`,
+      `SP: ${esc.style.fg.black(esc.style.bg.green('5 of 5'))}`,
+      `MP: ${esc.style.fg.black(esc.style.bg.blue('5 of 5'))}`,
+      `GP: ${me.wealth.value}`,
     ];
   }
 }
 
 export class Output extends UiComponent {
-  print({ state }) {
+  print({ state }: Terminal) {
     return state.stdout
       .slice(-N_OF_LINES)
-      .map((line) => (line || '').padEnd(LINE_LENGTH, ' '));
+      .map((line) => (String(line || '')).padEnd(LINE_LENGTH, ' '));
   }
 }
 
@@ -149,77 +164,6 @@ export class Input extends UiComponent {
     return [
       (prompt + line).padEnd(LINE_LENGTH, ' '),
     ];
-  }
-}
-
-export class InputField {
-  private line: string = ''
-  private cursor: Vector = new Vector()
-
-  get value() {
-    return this.line;
-  }
-
-  get x() {
-    return this.cursor.x;
-  }
-
-  get y() {
-    return this.cursor.y;
-  }
-
-  /* returns true if input box needs an update */
-  insert(buf: Buffer): boolean {
-    if (this.line.length === LINE_LENGTH) return false;
-
-    const hex = buf.toString('hex');
-
-    if (hex === BACKSPACE) return this.backspace();
-    if (hex === ARROW_LEFT) return this.moveLeft();
-    if (hex === ARROW_RIGHT) return this.moveRight();
-
-    /* catch all other ctrl sequences */
-    if (hex.startsWith('1b')) return false;
-
-    const char = buf.toString();
-    const chars = this.line.split('');
-    const { x } = this.cursor;
-
-    this.line = [...chars.slice(0, x), char, ...chars.slice(x)].join('');
-    this.cursor.x++;
-
-    return true;
-  }
-
-  backspace(): boolean {
-    if (!this.line.length) return false;
-
-    const chars = this.line.split('');
-    const { x } = this.cursor;
-
-    this.cursor.x--;
-    this.line = [...chars.slice(0, x - 1), ...chars.slice(x)].join('');
-    this.line = this.line.slice(0, this.line.length);
-
-    return true;
-  }
-
-  moveLeft(): boolean {
-    if (this.cursor.x === 0) return false;
-    this.cursor.x--;
-    return true;
-  }
-
-  moveRight(): boolean {
-    if (this.cursor.x === this.line.length) return false;
-    this.cursor.x++;
-    return true;
-  }
-
-  reset(): boolean {
-    this.line = '';
-    this.cursor.x = 0;
-    return true;
   }
 }
 

@@ -1,14 +1,18 @@
 /*
  * actors can take actions every tick
  */
-
 import { Vector } from '../../lib/math';
+import { Stack } from '../../lib/stack';
 import { Actor } from './actors';
 import { Durability } from './capabilities';
-import { looks } from './looks';
+import { Look, looks } from './looks';
 import { Spell } from './spells';
 
-export abstract class Item {
+export abstract class Word {
+  value: any
+}
+
+export abstract class Item extends Word {
   look: typeof looks.gold
 
   position: Vector = new Vector()
@@ -23,8 +27,17 @@ export abstract class Clothes extends Item {}
 export abstract class Relic extends Item {}
 export abstract class Wall extends Item {}
 
+export class MagicOrb extends Relic {
+  look = looks.orb
+  value = '🔮 M Orb'
+  use() {
+    return false;
+  }
+}
+
 export class WallItem extends Wall {
   look = looks.wall
+  value = '██ Wall'
   use() {
     return false;
   }
@@ -62,5 +75,87 @@ export class KeyItem extends Item {
 
   use() {
     return true;
+  }
+}
+
+export type DataStack = Stack<Item>
+
+export abstract class Literal extends Item {
+  constructor(value: any) {
+    super();
+
+    this.value = value;
+  }
+
+  exec(stack: DataStack) {
+    stack.push(this.value);
+
+    return stack;
+  }
+}
+
+export class StringLiteral extends Literal {
+  use() {
+    return true;
+  }
+}
+
+export class NumberLiteral extends Literal {
+  n: number
+
+  constructor(n: number) {
+    super(n);
+
+    const str = String(n);
+    this.n = n;
+    this.look = new Look(str, n.toString(16).padStart(2, '0'), str);
+  }
+  use() {
+    return true;
+  }
+}
+
+export class BooleanLiteral extends Literal {
+  use() {
+    return true;
+  }
+}
+
+export abstract class Operator extends Item {
+  readonly arity: number
+
+  constructor(arity: number) {
+    super();
+
+    this.arity = arity;
+  }
+
+  abstract $exec(): void
+
+  exec(stack: DataStack) {
+    const operands = this.pullOperands(stack);
+
+    if (operands.length !== this.arity) {
+      return false;
+    }
+
+    this.$exec();
+
+    return true;
+  }
+
+  pullOperands(stack: DataStack) {
+    const items = stack.popN(this.arity);
+
+    return items;
+  }
+}
+
+export abstract class Quotation extends Item {
+  list: Array<Word>
+
+  constructor(list: Array<Word>) {
+    super();
+    this.list = list;
   }
 }

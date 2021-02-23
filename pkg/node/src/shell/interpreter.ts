@@ -3,11 +3,13 @@
  */
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
-import { Stack } from '../../lib/stack';
+import { isNumeric } from '../../lib/utils';
 import { Player } from '../engine/actors';
 import { createHWall, createVWall } from '../engine/effects';
 import Engine from '../engine/engine';
-import { DataStack, BooleanLiteral } from './types';
+import {
+  Item, DataStack, BooleanLiteral, NumberLiteral,
+} from '../engine/items';
 
 const operators = {
   t: (stack: DataStack) => {
@@ -21,7 +23,7 @@ const operators = {
 };
 
 export default class Interpreter extends EventEmitter {
-  private stack: DataStack
+  stack: DataStack
   private engine: Engine
   private player: Player
 
@@ -30,10 +32,10 @@ export default class Interpreter extends EventEmitter {
 
     this.engine = engine;
     this.player = player;
-    this.stack = new Stack();
+    this.stack = player.stack;
   }
 
-  eval(expr: string): string {
+  eval(expr: string): Item | null {
     debug(`expression: \`${expr}\``);
 
     const tokens = expr.split(' ');
@@ -41,6 +43,23 @@ export default class Interpreter extends EventEmitter {
     debug('tokens:', tokens);
 
     if (expr === 't') operators.t(this.stack);
+
+    // number
+    if (tokens.length === 1 && isNumeric(tokens[0])) {
+      const n = Number(tokens[0]);
+      if (n >= 0 && n < 256) {
+        debug('number:', n);
+        this.stack.push(new NumberLiteral(n));
+      }
+    }
+
+    if (tokens[2] === 'tele' && tokens.length === 3) {
+      const [x, y] = tokens.slice(0, 2).map(Number);
+
+      this.player.position.setXY(x, y);
+
+      operators.t(this.stack);
+    }
 
     if (tokens[1] === 'hwall' && tokens.length === 2) {
       const length = Number(tokens[0]);
@@ -62,8 +81,6 @@ export default class Interpreter extends EventEmitter {
       operators.t(this.stack);
     }
 
-    const output = `${this.stack.pop()?.value || '...'}`;
-
-    return output || '';
+    return this.stack.pop() || null;
   }
 }

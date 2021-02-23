@@ -7,6 +7,7 @@ import { Vector } from '../../lib/math';
 import {
   Actor, Sheep, Tutor,
 } from './actors';
+import { Pick, Say } from './commands';
 import { GoldItem, Item, Wall } from './items';
 import { World } from './places';
 
@@ -32,15 +33,15 @@ export default class Engine extends EventEmitter {
     this.world = new World();
 
     const gold = new GoldItem(3);
-    gold.position.setXY(7, 7);
+    gold.position.setXY(8, 8);
     this.items.push(gold);
 
     const sheep = new Sheep();
-    sheep.position.setXY(9, 5);
+    sheep.position.setXY(9, 9);
     this.actors.push(sheep);
 
     const tutor = new Tutor();
-    tutor.position.setXY(9, 9);
+    tutor.position.setXY(7, 7);
     this.actors.push(tutor);
 
     this.clock.on('tick', this.update.bind(this));
@@ -73,16 +74,25 @@ export default class Engine extends EventEmitter {
 
       /* --- power ups --- */
 
-      this.items.forEach((item) => {
-        if (actor.position.equals(item.position)) {
-          if (item instanceof GoldItem) {
-            actor.wealth.increase(item.amount);
-          } else {
-            actor.items.push(item);
+      if (command instanceof Pick) {
+        this.items.forEach((item) => {
+          if (actor.position.equals(item.position)) {
+            actor.stack.push(item);
+            this.items.splice(this.items.findIndex((i) => i === item));
           }
-          this.items.splice(this.items.findIndex((i) => i === item));
-        }
-      });
+        });
+      }
+
+      // this.items.forEach((item) => {
+      //   if (actor.position.equals(item.position)) {
+      //     if (item instanceof GoldItem) {
+      //       actor.wealth.increase(item.amount);
+      //     } else {
+      //       actor.items.push(item);
+      //     }
+      //     this.items.splice(this.items.findIndex((i) => i === item));
+      //   }
+      // });
     });
   }
 }

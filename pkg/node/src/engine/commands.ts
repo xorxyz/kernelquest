@@ -1,10 +1,11 @@
 import { Actor } from './actors';
+import { Item } from './items';
 
 export abstract class Command {
   abstract execute(a, e): Boolean;
 }
 
-export class MoveCommand extends Command {
+export class Move extends Command {
   x: number
   y: number
 
@@ -17,6 +18,27 @@ export class MoveCommand extends Command {
 
   execute(actor: Actor) {
     actor.velocity.setXY(this.x, this.y);
+    return true;
+  }
+}
+
+export class Say extends Command {
+  message: string
+
+  constructor(message: string) {
+    super();
+
+    this.message = message;
+  }
+
+  execute() {
+    return true;
+  }
+}
+
+export class Pick extends Command {
+  execute(actor: Actor, item: Item) {
+    actor.items.push(item);
     return true;
   }
 }

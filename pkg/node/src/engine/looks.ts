@@ -34,6 +34,7 @@ export class Look {
 }
 
 export const looks: Record<string, Look> = {
+  orb: new Look('orb', '🔮', 'a magic orb'),
   me: new Look('me', '🧙', 'you look like a wizard'),
   wall: new Look('wall', style.dim('██'), 'it looks like it\'s in your way'),
   gold: new Look('gold', '💰', 'oooh shiny'),

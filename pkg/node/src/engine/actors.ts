@@ -20,9 +20,14 @@ import {
   CritterJob,
   NoviceJob,
 } from './jobs';
-import { Command, MoveCommand } from './commands';
+import { Command, Move } from './commands';
 import { Vector } from '../../lib/math';
 import { getRandomDirection } from '../../lib/utils';
+import { Stack } from '../../lib/stack';
+import {
+  Heal, Teleport, Zap, Summon, Goto, Gate, Fire,
+} from './spells';
+import Connection from '../server/connection';
 
 export abstract class Actor {
   id: string = uuid.v4()
@@ -34,6 +39,7 @@ export abstract class Actor {
   velocity: Vector = new Vector()
 
   queue: Array<Command> = []
+  stack: Stack<Item> = new Stack()
 
   health: Health = new Health()
   stamina: Stamina = new Stamina()
@@ -73,7 +79,7 @@ export abstract class Critter extends Actor {
       const direction = getRandomDirection();
 
       this.queue.push(
-        new MoveCommand(direction.x, direction.y),
+        new Move(direction.x, direction.y),
       );
     }, delayMs);
   }
@@ -94,6 +100,23 @@ export abstract class Bug extends Actor {
 
 export class Player extends Players {
   look = looks.me;
+
+  readonly spells = [
+    new Gate(),
+    new Heal(),
+    new Zap(),
+    new Fire(),
+    new Teleport(),
+    new Goto(),
+    new Summon(),
+  ]
+
+  private connection: Connection
+
+  constructor(connection) {
+    super();
+    this.connection = connection;
+  }
 }
 
 export class Sheep extends Critter {

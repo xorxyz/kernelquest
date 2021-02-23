@@ -28,3 +28,8 @@ export function getRandomDirection() {
 
   return direction;
 }
+
+export function isNumeric(str: string) {
+  // eslint-disable-next-line no-restricted-globals
+  return !isNaN(str as any) && !isNaN(parseFloat(str));
+}

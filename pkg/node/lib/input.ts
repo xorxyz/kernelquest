@@ -6,3 +6,4 @@ export const ENTER = '0d';
 export const BACKSPACE = '7f';
 export const TAB = '09';
 export const SIGINT = '03';
+export const P = '70';
