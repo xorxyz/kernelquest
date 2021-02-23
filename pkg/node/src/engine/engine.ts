@@ -3,13 +3,11 @@
  */
 import * as EventEmitter from 'events';
 import Clock from '../../lib/clock';
-import { Vector } from '../../lib/math';
-import {
-  Actor, Sheep, Tutor,
-} from './actors';
-import { Pick, Say } from './commands';
-import { GoldItem, Item, Wall } from './items';
-import { World } from './places';
+import { Vector } from '../../lib/geom';
+import { World } from './world/world';
+import { Actor, Sheep, Tutor } from './actors/actors';
+import { GoldItem, Item, Wall } from './things/items';
+import { Pick } from './actors/commands';
 
 export const CLOCK_MS_DELAY = 300;
 

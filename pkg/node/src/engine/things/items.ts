@@ -1,12 +1,12 @@
 /*
  * actors can take actions every tick
  */
-import { Vector } from '../../lib/math';
-import { Stack } from '../../lib/stack';
-import { Actor } from './actors';
-import { Durability } from './capabilities';
-import { Look, looks } from './looks';
-import { Spell } from './spells';
+import { Vector } from '../../../lib/geom';
+import { Stack } from '../../../lib/stack';
+import { Actor } from '../actors/actors';
+import { Durability } from '../physics/durability';
+import { Look, looks } from '../visuals/looks';
+import { Spell } from '../magic/spells';
 
 export abstract class Word {
   value: any

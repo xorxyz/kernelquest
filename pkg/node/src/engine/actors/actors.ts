@@ -7,27 +7,27 @@ import {
   Weapon,
   Clothes,
   Relic,
-} from './items';
+} from '../things/items';
 import {
   Health,
   Stamina,
   Mana,
   Wealth,
-} from './capabilities';
-import { Look, looks } from './looks';
+} from './stats';
+import { Look, looks } from '../visuals/looks';
 import {
   Job,
   CritterJob,
   NoviceJob,
 } from './jobs';
 import { Command, Move } from './commands';
-import { Vector } from '../../lib/math';
-import { getRandomDirection } from '../../lib/utils';
-import { Stack } from '../../lib/stack';
+import { Vector } from '../../../lib/geom';
+import { getRandomDirection } from '../../../lib/utils';
+import { Stack } from '../../../lib/stack';
 import {
   Heal, Teleport, Zap, Summon, Goto, Gate, Fire,
-} from './spells';
-import Connection from '../server/connection';
+} from '../magic/spells';
+import Connection from '../../server/connection';
 
 export abstract class Actor {
   id: string = uuid.v4()

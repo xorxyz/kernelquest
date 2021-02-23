@@ -1,5 +1,5 @@
-import { Vector } from '../../lib/math';
-import { WallItem } from './items';
+import { Vector } from '../../../lib/geom';
+import { WallItem } from '../things/items';
 
 const arrayOf = (n, T) => new Array(n).fill(0).map(() => new T());
 

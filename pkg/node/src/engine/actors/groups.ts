@@ -1,7 +1,6 @@
 /*
- * assemble things together
+ * assemble people together
  */
-
 import { Player } from './actors';
 
 export abstract class Group {

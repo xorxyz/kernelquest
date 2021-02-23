@@ -1,5 +1,5 @@
-import { ARROW_LEFT, ARROW_RIGHT, BACKSPACE } from '../../lib/input';
-import { Vector } from '../../lib/math';
+import { Keys } from '../../lib/constants';
+import { Vector } from '../../lib/geom';
 import { LINE_LENGTH } from '../ui/components';
 
 export class LineEditor {
@@ -24,9 +24,9 @@ export class LineEditor {
 
     const hex = buf.toString('hex');
 
-    if (hex === BACKSPACE) return this.backspace();
-    if (hex === ARROW_LEFT) return this.moveLeft();
-    if (hex === ARROW_RIGHT) return this.moveRight();
+    if (hex === Keys.BACKSPACE) return this.backspace();
+    if (hex === Keys.ARROW_LEFT) return this.moveLeft();
+    if (hex === Keys.ARROW_RIGHT) return this.moveRight();
 
     /* catch all other ctrl sequences */
     if (hex.startsWith('1b')) return false;

@@ -1,1 +1,0 @@
-export const soundBuffer = '028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe1754f0a028fa8cafe17';

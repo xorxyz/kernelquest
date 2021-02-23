@@ -1,18 +1,7 @@
 /*
- * actors have capabilities
+ * actors have stats
  */
-
-/* Unique identifiers */
-export class Id {
-  id: string
-}
-
-/* Connect things to other things */
-export class Port {
-  value: number | null
-}
-
-export abstract class Points {
+export abstract class Stat {
   value: number = 0
   cap: number = 99999999
 
@@ -26,19 +15,16 @@ export abstract class Points {
 }
 
 /* Determines if you are alive or dead. */
-export class Health extends Points {}
+export class Health extends Stat {}
 
 /* Throttles the actor's actions every turn. */
-export class Stamina extends Points {}
+export class Stamina extends Stat {}
 
 /* Limits the kind of program you are allowed to run.  */
-export class Mana extends Points {}
+export class Mana extends Stat {}
 
 /* Points to buy things. */
-export class Wealth extends Points {}
-
-/* Items break. */
-export class Durability extends Points {}
+export class Wealth extends Stat {}
 
 export interface HasHealth {
   health: Health
@@ -46,8 +32,4 @@ export interface HasHealth {
 
 export interface HasMana {
   mana: Mana
-}
-
-export interface ITargetable {
-  id: Id
 }

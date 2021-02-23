@@ -2,7 +2,7 @@ import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
 import Engine from '../engine/engine';
 import { Terminal } from '../shell/terminal';
-import { Player } from '../engine/actors';
+import { Player } from '../engine/actors/actors';
 
 export interface Params { src?: string }
 

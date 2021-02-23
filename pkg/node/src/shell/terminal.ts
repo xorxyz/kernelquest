@@ -1,26 +1,13 @@
-import {
-  SIGINT,
-  ARROW_UP,
-  ARROW_RIGHT,
-  ARROW_DOWN,
-  ARROW_LEFT,
-  P,
-  ENTER,
-} from '../../lib/input';
-import { Player } from '../engine/actors';
-import { Move, Pick } from '../engine/commands';
+import { Player } from '../engine/actors/actors';
+import { Move, Pick } from '../engine/actors/commands';
 import Engine, { CLOCK_MS_DELAY } from '../engine/engine';
-import {
-  CURSOR_OFFSET_X,
-  CURSOR_OFFSET_Y,
-  MainView,
-  View,
-} from '../ui/view';
 import Interpreter from './interpreter';
 import { LineEditor } from './line';
 import * as esc from '../../lib/esc';
 import { CELL_WIDTH } from '../ui/components';
 import Connection from '../server/connection';
+import { MainView, View } from '../ui/view';
+import { Keys, Signals } from '../../lib/constants';
 
 export interface IState {
   termMode: boolean
@@ -63,6 +50,8 @@ export class Terminal {
 
     this.interpreter = new Interpreter(engine, this.me);
     this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
+
+    this.render();
   }
 
   switchModes() {
@@ -71,7 +60,7 @@ export class Terminal {
   }
 
   handleInput(buf: Buffer) {
-    if (buf.toString('hex') === SIGINT) {
+    if (buf.toString('hex') === Signals.SIGINT) {
       this.connection.end();
       return;
     }
@@ -89,22 +78,22 @@ export class Terminal {
     let command;
 
     switch (buf.toString('hex')) {
-      case (ENTER):
+      case (Keys.ENTER):
         this.switchModes();
         break;
-      case (ARROW_UP):
+      case (Keys.ARROW_UP):
         command = new Move(0, -1);
         break;
-      case (ARROW_RIGHT):
+      case (Keys.ARROW_RIGHT):
         command = new Move(1, 0);
         break;
-      case (ARROW_DOWN):
+      case (Keys.ARROW_DOWN):
         command = new Move(0, 1);
         break;
-      case (ARROW_LEFT):
+      case (Keys.ARROW_LEFT):
         command = new Move(-1, 0);
         break;
-      case (P):
+      case (Keys.LOWER_P):
         command = new Pick();
         break;
       default:
@@ -117,7 +106,7 @@ export class Terminal {
   }
 
   handleTerminalInput(buf: Buffer) {
-    if (buf.toString('hex') === ENTER) {
+    if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
         const item = this.interpreter.eval(this.line.value);
         if (item) {
@@ -134,7 +123,10 @@ export class Terminal {
       this.switchModes();
     } else if (this.line.insert(buf)) {
       this.state.line = (
-        esc.cursor.setXY(CURSOR_OFFSET_X, CURSOR_OFFSET_Y) +
+        esc.cursor.setXY(
+          this.view.boxes.prompt.position.x,
+          this.view.boxes.prompt.position.y,
+        ) +
         esc.line.clearAfter +
         this.line.value.replace('\n', '')
       );
@@ -163,7 +155,10 @@ export class Terminal {
 
   drawCursor() {
     const cursorUpdate = this.state.termMode
-      ? esc.cursor.setXY(CURSOR_OFFSET_X + this.line.x, CURSOR_OFFSET_Y)
+      ? esc.cursor.setXY(
+        this.view.boxes.prompt.position.x,
+        this.view.boxes.prompt.position.y,
+      )
       : esc.cursor.setXY(
         this.view.boxes.room.position.x + (this.me.position.x) * CELL_WIDTH,
         this.view.boxes.room.position.y + this.me.position.y,

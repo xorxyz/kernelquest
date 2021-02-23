@@ -1,8 +1,8 @@
 /*
  * spells represent the contract for the execution of a command
  */
-import { Actor, Player } from './actors';
-import { Word } from './items';
+import { Actor, Player } from '../actors/actors';
+import { Word } from '../things/items';
 
 type Caster = Player
 type Target = Actor

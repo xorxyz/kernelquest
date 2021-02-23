@@ -3,8 +3,8 @@
  * - input fields - edit lines before before evaluating them as expressions
  */
 import * as esc from '../../lib/esc';
-import { Vector } from '../../lib/math';
-import { Item } from '../engine/items';
+import { Vector } from '../../lib/geom';
+import { Item } from '../engine/things/items';
 import { Terminal } from '../shell/terminal';
 
 export const SCREEN_WIDTH = 60;

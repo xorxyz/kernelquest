@@ -1,3 +1,4 @@
+import { Vector } from '../../lib/geom';
 import { Terminal } from '../shell/terminal';
 import {
   UiComponent,
@@ -12,7 +13,7 @@ import {
 } from './components';
 
 export abstract class View {
-  abstract boxes: Record<string, UiComponent>
+  boxes: Record<string, UiComponent>
 
   render(term: Terminal): string {
     return Object.values(this.boxes)
@@ -34,9 +35,6 @@ export const boxes = {
   output: new Output(20, 15),
   prompt: new Input(20, 20),
 };
-
-export const CURSOR_OFFSET_X = boxes.prompt.position.x + 2;
-export const CURSOR_OFFSET_Y = boxes.prompt.position.y;
 
 export class MainView extends View {
   boxes = boxes

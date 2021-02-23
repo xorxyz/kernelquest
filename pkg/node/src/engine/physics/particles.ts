@@ -1,5 +1,5 @@
-import { Vector } from '../../lib/math';
-import { Look } from './looks';
+import { Vector } from '../../../lib/geom';
+import { Look } from '../visuals/looks';
 
 export abstract class Particle {
   position: Vector = new Vector()

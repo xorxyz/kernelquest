@@ -1,5 +1,5 @@
 import { Actor } from './actors';
-import { Item } from './items';
+import { Item } from '../things/items';
 
 export abstract class Command {
   abstract execute(a, e): Boolean;

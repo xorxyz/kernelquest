@@ -17,7 +17,7 @@ looks == [ name bytes appearance description? ];
 ```
 */
 
-import { style } from '../../lib/esc';
+import { style } from '../../../lib/esc';
 
 export class Look {
   name: string

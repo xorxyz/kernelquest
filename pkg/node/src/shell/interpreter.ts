@@ -1,15 +1,63 @@
-/*
- * interpret the player's intention by evaluating expressions
- */
+/* interpret the player's intention by evaluating expressions
+
+  reserved-character  ::=
+    "["  |  "]"  |  "{"  |  "}"  |  ";"  |  "."
+
+  escaped-character  ::=
+    "\n"                    newline
+    |  "\t"                 tab
+    |  "\b"                 backspace
+    |  "\r"                 carriage return
+    |  "\f"                 formfeed
+    |  "\'"                 single quote
+    |  "\""                 double quote
+
+  integer-constant  ::=
+    [ "-" ]  ( "0" | "1" .. | "9" )  { "0" | "1" .. | "9" }
+  string-constant  ::=
+    '"'  { escaped-character | ordinary-character } '"'
+  character-constant  ::=
+    "'"  ( escaped-character | ordinary-character )
+
+  token  ::=
+    reserved-character | reserved-word
+    | integer-constant | float-constant
+    | character-constant |  string-constant
+    | atomic-symbol
+
+  factor  ::=
+      atomic-symbol
+      |  integer-constant | float-constant
+      |  character-constant | string-constant
+      |  "{"  { character-constant | integer-constant } "}"
+      |  "["  term  "]"
+
+  term  ::=
+      { factor }
+
+  literal  ::=
+      "true"  |  "false"
+      |  integer-constant | float-constant
+      |  character-constant | string-constant
+      |  "{"  { character-constant | integer-constant } "}"
+      |  "["  term  "]"
+
+  simple-definition  ::=
+        atomic-symbol  "=="  term
+
+  cycle  ==
+    {    compound-definition
+    |  term  ( "END" | "." ) }
+*/
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
 import { isNumeric } from '../../lib/utils';
-import { Player } from '../engine/actors';
-import { createHWall, createVWall } from '../engine/effects';
+import { Player } from '../engine/actors/actors';
+import { createHWall, createVWall } from '../engine/magic/effects';
 import Engine from '../engine/engine';
 import {
   Item, DataStack, BooleanLiteral, NumberLiteral,
-} from '../engine/items';
+} from '../engine/things/items';
 
 const operators = {
   t: (stack: DataStack) => {
