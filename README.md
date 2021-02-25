@@ -1,13 +1,10 @@
-# xor4
-
-this is the developer docs.
-for game design doc look in [`/notes`](/notes/README.md).
+# xor
 
 packages:
 
-1. [`node`](/pkg/node/README.md)
-1. [`www`](/pkg/www/README.md)
+1. [`node`](/pkg/node/README.md) - game server nodes
+1. [`www`](/pkg/www/README.md) - the website
 
 ## see also
 
-- [`/notes/README.md`](notes/README.md)
+- [`/notes/README.md`](notes/README.md) - game dev notes
