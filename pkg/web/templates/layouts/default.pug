@@ -1,0 +1,12 @@
+extends /templates/layouts/_layout.pug
+
+block body  
+  include /templates/components/navbar.pug
+
+  main.flex.flex-row.pv3.justify-center.w-100
+    .container.ph3.tl
+      article(style="max-width: 70ex;")
+        h2 #{ meta.title }
+        |!{ content }
+
+  include /templates/components/footer.pug

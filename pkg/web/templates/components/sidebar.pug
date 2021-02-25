@@ -1,0 +1,9 @@
+nav.flex.flex-auto.mr4
+  .container.bg-black.br2.pv3.ph4.mw5
+    a(href='/' + templateName)
+      h2.f3.white.ttc /#{ templateName }
+    ul.list.pl0
+      each d in dir.filter(f => f !== 'index.md')
+        - var page = d.replace('.md', '')
+        li.pv1
+          a.bsn.link.pointer(href=page) /#{ page }

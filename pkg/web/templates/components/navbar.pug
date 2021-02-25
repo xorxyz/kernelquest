@@ -1,0 +1,25 @@
+input(type="checkbox" id="navbar-toggle")
+
+nav#navbar.w-100.flex.justify-center.pv2.bg-black.white(role="navigation")
+  .container.flex.justify-between.ph2
+    a.bsn.hover-bg-none.white.flex.items-center(href="/") 
+      img#nav-logo(src="/images/logo/xor.svg")
+
+    ul.list.dn.flex-ns.items-center.ma0.tr.f7-l.f7
+      each item in navbar.items
+        li.pl4.tr
+          a.white(href=item.route aria-haspopup=item.subitems)
+            | #{ item.name }
+      li.pl4.tr
+        a.button.bg-purple(href="https://app.xor.xyz") Play
+
+    label#navbar-button.flex.justify-center.items-center.dn-ns.w1.h1.pa1.mh2.tc.bg-black.br0.ba.bw05.b--white.white.pointer(
+      for="navbar-toggle"
+      aria-label="Toggle mobile menu"
+    )
+
+div.menu-mobile.list.flex.dn-ns.mt5.mb3.pl2.pv1.bg-black.white
+ each item in navbar.items
+  div.pl0.pv2.tc.db
+    a.link.white(href=item.route active-class="light-blue") 
+      | #{ item.name }

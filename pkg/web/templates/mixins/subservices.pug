@@ -1,0 +1,7 @@
+mixin subservices(service)
+  section.bg-white.black.pv4.bb
+    .container.flex.flex-column-m.flex-column.flex-row-l
+      each subservice in service.services
+        article.pv4.pb5.pr4.w-33-l
+          h3.mt0.f3.fw1 #{ subservice.name }
+          p #{ subservice.description }

@@ -1,0 +1,23 @@
+section.bg-white.bt.bb.bw05.b--moon-gray.flex.flex-column.items-center.pv4
+  .container.flex.flex-column.justify-center.items-center
+    include /templates/components/newsletter-form.pug
+
+footer.bg-black.white.flex.justify-center.pv3.pv4-ns.w-100
+
+  .container.tc.flex.flex-column
+    .flex.flex-row-ns.flex-column-m.flex-column
+      .mr3
+        a.hover-bg-none.bsn.link.white.flex.items-center(href="/" itemscope itemtype="https://schema.org/Organization") 
+          img.h2(itemprop="logo" src="/images/logo/xor.svg")
+        .w5.tl.mv4
+          each site in social.sites
+            span.mh2
+              small.f7 
+                a.hover-bg-none.bsn.link.white.underline(href=site.url target="_new") 
+                  img.w1.h1(src=site.src alt=site.name)
+    .mt5
+      small.f7.db.tl(itemscope itemtype="https://schema.org/Organization")
+        |© 2019 
+        a(href="https://diagonal.sh")
+          span.white(itemprop="legalName") Diagonal Systems Inc.
+        |  All Rights Reserved.

@@ -1,0 +1,8 @@
+mixin quote_section(service)
+  section.bg-black.white.min-vh-50
+    .container.mb5
+      h2 #{ service.name }
+      
+      blockquote 
+        span #{ service.quote.body }
+      cite ― #{ service.quote.author }

@@ -1,0 +1,48 @@
+{
+  "name": "@xor/www",
+  "private": true,
+  "version": "2019.8.13",
+  "description": "XOR's Website",
+  "main": "src",
+  "scripts": {
+    "start": "npm run watch",
+    "watch": "node bin/watch",
+    "build": "node bin/build",
+    "test": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kareniel/www.git"
+  },
+  "keywords": [
+    "www"
+  ],
+  "author": "Jonathan Dupré <jonathan@diagonal.sh>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/xorxyz/www/issues"
+  },
+  "homepage": "https://github.com/xorxyz/www#readme",
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "budo": "^11.6.3",
+    "change-case": "^3.0.2",
+    "connect-slashes": "^1.3.1",
+    "copy": "^0.3.2",
+    "dotenv": "^6.2.0",
+    "feed": "^2.0.4",
+    "fs-extra": "^7.0.1",
+    "gray-matter": "^4.0.1",
+    "marked": "^0.7.0",
+    "mkdirp": "^0.5.1",
+    "posthtml": "^0.11.3",
+    "posthtml-pug": "^1.0.2",
+    "pug": "^2.0.3",
+    "rimraf": "^2.6.3",
+    "standard": "^12.0.1",
+    "stylus": "^0.54.5",
+    "tape": "^4.9.2",
+    "trash": "^4.3.0",
+    "yaml": "^1.2.0"
+  }
+}
