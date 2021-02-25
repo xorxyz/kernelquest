@@ -7,7 +7,7 @@ import { Vector } from '../../lib/geom';
 import { World } from './world/world';
 import { Actor, Sheep, Tutor } from './actors/actors';
 import { GoldItem, Item, Wall } from './things/items';
-import { Pick } from './actors/commands';
+import { Drop, PickUp } from './actors/commands';
 
 export const CLOCK_MS_DELAY = 300;
 
@@ -72,9 +72,14 @@ export default class Engine extends EventEmitter {
 
       /* --- power ups --- */
 
-      if (command instanceof Pick) {
+      if (command instanceof Drop) {
+        command.item.position.setXY(actor.position.x, actor.position.y);
+        command.execute(this.items);
+      }
+
+      if (command instanceof PickUp) {
         this.items.forEach((item) => {
-          if (actor.position.equals(item.position)) {
+          if (command.position.equals(item.position)) {
             actor.stack.push(item);
             this.items.splice(this.items.findIndex((i) => i === item));
           }

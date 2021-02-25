@@ -1,5 +1,4 @@
-import { Vector } from '../../lib/geom';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from '../server/terminal';
 import {
   UiComponent,
   Navbar,

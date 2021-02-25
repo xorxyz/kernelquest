@@ -1,12 +1,12 @@
 import { Player } from '../engine/actors/actors';
-import { Move, Pick } from '../engine/actors/commands';
-import Engine, { CLOCK_MS_DELAY } from '../engine/engine';
-import Interpreter from './interpreter';
-import { LineEditor } from './line';
+import { Drop, Move, PickUp } from '../engine/actors/commands';
+import { CLOCK_MS_DELAY } from '../engine/engine';
+import Interpreter from '../shell/interpreter';
+import { LineEditor } from '../shell/line';
 import * as esc from '../../lib/esc';
 import { CELL_WIDTH } from '../ui/components';
-import Connection from '../server/connection';
-import { MainView, View } from '../ui/view';
+import Connection from './connection';
+import { View, MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
 
 export interface IState {
@@ -22,18 +22,16 @@ export class Terminal {
   id: number
   connection: Connection
   me: Player
-  engine: Engine
   interpreter: Interpreter
   line: LineEditor = new LineEditor()
   state: IState
   private view: View
   private timer: NodeJS.Timeout
 
-  constructor(id: number, connection: Connection, engine: Engine) {
+  constructor(id: number, connection: Connection) {
     this.id = id;
     this.connection = connection;
     this.me = connection.player;
-    this.engine = engine;
     this.view = new MainView();
     this.state = {
       termMode: false,
@@ -48,7 +46,7 @@ export class Terminal {
       ],
     };
 
-    this.interpreter = new Interpreter(engine, this.me);
+    this.interpreter = new Interpreter(this.me.stack);
     this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
 
     this.render();
@@ -82,19 +80,19 @@ export class Terminal {
         this.switchModes();
         break;
       case (Keys.ARROW_UP):
-        command = new Move(0, -1);
+        command = new Move(this.me, 0, -1);
         break;
       case (Keys.ARROW_RIGHT):
-        command = new Move(1, 0);
+        command = new Move(this.me, 1, 0);
         break;
       case (Keys.ARROW_DOWN):
-        command = new Move(0, 1);
+        command = new Move(this.me, 0, 1);
         break;
       case (Keys.ARROW_LEFT):
-        command = new Move(-1, 0);
+        command = new Move(this.me, -1, 0);
         break;
       case (Keys.LOWER_P):
-        command = new Pick();
+        command = new PickUp(this.me, this.me.position.clone());
         break;
       default:
         break;
@@ -109,13 +107,15 @@ export class Terminal {
     if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
         const item = this.interpreter.eval(this.line.value);
+
         if (item) {
           this.state.stdout.push(this.state.prompt + this.line.value);
           this.state.stdout.push(item.value);
 
           item.position.copy(this.connection.player.position);
-          this.engine.items.push(item);
+          this.me.queue.push(new Drop(this.me, item));
         }
+
         this.state.line = '';
         this.line.reset();
       }

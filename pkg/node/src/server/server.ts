@@ -1,7 +1,7 @@
 import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
 import Engine from '../engine/engine';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from './terminal';
 import { Player } from '../engine/actors/actors';
 
 export interface Params { src?: string }
@@ -25,7 +25,7 @@ export default class GameServer {
     const player = new Player('john');
 
     const connection = new Connection(player, socket);
-    const terminal = new Terminal(id, connection, this.engine);
+    const terminal = new Terminal(id, connection);
 
     this.engine.actors.push(connection.player);
     this.connections.add(connection);

@@ -79,7 +79,7 @@ export abstract class Critter extends Actor {
       const direction = getRandomDirection();
 
       this.queue.push(
-        new Move(direction.x, direction.y),
+        new Move(this, direction.x, direction.y),
       );
     }, delayMs);
   }

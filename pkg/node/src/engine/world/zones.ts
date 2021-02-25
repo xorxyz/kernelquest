@@ -4,34 +4,22 @@ export abstract class Zone {
   name: String
   size: number = 8
   readonly rooms: Array<Room>
+}
 
-  abstract $update(): void
-
-  update() {
-    this.$update();
-  }
+export class Demo extends Zone {
 }
 
 export class Town extends Zone {
-  $update() {
-
-  }
 }
 
 export class Forest extends Zone {
-  $update() {
+}
 
-  }
+export class Desert extends Zone {
 }
 
 export class Mountain extends Zone {
-  $update() {
-
-  }
 }
 
 export class Tower extends Zone {
-  $update() {
-
-  }
 }

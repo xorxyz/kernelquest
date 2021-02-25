@@ -4,8 +4,8 @@
  */
 import * as esc from '../../lib/esc';
 import { Vector } from '../../lib/geom';
-import { Item } from '../engine/things/items';
-import { Terminal } from '../shell/terminal';
+import { Room, testRoom } from '../engine/world/rooms';
+import { Terminal } from '../server/terminal';
 
 export const SCREEN_WIDTH = 60;
 export const LINE_LENGTH = 42;
@@ -72,44 +72,53 @@ const insert = function (dest: string, src: string, pos: number) {
 };
 
 export class RoomMap extends UiComponent {
-  print(term: Terminal) {
-    return [
-      '....................',
-      '..........-.........',
-      '..🌵................',
-      insert('....................', say('oh hi there'), 4),
-      '.-..................',
-      '....................',
-      insert('....................', say('coucou!'), 10),
-      '...............-....',
-      '....................',
-      '......-.............',
-    ].map((line, y) => {
-      const actors = term.engine.actors.filter((a) => a.position.y === y);
-      const items = term.engine.items.filter((a) => a.position.y === y);
-      const walls = term.engine.walls.filter((a) => a.position.y === y);
-      if (!actors.length && !items.length && !walls.length) return line;
-      return chunkString(line, 2).map((bytes, x) => {
-        const actor = actors.find((a) => a.position.x === x);
-        if (actor && actor.look) {
-          return actor.look.bytes;
-        }
-
-        const item = items.find((i) => i.position.x === x);
-        if (item && item.look) {
-          return item.look.bytes;
-        }
-
-        const wall = walls.find((w) => w.position.x === x);
-        if (wall && wall.look) {
-          return wall.look.bytes;
-        }
-
-        return bytes;
-      }).join('');
-    });
+  print() {
+    return testRoom.cells.map((row, y) => row.map((cell, x) => {
+      const { bg } = cell;
+      return bg;
+    }).join(''));
   }
 }
+
+// export class RoomMap extends UiComponent {
+//   print(term: Terminal) {
+//     return [
+//       '....................',
+//       '..........-.........',
+//       '..🌵................',
+//       insert('....................', say('oh hi there'), 4),
+//       '.-..................',
+//       '....................',
+//       insert('....................', say('coucou!'), 10),
+//       '...............-....',
+//       '....................',
+//       '......-.............',
+//     ].map((line, y) => {
+//       const actors = term.engine.actors.filter((a) => a.position.y === y);
+//       const items = term.engine.items.filter((a) => a.position.y === y);
+//       const walls = term.engine.walls.filter((a) => a.position.y === y);
+//       if (!actors.length && !items.length && !walls.length) return line;
+//       return chunkString(line, 2).map((bytes, x) => {
+//         const actor = actors.find((a) => a.position.x === x);
+//         if (actor && actor.look) {
+//           return actor.look.bytes;
+//         }
+
+//         const item = items.find((i) => i.position.x === x);
+//         if (item && item.look) {
+//           return item.look.bytes;
+//         }
+
+//         const wall = walls.find((w) => w.position.x === x);
+//         if (wall && wall.look) {
+//           return wall.look.bytes;
+//         }
+
+//         return bytes;
+//       }).join('');
+//     });
+//   }
+// }
 
 export class Scroll extends UiComponent {
   print({ me }: Terminal) {
@@ -119,19 +128,18 @@ export class Scroll extends UiComponent {
 }
 
 const nothing = esc.style.dim('nothing');
-const pick = (term: Terminal, n): Item => term.me.stack.list[n];
 
 export class Sidebar extends UiComponent {
-  print(term: Terminal) {
+  print({ me }) {
     return [
       'N: John',
       'P: 🧙Wizard',
       '',
-      `X: ${pick(term, 4)?.value.toString().padEnd(10, ' ') || nothing}`,
-      `Y: ${pick(term, 3)?.value.toString().padEnd(10, ' ') || nothing}`,
-      `A: ${pick(term, 2)?.value.toString().padEnd(10, ' ') || nothing}`,
-      `B: ${pick(term, 1)?.value.toString().padEnd(10, ' ') || nothing}`,
-      `C: ${pick(term, 0)?.value.toString().padEnd(10, ' ') || nothing}`,
+      `4: ${(me.stack.peekN(4)?.value.toString() || nothing).padEnd(10, ' ')}`,
+      `3: ${(me.stack.peekN(3)?.value.toString() || nothing).padEnd(10, ' ')}`,
+      `2: ${(me.stack.peekN(2)?.value.toString() || nothing).padEnd(10, ' ')}`,
+      `1: ${(me.stack.peekN(1)?.value.toString() || nothing).padEnd(10, ' ')}`,
+      `0: ${(me.stack.peekN(0)?.value.toString() || nothing).padEnd(10, ' ')}`,
     ];
   }
 }

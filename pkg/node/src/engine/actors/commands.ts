@@ -1,7 +1,13 @@
 import { Actor } from './actors';
 import { Item } from '../things/items';
+import { Vector } from '../../../lib/geom';
 
 export abstract class Command {
+  actor: Actor
+  constructor(actor: Actor) {
+    this.actor = actor;
+  }
+
   abstract execute(a, e): Boolean;
 }
 
@@ -9,8 +15,8 @@ export class Move extends Command {
   x: number
   y: number
 
-  constructor(x: number, y: number) {
-    super();
+  constructor(actor, x: number, y: number) {
+    super(actor);
 
     this.x = x;
     this.y = y;
@@ -25,8 +31,8 @@ export class Move extends Command {
 export class Say extends Command {
   message: string
 
-  constructor(message: string) {
-    super();
+  constructor(actor, message: string) {
+    super(actor);
 
     this.message = message;
   }
@@ -36,7 +42,30 @@ export class Say extends Command {
   }
 }
 
-export class Pick extends Command {
+export class Drop extends Command {
+  actor: Actor
+  item: Item
+
+  constructor(actor: Actor, item: Item) {
+    super(actor);
+
+    this.item = item;
+  }
+
+  execute(items: Array<Item>) {
+    const idx = this.actor.items.findIndex((x) => x === this.item);
+    this.actor.items.splice(idx);
+    items.push(this.item);
+    return true;
+  }
+}
+
+export class PickUp extends Command {
+  position: Vector
+  constructor(actor: Actor, position: Vector) {
+    super(actor);
+    this.position = position;
+  }
   execute(actor: Actor, item: Item) {
     actor.items.push(item);
     return true;

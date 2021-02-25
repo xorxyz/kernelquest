@@ -14,8 +14,8 @@ export abstract class Word {
 
 export abstract class Item extends Word {
   look: typeof looks.gold
-
   position: Vector = new Vector()
+
   private owner: Actor | null = null
   private durability: Durability = new Durability()
 
@@ -29,7 +29,7 @@ export abstract class Wall extends Item {}
 
 export class MagicOrb extends Relic {
   look = looks.orb
-  value = '🔮 M Orb'
+  value = '🔮M Orb'
   use() {
     return false;
   }
@@ -78,7 +78,7 @@ export class KeyItem extends Item {
   }
 }
 
-export type DataStack = Stack<Item>
+export type ItemStack = Stack<Item>
 
 export abstract class Literal extends Item {
   constructor(value: any) {
@@ -87,7 +87,7 @@ export abstract class Literal extends Item {
     this.value = value;
   }
 
-  exec(stack: DataStack) {
+  exec(stack: ItemStack) {
     stack.push(this.value);
 
     return stack;
@@ -116,6 +116,11 @@ export class NumberLiteral extends Literal {
 }
 
 export class BooleanLiteral extends Literal {
+  constructor(value: boolean) {
+    super(value);
+    const str = String(value);
+    this.look = new Look(str, str.slice(0, 2), str);
+  }
   use() {
     return true;
   }
@@ -132,7 +137,7 @@ export abstract class Operator extends Item {
 
   abstract $exec(): void
 
-  exec(stack: DataStack) {
+  exec(stack: ItemStack) {
     const operands = this.pullOperands(stack);
 
     if (operands.length !== this.arity) {
@@ -144,7 +149,7 @@ export abstract class Operator extends Item {
     return true;
   }
 
-  pullOperands(stack: DataStack) {
+  pullOperands(stack: ItemStack) {
     const items = stack.popN(this.arity);
 
     return items;

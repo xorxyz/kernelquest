@@ -8,3 +8,9 @@ export class World {
     this.zones = [];
   }
 }
+
+export class MainWorld {
+  zones = [
+
+  ]
+}
