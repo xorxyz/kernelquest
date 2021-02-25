@@ -5,42 +5,8 @@ for game design doc look in [`/notes`](/notes/README.md).
 
 packages:
 
-1. [`engine`](/pkg/engine/README.md). 
-1. [`client`](/pkg/client/README.md). 
-1. [`api`](/pkg/api/README.md). 
-1. [`web`](/pkg/worker/README.md). 
-1. [`worker`](/pkg/worker/README.md). 
-
-## redis
-
-make sure it's running:
-
-```
-docker run -it --rm redis redis-cli -h redis
-```
-
-it stores: 
-
-1. sessions
-2. game state
-3. job queues
-
-
-## localstack
-
-- IAM
-- STS
-- Route53
-- S3
-- CloudWatch
-- Secrets Manager
-- Lambda
-- DynamoDB
-- API Gateway
-- KMS
-- SQS
-- SES
-- StepFunctions
+1. [`node`](/pkg/node/README.md)
+1. [`www`](/pkg/www/README.md)
 
 ## see also
 
