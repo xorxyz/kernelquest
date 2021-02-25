@@ -1,5 +1,5 @@
 import { Keys } from '../../lib/constants';
-import { Vector } from '../../lib/geom';
+import { Vector } from '../../lib/math';
 import { LINE_LENGTH } from '../ui/components';
 
 export class LineEditor {

@@ -3,8 +3,8 @@
  * - input fields - edit lines before before evaluating them as expressions
  */
 import * as esc from '../../lib/esc';
-import { Vector } from '../../lib/geom';
-import { Room, testRoom } from '../engine/world/rooms';
+import { Vector } from '../../lib/math';
+import { testRoom } from '../engine/world/rooms';
 import { Terminal } from '../server/terminal';
 
 export const SCREEN_WIDTH = 60;
@@ -54,23 +54,6 @@ export class Axis extends UiComponent {
   }
 }
 
-const say = (str) =>
-  esc.style.fg.black(
-    esc.style.bg.white(str) + esc.style.reset,
-  );
-
-// src dest pos insert
-const insert = function (dest: string, src: string, pos: number) {
-  const a = dest.slice(0, pos);
-  const b = src;
-  const ablen = esc.stripAnsi(a).length + esc.stripAnsi(b).length;
-  const clen = dest.length - ablen;
-
-  if (clen < 0) { return a + b; }
-
-  return dest.slice(0, pos).concat(src).concat(dest.slice(pos, pos + clen));
-};
-
 export class RoomMap extends UiComponent {
   print() {
     return testRoom.cells.map((row, y) => row.map((cell, x) => {
@@ -79,46 +62,6 @@ export class RoomMap extends UiComponent {
     }).join(''));
   }
 }
-
-// export class RoomMap extends UiComponent {
-//   print(term: Terminal) {
-//     return [
-//       '....................',
-//       '..........-.........',
-//       '..🌵................',
-//       insert('....................', say('oh hi there'), 4),
-//       '.-..................',
-//       '....................',
-//       insert('....................', say('coucou!'), 10),
-//       '...............-....',
-//       '....................',
-//       '......-.............',
-//     ].map((line, y) => {
-//       const actors = term.engine.actors.filter((a) => a.position.y === y);
-//       const items = term.engine.items.filter((a) => a.position.y === y);
-//       const walls = term.engine.walls.filter((a) => a.position.y === y);
-//       if (!actors.length && !items.length && !walls.length) return line;
-//       return chunkString(line, 2).map((bytes, x) => {
-//         const actor = actors.find((a) => a.position.x === x);
-//         if (actor && actor.look) {
-//           return actor.look.bytes;
-//         }
-
-//         const item = items.find((i) => i.position.x === x);
-//         if (item && item.look) {
-//           return item.look.bytes;
-//         }
-
-//         const wall = walls.find((w) => w.position.x === x);
-//         if (wall && wall.look) {
-//           return wall.look.bytes;
-//         }
-
-//         return bytes;
-//       }).join('');
-//     });
-//   }
-// }
 
 export class Scroll extends UiComponent {
   print({ me }: Terminal) {

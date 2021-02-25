@@ -1,19 +1,19 @@
 /*
- * spells represent the contract for the execution of a command
+ * spells represent the contract for the execution of a program
  */
-import { Actor, Player } from '../actors/actors';
-import { Word } from '../things/items';
+import { Agent, Player } from '../agents/agents';
+import { Quotation, Thing } from '../things/ideas';
 
 type Caster = Player
-type Target = Actor
+type Target = Thing
 
-export abstract class Spell extends Word {
+export abstract class Spell extends Quotation {
   command: string
   cost: number
 
   abstract $cast(target, args?: Array<any>): Boolean
 
-  cast(caster: Actor, target: Actor, args) {
+  cast(caster: Caster, target: Target, args) {
     caster.mana.decrease(this.cost);
 
     this.$cast(target, args);
@@ -78,7 +78,7 @@ export class Heal extends Spell {
   command = 'heal'
   cost: 10
 
-  $cast(target: Actor) {
+  $cast(target: Agent) {
     if (!target.health) return false;
 
     target.health.increase(10);
@@ -91,7 +91,7 @@ export class Teleport extends Spell {
   command = 'teleport'
   cost: 10
 
-  $cast(target: Actor, [position]) {
+  $cast(target: Agent, [position]) {
     if (!target.position) return false;
 
     target.position.copy(position);

@@ -2,7 +2,7 @@
 import { Socket } from 'net';
 import { debug } from '../../lib/logging';
 import Engine from '../engine/engine';
-import { Player } from '../engine/actors/actors';
+import { Player } from '../engine/agents/agents';
 
 export default class Connection {
   engine: Engine

@@ -1,5 +1,4 @@
-import { getRandomInt } from './utils';
-
+/** 2d vector (xy) */
 export class Vector {
   x: number
   y: number
@@ -98,7 +97,7 @@ export class Vector {
     );
   }
 }
-
+/** 2d vector with random xy value */
 export class RandomVector extends Vector {
   constructor() {
     super();
@@ -108,7 +107,7 @@ export class RandomVector extends Vector {
   }
 }
 
-export class Rect {
+export class Rectangle {
   position: Vector
   size: Vector
 
@@ -128,4 +127,50 @@ export class Rect {
       && v.y >= this.top && v.y <= this.bottom
     );
   }
+}
+
+/** a list of list of a given type */
+export type Matrix<T> = Array<Array<T>>
+
+/** create an array of a given length */
+export const ArrN = (n) => Array(n).fill(0);
+
+export type a = () => boolean
+
+/** creates a Matrix<T> out of a thunk */
+export const matrixOf = (n: number, fn) =>
+  ArrN(n).map((y) =>
+    ArrN(n).map((_, x) => fn(x, y)));
+
+export function coinFlip() {
+  return Math.floor(Math.random() * 2) === 0
+    ? 1
+    : -1;
+}
+
+export function getRandomInt(min, max) {
+  // eslint-disable-next-line no-param-reassign
+  min = Math.ceil(min);
+  // eslint-disable-next-line no-param-reassign
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+export function getRandomDirection() {
+  const direction = new Vector();
+  const vertical = coinFlip();
+
+  if (vertical === 1) {
+    direction.setY(coinFlip());
+  } else {
+    direction.setX(coinFlip());
+  }
+
+  return direction;
+}
+
+export function isNumeric(str: string) {
+  // eslint-disable-next-line no-restricted-globals
+  return !isNaN(str as any) && !isNaN(parseFloat(str));
 }

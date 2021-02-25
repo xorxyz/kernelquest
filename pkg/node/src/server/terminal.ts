@@ -1,5 +1,5 @@
-import { Player } from '../engine/actors/actors';
-import { Drop, Move, PickUp } from '../engine/actors/commands';
+import { Player } from '../engine/agents/agents';
+import { Drop, Move, PickUp } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import Interpreter from '../shell/interpreter';
 import { LineEditor } from '../shell/line';
@@ -8,6 +8,7 @@ import { CELL_WIDTH } from '../ui/components';
 import Connection from './connection';
 import { View, MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
+import { Item } from '../engine/things/items';
 
 export interface IState {
   termMode: boolean
@@ -106,14 +107,16 @@ export class Terminal {
   handleTerminalInput(buf: Buffer) {
     if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
-        const item = this.interpreter.eval(this.line.value);
+        const thing = this.interpreter.eval(this.line.value);
 
-        if (item) {
+        if (thing) {
           this.state.stdout.push(this.state.prompt + this.line.value);
-          this.state.stdout.push(item.value);
+          this.state.stdout.push(thing.name);
 
-          item.position.copy(this.connection.player.position);
-          this.me.queue.push(new Drop(this.me, item));
+          if (thing instanceof Item) {
+            thing.position.copy(this.connection.player.position);
+            this.me.queue.push(new Drop(this.me, thing));
+          }
         }
 
         this.state.line = '';

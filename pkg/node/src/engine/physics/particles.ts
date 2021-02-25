@@ -1,4 +1,4 @@
-import { Vector } from '../../../lib/geom';
+import { Vector } from '../../../lib/math';
 import { Look } from '../visuals/looks';
 
 export abstract class Particle {

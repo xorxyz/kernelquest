@@ -1,4 +1,4 @@
-import { Vector } from './geom';
+import { Vector } from './math';
 
 /* eslint-disable import/prefer-default-export */
 export function coinFlip() {

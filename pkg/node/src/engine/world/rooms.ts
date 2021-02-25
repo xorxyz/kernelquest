@@ -1,43 +1,16 @@
-import { Vector } from '../../../lib/geom';
-import { Stack } from '../../../lib/stack';
-import { Actor } from '../actors/actors';
-import { Item } from '../things/items';
-
-export class Port {
-  name: string
-  constructor(name: string) {
-    this.name = name;
-  }
-}
-
-export const Ports = () => [
-  new Port('n'), new Port('e'), new Port('s'), new Port('w'),
-];
-
-export class Cell {
-  position: Vector
-  bg: string
-  stack: Stack<Item> = new Stack()
-  ports: Array<Port> = Ports()
-  actor?: Actor
-
-  constructor(x: number, y: number) {
-    this.position = new Vector(x, y);
-    this.bg = '..';
-  }
-}
+import { Matrix, matrixOf } from '../../../lib/math';
+import { Agent } from '../agents/agents';
+import { Cell } from './cells';
 
 export type Layout = Array<string>
-export type CellMatrix = Array<Array<Cell>>
 
 export class Room {
-  name: String
-  readonly cells: CellMatrix
-  readonly actors: Array<Actor>
+  name: string
+  readonly cells: Matrix<Cell>
+  readonly actors: Array<Agent>
 
   constructor() {
-    this.cells = Array(10).fill(0).map((y) =>
-      Array(10).fill(0).map((_, x) => new Cell(x, y)));
+    this.cells = matrixOf(10, (x, y) => new Cell(x, y));
   }
 
   static from(layout: Layout) {

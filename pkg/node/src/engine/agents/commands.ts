@@ -1,11 +1,11 @@
-import { Actor } from './actors';
+import { Agent } from './agents';
 import { Item } from '../things/items';
-import { Vector } from '../../../lib/geom';
+import { Vector } from '../../../lib/math';
 
 export abstract class Command {
-  actor: Actor
-  constructor(actor: Actor) {
-    this.actor = actor;
+  agent: Agent
+  constructor(agent: Agent) {
+    this.agent = agent;
   }
 
   abstract execute(a, e): Boolean;
@@ -15,15 +15,15 @@ export class Move extends Command {
   x: number
   y: number
 
-  constructor(actor, x: number, y: number) {
-    super(actor);
+  constructor(agent, x: number, y: number) {
+    super(agent);
 
     this.x = x;
     this.y = y;
   }
 
-  execute(actor: Actor) {
-    actor.velocity.setXY(this.x, this.y);
+  execute(agent: Agent) {
+    agent.velocity.setXY(this.x, this.y);
     return true;
   }
 }
@@ -31,8 +31,8 @@ export class Move extends Command {
 export class Say extends Command {
   message: string
 
-  constructor(actor, message: string) {
-    super(actor);
+  constructor(agent, message: string) {
+    super(agent);
 
     this.message = message;
   }
@@ -43,18 +43,18 @@ export class Say extends Command {
 }
 
 export class Drop extends Command {
-  actor: Actor
+  agent: Agent
   item: Item
 
-  constructor(actor: Actor, item: Item) {
-    super(actor);
+  constructor(agent: Agent, item: Item) {
+    super(agent);
 
     this.item = item;
   }
 
   execute(items: Array<Item>) {
-    const idx = this.actor.items.findIndex((x) => x === this.item);
-    this.actor.items.splice(idx);
+    const idx = this.agent.items.findIndex((x) => x === this.item);
+    this.agent.items.splice(idx);
     items.push(this.item);
     return true;
   }
@@ -62,11 +62,11 @@ export class Drop extends Command {
 
 export class PickUp extends Command {
   position: Vector
-  constructor(actor: Actor, position: Vector) {
+  constructor(actor: Agent, position: Vector) {
     super(actor);
     this.position = position;
   }
-  execute(actor: Actor, item: Item) {
+  execute(actor: Agent, item: Item) {
     actor.items.push(item);
     return true;
   }

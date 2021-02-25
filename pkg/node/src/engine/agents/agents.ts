@@ -21,15 +21,14 @@ import {
   NoviceJob,
 } from './jobs';
 import { Command, Move } from './commands';
-import { Vector } from '../../../lib/geom';
-import { getRandomDirection } from '../../../lib/utils';
+import { Vector, getRandomDirection } from '../../../lib/math';
 import { Stack } from '../../../lib/stack';
 import {
   Heal, Teleport, Zap, Summon, Goto, Gate, Fire,
 } from '../magic/spells';
 import Connection from '../../server/connection';
 
-export abstract class Actor {
+export abstract class Agent {
   id: string = uuid.v4()
   name: string
   abstract job: Job
@@ -57,7 +56,7 @@ export abstract class Actor {
   }
 }
 
-export abstract class Players extends Actor {
+export abstract class Players extends Agent {
   name: string
   commands: Array<Command> = []
   job = new NoviceJob()
@@ -68,7 +67,7 @@ export abstract class Players extends Actor {
   }
 }
 
-export abstract class Critter extends Actor {
+export abstract class Critter extends Agent {
   timer: NodeJS.Timeout
   job = new CritterJob()
 
@@ -85,12 +84,12 @@ export abstract class Critter extends Actor {
   }
 }
 
-export abstract class Npc extends Actor {
+export abstract class Npc extends Agent {
   job = new NoviceJob()
   look = looks.npc
 }
 
-export abstract class Bug extends Actor {
+export abstract class Bug extends Agent {
   name = 'Bug'
   job = new NoviceJob()
   look = looks.bug

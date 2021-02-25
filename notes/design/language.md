@@ -6,40 +6,47 @@
 - lists are just special cases of quoted programs
 - a function can consume any number of parameters from the stack and leave any number of results on the stack
 
-# datatypes
+# data types
 
 1. simple: 
-  1. integers: 5
+  1. boolean: 00 01
+  2. integers: 00 01 03 1F FF (0-255)
+  3. chars: 🧙  (2 bytes)
   2. floating point: 1.2, 1.23, 6.5e3, 23.1e-1 
   2. characters: 'a 'A
-  3. boolean: true false 
-2. aggregate: 
-  1. sets: { 1 2 3 } 
+2. aggregate:
+  1. lists, or quoted programs: []
   2. strings: "hello world"
-  3. lists, or quoted programs: []
+  3. sets: { 1 2 3 } 
 
 # built-in operators and combinators
 
-- definition 
-  - == 
-  - ;
-- arithmetics
+- calculator
   - +  -  *  / 
 - logic
   - =  <  >  !=  <=  >=
   - not and or
-- list operations
-  - map filter 
-  - fold
-  - concat
-- control flow
+- execution
   - i
+- control
   - ifte
-- stack shuffling
+- stack
   - swap
   - dup
   - pop
   - dip
+- list
+  - map
+  - filter 
+  - fold
+  - concat
+- clipboard
+  - copy
+  - cut
+  - paste
+- definition
+  - == 
+  - ;
 
 ```xor
 
@@ -51,18 +58,26 @@ square == dup *
 [dup cons i] dup cons i
 [wall 5 2 0]
   -> [wall 5 2 0]
+
+environment == [ room zone world node ]
+xor_agent == [
+  [ percepts sensors ]    # inputs
+  [
+    [ state model ]       # agent's representation of the world
+                          # "bags of analogies"
+    [ data stack ]        # program's data stack
+  ] utility               # agent's utility function
+  [ actions actuators ]   # outputs
+] environment
+
 ```
 
 # notes
 
-- no state, no environment
+- simple syntax
 - homoiconicity (code as data) 
-- self-hosting compiler
-- self-interpreter
-- strongly typed
+- self-interpreted
 - introspection, reflection and metaprogramming
-- actor-based concurrency
-- coroutines
 
 inspirations:
 
@@ -71,8 +86,4 @@ inspirations:
 - forth
 - lisp
 - scheme 
-- sh
-
-ideas:
-
-- actors have bags of analogies?
+- ksh

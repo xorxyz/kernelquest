@@ -1,7 +1,7 @@
 /*
  * assemble people together
  */
-import { Player } from './actors';
+import { Player } from './agents';
 
 export abstract class Group {
   name: string

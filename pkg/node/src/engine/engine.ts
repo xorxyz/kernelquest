@@ -3,11 +3,11 @@
  */
 import * as EventEmitter from 'events';
 import Clock from '../../lib/clock';
-import { Vector } from '../../lib/geom';
+import { Vector } from '../../lib/math';
 import { World } from './world/world';
-import { Actor, Sheep, Tutor } from './actors/actors';
+import { Agent, Sheep, Tutor } from './agents/agents';
 import { GoldItem, Item, Wall } from './things/items';
-import { Drop, PickUp } from './actors/commands';
+import { Drop, PickUp } from './agents/commands';
 
 export const CLOCK_MS_DELAY = 300;
 
@@ -16,7 +16,7 @@ export interface EngineOptions {
 }
 
 export default class Engine extends EventEmitter {
-  actors: Array<Actor> = []
+  actors: Array<Agent> = []
   items: Array<Item> = []
   walls: Array<Wall> = []
   clock: Clock
@@ -63,7 +63,7 @@ export default class Engine extends EventEmitter {
       );
 
       // if there's no one there
-      if (!this.walls.some((a) => a.position.equals(next)) &&
+      if (!this.walls.some((w) => w.position.equals(next)) &&
           !this.actors.some((a) => a.position.equals(next))) {
         actor.position.copy(next);
       }
