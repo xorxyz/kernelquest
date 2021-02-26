@@ -5,39 +5,13 @@ import { Agent } from '../agents/agents';
 import { Durability } from '../physics/durability';
 import { looks } from '../visuals/looks';
 import { Spell } from '../magic/spells';
-import { VisibleThing, Quotation } from './ideas';
+import { VisibleThing } from './ideas';
 
 export abstract class Item extends VisibleThing {
   private owner: Agent | null = null
   private durability: Durability = new Durability()
 
   abstract use(user, target?): Boolean
-}
-
-export abstract class Wall extends Item {}
-
-export abstract class Weapon extends Quotation {}
-export abstract class Clothes extends Quotation {}
-export abstract class Relic extends Quotation {}
-
-/** a magic orb is a function that executes expressions on the stack */
-export class MagicOrb extends Relic {
-  name = 'morb'
-  look = looks.orb
-
-  use() {
-    return false;
-  }
-}
-
-/** a wall is a function that blocks your movement */
-export class WallItem extends Wall {
-  name = 'wall'
-  look = looks.wall
-
-  use() {
-    return false;
-  }
 }
 
 export abstract class Consumable extends Item {

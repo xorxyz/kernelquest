@@ -2,52 +2,41 @@
  * living entities are called actors
  */
 import * as uuid from 'uuid';
-import {
-  Item,
-  Weapon,
-  Clothes,
-  Relic,
-} from '../things/items';
-import {
-  Health,
-  Stamina,
-  Mana,
-  Wealth,
-} from './stats';
-import { Look, looks } from '../visuals/looks';
-import {
-  Job,
-  CritterJob,
-  NoviceJob,
-} from './jobs';
-import { Command, Move } from './commands';
-import { Vector, getRandomDirection } from '../../../lib/math';
-import { Stack } from '../../../lib/stack';
-import {
-  Heal, Teleport, Zap, Summon, Goto, Gate, Fire,
-} from '../magic/spells';
 import Connection from '../../server/connection';
+import { Stack } from '../../../lib/stack';
+import { Vector, getRandomDirection } from '../../../lib/math';
+import { Look, looks } from '../visuals/looks';
+import { Item } from '../things/items';
+import { Heal, Teleport, Zap, Summon, Goto, Gate, Fire, Spell } from '../magic/spells';
+import { Health, Stamina, Mana, Wealth } from './stats';
+import { Job, CritterJob, NoviceJob } from './jobs';
+import { Command, Move } from './commands';
+import { Model } from './model';
 
-export abstract class Agent {
+export abstract class Being {
   id: string = uuid.v4()
-  name: string
-  abstract job: Job
-  abstract look: Look
 
   position: Vector = new Vector()
   velocity: Vector = new Vector()
 
+  health: Health = new Health()
+  stamina: Stamina = new Stamina()
+}
+
+export abstract class Agent extends Being {
+  look: Look
+  job: Job
+
+  name: string
+  model: Model = new Model()
+
+  spells: Array<Spell> = []
+
   queue: Array<Command> = []
   stack: Stack<Item> = new Stack()
 
-  health: Health = new Health()
-  stamina: Stamina = new Stamina()
   mana: Mana = new Mana()
   wealth: Wealth = new Wealth()
-
-  wield: Weapon | null = null
-  wear: Clothes | null = null
-  hold: Relic | null = null
 
   items: Array<Item> = []
 
@@ -56,15 +45,14 @@ export abstract class Agent {
   }
 }
 
-export abstract class Players extends Agent {
-  name: string
-  commands: Array<Command> = []
+export abstract class Npc extends Agent {
   job = new NoviceJob()
+  look = looks.npc
 
-  constructor(name: string = 'AnonymousPlayer') {
-    super();
-    this.name = name;
-  }
+  health: Health = new Health()
+  stamina: Stamina = new Stamina()
+  mana: Mana = new Mana()
+  wealth: Wealth = new Wealth()
 }
 
 export abstract class Critter extends Agent {
@@ -84,11 +72,6 @@ export abstract class Critter extends Agent {
   }
 }
 
-export abstract class Npc extends Agent {
-  job = new NoviceJob()
-  look = looks.npc
-}
-
 export abstract class Bug extends Agent {
   name = 'Bug'
   job = new NoviceJob()
@@ -97,10 +80,9 @@ export abstract class Bug extends Agent {
 
 /* - Instances - */
 
-export class Player extends Players {
-  look = looks.me;
-
-  readonly spells = [
+export class Player extends Agent {
+  look = looks.you;
+  spells = [
     new Gate(),
     new Heal(),
     new Zap(),
@@ -112,9 +94,10 @@ export class Player extends Players {
 
   private connection: Connection
 
-  constructor(connection) {
+  constructor(connection, job) {
     super();
     this.connection = connection;
+    this.job = job;
   }
 }
 

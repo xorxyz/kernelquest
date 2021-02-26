@@ -1,8 +1,9 @@
 /*
  * spells represent the contract for the execution of a program
  */
+import { Quotation } from '../../shell/types';
 import { Agent, Player } from '../agents/agents';
-import { Quotation, Thing } from '../things/ideas';
+import { Thing } from '../things/ideas';
 
 type Caster = Player
 type Target = Thing

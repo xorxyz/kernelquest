@@ -1,47 +1,55 @@
+import { Vector } from './math';
+
 export const ESC = '\u001B';
-export const escStr = (str: string) => `${ESC}${str}`;
+export const esc = (str: string) => `${ESC}${str}`;
 
-const reset = escStr('[0m');
+export const RESET = '[0m';
+export const reset = esc(RESET);
 
-export const style = {
-  invert: escStr('[7m'),
-  reset: escStr('[0m'),
-  white: escStr('[37m'),
-  dim: (str) => escStr('[2m') + str + reset,
+export const colors = {
   bg: {
-    black: (str) => escStr('[40m') + str + reset,
-    white: (str) => escStr('[47m') + str + reset,
-    red: (str) => escStr('[41m') + str + reset,
-    green: (str) => escStr('[42m') + str + reset,
-    blue: (str) => escStr('[46m') + str + reset,
+    black: (str) => `[40m${str}`,
+    white: (str) => `[47m${str}`,
+    red: (str) => `[41m${str}`,
+    green: (str) => `[42m${str}`,
+    blue: (str) => `[46m${str}`,
   },
   fg: {
-    black: (str) => escStr('[30m') + str + reset,
-    white: (str) => escStr('[37m') + str + reset,
+    black: (str) => `[30m${str}`,
+    white: (str) => `[37m${str}`,
   },
+};
+
+export const style = {
+  invert: '[7m',
+  reset: '[0m',
+  white: '[37m',
+  dim: (str) => `[2m${str}`,
+  in: (fg, bg, str) => esc(fg) + esc(bg) + str,
 };
 
 export const screen = {
-  clear: escStr('[2J'),
+  clear: '[2J',
 };
 
 export const line = {
-  clearAfter: escStr('[0K'),
-  clearBefore: escStr('[1L'),
-  clear: escStr('[2K'),
-  start: escStr('[G'),
+  clearAfter: '[0K',
+  clearBefore: '[1L',
+  clear: '[2K',
+  start: '[G',
 };
 
 export const cursor = {
-  blink: escStr('[5;m'),
-  eraseRight: escStr('[K'),
-  moveLeft: escStr('[1D'),
-  moveRight: escStr('[1C'),
-  up: (n) => escStr(`[${n}A`),
-  right: (n) => escStr(`[${n}C`),
-  down: (n) => escStr(`[${n}B`),
-  left: (n) => escStr(`[${n}D`),
-  setXY: (x: number, y: number) => escStr(`[${y};${x}H`),
+  blink: '[5;m',
+  eraseRight: '[K',
+  moveLeft: '[1D',
+  moveRight: '[1C',
+  up: (n) => `[${n}A`,
+  right: (n) => `[${n}C`,
+  down: (n) => `[${n}B`,
+  left: (n) => `[${n}D`,
+  setXY: (x: number, y: number) => `[${y};${x}H`,
+  set: (v: Vector) => `[${v.y};${v.x}H`,
 };
 
 export const ansiRegex = ({ onlyFirst = false } = {}) => {

@@ -1,4 +1,3 @@
-import { Player } from '../engine/agents/agents';
 import { Drop, Move, PickUp } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import Interpreter from '../shell/interpreter';
@@ -6,7 +5,7 @@ import { LineEditor } from '../shell/line';
 import * as esc from '../../lib/esc';
 import { CELL_WIDTH } from '../ui/components';
 import Connection from './connection';
-import { View, MainView } from '../ui/views';
+import { MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
 import { Item } from '../engine/things/items';
 
@@ -22,18 +21,19 @@ const host = process.env.HOST || 'localhost:3000';
 export class Terminal {
   id: number
   connection: Connection
-  me: Player
   interpreter: Interpreter
-  line: LineEditor = new LineEditor()
   state: IState
-  private view: View
+  line: LineEditor = new LineEditor()
+  view: MainView = new MainView()
   private timer: NodeJS.Timeout
+
+  get player() {
+    return this.connection.player;
+  }
 
   constructor(id: number, connection: Connection) {
     this.id = id;
     this.connection = connection;
-    this.me = connection.player;
-    this.view = new MainView();
     this.state = {
       termMode: false,
       prompt: '> ',
@@ -47,7 +47,7 @@ export class Terminal {
       ],
     };
 
-    this.interpreter = new Interpreter(this.me.stack);
+    this.interpreter = new Interpreter(this.player.stack);
     this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
 
     this.render();
@@ -81,19 +81,19 @@ export class Terminal {
         this.switchModes();
         break;
       case (Keys.ARROW_UP):
-        command = new Move(this.me, 0, -1);
+        command = new Move(this.player, 0, -1);
         break;
       case (Keys.ARROW_RIGHT):
-        command = new Move(this.me, 1, 0);
+        command = new Move(this.player, 1, 0);
         break;
       case (Keys.ARROW_DOWN):
-        command = new Move(this.me, 0, 1);
+        command = new Move(this.player, 0, 1);
         break;
       case (Keys.ARROW_LEFT):
-        command = new Move(this.me, -1, 0);
+        command = new Move(this.player, -1, 0);
         break;
       case (Keys.LOWER_P):
-        command = new PickUp(this.me, this.me.position.clone());
+        command = new PickUp(this.player, this.player.position.clone());
         break;
       default:
         break;
@@ -115,7 +115,7 @@ export class Terminal {
 
           if (thing instanceof Item) {
             thing.position.copy(this.connection.player.position);
-            this.me.queue.push(new Drop(this.me, thing));
+            this.player.queue.push(new Drop(this.player, thing));
           }
         }
 
@@ -140,7 +140,7 @@ export class Terminal {
 
   renderRoom() {
     this.connection.socket.write(
-      this.view.boxes.room.render(this),
+      this.view.boxes.room.compile(this),
     );
 
     this.drawCursor();
@@ -149,7 +149,7 @@ export class Terminal {
   render() {
     if (!this.connection.socket) return;
 
-    const output = this.view.render(this);
+    const output = this.view.compile(this);
 
     this.connection.socket.write(output);
 
@@ -158,13 +158,10 @@ export class Terminal {
 
   drawCursor() {
     const cursorUpdate = this.state.termMode
-      ? esc.cursor.setXY(
-        this.view.boxes.prompt.position.x,
-        this.view.boxes.prompt.position.y,
-      )
+      ? esc.cursor.set(this.view.boxes.prompt.position)
       : esc.cursor.setXY(
-        this.view.boxes.room.position.x + (this.me.position.x) * CELL_WIDTH,
-        this.view.boxes.room.position.y + this.me.position.y,
+        this.view.boxes.room.position.x + (this.player.position.x) * CELL_WIDTH,
+        this.view.boxes.room.position.y + this.player.position.y,
       );
 
     this.connection.socket.write(cursorUpdate);

@@ -3,6 +3,7 @@ import Connection from './connection';
 import Engine from '../engine/engine';
 import { Terminal } from './terminal';
 import { Player } from '../engine/agents/agents';
+import { WizardJob } from '../engine/agents/jobs';
 
 export interface Params { src?: string }
 
@@ -22,9 +23,9 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const player = new Player('john');
+    const you = new Player('john', new WizardJob());
 
-    const connection = new Connection(player, socket);
+    const connection = new Connection(you, socket);
     const terminal = new Terminal(id, connection);
 
     this.engine.actors.push(connection.player);
@@ -36,7 +37,7 @@ export default class GameServer {
       this.connections.delete(connection);
     });
 
-    player.position.setXY(4, 4);
+    you.position.setXY(4, 4);
   }
 
   listen(...args): void {

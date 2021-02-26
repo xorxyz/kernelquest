@@ -6,8 +6,9 @@ import Clock from '../../lib/clock';
 import { Vector } from '../../lib/math';
 import { World } from './world/world';
 import { Agent, Sheep, Tutor } from './agents/agents';
-import { GoldItem, Item, Wall } from './things/items';
+import { GoldItem, Item } from './things/items';
 import { Drop, PickUp } from './agents/commands';
+import { Wall } from './things/blocks';
 
 export const CLOCK_MS_DELAY = 300;
 

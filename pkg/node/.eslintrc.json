@@ -46,6 +46,9 @@
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
     "implicit-arrow-linebreak": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "object-curly-newline": ["error", {
+      "ImportDeclaration": { "multiline": true, "minProperties": 9}
+    }]
   }
 }

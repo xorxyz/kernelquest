@@ -14,9 +14,9 @@ import {
 export abstract class View {
   boxes: Record<string, UiComponent>
 
-  render(term: Terminal): string {
+  compile(term: Terminal): string {
     return Object.values(this.boxes)
-      .map((box) => box.render(term))
+      .map((box) => box.compile(term))
       .join('');
   }
 }

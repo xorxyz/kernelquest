@@ -52,8 +52,9 @@
 import * as EventEmitter from 'events';
 import { debug } from '../../lib/logging';
 import { isNumeric } from '../../lib/math';
-import { BooleanLiteral, NumberLiteral, Thing } from '../engine/things/ideas';
+import { Thing } from '../engine/things/ideas';
 import { Stack } from '../../lib/stack';
+import { BooleanLiteral, NumberLiteral } from './types';
 
 const operators = {
   t: (stack: Stack<Thing>) => {
@@ -70,21 +71,19 @@ const operators = {
   },
 };
 
+const tokenize = (e: String) => e.split(' ');
+
 export default class Interpreter extends EventEmitter {
   private stack: Stack<Thing>
-  private quotations: Stack<Thing>
 
   constructor(stack: Stack<Thing>) {
     super();
 
     this.stack = stack;
-
-    this.quotations = new Stack();
   }
 
   eval(expr: string): Thing | null {
     debug(`expression: \`${expr}\``);
-    const tokenize = (e: String) => e.split(' ');
     const tokens = tokenize(expr);
     debug('tokens:', tokens);
 
