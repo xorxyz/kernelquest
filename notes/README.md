@@ -20,7 +20,8 @@ documents i want to keep track of:
 - [Unix First Edition Manual pages](http://man.cat-v.org/unix-1st/)
 
 ## hacker culture
-- [The Jargon File](http://www.catb.org/~esr/jargon/html/index.html) - hacker slang illuminating many aspects of hackish tradition, folklore, and humor. 
+- [The Jargon File](http://www.catb.org/~esr/jargon/html/index.html) - hacker slang illuminating many aspects of hackish tradition, folklore, and humor.
+- [The humble programmer](http://www.jdl.ac.cn/turing/pdf/p859-dijkstra.pdf) 
 
 ## game dev
 - [How to make a puzzle game](https://www.rockpapershotgun.com/2015/01/22/how-to-make-a-puzzle-game/)
@@ -29,19 +30,21 @@ documents i want to keep track of:
 - [Choice, Consequence and Complicity](https://www.youtube.com/watch?v=-FfITxaXeqM&t=1157s)
 - [Motivations of Play in MMORPGs: Results from a Factor Analytic Approach ](http://www.nickyee.com/daedalus/motivations.pdf)
 
-## languages & notation
+## languages
 - [Programming Language Awareness Centre](http://www.math.bas.bg/bantchev/place/)
-- [RPN Calculator Specification](http://www.math.bas.bg/bantchev/place/rpn/rpn.spec.html)
 - [The Museum of HP Calculators: RPL](https://www.hpmuseum.org/rpl.htm)
-- [An addressless coding scheme based on mathematical notation](https://www.massey.ac.nz/~rmclachl/DPACM/121%20-%20addressless%20coding%20scheme.pdf)
-- [Why concatenative programming matters](https://evincarofautumn.blogspot.com/2012/02/why-concatenative-programming-matters.html)
-- [Concatenative Programming: From Ivory to Metal](https://web.stanford.edu/class/ee380/Abstracts/171115-slides.pdf)
 - [From Copycat to Metacat: Developing a Self-Watching Framework for Analogy-Making](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.49.8941&rep=rep1&type=pdf)
 - [Beyond Copycat: Incorporating Self-Watching into a Computer Model of High-Level Perception and Analogy-Making](http://science.slc.edu/~jmarshall/papers/maics96.pdf)
 - [Metacat: A Self-Watching Cognitive Architecture for Analogy-Making](http://science.slc.edu/~jmarshall/papers/cogsci02.pdf)
-- [Lightweight markup language](https://en.wikipedia.org/wiki/Lightweight_markup_language) - read the raw document as well as the final rendered output, provide for text-based data entry
 - [Lightweight programming language](https://en.wikipedia.org/wiki/Lightweight_programming_language)
 - [Homoiconicity](https://en.wikipedia.org/wiki/Homoiconicity)
+
+## notation
+- [RPN Calculator Specification](http://www.math.bas.bg/bantchev/place/rpn/rpn.spec.html)
+- [An addressless coding scheme based on mathematical notation](https://www.massey.ac.nz/~rmclachl/DPACM/121%20-%20addressless%20coding%20scheme.pdf)
+- [Why concatenative programming matters](https://evincarofautumn.blogspot.com/2012/02/why-concatenative-programming-matters.html)
+- [Concatenative Programming: From Ivory to Metal](https://web.stanford.edu/class/ee380/Abstracts/171115-slides.pdf)
+- [Lightweight markup language](https://en.wikipedia.org/wiki/Lightweight_markup_language) - read the raw document as well as the final rendered output, provide for text-based data entry
 - [A foundation for typed concatenative languages](https://www2.ccs.neu.edu/racket/pubs/dissertation-kleffner.pdf)
 
 # algebra & math
@@ -49,6 +52,12 @@ documents i want to keep track of:
 - [The Theory of Concatenative Combinators](http://nsl.com/misc/papers/The%20Theory%20of%20Concatenative%20Combinators.htm)
 - [Mathematical foundations of Joy](http://www.kevinalbrecht.com/code/joy-mirror/j02maf.html)
 - [From Frege To Godel. 1967](https://web.archive.org/web/20070717222735/http://www.andrew.cmu.edu:80/user/cebrown/notes/vonHeijenoort.html)
+
+# systems
+- [Multi-agent system](https://en.wikipedia.org/wiki/Multi-agent_system)
+
+# economics
+- [Bounded rationality](https://en.wikipedia.org/wiki/Bounded_rationality)
 
 # misc
 - [Concept of materials](https://simplifier.neocities.org/materials.html)

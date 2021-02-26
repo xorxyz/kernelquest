@@ -1,3 +1,5 @@
+import { esc, Style } from '../../lib/esc';
+import { debug } from '../../lib/logging';
 import { Terminal } from '../server/terminal';
 import {
   UiComponent,
@@ -12,22 +14,24 @@ import {
 } from './components';
 
 export abstract class View {
-  boxes: Record<string, UiComponent>
+  components: Record<string, UiComponent>
 
   compile(term: Terminal): string {
-    return Object.values(this.boxes)
-      .map((box) => box.compile(term))
-      .join('');
+    const lines = Object.values(this.components).map((component) =>
+      component.compile(term) +
+      esc(Style.Reset));
+    debug(lines);
+    return lines.join('');
   }
 }
 
-export const boxes = {
-  // top
+export const components = {
+  // // top
   nav: new Navbar(1, 1),
-  // left side
+  // // left side
   side: new Sidebar(2, 4),
   stats: new Stats(2, 15),
-  // right side
+  // // right side
   axis: new Axis(20, 3),
   room: new RoomMap(22, 4),
   scroll: new Scroll(47, 5),
@@ -36,5 +40,5 @@ export const boxes = {
 };
 
 export class MainView extends View {
-  boxes = boxes
+  components: Record<string, UiComponent> = components
 }

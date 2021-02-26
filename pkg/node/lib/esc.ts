@@ -3,47 +3,45 @@ import { Vector } from './math';
 export const ESC = '\u001B';
 export const esc = (str: string) => `${ESC}${str}`;
 
-export const RESET = '[0m';
-export const reset = esc(RESET);
-
-export const colors = {
-  bg: {
-    black: (str) => `[40m${str}`,
-    white: (str) => `[47m${str}`,
-    red: (str) => `[41m${str}`,
-    green: (str) => `[42m${str}`,
-    blue: (str) => `[46m${str}`,
+export const Colors = {
+  Bg: {
+    Black: '[40m',
+    White: '[47m',
+    Red: '[41m',
+    Green: '[42m',
+    Blue: '[46m',
   },
-  fg: {
-    black: (str) => `[30m${str}`,
-    white: (str) => `[37m${str}`,
+  Fg: {
+    Black: '[30m',
+    White: '[37m',
   },
 };
 
-export const style = {
-  invert: '[7m',
-  reset: '[0m',
-  white: '[37m',
-  dim: (str) => `[2m${str}`,
+export const Style = {
+  Invert: '[7m',
+  Reset: '[0m',
+  White: '[37m',
+  Dim: '[2m',
+  inverted: (str: string) => Style.Invert + str,
   in: (fg, bg, str) => esc(fg) + esc(bg) + str,
 };
 
-export const screen = {
-  clear: '[2J',
+export const Screen = {
+  Clear: '[2J',
 };
 
-export const line = {
-  clearAfter: '[0K',
-  clearBefore: '[1L',
-  clear: '[2K',
-  start: '[G',
+export const Line = {
+  ClearAfter: '[0K',
+  ClearBefore: '[1L',
+  Clear: '[2K',
+  Start: '[G',
 };
 
-export const cursor = {
-  blink: '[5;m',
-  eraseRight: '[K',
-  moveLeft: '[1D',
-  moveRight: '[1C',
+export const Cursor = {
+  Blink: '[5;m',
+  EraseRight: '[K',
+  MoveLeft: '[1D',
+  MoveRight: '[1C',
   up: (n) => `[${n}A`,
   right: (n) => `[${n}C`,
   down: (n) => `[${n}B`,
@@ -52,14 +50,10 @@ export const cursor = {
   set: (v: Vector) => `[${v.y};${v.x}H`,
 };
 
-export const ansiRegex = ({ onlyFirst = false } = {}) => {
-  const pattern = [
-    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))',
-  ].join('|');
+export const AnsiRegex = new RegExp([
+  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;' +
+  '[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))',
+].join('|'), 'g');
 
-  return new RegExp(pattern, onlyFirst ? undefined : 'g');
-};
-
-export const stripAnsi = (string) =>
-  (typeof string === 'string' ? string.replace(ansiRegex(), '') : string);
+export const stripAnsi = (s: String) => s.replace(AnsiRegex, '');
