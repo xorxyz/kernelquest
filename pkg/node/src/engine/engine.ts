@@ -5,9 +5,8 @@ import Clock from '../../lib/clock';
 import { World } from './world/world';
 import { Sheep, Tutor } from './agents/agents';
 import { GoldItem } from './things/items';
-import { Drop, PickUp } from './agents/commands';
+import { Drop, Move, PickUp } from './agents/commands';
 import { Room, testRoom } from './world/rooms';
-import { debug } from '../../lib/logging';
 
 export const CLOCK_MS_DELAY = 60;
 
@@ -45,11 +44,14 @@ export default class Engine {
   update() {
     this.round++;
     this.room.agents.forEach((agent) => {
+      if (!agent.queue.length) return;
+
       const command = agent.takeTurn();
 
-      if (command) command.execute(agent, this);
+      if (command instanceof Move) {
+        command.execute(agent);
+      }
 
-      /* --- movement --- */
       const { nextPosition } = agent;
 
       if (!this.room.collides(nextPosition)) {
@@ -58,10 +60,9 @@ export default class Engine {
 
       agent.velocity.sub(agent.velocity);
 
-      /* --- items --- */
       if (command instanceof Drop) {
         command.item.position.setXY(agent.position.x, agent.position.y);
-        command.execute(this.room.items);
+        command.execute(agent, this.room.items);
       }
 
       if (command instanceof PickUp) {

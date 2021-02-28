@@ -5,7 +5,7 @@ import { Agent } from '../agents/agents';
 import { Durability } from '../physics/durability';
 import { looks } from '../visuals/looks';
 import { Spell } from '../magic/spells';
-import { VisibleThing } from './ideas';
+import { VisibleThing } from './things';
 
 export abstract class Item extends VisibleThing {
   private owner: Agent | null = null

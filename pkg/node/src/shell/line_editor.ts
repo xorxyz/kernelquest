@@ -20,8 +20,6 @@ export class LineEditor {
 
   /* returns true if input box needs an update */
   insert(buf: Buffer): boolean {
-    if (this.line.length === LINE_LENGTH) return false;
-
     const hex = buf.toString('hex');
 
     if (hex === Keys.BACKSPACE) return this.backspace();
@@ -30,6 +28,8 @@ export class LineEditor {
 
     /* catch all other ctrl sequences */
     if (hex.startsWith('1b')) return false;
+
+    if (this.line.length === LINE_LENGTH - 6) return false;
 
     const char = buf.toString();
     const chars = this.line.split('');

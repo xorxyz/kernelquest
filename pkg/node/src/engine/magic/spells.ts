@@ -3,7 +3,7 @@
  */
 import { Quotation } from '../../shell/types';
 import { Agent, Player } from '../agents/agents';
-import { Thing } from '../things/ideas';
+import { Thing } from '../things/things';
 
 type Caster = Player
 type Target = Thing
@@ -22,7 +22,7 @@ export abstract class Spell extends Quotation {
 }
 
 export class Nop extends Spell {
-  command = 'NOP'
+  command = 'nop'
   cost: 0
 
   $cast() {

@@ -1,0 +1,26 @@
+.xor.xyz
+  .local
+    .$HOST
+  .test
+    .xor
+      .www
+  .arpa
+    .in-addr
+  .com
+  .org
+  .net
+    .as0
+  .int
+    .nato
+  .edu
+  .gov
+  .sh
+    .diagonal
+  .onion
+  .ca
+    .diagonalsystems
+  .mil.ca
+  .gc.ca
+  .xyz
+    .xor
+

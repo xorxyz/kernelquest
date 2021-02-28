@@ -1,0 +1,3 @@
+items:
+  - name: About
+    route: /about

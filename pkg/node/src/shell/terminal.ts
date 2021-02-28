@@ -83,19 +83,19 @@ export class Terminal {
         this.switchModes();
         break;
       case (Keys.ARROW_UP):
-        command = new Move(this.player, 0, -1);
+        command = new Move(0, -1);
         break;
       case (Keys.ARROW_RIGHT):
-        command = new Move(this.player, 1, 0);
+        command = new Move(1, 0);
         break;
       case (Keys.ARROW_DOWN):
-        command = new Move(this.player, 0, 1);
+        command = new Move(0, 1);
         break;
       case (Keys.ARROW_LEFT):
-        command = new Move(this.player, -1, 0);
+        command = new Move(-1, 0);
         break;
       case (Keys.LOWER_P):
-        command = new PickUp(this.player, this.player.position.clone());
+        command = new PickUp(this.player.position.clone());
         break;
       default:
         break;
@@ -119,7 +119,7 @@ export class Terminal {
 
           if (thing instanceof Item) {
             thing.position.copy(this.connection.player.position);
-            this.player.queue.push(new Drop(this.player, thing));
+            this.player.queue.push(new Drop(thing));
           }
         }
 

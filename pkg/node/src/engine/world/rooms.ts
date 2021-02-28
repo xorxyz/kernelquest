@@ -21,8 +21,8 @@ export class Room extends Environment {
 
   collides(v: Vector) {
     return (
-      !this.blocks.some((w) => w.position.equals(v)) &&
-      !this.agents.some((a) => a.position.equals(v))
+      this.blocks.some((w) => w.position.equals(v)) ||
+      this.agents.some((a) => a.position.equals(v))
     );
   }
 

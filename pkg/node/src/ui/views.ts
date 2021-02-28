@@ -31,8 +31,8 @@ export const components = {
   // spells: new Scroll(3, 5),
   stats: new Stats(1, 15),
   // right side
-  axis: new Axis(22, 3),
-  room: new RoomMap(24, 4),
+  axis: new Axis(23, 3),
+  room: new RoomMap(25, 4),
   output: new Output(20, 15),
   prompt: new Input(20, 21),
 };

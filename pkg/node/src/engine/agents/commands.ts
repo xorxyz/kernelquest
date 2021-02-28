@@ -3,11 +3,6 @@ import { Item } from '../things/items';
 import { Vector } from '../../../lib/math';
 
 export abstract class Command {
-  agent: Agent
-  constructor(agent: Agent) {
-    this.agent = agent;
-  }
-
   abstract execute(a, e): Boolean;
 }
 
@@ -15,9 +10,8 @@ export class Move extends Command {
   x: number
   y: number
 
-  constructor(agent, x: number, y: number) {
-    super(agent);
-
+  constructor(x: number, y: number) {
+    super();
     this.x = x;
     this.y = y;
   }
@@ -31,9 +25,8 @@ export class Move extends Command {
 export class Say extends Command {
   message: string
 
-  constructor(agent, message: string) {
-    super(agent);
-
+  constructor(message: string) {
+    super();
     this.message = message;
   }
 
@@ -43,18 +36,16 @@ export class Say extends Command {
 }
 
 export class Drop extends Command {
-  agent: Agent
   item: Item
 
-  constructor(agent: Agent, item: Item) {
-    super(agent);
-
+  constructor(item: Item) {
+    super();
     this.item = item;
   }
 
-  execute(items: Array<Item>) {
-    const idx = this.agent.items.findIndex((x) => x === this.item);
-    this.agent.items.splice(idx);
+  execute(agent, items: Array<Item>) {
+    const idx = agent.items.findIndex((x) => x === this.item);
+    agent.items.splice(idx);
     items.push(this.item);
     return true;
   }
@@ -62,12 +53,13 @@ export class Drop extends Command {
 
 export class PickUp extends Command {
   position: Vector
-  constructor(actor: Agent, position: Vector) {
-    super(actor);
+  constructor(position: Vector) {
+    super();
     this.position = position;
   }
-  execute(actor: Agent, item: Item) {
-    actor.items.push(item);
+
+  execute(agent: Agent, item: Item) {
+    agent.items.push(item);
     return true;
   }
 }

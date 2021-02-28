@@ -87,7 +87,7 @@ export abstract class Critter extends Agent {
       const direction = getRandomDirection();
 
       this.queue.push(
-        new Move(this, direction.x, direction.y),
+        new Move(direction.x, direction.y),
       );
     }, delayMs);
   }

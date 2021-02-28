@@ -12,7 +12,7 @@ const { Fg, Bg } = Colors;
 
 export const SCREEN_WIDTH = 60;
 export const SCREEN_HEIGHT = 20;
-export const LINE_LENGTH = 42;
+export const LINE_LENGTH = 41;
 export const N_OF_LINES = 5;
 export const CELL_WIDTH = 2;
 
@@ -48,7 +48,7 @@ export class Navbar extends UiComponent {
     const place = 'King\'s Valley (0,0)';
 
     return [
-      [what, place, time].join('            ').padEnd(SCREEN_WIDTH + 1, ' '),
+      [what, place, time].join('            ').padEnd(SCREEN_WIDTH, ' '),
     ];
   }
 }
@@ -145,11 +145,12 @@ export class Stats extends UiComponent {
 export class Output extends UiComponent {
   render({ state }: Terminal) {
     return [
-      '┌────────────────────────────────────────┐'].concat(
-      state.stdout
+      `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
+      ...state.stdout
         .slice(-N_OF_LINES)
-        .map((line) => `│ ${(String(line || '')).padEnd(LINE_LENGTH - 4, ' ')} │`),
-    );
+        .map((line) =>
+          `│ ${(line || '').padEnd(LINE_LENGTH - 4, ' ')} │`),
+    ];
   }
 }
 
@@ -159,7 +160,7 @@ export class Input extends UiComponent {
 
     return [
       `│ ${(prompt + line).padEnd(LINE_LENGTH - 4, ' ')} │`,
-      '└────────────────────────────────────────┘',
+      `└${'─'.padEnd(LINE_LENGTH - 2, '─')}┘`,
     ];
   }
 }

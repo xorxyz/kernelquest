@@ -1,0 +1,34 @@
+Objectives:
+  - Dependability
+    - Availability
+    - Reliability
+    - Safety
+    - Maintainability
+  - Confidentiality
+  - Integrity
+Threats:
+  - Interception
+  - Interruption
+  - Modification
+  - Fabrication
+Attacks:
+  Passive:
+    - Browsing
+    - Inferencing
+    - Masquerading
+  Active:
+    - Virus
+    - Worm
+    - Logic Bomb
+    - Integrity Attack
+Mechanisms:
+  - Encryption
+  - Authentication
+  - Authorization
+  - Auditing
+  - Digital Signatures
+  - Certificates
+  - Access Control
+  - Implementation
+  - Credentials
+  - Firewalls
