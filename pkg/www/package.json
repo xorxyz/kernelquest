@@ -1,7 +1,7 @@
 {
   "name": "@xor/www",
   "private": true,
-  "version": "2019.8.13",
+  "version": "2021.2.28",
   "description": "XOR's Website",
   "main": "src",
   "scripts": {
