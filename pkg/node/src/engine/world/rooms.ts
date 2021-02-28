@@ -1,6 +1,8 @@
-import { Matrix, matrixOf } from '../../../lib/math';
+import { Matrix, matrixOf, Vector } from '../../../lib/math';
 import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
+import { Block } from '../things/blocks';
+import { Item } from '../things/items';
 import { Cell } from './cells';
 
 export type Layout = Array<string>
@@ -8,11 +10,20 @@ export type Layout = Array<string>
 export class Room extends Environment {
   name: string
   cells: Matrix<Cell>
+  blocks: Array<Block> = []
   agents: Array<Agent> = []
+  items: Array<Item> = []
 
   constructor() {
     super();
     this.cells = matrixOf(16, 10, (x, y) => new Cell(x, y));
+  }
+
+  collides(v: Vector) {
+    return (
+      !this.blocks.some((w) => w.position.equals(v)) &&
+      !this.agents.some((a) => a.position.equals(v))
+    );
   }
 
   add(agent: Agent, x: number, y: number) {

@@ -9,7 +9,7 @@ import { Keys, Signals } from '../../lib/constants';
 import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../../lib/esc';
 
-const REFRESH_RATE = 5000; // CLOCK_MS_DELAY / 4;
+const REFRESH_RATE = CLOCK_MS_DELAY / 4;
 
 export interface IState {
   termMode: boolean

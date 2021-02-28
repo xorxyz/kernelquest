@@ -2,24 +2,20 @@
  * the game engine
  */
 import Clock from '../../lib/clock';
-import { Vector } from '../../lib/math';
 import { World } from './world/world';
-import { Agent, Sheep, Tutor } from './agents/agents';
-import { GoldItem, Item } from './things/items';
+import { Sheep, Tutor } from './agents/agents';
+import { GoldItem } from './things/items';
 import { Drop, PickUp } from './agents/commands';
-import { Wall } from './things/blocks';
 import { Room, testRoom } from './world/rooms';
+import { debug } from '../../lib/logging';
 
-export const CLOCK_MS_DELAY = 300;
+export const CLOCK_MS_DELAY = 60;
 
 export interface EngineOptions {
   rate?: number
 }
 
 export default class Engine {
-  agents: Array<Agent> = []
-  items: Array<Item> = []
-  walls: Array<Wall> = []
   clock: Clock
   room: Room = testRoom
 
@@ -32,10 +28,10 @@ export default class Engine {
 
     const gold = new GoldItem(3);
     gold.position.setXY(8, 8);
-    this.items.push(gold);
+    this.room.items.push(gold);
 
     const sheep = new Sheep(this);
-    this.room.add(sheep, 9, 9);
+    this.room.add(sheep, 15, 9);
 
     const tutor = new Tutor(this);
     this.room.add(tutor, 7, 7);
@@ -54,16 +50,10 @@ export default class Engine {
       if (command) command.execute(agent, this);
 
       /* --- movement --- */
+      const { nextPosition } = agent;
 
-      const next = new Vector(
-        Math.min(Math.max(0, agent.position.x + agent.velocity.x), 15),
-        Math.min(Math.max(0, agent.position.y + agent.velocity.y), 9),
-      );
-
-      // if there's no one there
-      if (!this.walls.some((w) => w.position.equals(next)) &&
-          !this.agents.some((a) => a.position.equals(next))) {
-        this.room.move(agent, next.x, next.y);
+      if (!this.room.collides(nextPosition)) {
+        this.room.move(agent, nextPosition.x, nextPosition.y);
       }
 
       agent.velocity.sub(agent.velocity);
@@ -71,14 +61,14 @@ export default class Engine {
       /* --- items --- */
       if (command instanceof Drop) {
         command.item.position.setXY(agent.position.x, agent.position.y);
-        command.execute(this.items);
+        command.execute(this.room.items);
       }
 
       if (command instanceof PickUp) {
-        this.items.forEach((item) => {
+        this.room.items.forEach((item) => {
           if (command.position.equals(item.position)) {
             agent.stack.push(item);
-            this.items.splice(this.items.findIndex((i) => i === item));
+            this.room.items.splice(this.room.items.findIndex((i) => i === item));
           }
         });
       }

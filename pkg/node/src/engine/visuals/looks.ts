@@ -35,7 +35,10 @@ export class Look {
 
 export const looks: Record<string, Look> = {
   orb: new Look('orb', '🔮', 'a magic orb'),
-  you: new Look('you', '🧙', 'you look like a wizard'),
+  worker: new Look('worker', '🧑‍🌾', 'a worker'),
+  scout: new Look('scout', '🧝', 'a scout'),
+  healer: new Look('healer', '🧚', 'a healer'),
+  wizard: new Look('wizard', '🧙', 'a wizard'),
   wall: new Look('wall', '██', 'it looks like it\'s in your way'),
   door: new Look('door', '🚪', 'i might need permission to open that'),
   gold: new Look('gold', '💰', 'oooh shiny'),

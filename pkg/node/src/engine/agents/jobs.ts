@@ -2,26 +2,33 @@
  * Actors can have a job, gain xp and level up.
  */
 
+import { Look, looks } from '../visuals/looks';
+
 export abstract class Job {
   name: string
   level: number
   xp: number
+  look: Look
 }
 
-export class FarmerJob extends Job {
-  name: 'farmer'
+export class WorkerJob extends Job {
+  name: 'worker'
+  look = looks.worker
 }
 
-export class FairyJob extends Job {
-  name: 'fairy'
+export class ScoutJob extends Job {
+  name: 'scout'
+  look = looks.scout
+}
+
+export class HealerJob extends Job {
+  name: 'healer'
+  look = looks.healer
 }
 
 export class WizardJob extends Job {
   name: 'wizard'
-}
-
-export class ElfJob extends Job {
-  name: 'elf'
+  look = looks.wizard
 }
 
 export class CritterJob extends Job {}

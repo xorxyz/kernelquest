@@ -6,7 +6,6 @@ import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { testRoom } from '../engine/world/rooms';
 import { IState, Terminal } from '../shell/terminal';
 
 const { Fg, Bg } = Colors;

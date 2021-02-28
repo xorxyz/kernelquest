@@ -2,12 +2,11 @@
  * living entities are called actors
  */
 import * as uuid from 'uuid';
-import Connection from '../../server/connection';
 import { Stack } from '../../../lib/stack';
 import { Vector, getRandomDirection } from '../../../lib/math';
 import { Look, looks } from '../visuals/looks';
 import { Item } from '../things/items';
-import { Heal, Teleport, Zap, Summon, Goto, Gate, Fire, Spell } from '../magic/spells';
+import { Spell } from '../magic/spells';
 import { Health, Stamina, Mana, Wealth } from './stats';
 import { Job, CritterJob, NoviceJob } from './jobs';
 import { Command, Move } from './commands';
@@ -22,6 +21,13 @@ export abstract class Being {
 
   health: Health = new Health()
   stamina: Stamina = new Stamina()
+
+  get nextPosition() {
+    return new Vector(
+      Math.min(Math.max(0, this.position.x + this.velocity.x), 15),
+      Math.min(Math.max(0, this.position.y + this.velocity.y), 9),
+    );
+  }
 }
 
 export class AgentModel {
@@ -49,19 +55,20 @@ export abstract class Agent extends Being {
 
   items: Array<Item> = []
 
-  takeTurn() {
-    return this.queue.shift();
-  }
-
   constructor(engine: Engine) {
     super();
     this.model = new AgentModel(engine);
+  }
+
+  takeTurn() {
+    return this.queue.shift();
   }
 }
 
 export abstract class Npc extends Agent {
   job = new NoviceJob()
   look = looks.npc
+  spells: Array<Spell> = []
 
   health: Health = new Health()
   stamina: Stamina = new Stamina()
@@ -95,21 +102,12 @@ export abstract class Bug extends Agent {
 /* - Instances - */
 
 export class Player extends Agent {
-  look = looks.you;
-  spells = [
-    new Gate(),
-    new Heal(),
-    new Zap(),
-    new Fire(),
-    new Teleport(),
-    new Goto(),
-    new Summon(),
-  ]
-
   constructor(engine: Engine, name: string, job: Job) {
     super(engine);
+
     this.name = name;
     this.job = job;
+    this.look = job.look;
   }
 }
 
