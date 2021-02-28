@@ -1,6 +1,5 @@
 import { esc, Style } from '../../lib/esc';
-import { debug } from '../../lib/logging';
-import { Terminal } from '../server/terminal';
+import { Terminal } from '../shell/terminal';
 import {
   UiComponent,
   Navbar,
@@ -18,25 +17,24 @@ export abstract class View {
 
   compile(term: Terminal): string {
     const lines = Object.values(this.components).map((component) =>
-      component.compile(term) +
-      esc(Style.Reset));
-    debug(lines);
+      component.compile(term) + esc(Style.Reset));
+
     return lines.join('');
   }
 }
 
 export const components = {
-  // // top
+  // top
   nav: new Navbar(1, 1),
-  // // left side
-  side: new Sidebar(2, 4),
-  stats: new Stats(2, 15),
-  // // right side
-  axis: new Axis(20, 3),
-  room: new RoomMap(22, 4),
-  scroll: new Scroll(47, 5),
+  // left side
+  profile: new Sidebar(1, 3),
+  // spells: new Scroll(3, 5),
+  stats: new Stats(1, 15),
+  // right side
+  axis: new Axis(22, 3),
+  room: new RoomMap(24, 4),
   output: new Output(20, 15),
-  prompt: new Input(20, 20),
+  prompt: new Input(20, 21),
 };
 
 export class MainView extends View {

@@ -79,3 +79,11 @@ export class BooleanLiteral extends Literal {
     return true;
   }
 }
+
+export class Program {
+  quotation: Quotation
+
+  run(stack: Stack<Word>): Word | null {
+    return stack.pop() || null;
+  }
+}

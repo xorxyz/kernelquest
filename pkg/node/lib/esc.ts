@@ -46,6 +46,7 @@ export const Cursor = {
   right: (n) => `[${n}C`,
   down: (n) => `[${n}B`,
   left: (n) => `[${n}D`,
+  setX: (x: number) => `[;${x}H]`,
   setXY: (x: number, y: number) => `[${y};${x}H`,
   set: (v: Vector) => `[${v.y};${v.x}H`,
 };

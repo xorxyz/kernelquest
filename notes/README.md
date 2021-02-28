@@ -65,3 +65,6 @@ documents i want to keep track of:
 - [Minimum description length](https://en.wikipedia.org/wiki/Minimum_description_length)
 - [Self-extracting archive](https://en.wikipedia.org/wiki/Self-extracting_archive)
 - [Kolmogorov complexity](https://en.wikipedia.org/wiki/Kolmogorov_complexity)
+- [La veille intégrée](http://www.21siecle.quebec/wp-content/uploads/Cartier_veille.pdf)
+- [Seek-Whence](https://cogsci.indiana.edu/pub/seek-whence.pdf)
+- [The Hearsay-II Speech-Understanding System: Integrating Knowledge to Resolve Uncertainty](https://www.cs.uni.edu/~wallingf/teaching/162/readings/hearsay-ii.pdf)

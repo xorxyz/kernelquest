@@ -122,7 +122,6 @@
 ⚡  zap
 💧 water
 🔥 fire
-❄️  snow
 ⛄ freeze
 🕸️ web
 💫 confuse
@@ -132,11 +131,6 @@
 🌪 tornado
 🌊 wave
 🌈 light
-♠  spades
-♥  heart
-♦  diamond
-♣  clubs
-♈  ♉  ♊  ♋  ♌  ♍  ♎  ♏  ♐  ♑  ♒  ♓  alchemy
 
 # wielded
 🛡 shield
@@ -205,6 +199,12 @@
 ⚙  config
 ⚒  job
 ☁  cloud
+❄️  snow
+♠  spades
+♥  heart
+♦  diamond
+♣  clubs
+♈  ♉  ♊  ♋  ♌  ♍  ♎  ♏  ♐  ♑  ♒  ♓  alchemy
 🌩 thunder
 ⛅ 
 🌤 

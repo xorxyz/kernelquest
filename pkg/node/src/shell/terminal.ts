@@ -1,13 +1,14 @@
 import { Drop, Move, PickUp } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
-import Interpreter from '../shell/interpreter';
-import { LineEditor } from '../shell/line';
+import Interpreter from './interpreter';
+import { LineEditor } from './line_editor';
 import { CELL_WIDTH } from '../ui/components';
-import Connection from './connection';
+import Connection from '../server/connection';
 import { MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
 import { Item } from '../engine/things/items';
-import { Cursor, Line } from '../../lib/esc';
+import { Cursor, esc, Line } from '../../lib/esc';
+import { debug } from '../../lib/logging';
 
 export interface IState {
   termMode: boolean
@@ -107,10 +108,11 @@ export class Terminal {
   handleTerminalInput(buf: Buffer) {
     if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
+        this.state.stdout.push(this.state.prompt + this.line.value);
+
         const thing = this.interpreter.eval(this.line.value);
 
         if (thing) {
-          this.state.stdout.push(this.state.prompt + this.line.value);
           this.state.stdout.push(thing.name);
 
           if (thing instanceof Item) {
@@ -125,10 +127,7 @@ export class Terminal {
 
       this.switchModes();
     } else if (this.line.insert(buf) && this.view.components.prompt) {
-      this.state.line =
-        Cursor.set(this.view.components.prompt.position) +
-        Line.ClearAfter +
-        this.line.value.replace('\n', '');
+      this.state.line = this.line.value.replace('\n', '');
     }
 
     this.render();
@@ -155,12 +154,13 @@ export class Terminal {
 
   drawCursor() {
     if (!this.view.components.prompt || !this.view.components.room) return;
+
     const cursorUpdate = this.state.termMode
-      ? Cursor.set(this.view.components.prompt.position)
-      : Cursor.setXY(
+      ? esc(Cursor.set(this.view.components.prompt.position.clone().addX(this.line.x + 4)))
+      : esc(Cursor.setXY(
         this.view.components.room.position.x + (this.player.position.x) * CELL_WIDTH,
         this.view.components.room.position.y + this.player.position.y,
-      );
+      ));
 
     this.connection.socket.write(cursorUpdate);
   }

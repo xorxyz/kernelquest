@@ -138,9 +138,9 @@ export const ArrN = (n) => Array(n).fill(0);
 export type a = () => boolean
 
 /** creates a Matrix<T> out of a thunk */
-export const matrixOf = (n: number, fn) =>
-  ArrN(n).map((y) =>
-    ArrN(n).map((_, x) => fn(x, y)));
+export const matrixOf = (w: number, h: number, fn) =>
+  ArrN(h).map((y) =>
+    ArrN(w).map((_, x) => fn(x, y)));
 
 export function coinFlip() {
   return Math.floor(Math.random() * 2) === 0
@@ -174,3 +174,17 @@ export function isNumeric(str: string) {
   // eslint-disable-next-line no-restricted-globals
   return !isNaN(str as any) && !isNaN(parseFloat(str));
 }
+
+export type TakeN<T> = (a: Array<T>) => Array<Array<T>>
+
+/** [ 1, 2, 3, 4 ] -> [[ 1, 2 ],[ 3, 4 ]] */
+export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
+  const i2 = i1 % n;
+  if (i2 === 0) {
+    arr.push([]);
+  }
+
+  arr[i2].push(x);
+
+  return arr;
+}, [[]]);

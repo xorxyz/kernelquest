@@ -6,20 +6,23 @@ export type Layout = Array<string>
 
 export class Room {
   name: string
-  readonly cells: Matrix<Cell>
-  readonly actors: Array<Agent>
+  cells: Matrix<Cell>
+  actors: Array<Agent>
 
   constructor() {
-    this.cells = matrixOf(10, (x, y) => new Cell(x, y));
+    this.cells = matrixOf(16, 10, (x, y) => new Cell(x, y));
   }
 
-  static from(layout: Layout) {
+  static from(layout: Array<string>) {
     const room = new Room();
 
-    room.cells.forEach((row, y) => {
-      row.forEach((cell, x) => {
+    room.cells.forEach((row) => {
+      row.forEach((cell) => {
+        const bg = layout[cell.position.y].slice(
+          cell.position.x, cell.position.x + 2,
+        );
         // eslint-disable-next-line no-param-reassign
-        cell.bg = layout[x][y];
+        cell.bg = bg;
       });
     });
 
@@ -29,7 +32,7 @@ export class Room {
 
 export class EmptyRoom extends Room {}
 
-export const testRoom = Room.from([
+export const otherRoom = Room.from([
   '....................',
   '..........-.........',
   '..🌵................',
@@ -42,15 +45,15 @@ export const testRoom = Room.from([
   '......-.............',
 ]);
 
-export const otherRoom = Room.from([
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
-  '....................',
+export const testRoom = Room.from([
+  '....aA.....................',
+  '..........................',
+  '..........................',
+  '..........AAAAAAAAAAAAAAA........',
+  '..........................',
+  '..........................',
+  '..........................',
+  '..........................',
+  '..........................',
+  '..........................',
 ]);
