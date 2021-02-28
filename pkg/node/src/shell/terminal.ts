@@ -7,8 +7,9 @@ import Connection from '../server/connection';
 import { MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
 import { Item } from '../engine/things/items';
-import { Cursor, esc, Line } from '../../lib/esc';
-import { debug } from '../../lib/logging';
+import { Cursor, esc } from '../../lib/esc';
+
+const REFRESH_RATE = 5000; // CLOCK_MS_DELAY / 4;
 
 export interface IState {
   termMode: boolean
@@ -49,7 +50,7 @@ export class Terminal {
     };
 
     this.interpreter = new Interpreter(this.player.stack);
-    this.timer = setInterval(this.renderRoom.bind(this), CLOCK_MS_DELAY / 4);
+    this.timer = setInterval(this.renderRoom.bind(this), REFRESH_RATE);
 
     this.render();
   }
@@ -108,9 +109,10 @@ export class Terminal {
   handleTerminalInput(buf: Buffer) {
     if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
-        this.state.stdout.push(this.state.prompt + this.line.value);
+        const expr = this.line.value.trim();
+        this.state.stdout.push(this.state.prompt + expr);
 
-        const thing = this.interpreter.eval(this.line.value);
+        const thing = this.interpreter.eval(expr);
 
         if (thing) {
           this.state.stdout.push(thing.name);
@@ -156,7 +158,9 @@ export class Terminal {
     if (!this.view.components.prompt || !this.view.components.room) return;
 
     const cursorUpdate = this.state.termMode
-      ? esc(Cursor.set(this.view.components.prompt.position.clone().addX(this.line.x + 4)))
+      ? esc(Cursor.set(
+        this.view.components.prompt.position.clone().addX(this.line.x + 4),
+      ))
       : esc(Cursor.setXY(
         this.view.components.room.position.x + (this.player.position.x) * CELL_WIDTH,
         this.view.components.room.position.y + this.player.position.y,

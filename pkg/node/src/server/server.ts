@@ -23,12 +23,12 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const you = new Player('john', new WizardJob());
+    const you = new Player(this.engine, 'john', new WizardJob());
 
     const connection = new Connection(you, socket);
     const terminal = new Terminal(id, connection);
 
-    this.engine.actors.push(connection.player);
+    this.engine.room.agents.push(connection.player);
     this.connections.add(connection);
     this.terminals.add(terminal);
 

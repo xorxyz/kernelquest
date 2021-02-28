@@ -87,3 +87,5 @@ export class Program {
     return stack.pop() || null;
   }
 }
+
+export class Environment {}

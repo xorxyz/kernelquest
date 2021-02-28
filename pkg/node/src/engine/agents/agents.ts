@@ -11,7 +11,8 @@ import { Heal, Teleport, Zap, Summon, Goto, Gate, Fire, Spell } from '../magic/s
 import { Health, Stamina, Mana, Wealth } from './stats';
 import { Job, CritterJob, NoviceJob } from './jobs';
 import { Command, Move } from './commands';
-import { Model } from './model';
+import { Room } from '../world/rooms';
+import Engine from '../engine';
 
 export abstract class Being {
   id: string = uuid.v4()
@@ -23,12 +24,20 @@ export abstract class Being {
   stamina: Stamina = new Stamina()
 }
 
+export class AgentModel {
+  room: Room
+
+  constructor(engine: Engine) {
+    this.room = new Proxy(engine.room, {});
+  }
+}
+
 export abstract class Agent extends Being {
   look: Look
   job: Job
 
   name: string
-  model: Model = new Model()
+  model: AgentModel
 
   spells: Array<Spell> = []
 
@@ -42,6 +51,11 @@ export abstract class Agent extends Being {
 
   takeTurn() {
     return this.queue.shift();
+  }
+
+  constructor(engine: Engine) {
+    super();
+    this.model = new AgentModel(engine);
   }
 }
 
@@ -59,8 +73,8 @@ export abstract class Critter extends Agent {
   timer: NodeJS.Timeout
   job = new CritterJob()
 
-  constructor(delayMs: number = 1000) {
-    super();
+  constructor(engine, delayMs: number = 1000) {
+    super(engine);
 
     this.timer = setInterval(() => {
       const direction = getRandomDirection();
@@ -92,11 +106,9 @@ export class Player extends Agent {
     new Summon(),
   ]
 
-  private connection: Connection
-
-  constructor(connection, job) {
-    super();
-    this.connection = connection;
+  constructor(engine: Engine, name: string, job: Job) {
+    super(engine);
+    this.name = name;
     this.job = job;
   }
 }

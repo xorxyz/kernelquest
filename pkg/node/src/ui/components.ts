@@ -70,9 +70,8 @@ export class Axis extends UiComponent {
 export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
-  render() {
-    return testRoom.cells.map((row) =>
-      row.map((cell) => cell.bg).join(''));
+  render({ player }) {
+    return player.model.room.cells.map((r) => r.map((c) => c.render()).join(''));
   }
 }
 
@@ -108,14 +107,11 @@ export class Box extends UiComponent {
   width: number
   private lines: Array<string> = []
 
-  constructor(w, x, y) {
+  constructor(w, x, y, lines: Array<string>) {
     super(x, y);
 
     this.width = w;
-  }
-
-  addLines(lines: Array<string>) {
-    this.lines = [...this.lines, ...lines.map((l) => l.slice(0, this.width))];
+    this.lines = lines.map((l) => l.slice(0, this.width));
   }
 
   render() {

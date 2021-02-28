@@ -1,16 +1,38 @@
 import { Matrix, matrixOf } from '../../../lib/math';
+import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
 import { Cell } from './cells';
 
 export type Layout = Array<string>
 
-export class Room {
+export class Room extends Environment {
   name: string
   cells: Matrix<Cell>
-  actors: Array<Agent>
+  agents: Array<Agent> = []
 
   constructor() {
+    super();
     this.cells = matrixOf(16, 10, (x, y) => new Cell(x, y));
+  }
+
+  add(agent: Agent, x: number, y: number) {
+    this.agents.push(agent);
+    this.move(agent, x, y);
+  }
+
+  remove(agent: Agent) {
+    this.agents.splice(this.agents.findIndex((a) => a === agent));
+  }
+
+  move(agent: Agent, x: number, y: number) {
+    const from = agent.position;
+    const oldCell = this.cells[from.y][from.x];
+    oldCell.agent = null;
+
+    const newCell = this.cells[y][x];
+    newCell.agent = agent;
+
+    agent.position.setXY(x, y);
   }
 
   static from(layout: Array<string>) {
@@ -19,8 +41,9 @@ export class Room {
     room.cells.forEach((row) => {
       row.forEach((cell) => {
         const bg = layout[cell.position.y].slice(
-          cell.position.x, cell.position.x + 2,
+          cell.position.x * 2, cell.position.x * 2 + 2,
         );
+
         // eslint-disable-next-line no-param-reassign
         cell.bg = bg;
       });
@@ -46,14 +69,14 @@ export const otherRoom = Room.from([
 ]);
 
 export const testRoom = Room.from([
-  '....aA.....................',
-  '..........................',
-  '..........................',
-  '..........AAAAAAAAAAAAAAA........',
-  '..........................',
-  '..........................',
-  '..........................',
-  '..........................',
-  '..........................',
-  '..........................',
+  '....--..........................',
+  '................................',
+  '..🌵............................',
+  '....................__..........',
+  '................................',
+  '..........__....................',
+  '................................',
+  '............................__..',
+  '................................',
+  '..__............................',
 ]);

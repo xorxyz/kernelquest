@@ -139,8 +139,8 @@ export type a = () => boolean
 
 /** creates a Matrix<T> out of a thunk */
 export const matrixOf = (w: number, h: number, fn) =>
-  ArrN(h).map((y) =>
-    ArrN(w).map((_, x) => fn(x, y)));
+  ArrN(h).map((rows, y) =>
+    ArrN(w).map((row, x) => fn(x, y)));
 
 export function coinFlip() {
   return Math.floor(Math.random() * 2) === 0

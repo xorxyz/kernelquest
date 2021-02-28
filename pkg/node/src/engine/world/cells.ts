@@ -1,6 +1,6 @@
-import { Agent } from 'http';
 import { Vector } from '../../../lib/math';
 import { Stack } from '../../../lib/stack';
+import { Agent } from '../agents/agents';
 import { Item } from '../things/items';
 
 export class Port {
@@ -19,10 +19,16 @@ export class Cell {
   bg: string
   stack: Stack<Item> = new Stack()
   ports: Array<Port> = Ports()
-  agent?: Agent
+  agent: Agent | null = null
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
     this.bg = '..';
+  }
+
+  render() {
+    return this.agent
+      ? this.agent.look?.bytes || 'XX'
+      : this.bg;
   }
 }
