@@ -81,7 +81,9 @@ export class Scroll extends UiComponent {
   }
 }
 
-const nothing = `${esc(Style.Dim)}nothing`;
+const nothing = `${esc(Style.Dim)}${'nothing    '}${esc(Style.Reset)}`;
+const DF = (p: Player, n: number) =>
+  (p.stack.peekN(n)?.name || nothing).padEnd(10, ' ');
 
 export class Sidebar extends UiComponent {
   render({ player: p }) {
@@ -90,12 +92,11 @@ export class Sidebar extends UiComponent {
       '│ N: John       │',
       '│ P: 🧙Wizard   │',
       '│               │',
-      `│ 4: ${(p.stack.peekN(4)?.value.toString() || nothing).padEnd(15, ' ')}│`,
-      `│ 3: ${(p.stack.peekN(3)?.value.toString() || nothing).padEnd(15, ' ')}│`,
-      `│ 2: ${(p.stack.peekN(2)?.value.toString() || nothing).padEnd(15, ' ')}│`,
-      `│ 1: ${(p.stack.peekN(1)?.value.toString() || nothing).padEnd(15, ' ')}│`,
-      `│ 0: ${(p.stack.peekN(0)?.value.toString() || nothing).padEnd(15, ' ')}│`,
-      '│               │',
+      `│ 4: ${DF(p, 4)}│`,
+      `│ 3: ${DF(p, 3)}│`,
+      `│ 2: ${DF(p, 2)}│`,
+      `│ 1: ${DF(p, 1)}│`,
+      `│ 0: ${DF(p, 0)}│`,
       '│               │',
       '└───────────────┘',
     ];
