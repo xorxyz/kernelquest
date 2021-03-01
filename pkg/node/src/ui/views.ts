@@ -1,5 +1,5 @@
 import { esc, Style } from '../../lib/esc';
-import { Terminal } from '../shell/shell';
+import { Shell } from '../shell/shell';
 import {
   UiComponent,
   Navbar,
@@ -15,9 +15,9 @@ import {
 export abstract class View {
   components: Record<string, UiComponent>
 
-  compile(term: Terminal): string {
+  compile(shell: Shell): string {
     const lines = Object.values(this.components).map((component) =>
-      component.compile(term) + esc(Style.Reset));
+      component.compile(shell) + esc(Style.Reset));
 
     return lines.join('');
   }

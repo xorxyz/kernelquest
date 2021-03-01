@@ -1,4 +1,4 @@
-import { Drop, Move, PickUp } from '../engine/agents/commands';
+import { Command, Drop, SwitchMode } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import Interpreter from './interpreter';
 import { LineEditor } from './line_editor';
@@ -10,7 +10,7 @@ import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../../lib/esc';
 import { ctrl } from './controller';
 
-const REFRESH_RATE = CLOCK_MS_DELAY / 4;
+const REFRESH_RATE = CLOCK_MS_DELAY;
 
 export interface IState {
   spellbook: boolean,
@@ -22,7 +22,7 @@ export interface IState {
 
 const host = process.env.HOST || 'localhost:3000';
 
-export class Terminal {
+export class Shell {
   id: number
   connection: Connection
   interpreter: Interpreter
@@ -61,7 +61,11 @@ export class Terminal {
     };
 
     this.interpreter = new Interpreter(this.player.stack);
-    this.timer = setInterval(this.renderRoom.bind(this), REFRESH_RATE);
+
+    this.timer = setInterval(
+      this.renderRoom.bind(this),
+      REFRESH_RATE,
+    );
 
     this.interpreter.on('spells', () => {
       this.state.spellbook = !this.state.spellbook;
@@ -87,6 +91,10 @@ export class Terminal {
       const command = ctrl(buf);
 
       if (command) {
+        if (command instanceof SwitchMode) {
+          this.switchModes();
+          return;
+        }
         this.connection.player.queue.push(command);
       }
     }

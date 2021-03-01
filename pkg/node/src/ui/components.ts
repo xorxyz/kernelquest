@@ -6,7 +6,7 @@ import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { IState, Terminal } from '../shell/shell';
+import { IState, Shell } from '../shell/shell';
 
 const { Fg, Bg } = Colors;
 
@@ -75,7 +75,7 @@ export class RoomMap extends UiComponent {
 }
 
 export class Scroll extends UiComponent {
-  render({ player: p }: Terminal) {
+  render({ player: p }: Shell) {
     return p.spells.map((spell, i: number) =>
       `${i + 1}: ${spell.command}`.padEnd(10, ' '));
   }
@@ -131,7 +131,7 @@ const Sp = (str) => Points(Bg.Green, str);
 const Mp = (str) => Points(Bg.Blue, str);
 
 export class Stats extends UiComponent {
-  render({ player: p }: Terminal) {
+  render({ player: p }: Shell) {
     return [
       '┌───────────────┐',
       '│ LV: 1         │',
@@ -146,7 +146,7 @@ export class Stats extends UiComponent {
 }
 
 export class Output extends UiComponent {
-  render({ stdout }: Terminal) {
+  render({ stdout }: Shell) {
     return [
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
       ...stdout

@@ -1,3 +1,4 @@
+import { debug } from '../../../lib/logging';
 import { Matrix, matrixOf, Vector } from '../../../lib/math';
 import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
@@ -48,11 +49,13 @@ export class Room extends Environment {
   }
 
   add(agent: Agent, x: number, y: number) {
+    debug('added:', agent.name, 'at:', x, y);
     this.agents.push(agent);
     this.setPosition(agent, x, y);
   }
 
   remove(agent: Agent) {
+    debug('removed:', agent.name, 'from:', agent.model.room.name);
     this.agents.splice(this.agents.findIndex((a) => a === agent));
   }
 
@@ -68,8 +71,8 @@ export class Room extends Environment {
   }
 
   move(agent: Agent, command?: Command) {
-    if (this.collides(agent.nextPosition)) return;
     if (command && command instanceof Move) command.execute(agent);
+    if (this.collides(agent.nextPosition)) return;
 
     const { x, y } = agent.nextPosition;
 
@@ -87,6 +90,10 @@ export class Room extends Environment {
       const command = agent.takeTurn();
 
       this.move(agent, command);
+
+      if (command instanceof Move) return;
+
+      debug('command:', agent.name, 'calls', command);
 
       if (command instanceof Drop) {
         command.item.position.setXY(agent.position.x, agent.position.y);

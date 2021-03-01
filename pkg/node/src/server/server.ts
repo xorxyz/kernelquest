@@ -1,7 +1,7 @@
 import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
 import Engine from '../engine/engine';
-import { Terminal } from '../shell/shell';
+import { Shell } from '../shell/shell';
 import { Player } from '../engine/agents/agents';
 import { WizardJob } from '../engine/agents/jobs';
 
@@ -12,7 +12,7 @@ export default class GameServer {
   private engine: Engine
   private tcpServer: Server
   private connections: Set<Connection> = new Set()
-  private terminals: Set<Terminal> = new Set()
+  private shells: Set<Shell> = new Set()
 
   constructor(engine: Engine) {
     this.engine = engine;
@@ -25,13 +25,13 @@ export default class GameServer {
     const id = this.i++;
     const player = new Player(this.engine, 'john', new WizardJob());
     const connection = new Connection(player, socket);
-    const terminal = new Terminal(id, connection);
+    const shell = new Shell(id, connection);
 
     this.engine.rooms[0].add(connection.player, 4, 4);
     this.connections.add(connection);
-    this.terminals.add(terminal);
+    this.shells.add(shell);
 
-    socket.on('data', terminal.handleInput.bind(terminal));
+    socket.on('data', shell.handleInput.bind(shell));
     socket.on('disconnect', () => {
       this.connections.delete(connection);
     });

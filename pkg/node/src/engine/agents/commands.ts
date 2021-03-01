@@ -1,7 +1,6 @@
 import { Agent } from './agents';
 import { Item } from '../things/items';
-import { Vector } from '../../../lib/math';
-import { Terminal } from '../../shell/shell';
+import { Shell } from '../../shell/shell';
 
 export abstract class Command {
   abstract execute(a, e): Boolean;
@@ -60,8 +59,8 @@ export class PickUp extends Command {
 }
 
 export class SwitchMode extends Command {
-  execute(terminal: Terminal) {
-    terminal.switchModes();
+  execute(shell: Shell) {
+    shell.switchModes();
     return true;
   }
 }
