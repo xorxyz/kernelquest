@@ -1,7 +1,7 @@
 import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
 import Engine from '../engine/engine';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from '../shell/shell';
 import { Player } from '../engine/agents/agents';
 import { WizardJob } from '../engine/agents/jobs';
 
@@ -23,12 +23,11 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const you = new Player(this.engine, 'john', new WizardJob());
-
-    const connection = new Connection(you, socket);
+    const player = new Player(this.engine, 'john', new WizardJob());
+    const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
 
-    this.engine.room.agents.push(connection.player);
+    this.engine.rooms[0].add(connection.player, 4, 4);
     this.connections.add(connection);
     this.terminals.add(terminal);
 
@@ -36,8 +35,6 @@ export default class GameServer {
     socket.on('disconnect', () => {
       this.connections.delete(connection);
     });
-
-    you.position.setXY(4, 4);
   }
 
   listen(...args): void {

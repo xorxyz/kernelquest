@@ -34,7 +34,7 @@ export class AgentModel {
   room: Room
 
   constructor(engine: Engine) {
-    this.room = new Proxy(engine.room, {});
+    this.room = new Proxy(engine.rooms[0], {});
   }
 }
 

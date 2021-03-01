@@ -1,6 +1,7 @@
 import { Agent } from './agents';
 import { Item } from '../things/items';
 import { Vector } from '../../../lib/math';
+import { Terminal } from '../../shell/shell';
 
 export abstract class Command {
   abstract execute(a, e): Boolean;
@@ -52,14 +53,15 @@ export class Drop extends Command {
 }
 
 export class PickUp extends Command {
-  position: Vector
-  constructor(position: Vector) {
-    super();
-    this.position = position;
-  }
-
   execute(agent: Agent, item: Item) {
     agent.items.push(item);
+    return true;
+  }
+}
+
+export class SwitchMode extends Command {
+  execute(terminal: Terminal) {
+    terminal.switchModes();
     return true;
   }
 }

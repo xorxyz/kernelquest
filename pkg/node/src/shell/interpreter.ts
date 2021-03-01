@@ -87,6 +87,7 @@ export default class Interpreter extends EventEmitter {
     const tokens = tokenize(expr);
     debug('tokens:', tokens);
 
+    if (expr === 'spells') this.emit('spells');
     if (expr === 't') operators.t(this.stack);
     if (expr === 'f') operators.f(this.stack);
     if (tokens.length === 1 && isNumeric(tokens[0])) {

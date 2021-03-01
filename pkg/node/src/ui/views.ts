@@ -1,5 +1,5 @@
 import { esc, Style } from '../../lib/esc';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from '../shell/shell';
 import {
   UiComponent,
   Navbar,

@@ -8,10 +8,12 @@ import { MainView } from '../ui/views';
 import { Keys, Signals } from '../../lib/constants';
 import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../../lib/esc';
+import { ctrl } from './controller';
 
 const REFRESH_RATE = CLOCK_MS_DELAY / 4;
 
 export interface IState {
+  spellbook: boolean,
   termMode: boolean
   prompt: string,
   line: string,
@@ -27,6 +29,7 @@ export class Terminal {
   state: IState
   line: LineEditor = new LineEditor()
   view: MainView = new MainView()
+  stdout: Array<string>
   private timer: NodeJS.Timeout
 
   get player() {
@@ -36,7 +39,15 @@ export class Terminal {
   constructor(id: number, connection: Connection) {
     this.id = id;
     this.connection = connection;
+    this.stdout = [
+      `xor/tcp (${host}) (tty${id})`,
+      'login: john',
+      'password:',
+      'Last login: 2038-01-01',
+      'Welcome.',
+    ];
     this.state = {
+      spellbook: true,
       termMode: false,
       prompt: '> ',
       line: '',
@@ -51,6 +62,10 @@ export class Terminal {
 
     this.interpreter = new Interpreter(this.player.stack);
     this.timer = setInterval(this.renderRoom.bind(this), REFRESH_RATE);
+
+    this.interpreter.on('spells', () => {
+      this.state.spellbook = !this.state.spellbook;
+    });
 
     this.render();
   }
@@ -69,53 +84,26 @@ export class Terminal {
     if (this.state.termMode) {
       this.handleTerminalInput(buf);
     } else {
-      this.handleGameInput(buf);
+      const command = ctrl(buf);
+
+      if (command) {
+        this.connection.player.queue.push(command);
+      }
     }
 
     this.render();
-  }
-
-  handleGameInput(buf: Buffer) {
-    let command;
-
-    switch (buf.toString('hex')) {
-      case (Keys.ENTER):
-        this.switchModes();
-        break;
-      case (Keys.ARROW_UP):
-        command = new Move(0, -1);
-        break;
-      case (Keys.ARROW_RIGHT):
-        command = new Move(1, 0);
-        break;
-      case (Keys.ARROW_DOWN):
-        command = new Move(0, 1);
-        break;
-      case (Keys.ARROW_LEFT):
-        command = new Move(-1, 0);
-        break;
-      case (Keys.LOWER_P):
-        command = new PickUp(this.player.position.clone());
-        break;
-      default:
-        break;
-    }
-
-    if (command) {
-      this.connection.player.queue.push(command);
-    }
   }
 
   handleTerminalInput(buf: Buffer) {
     if (buf.toString('hex') === Keys.ENTER) {
       if (this.line.value) {
         const expr = this.line.value.trim();
-        this.state.stdout.push(this.state.prompt + expr);
-
         const thing = this.interpreter.eval(expr);
 
+        this.stdout.push(this.state.prompt + expr);
+
         if (thing) {
-          this.state.stdout.push(thing.name);
+          this.stdout.push(thing.name);
 
           if (thing instanceof Item) {
             thing.position.copy(this.connection.player.position);

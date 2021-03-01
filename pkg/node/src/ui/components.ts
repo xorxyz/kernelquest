@@ -6,7 +6,7 @@ import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { IState, Terminal } from '../shell/terminal';
+import { IState, Terminal } from '../shell/shell';
 
 const { Fg, Bg } = Colors;
 
@@ -124,9 +124,11 @@ export class Box extends UiComponent {
   }
 }
 
-const Hp = (str) => esc(Style.in(Fg.Black, Bg.Red, str)) + esc(Style.Reset);
-const Sp = (str) => esc(Style.in(Fg.Black, Bg.Green, str)) + esc(Style.Reset);
-const Mp = (str) => esc(Style.in(Fg.Black, Bg.Blue, str)) + esc(Style.Reset);
+const Points = (bg, str) =>
+  esc(Style.in(Fg.Black, bg, str.padEnd(10, ' '))) + esc(Style.Reset);
+const Hp = (str) => Points(Bg.Red, str);
+const Sp = (str) => Points(Bg.Green, str);
+const Mp = (str) => Points(Bg.Blue, str);
 
 export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
@@ -134,9 +136,9 @@ export class Stats extends UiComponent {
       '┌───────────────┐',
       '│ LV: 1         │',
       '│ XP: 0 of 100  │',
-      `│ HP: ${Hp('5 of 5')}    │`,
-      `│ SP: ${Sp('5 of 5')}    │`,
-      `│ MP: ${Mp('5 of 5')}    │`,
+      `│ HP: ${Hp('1 of 100')}│`,
+      `│ SP: ${Sp('10 of 100')}│`,
+      `│ MP: ${Mp('100 of 100')}│`,
       `│ GP: ${p.wealth.value}         │`,
       `${'└'.padEnd(16, '─')}┘`,
     ];
@@ -144,10 +146,10 @@ export class Stats extends UiComponent {
 }
 
 export class Output extends UiComponent {
-  render({ state }: Terminal) {
+  render({ stdout }: Terminal) {
     return [
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
-      ...state.stdout
+      ...stdout
         .slice(-N_OF_LINES)
         .map((line) =>
           `│ ${(line || '').padEnd(LINE_LENGTH - 4, ' ')} │`),
