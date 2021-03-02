@@ -6,8 +6,8 @@
     "start": "nodemon",
     "test": "jest"
   },
-  "author": "kareniel",
-  "license": "UNLICENSED",
+  "author": "Jonathan Dupré <jonathan@diagonal.sh>",
+  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^26.0.19",
     "@types/node": "^13.13.31",
