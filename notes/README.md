@@ -75,3 +75,4 @@ documents i want to keep track of:
 - [Permacomputing](http://viznut.fi/texts-en/permacomputing.html)
 - [Appropriate technology](https://en.wikipedia.org/wiki/Appropriate_technology)
 - [Small is beautiful](https://web.archive.org/web/20141014171926/http://www.ditext.com/schumacher/small/small.html)
+- [The Reality and Diversity of Buddhist Economics](http://technologygovernance.eu/files/main//2016080312130303.pdf)
