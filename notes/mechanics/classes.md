@@ -1,5 +1,7 @@
 # mechanics of character classes
 
+> There are many kinds of computational processes. Some produce a final definitive result, some improve their result gradually. Some yield results very quickly, some need more time.
+
 - 🧑‍🌾 farmer: grit, hard-work, determination
 - 🧚 healer: friendship, goodness, sharing
 - 🧙 wizard: wisdom, knowledge, philosophy

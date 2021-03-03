@@ -71,3 +71,7 @@ documents i want to keep track of:
 - [Problem-based learning](https://en.wikipedia.org/wiki/Problem-based_learning)
 - [Bullshit web](https://pxlnv.com/blog/bullshit-web/)
 - [Slow Thought](https://aeon.co/essays/take-your-time-the-seven-pillars-of-a-slow-thought-manifesto)
+- [sdf.org](https://sdf.org/)
+- [Permacomputing](http://viznut.fi/texts-en/permacomputing.html)
+- [Appropriate technology](https://en.wikipedia.org/wiki/Appropriate_technology)
+- [Small is beautiful](https://web.archive.org/web/20141014171926/http://www.ditext.com/schumacher/small/small.html)

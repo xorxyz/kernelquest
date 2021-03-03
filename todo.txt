@@ -1,0 +1,10 @@
+implement npc reactions
+keep disconnections from breaking the server
+save state
+load state
+implement zones
+teleport from room to room 
+travel from room to room
+implement gemini client
+access project documentation from inside the game
+"the map" is a gemini site
