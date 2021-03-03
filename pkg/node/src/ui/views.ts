@@ -1,4 +1,6 @@
-import { esc, Style } from '../../lib/esc';
+import { esc, Screen, Style } from '../../lib/esc';
+import { debug } from '../../lib/logging';
+import { CLOCK_MS_DELAY } from '../engine/engine';
 import { Shell } from '../shell/shell';
 import {
   UiComponent,
@@ -9,8 +11,10 @@ import {
   Stats,
   Output,
   Input,
-  Scroll,
+  Speech,
 } from './components';
+
+const CLEAR_RATE = CLOCK_MS_DELAY;
 
 export abstract class View {
   components: Record<string, UiComponent>
@@ -19,23 +23,32 @@ export abstract class View {
     const lines = Object.values(this.components).map((component) =>
       component.compile(shell) + esc(Style.Reset));
 
-    return lines.join('');
+    const clear = shell.connection.player.model.room.round % CLEAR_RATE === 0
+      ? esc(Screen.Clear)
+      : '';
+
+    return clear + lines.join('');
   }
 }
 
-export const components = {
+export const components: Record<string, UiComponent> = {
   // top
   nav: new Navbar(1, 1),
   // left side
   profile: new Sidebar(1, 3),
-  // spells: new Scroll(3, 5),
   stats: new Stats(1, 15),
   // right side
-  axis: new Axis(23, 3),
-  room: new RoomMap(25, 4),
   output: new Output(20, 15),
   prompt: new Input(20, 21),
 };
+
+const axis = new Axis(23, 3);
+const room = new RoomMap(axis.position.x + 1, axis.position.y + 1);
+const speech = new Speech(room.position.x, room.position.y);
+
+components.axis = axis;
+components.room = room;
+components.speech = speech;
 
 export class MainView extends View {
   components: Record<string, UiComponent> = components

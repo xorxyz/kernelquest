@@ -68,3 +68,6 @@ documents i want to keep track of:
 - [La veille intégrée](http://www.21siecle.quebec/wp-content/uploads/Cartier_veille.pdf)
 - [Seek-Whence](https://cogsci.indiana.edu/pub/seek-whence.pdf)
 - [The Hearsay-II Speech-Understanding System: Integrating Knowledge to Resolve Uncertainty](https://www.cs.uni.edu/~wallingf/teaching/162/readings/hearsay-ii.pdf)
+- [Problem-based learning](https://en.wikipedia.org/wiki/Problem-based_learning)
+- [Bullshit web](https://pxlnv.com/blog/bullshit-web/)
+- [Slow Thought](https://aeon.co/essays/take-your-time-the-seven-pillars-of-a-slow-thought-manifesto)

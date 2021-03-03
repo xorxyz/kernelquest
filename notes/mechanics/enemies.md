@@ -19,13 +19,13 @@ Software bugs
 ===
 
 🦟 Mosquito
-Small mistakes that add up over time. 
+Small mistakes that add up over time.
+
+🕷️ Spider
+Entranched ideas and bike shedding. 
 
 🐀 Rat
 Result of accumulated debt.
-
-🕷️ Spider
-Result of entranched ideas and bike shedding.
 
 🦇 Bat 
 Results of old legacies.

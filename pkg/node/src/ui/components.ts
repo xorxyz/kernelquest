@@ -167,3 +167,19 @@ export class Input extends UiComponent {
     ];
   }
 }
+
+export class Speech extends UiComponent {
+  render({ player }: Shell) {
+    return Array.from(player.model.room.messages)
+      .map(([agent, message]) => [
+        esc(Style.Invert),
+        esc(Cursor.set(
+          this.position.clone()
+            .addX(agent.position.x * 2)
+            .subX(Math.floor(message.text.length / 2))
+            .addY(agent.position.y - 1),
+        )),
+        message.text,
+      ].join(''));
+  }
+}

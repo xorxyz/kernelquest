@@ -1,4 +1,4 @@
-import { Command, Drop, SwitchMode } from '../engine/agents/commands';
+import { Drop, SwitchMode } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import Interpreter from './interpreter';
 import { LineEditor } from './line_editor';
@@ -10,7 +10,7 @@ import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../../lib/esc';
 import { ctrl } from './controller';
 
-const REFRESH_RATE = CLOCK_MS_DELAY;
+export const REFRESH_RATE = CLOCK_MS_DELAY;
 
 export interface IState {
   spellbook: boolean,
@@ -63,7 +63,7 @@ export class Shell {
     this.interpreter = new Interpreter(this.player.stack);
 
     this.timer = setInterval(
-      this.renderRoom.bind(this),
+      this.render.bind(this),
       REFRESH_RATE,
     );
 
@@ -109,6 +109,7 @@ export class Shell {
         const thing = this.interpreter.eval(expr);
 
         this.stdout.push(this.state.prompt + expr);
+        this.player.model.room.say(this.player, expr);
 
         if (thing) {
           this.stdout.push(thing.name);
@@ -129,15 +130,6 @@ export class Shell {
     }
 
     this.render();
-  }
-
-  renderRoom() {
-    if (!this.view.components.room) return;
-    this.connection.socket.write(
-      this.view.components.room.compile(this),
-    );
-
-    this.drawCursor();
   }
 
   render() {

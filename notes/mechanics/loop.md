@@ -1,8 +1,9 @@
 # main game loop
 
-1. [sell loot,] gather information and supplies in town
+1. gather supplies and information in town
 2. traverse the wilderness
 3. complete a dungeon run
+4. survive, return to town
 
 # towns 
 
@@ -15,12 +16,11 @@
 
 1. explore
 2. avoid traps & encounters
-3. probe hidden information
+3. scan the environment for signs and symbols
 
 # dungeon
 
-1. survive
-2. complete challenges
-3. get rich
+1. complete challenges
+2. gather riches
+3. survive
 4. escape
-

@@ -140,7 +140,7 @@
 🏹 bow 
 
 # worn
-🧣 scarf 
+🧣 scarf
 🧤 gloves
 🧦 socks
 🥾 boots

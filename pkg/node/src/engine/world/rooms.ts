@@ -7,7 +7,14 @@ import { Block } from '../things/blocks';
 import { Item } from '../things/items';
 import { Cell } from './cells';
 
+const MESSAGE_TTL = 80;
+
 export type Layout = Array<string>
+
+export interface IMessage {
+  text: string,
+  countdown: number
+}
 
 export class Room extends Environment {
   name: string
@@ -17,7 +24,9 @@ export class Room extends Environment {
   agents: Array<Agent> = []
   items: Array<Item> = []
 
-  private round: number
+  messages: Map<Agent, IMessage> = new Map()
+
+  round: number
 
   static from(layout: Array<string>) {
     const room = new Room();
@@ -39,6 +48,13 @@ export class Room extends Environment {
   constructor() {
     super();
     this.cells = matrixOf(16, 10, (x, y) => new Cell(x, y));
+  }
+
+  say(agent: Agent, message: string) {
+    this.messages.set(agent, {
+      text: message,
+      countdown: MESSAGE_TTL,
+    });
   }
 
   collides(v: Vector) {
@@ -84,6 +100,14 @@ export class Room extends Environment {
   update(round: number) {
     this.round = round;
 
+    this.messages.forEach((message, agent) => {
+      // eslint-disable-next-line no-param-reassign
+      message.countdown--;
+      if (message.countdown < 1) {
+        this.messages.delete(agent);
+      }
+    });
+
     this.agents.forEach((agent) => {
       if (!agent.queue.length) return;
 
@@ -113,19 +137,6 @@ export class Room extends Environment {
 }
 
 export class EmptyRoom extends Room {}
-
-export const otherRoom = Room.from([
-  '....................',
-  '..........-.........',
-  '..🌵................',
-  '....................',
-  '.-..................',
-  '....................',
-  '....................',
-  '...............-....',
-  '....................',
-  '......-.............',
-]);
 
 export const testRoom = Room.from([
   '....--..........................',
