@@ -1,7 +1,7 @@
 # xor
 
 xor is a free computer security MUD system. 
-it was made to be run on a public access unix system or a bbs.
+it was made to be run on a public access bsd system.
 
 packages:
 

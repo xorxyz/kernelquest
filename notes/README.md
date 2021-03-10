@@ -76,3 +76,5 @@ documents i want to keep track of:
 - [Appropriate technology](https://en.wikipedia.org/wiki/Appropriate_technology)
 - [Small is beautiful](https://web.archive.org/web/20141014171926/http://www.ditext.com/schumacher/small/small.html)
 - [The Reality and Diversity of Buddhist Economics](http://technologygovernance.eu/files/main//2016080312130303.pdf)
+- [Motivations of Play in MMORPGs](http://www.nickyee.com/daedalus/motivations.pdf)
+- [Staapl](http://zwizwa.be/staapl/staapl.html)
