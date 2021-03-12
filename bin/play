@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # run the game client
 
 set -e
@@ -12,6 +12,6 @@ do
   stty "$save_state"
   clear;
   printf 'connecting...'; 
-  sleep 1;
+  sleep 2;
 done
 
