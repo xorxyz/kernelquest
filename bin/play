@@ -2,15 +2,16 @@
 # run the game client
 
 set -e
-stty raw -echo; 
+save_state=$(stty -g)
+stty raw -echo;
 clear;
 
 while true; 
 do 
   nc -G 1 localhost 3000 || printf 'oops!'; 
+  stty "$save_state"
   clear;
   printf 'connecting...'; 
   sleep 1;
 done
 
-stty sane;
