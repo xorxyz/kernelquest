@@ -6,7 +6,7 @@ import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { IState, Shell } from '../shell/shell';
+import { IState, Terminal } from '../shell/terminal';
 
 const { Fg, Bg } = Colors;
 
@@ -35,6 +35,7 @@ export abstract class UiComponent {
     const { x, y } = this.position;
 
     return this.style + this.render(props)
+      // .map((a) => { console.log(a); return a; })
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
@@ -75,7 +76,7 @@ export class RoomMap extends UiComponent {
 }
 
 export class Scroll extends UiComponent {
-  render({ player: p }: Shell) {
+  render({ player: p }: Terminal) {
     return p.spells.map((spell, i: number) =>
       `${i + 1}: ${spell.command}`.padEnd(10, ' '));
   }
@@ -131,13 +132,13 @@ const Sp = (str) => Points(Bg.Green, str);
 const Mp = (str) => Points(Bg.Blue, str);
 
 export class Stats extends UiComponent {
-  render({ player: p }: Shell) {
+  render({ player: p }: Terminal) {
     return [
       '┌───────────────┐',
-      '│ LV: 1         │',
-      '│ XP: 0 of 100  │',
-      `│ HP: ${Hp('1 of 100')}│`,
-      `│ SP: ${Sp('10 of 100')}│`,
+      '│ LV:   1 of 100│',
+      '│ XP:   0 of 100│',
+      `│ HP: ${Hp('  1 of 100')}│`,
+      `│ SP: ${Sp(' 10 of 100')}│`,
       `│ MP: ${Mp('100 of 100')}│`,
       `│ GP: ${p.wealth.value}         │`,
       `${'└'.padEnd(16, '─')}┘`,
@@ -146,7 +147,7 @@ export class Stats extends UiComponent {
 }
 
 export class Output extends UiComponent {
-  render({ stdout }: Shell) {
+  render({ stdout }: Terminal) {
     return [
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
       ...stdout
@@ -169,7 +170,7 @@ export class Input extends UiComponent {
 }
 
 export class Speech extends UiComponent {
-  render({ player }: Shell) {
+  render({ player }: Terminal) {
     return Array.from(player.model.room.messages)
       .map(([agent, message]) => [
         esc(Style.Invert),

@@ -1,6 +1,15 @@
 import { Agent } from './agents';
 import { Item } from '../things/items';
-import { Shell } from '../../shell/shell';
+import { Terminal } from '../../shell/terminal';
+import { Vector } from '../../../lib/math';
+import { debug } from '../../../lib/logging';
+
+const directions = [
+  new Vector(0, -1),
+  new Vector(1, 0),
+  new Vector(0, 1),
+  new Vector(-1, 0),
+];
 
 export abstract class Command {
   abstract execute(a, e): Boolean;
@@ -22,6 +31,32 @@ export class Move extends Command {
   }
 }
 
+export class Drag extends Command {
+  x: number
+  y: number
+
+  constructor(x: number, y: number) {
+    super();
+    this.x = x;
+    this.y = y;
+  }
+
+  execute(agent: Agent) {
+    agent.velocity.setXY(this.x, this.y);
+    return true;
+  }
+}
+
+export class Rotate extends Command {
+  execute(agent: Agent) {
+    const { x, y } = agent.facing;
+    const idx = directions.findIndex((d) => d.x === x && d.y === y);
+    const nextIndex = idx === 3 ? 0 : idx + 1;
+    agent.facing.copy(directions[nextIndex]);
+    return true;
+  }
+}
+
 export class Say extends Command {
   message: string
 
@@ -36,14 +71,27 @@ export class Say extends Command {
 }
 
 export class Drop extends Command {
-  item: Item
+  item: Item|null
 
-  constructor(item: Item) {
+  constructor(item: Item|null) {
     super();
     this.item = item;
   }
 
-  execute(agent, items: Array<Item>) {
+  execute(agent:Agent, items: Array<Item>) {
+    if (agent.dragging) {
+      // const cell = agent.model.room.cells[agent.dragging.position.y][agent.dragging.position.x];
+      // cell.stack.push(agent.dragging);
+      debug(agent.model.room.cells[agent.dragging.position.y][agent.dragging.position.x]);
+      agent.drag(agent.facing, null);
+      return true;
+    }
+
+    if (!this.item) {
+      return true;
+    }
+
+    this.item.position.setXY(agent.position.x, agent.position.y);
     const idx = agent.items.findIndex((x) => x === this.item);
     agent.items.splice(idx);
     items.push(this.item);
@@ -59,8 +107,14 @@ export class PickUp extends Command {
 }
 
 export class SwitchMode extends Command {
-  execute(shell: Shell) {
-    shell.switchModes();
+  execute(terminal: Terminal) {
+    terminal.switchModes();
+    return true;
+  }
+}
+
+export class PrintInventory extends Command {
+  execute() {
     return true;
   }
 }

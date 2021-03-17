@@ -42,6 +42,7 @@ export class Vector {
     return this;
   }
 
+  /** copy the xy from a given vector */
   copy(v: Vector) {
     this.x = v.x;
     this.y = v.y;

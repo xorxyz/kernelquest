@@ -8,6 +8,17 @@
 
 # data types
 
+```
+domain == 1 or more shards
+shard  == 64 zones
+zone   == 32 rooms
+room   == 16 rows x 10 cols
+col    == 10 cells
+row    == 16 cells
+cell   == 2 bytes
+char   == 1 byte
+```
+
 1. simple: 
   1. boolean: 00 01
   2. integers: 00 01 03 1F FF (0-255)

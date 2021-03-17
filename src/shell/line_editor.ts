@@ -19,19 +19,17 @@ export class LineEditor {
   }
 
   /* returns true if input box needs an update */
-  insert(buf: Buffer): boolean {
-    const hex = buf.toString('hex');
-
-    if (hex === Keys.BACKSPACE) return this.backspace();
-    if (hex === Keys.ARROW_LEFT) return this.moveLeft();
-    if (hex === Keys.ARROW_RIGHT) return this.moveRight();
+  insert(str: string): boolean {
+    if (str === Keys.BACKSPACE) return this.backspace();
+    if (str === Keys.ARROW_LEFT) return this.moveLeft();
+    if (str === Keys.ARROW_RIGHT) return this.moveRight();
 
     /* catch all other ctrl sequences */
-    if (hex.startsWith('1b')) return false;
+    if (str.startsWith('1b')) return false;
 
     if (this.line.length === LINE_LENGTH - 6) return false;
 
-    const char = buf.toString();
+    const char = String.fromCodePoint(Number.parseInt(str, 16));
     const chars = this.line.split('');
     const { x } = this.cursor;
 

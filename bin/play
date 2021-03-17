@@ -3,15 +3,14 @@
 
 set -e
 save_state=$(stty -g)
-stty raw -echo;
-clear;
 
 while true; 
-do 
-  nc -G 1 localhost 3000 || printf 'oops!'; 
+do
+  stty raw -echo
+  nc -G 1 localhost 3000 || printf 'oops!'
   stty "$save_state"
-  clear;
-  printf 'connecting...'; 
-  sleep 2;
+  clear
+  printf 'connecting...'
+  sleep 2
 done
 

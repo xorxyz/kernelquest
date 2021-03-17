@@ -29,6 +29,6 @@ export class Cell {
   render() {
     return this.agent
       ? this.agent.look?.bytes || 'XX'
-      : this.bg;
+      : this.stack.peek()?.look.bytes || this.bg;
   }
 }

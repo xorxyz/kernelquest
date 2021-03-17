@@ -11,9 +11,10 @@
 🎯 goal
 
 # paths
-🧑‍🌾 worker
-🧝 scout
-🧚 healer
+👼 cherub
+🧑‍🌾 farmer
+🧝 elf
+🧚 fairy
 🧙 wizard
 
 # time
@@ -137,7 +138,7 @@
 🗡 dagger
 ⛏ pick
 🪓 axe
-🏹 bow 
+🏹 bow
 
 # worn
 🧣 scarf

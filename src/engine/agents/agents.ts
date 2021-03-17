@@ -1,17 +1,15 @@
-/*
- * living entities are called actors
- */
 import * as uuid from 'uuid';
 import { Stack } from '../../../lib/stack';
 import { Vector, getRandomDirection } from '../../../lib/math';
 import { Look, looks } from '../visuals/looks';
-import { Item } from '../things/items';
+import { Item, KeyItem } from '../things/items';
 import { Spell } from '../magic/spells';
 import { Health, Stamina, Mana, Wealth } from './stats';
 import { Job, CritterJob, NoviceJob } from './jobs';
 import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
+import { debug } from '../../../lib/logging';
 
 export abstract class Being {
   id: string = uuid.v4()
@@ -53,6 +51,8 @@ export abstract class Agent extends Being {
   mana: Mana = new Mana()
   wealth: Wealth = new Wealth()
 
+  facing: Vector = new Vector(0, 1)
+  dragging: Item | null = null
   items: Array<Item> = []
 
   constructor(engine: Engine) {
@@ -62,6 +62,11 @@ export abstract class Agent extends Being {
 
   takeTurn() {
     return this.queue.shift();
+  }
+
+  drag(direction: Vector, item: Item|null) {
+    this.facing = direction;
+    this.dragging = item;
   }
 }
 
@@ -118,4 +123,9 @@ export class Sheep extends Critter {
 
 export class Tutor extends Npc {
   name = 'Tutor'
+}
+
+export class Farmer extends Npc {
+  name = 'farmer'
+  look = looks.farmer
 }

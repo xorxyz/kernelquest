@@ -5,7 +5,7 @@ import { Player } from '../engine/agents/agents';
 
 export default class Connection {
   player: Player
-  socket: Socket
+  socket: Socket | null
 
   constructor(player: Player, socket: Socket) {
     this.socket = socket;
@@ -17,7 +17,8 @@ export default class Connection {
   }
 
   end() {
-    this.socket.end();
+    this.socket?.end();
+    this.socket = null;
   }
 
   handleExit() {

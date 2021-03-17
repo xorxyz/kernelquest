@@ -1,7 +1,6 @@
 import { esc, Screen, Style } from '../../lib/esc';
-import { debug } from '../../lib/logging';
 import { CLOCK_MS_DELAY } from '../engine/engine';
-import { Shell } from '../shell/shell';
+import { Terminal } from '../shell/terminal';
 import {
   UiComponent,
   Navbar,
@@ -19,11 +18,11 @@ const CLEAR_RATE = CLOCK_MS_DELAY;
 export abstract class View {
   components: Record<string, UiComponent>
 
-  compile(shell: Shell): string {
+  compile(terminal: Terminal): string {
     const lines = Object.values(this.components).map((component) =>
-      component.compile(shell) + esc(Style.Reset));
+      component.compile(terminal) + esc(Style.Reset));
 
-    const clear = shell.connection.player.model.room.round % CLEAR_RATE === 0
+    const clear = terminal.connection.player.model.room.round % CLEAR_RATE === 0
       ? esc(Screen.Clear)
       : '';
 
