@@ -2,8 +2,8 @@
  * actors have stats
  */
 export abstract class Stat {
-  value: number = 0
-  cap: number = 99999999
+  value: number = 100
+  cap: number = 100
 
   increase(amount: number) {
     this.value = Math.min(this.value + amount, this.cap);

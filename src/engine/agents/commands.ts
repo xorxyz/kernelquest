@@ -26,6 +26,8 @@ export class Move extends Command {
   }
 
   execute(agent: Agent) {
+    if (!agent.stamina) return false;
+    agent.stamina.decrease(1);
     agent.velocity.setXY(this.x, this.y);
     return true;
   }

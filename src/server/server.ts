@@ -24,7 +24,7 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const player = new Player(this.engine, 'noob', new CherubJob());
+    const player = new Player(this.engine, 'john', new WizardJob());
     const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
 

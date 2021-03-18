@@ -3,6 +3,7 @@
  * - input fields - edit lines before before evaluating them as expressions
  */
 import { esc, Cursor, Style, Colors } from '../../lib/esc';
+import { debug } from '../../lib/logging';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
@@ -125,11 +126,20 @@ export class Box extends UiComponent {
   }
 }
 
-const Points = (bg, str) =>
-  esc(Style.in(Fg.Black, bg, str.padEnd(10, ' '))) + esc(Style.Reset);
-const Hp = (str) => Points(Bg.Red, str);
-const Sp = (str) => Points(Bg.Green, str);
-const Mp = (str) => Points(Bg.Blue, str);
+const Points = (bg, n) => {
+  const i = Math.floor(n / 10);
+  debug(i);
+  const str = `${n} of 100`.padStart(10, ' ');
+  return (
+    esc(Style.in(Fg.Black, bg, str.slice(0, i))) +
+    esc(Style.in(Fg.White, Bg.Black, str.slice(i))) +
+    esc(Style.Reset)
+  );
+};
+
+const Hp = (n) => Points(Bg.Red, n);
+const Sp = (n) => Points(Bg.Green, n);
+const Mp = (n) => Points(Bg.Blue, n);
 
 export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
@@ -137,10 +147,10 @@ export class Stats extends UiComponent {
       '┌───────────────┐',
       '│ LV:   1 of 100│',
       '│ XP:   0 of 100│',
-      `│ HP: ${Hp('  1 of 100')}│`,
-      `│ SP: ${Sp(' 10 of 100')}│`,
-      `│ MP: ${Mp('100 of 100')}│`,
-      `│ GP: ${p.wealth.value}         │`,
+      `│ HP: ${Hp(p.health.value)}│`,
+      `│ SP: ${Sp(p.stamina.value)}│`,
+      `│ MP: ${Mp(p.mana.value)}│`,
+      `│ GP: ${p.wealth.value}       │`,
       `${'└'.padEnd(16, '─')}┘`,
     ];
   }

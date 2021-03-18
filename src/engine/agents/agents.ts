@@ -5,7 +5,7 @@ import { Look, looks } from '../visuals/looks';
 import { Item } from '../things/items';
 import { Spell } from '../magic/spells';
 import { Health, Stamina, Mana, Wealth } from './stats';
-import { Job, CritterJob, NoviceJob } from './jobs';
+import { Job, NoviceJob } from './jobs';
 import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
@@ -23,6 +23,8 @@ export abstract class Being {
 
   health: Health = new Health()
   stamina: Stamina = new Stamina()
+  mana: Mana = new Mana()
+  wealth: Wealth = new Wealth()
 
   get nextPosition() {
     return new Vector(
@@ -53,9 +55,6 @@ export abstract class Agent extends Being {
 
   queue: Array<Command> = []
   stack: Stack<Item> = new Stack()
-
-  mana: Mana = new Mana()
-  wealth: Wealth = new Wealth()
 
   facing: Vector = new Vector(0, 1)
   dragging: Item | null = null
