@@ -78,6 +78,7 @@ export class Room extends Environment {
   }
 
   setAgentPosition(agent: Agent, x: number, y: number) {
+    if (x < 0 || x > 15 || y < 0 || y > 9) return;
     const from = agent.position;
     const oldCell = this.cells[from.y][from.x];
     const newCell = this.cells[y][x];

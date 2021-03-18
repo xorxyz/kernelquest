@@ -1,5 +1,5 @@
 /*
- * Actors can have a job, gain xp and level up.
+ * Agents can have a job, gain xp and level up.
  */
 
 import { Look, looks } from '../visuals/looks';
@@ -9,6 +9,11 @@ export abstract class Job {
   level: number
   xp: number
   look: Look
+}
+
+export class CherubJob extends Job {
+  name: 'cherub'
+  look = looks.cherub
 }
 
 export class WorkerJob extends Job {

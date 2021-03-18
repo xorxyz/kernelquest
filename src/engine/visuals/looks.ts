@@ -35,6 +35,7 @@ export class Look {
 
 export const looks: Record<string, Look> = {
   orb: new Look('orb', '🔮', 'a magic orb'),
+  cherub: new Look('cherub', '👼', 'a newbie'),
   farmer: new Look('farmer', '👨‍🌾', 'a farmer'),
   scout: new Look('scout', '🧝', 'a scout'),
   healer: new Look('healer', '🧚', 'a healer'),
@@ -44,7 +45,10 @@ export const looks: Record<string, Look> = {
   gold: new Look('gold', '💰', 'oooh shiny'),
   key: new Look('key', '🗝️ ', 'i could need this'),
   scroll: new Look('scroll', '📜', 'probably a magic scroll'),
-  sheep: new Look('critter', '🐑', 'it\'s just a sheep, meeeeeeh'),
   npc: new Look('npc', '💁', 'i wonder who this is?'),
   bug: new Look('bug', '🐛', 'i should probably report this'),
+  candle: new Look('candle', '🕯', 'that would be useful in the dark'),
+  lock: new Look('lock', '🔒', 'i\'ll ned a key to unlock that'),
+  mushroom: new Look('mushroom', '🍄', 'i can use this to restore my health'),
+  herb: new Look('herb', '🌿', 'i can use this to restore my mana'),
 };

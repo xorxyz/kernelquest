@@ -3,7 +3,7 @@ import Connection from './connection';
 import Engine from '../engine/engine';
 import { Terminal } from '../shell/terminal';
 import { Player } from '../engine/agents/agents';
-import { WizardJob } from '../engine/agents/jobs';
+import { CherubJob, WizardJob } from '../engine/agents/jobs';
 import { debug } from '../../lib/logging';
 
 export interface Params { src?: string }
@@ -24,7 +24,7 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const player = new Player(this.engine, 'john', new WizardJob());
+    const player = new Player(this.engine, 'noob', new CherubJob());
     const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
 

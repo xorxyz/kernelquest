@@ -6,6 +6,7 @@ import { World } from './world/world';
 import { Farmer, Sheep, Tutor } from './agents/agents';
 import { Room, testRoom } from './world/rooms';
 import { KeyItem } from './things/items';
+import { Bug } from './agents/monsters';
 
 export const CLOCK_MS_DELAY = 60;
 
@@ -29,9 +30,13 @@ export default class Engine {
     const farmer = new Farmer(this);
     const key = new KeyItem();
 
-    this.rooms[0].add(sheep, 15, 9);
+    const bug = new Bug(this);
+
+    this.rooms[0].add(sheep, 14, 8);
     this.rooms[0].add(tutor, 7, 7);
     this.rooms[0].add(farmer, 0, 5);
+
+    this.rooms[0].add(bug, 5, 5);
 
     this.rooms[0].cells[1][1].stack.push(key);
 

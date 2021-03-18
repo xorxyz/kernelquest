@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import { Stack } from '../../../lib/stack';
 import { Vector, getRandomDirection } from '../../../lib/math';
 import { Look, looks } from '../visuals/looks';
-import { Item, KeyItem } from '../things/items';
+import { Item } from '../things/items';
 import { Spell } from '../magic/spells';
 import { Health, Stamina, Mana, Wealth } from './stats';
 import { Job, CritterJob, NoviceJob } from './jobs';
@@ -10,6 +10,10 @@ import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
 import { debug } from '../../../lib/logging';
+
+abstract class Capability {
+  abstract bootstrap (agent: Agent): void
+}
 
 export abstract class Being {
   id: string = uuid.v4()
@@ -37,6 +41,8 @@ export class AgentModel {
 }
 
 export abstract class Agent extends Being {
+  capabilities: Array<Capability>
+
   look: Look
   job: Job
 
@@ -55,9 +61,12 @@ export abstract class Agent extends Being {
   dragging: Item | null = null
   items: Array<Item> = []
 
-  constructor(engine: Engine) {
+  constructor(engine: Engine, capabilities: Array<Capability> = []) {
     super();
     this.model = new AgentModel(engine);
+    this.capabilities = capabilities;
+
+    capabilities.forEach((cap) => cap.bootstrap(this));
   }
 
   takeTurn() {
@@ -81,34 +90,38 @@ export abstract class Npc extends Agent {
   wealth: Wealth = new Wealth()
 }
 
-export abstract class Critter extends Agent {
+export class RandomWalkCapability extends Capability {
+  delayMs: number
   timer: NodeJS.Timeout
-  job = new CritterJob()
 
-  constructor(engine, delayMs: number = 1000) {
-    super(engine);
+  constructor(delayMs: number = 1000) {
+    super();
+    this.delayMs = delayMs;
+  }
 
+  bootstrap(agent: Agent) {
+    debug('bootstrap random walk');
     this.timer = setInterval(() => {
       const direction = getRandomDirection();
 
-      this.queue.push(
+      agent.queue.push(
         new Move(direction.x, direction.y),
       );
-    }, delayMs);
+    }, this.delayMs);
   }
 }
 
-export abstract class Bug extends Agent {
-  name = 'Bug'
-  job = new NoviceJob()
-  look = looks.bug
+export class Critter extends Agent {
+  constructor(engine) {
+    super(engine, [
+      new RandomWalkCapability(),
+    ]);
+  }
 }
-
-/* - Instances - */
 
 export class Player extends Agent {
   constructor(engine: Engine, name: string, job: Job) {
-    super(engine);
+    super(engine, []);
 
     this.name = name;
     this.job = job;
@@ -118,11 +131,14 @@ export class Player extends Agent {
 
 export class Sheep extends Critter {
   name = 'Sheep'
-  look = looks.sheep
+  look = new Look('critter', '🐑', 'it\'s just a sheep, meeeeeeh')
 }
 
 export class Tutor extends Npc {
   name = 'Tutor'
+  constructor(engine) {
+    super(engine, []);
+  }
 }
 
 export class Farmer extends Npc {

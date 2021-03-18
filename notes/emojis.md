@@ -61,6 +61,7 @@
 🦉 owl
 
 # monsters
+🐛 bug
 🦟 mosquito
 🐀 rat
 🕷️ spider
