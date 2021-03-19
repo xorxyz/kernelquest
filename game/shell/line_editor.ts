@@ -29,11 +29,11 @@ export class LineEditor {
 
     if (this.line.length === LINE_LENGTH - 6) return false;
 
-    const char = String.fromCodePoint(Number.parseInt(str, 16));
+    const bytes = Buffer.from(str, 'hex');
     const chars = this.line.split('');
     const { x } = this.cursor;
 
-    this.line = [...chars.slice(0, x), char, ...chars.slice(x)].join('');
+    this.line = [...chars.slice(0, x), bytes, ...chars.slice(x)].join('');
     this.cursor.x++;
 
     return true;
