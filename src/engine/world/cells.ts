@@ -1,7 +1,8 @@
+import { esc, Style } from '../../../lib/esc';
 import { Vector } from '../../../lib/math';
 import { Stack } from '../../../lib/stack';
 import { Agent } from '../agents/agents';
-import { Item } from '../things/items';
+import { Thing } from '../things/things';
 
 export class Port {
   name: string
@@ -17,13 +18,13 @@ export const Ports = () => [
 export class Cell {
   position: Vector
   bg: string
-  stack: Stack<Item> = new Stack()
-  ports: Array<Port> = Ports()
   agent: Agent | null = null
+  stack: Stack<Thing> = new Stack()
+  ports: Array<Port> = Ports()
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
-    this.bg = '..';
+    this.bg = `${esc(Style.Dim)}..${esc(Style.Reset)}`;
   }
 
   render() {

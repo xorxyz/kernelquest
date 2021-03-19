@@ -29,6 +29,9 @@ export class Move extends Command {
     if (!agent.stamina) return false;
     agent.stamina.decrease(1);
     agent.velocity.setXY(this.x, this.y);
+    if (agent.dragging) {
+      agent.velocity.setXY(this.x, this.y);
+    }
     return true;
   }
 }
@@ -80,7 +83,7 @@ export class Drop extends Command {
     this.item = item;
   }
 
-  execute(agent:Agent, items: Array<Item>) {
+  execute(agent:Agent) {
     if (agent.dragging) {
       // const cell = agent.model.room.cells[agent.dragging.position.y][agent.dragging.position.x];
       // cell.stack.push(agent.dragging);
@@ -90,13 +93,12 @@ export class Drop extends Command {
     }
 
     if (!this.item) {
-      return true;
+      return false;
     }
 
     this.item.position.setXY(agent.position.x, agent.position.y);
     const idx = agent.items.findIndex((x) => x === this.item);
     agent.items.splice(idx);
-    items.push(this.item);
     return true;
   }
 }

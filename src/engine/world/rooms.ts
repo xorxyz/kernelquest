@@ -3,8 +3,8 @@ import { Matrix, matrixOf, Vector } from '../../../lib/math';
 import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
 import { Command, Drop, Move, Drag, PickUp, Rotate } from '../agents/commands';
-import { Block } from '../things/blocks';
 import { Item } from '../things/items';
+import { Thing } from '../things/things';
 import { Cell } from './cells';
 
 const MESSAGE_TTL = 80;
@@ -20,9 +20,8 @@ export class Room extends Environment {
   name: string
   cells: Matrix<Cell>
 
-  blocks: Array<Block> = []
   agents: Array<Agent> = []
-  items: Array<Item> = []
+  things: Array<Thing> = []
 
   messages: Map<Agent, IMessage> = new Map()
 
@@ -58,10 +57,9 @@ export class Room extends Environment {
   }
 
   collides(v: Vector) {
-    return (
-      this.blocks.some((w) => w.position.equals(v)) ||
-      this.agents.some((a) => a.position.equals(v))
-    );
+    if (v.x < 0 || v.x > 15 || v.y < 0 || v.y > 9) return true;
+    const cell = this.cells[v.y][v.x];
+    return cell.agent || cell.stack.peek()?.blocking;
   }
 
   add(agent: Agent, x: number, y: number) {
@@ -78,7 +76,6 @@ export class Room extends Environment {
   }
 
   setAgentPosition(agent: Agent, x: number, y: number) {
-    if (x < 0 || x > 15 || y < 0 || y > 9) return;
     const from = agent.position;
     const oldCell = this.cells[from.y][from.x];
     const newCell = this.cells[y][x];
@@ -99,19 +96,21 @@ export class Room extends Environment {
     agent.dragging.position.copy(to);
     oldCell.stack.pop();
     newCell.stack.push(agent.dragging);
-
-    debug(oldCell.position);
   }
 
   move(agent: Agent, command?: Command) {
-    if (command && command instanceof Move) command.execute(agent);
+    if (command && command instanceof Move) {
+      command.execute(agent);
+    }
     if (this.collides(agent.nextPosition)) return;
 
     const { x, y } = agent.nextPosition;
 
     this.setAgentPosition(agent, x, y);
-
     if (agent.dragging) {
+      if (this.collides(agent.dragging.position.clone().add(agent.velocity))) {
+        return;
+      }
       this.setDraggedItemPosition(agent);
     }
 
@@ -119,6 +118,7 @@ export class Room extends Environment {
   }
 
   update(round: number) {
+    const staminaRound = round % 30 === 0;
     this.round = round;
 
     this.messages.forEach((message, agent) => {
@@ -130,6 +130,7 @@ export class Room extends Environment {
     });
 
     this.agents.forEach((agent) => {
+      if (staminaRound) agent.stamina.increase(1);
       if (!agent.queue.length) return;
 
       const command = agent.takeTurn();
@@ -157,13 +158,13 @@ export class Room extends Environment {
       }
 
       if (command instanceof Drop) {
-        command.execute(agent, this.items);
+        command.execute(agent);
       }
 
       if (command instanceof PickUp) {
         const cell = this.cells[agent.position.y][agent.position.x];
         const item = cell.stack.pop();
-        if (item) {
+        if (item && item instanceof Item) {
           agent.items.push(item);
         }
       }

@@ -127,8 +127,8 @@ export class Box extends UiComponent {
 }
 
 const Points = (bg, n) => {
-  const i = Math.floor(n / 10);
-  debug(i);
+  const i = Math.ceil(n / 10);
+
   const str = `${n} of 100`.padStart(10, ' ');
   return (
     esc(Style.in(Fg.Black, bg, str.slice(0, i))) +
@@ -145,8 +145,8 @@ export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
     return [
       '┌───────────────┐',
-      '│ LV:   1 of 100│',
-      '│ XP:   0 of 100│',
+      '│ LV: 01        │',
+      '│ XP: 0         │',
       `│ HP: ${Hp(p.health.value)}│`,
       `│ SP: ${Sp(p.stamina.value)}│`,
       `│ MP: ${Mp(p.mana.value)}│`,

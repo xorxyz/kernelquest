@@ -10,12 +10,14 @@ import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
 import { debug } from '../../../lib/logging';
+import { Word } from '../../shell/types';
+import { Thing } from '../things/things';
 
 abstract class Capability {
   abstract bootstrap (agent: Agent): void
 }
 
-export abstract class Being {
+export abstract class Being extends Word {
   id: string = uuid.v4()
 
   position: Vector = new Vector()
@@ -57,7 +59,7 @@ export abstract class Agent extends Being {
   stack: Stack<Item> = new Stack()
 
   facing: Vector = new Vector(0, 1)
-  dragging: Item | null = null
+  dragging: Thing | null = null
   items: Array<Item> = []
 
   constructor(engine: Engine, capabilities: Array<Capability> = []) {
@@ -72,9 +74,9 @@ export abstract class Agent extends Being {
     return this.queue.shift();
   }
 
-  drag(direction: Vector, item: Item|null) {
+  drag(direction: Vector, thing: Thing|null) {
     this.facing = direction;
-    this.dragging = item;
+    this.dragging = thing;
   }
 }
 
