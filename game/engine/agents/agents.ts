@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
-import { Stack } from '../../../lib/stack';
-import { Vector, getRandomDirection } from '../../../lib/math';
+import { Stack } from '../../lib/stack';
+import { Vector, getRandomDirection } from '../../lib/math';
 import { Look, looks } from '../visuals/looks';
 import { Item } from '../things/items';
 import { Spell } from '../magic/spells';
@@ -9,7 +9,7 @@ import { Job, NoviceJob } from './jobs';
 import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
-import { debug } from '../../../lib/logging';
+import { debug } from '../../lib/logging';
 import { Word } from '../../shell/types';
 import { Thing } from '../things/things';
 

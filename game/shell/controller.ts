@@ -1,4 +1,4 @@
-import { Keys } from '../../lib/constants';
+import { Keys } from '../lib/constants';
 import { Drag, Command, Move, PickUp, SwitchMode, Rotate, Drop, PrintInventory } from '../engine/agents/commands';
 
 export function ctrl(str: string): Command | null {

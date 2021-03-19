@@ -4,7 +4,7 @@ import Engine from '../engine/engine';
 import { Terminal } from '../shell/terminal';
 import { Player } from '../engine/agents/agents';
 import { CherubJob, WizardJob } from '../engine/agents/jobs';
-import { debug } from '../../lib/logging';
+import { debug } from '../lib/logging';
 
 export interface Params { src?: string }
 

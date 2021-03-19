@@ -1,5 +1,5 @@
-import { debug } from '../../../lib/logging';
-import { Matrix, matrixOf, Vector } from '../../../lib/math';
+import { debug } from '../../lib/logging';
+import { Matrix, matrixOf, Vector } from '../../lib/math';
 import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
 import { Command, Drop, Move, Drag, PickUp, Rotate } from '../agents/commands';

@@ -50,10 +50,10 @@
     |  term  ( "END" | "." ) }
 */
 import * as EventEmitter from 'events';
-import { debug } from '../../lib/logging';
+import { debug } from '../lib/logging';
 // import { isNumeric } from '../../lib/math';
 import { Thing } from '../engine/things/things';
-import { Stack } from '../../lib/stack';
+import { Stack } from '../lib/stack';
 // import { BooleanLiteral, NumberLiteral } from './types';
 
 // const operators = {

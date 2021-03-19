@@ -1,5 +1,5 @@
-import { esc, Style } from '../../../lib/esc';
-import { Vector } from '../../../lib/math';
+import { esc, Style } from '../../lib/esc';
+import { Vector } from '../../lib/math';
 import { Literal, Word } from '../../shell/types';
 import { Look } from '../visuals/looks';
 

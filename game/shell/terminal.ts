@@ -5,11 +5,11 @@ import { LineEditor } from './line_editor';
 import { CELL_WIDTH } from '../ui/components';
 import Connection from '../server/connection';
 import { MainView } from '../ui/views';
-import { Keys, Signals } from '../../lib/constants';
+import { Keys, Signals } from '../lib/constants';
 import { Item } from '../engine/things/items';
-import { Cursor, esc } from '../../lib/esc';
+import { Cursor, esc } from '../lib/esc';
 import { ctrl } from './controller';
-import { Vector } from '../../lib/math';
+import { Vector } from '../lib/math';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 

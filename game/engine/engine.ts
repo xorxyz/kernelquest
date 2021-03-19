@@ -1,7 +1,7 @@
 /*
  * the game engine
  */
-import Clock from '../../lib/clock';
+import Clock from '../lib/clock';
 import { World } from './world/world';
 import { Farmer, Sheep, Tutor } from './agents/agents';
 import { Room, testRoom } from './world/rooms';

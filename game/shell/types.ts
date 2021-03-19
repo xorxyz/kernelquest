@@ -1,4 +1,4 @@
-import { Stack } from '../../lib/stack';
+import { Stack } from '../lib/stack';
 import { Look } from '../engine/visuals/looks';
 
 export abstract class Word {

@@ -1,8 +1,8 @@
 import { Agent } from './agents';
 import { Item } from '../things/items';
 import { Terminal } from '../../shell/terminal';
-import { Vector } from '../../../lib/math';
-import { debug } from '../../../lib/logging';
+import { Vector } from '../../lib/math';
+import { debug } from '../../lib/logging';
 
 const directions = [
   new Vector(0, -1),

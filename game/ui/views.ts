@@ -1,4 +1,4 @@
-import { esc, Screen, Style } from '../../lib/esc';
+import { esc, Screen, Style } from '../lib/esc';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import { Terminal } from '../shell/terminal';
 import {

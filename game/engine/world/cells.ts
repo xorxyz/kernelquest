@@ -1,6 +1,6 @@
-import { esc, Style } from '../../../lib/esc';
-import { Vector } from '../../../lib/math';
-import { Stack } from '../../../lib/stack';
+import { esc, Style } from '../../lib/esc';
+import { Vector } from '../../lib/math';
+import { Stack } from '../../lib/stack';
 import { Agent } from '../agents/agents';
 import { Thing } from '../things/things';
 
