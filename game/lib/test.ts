@@ -1,13 +1,13 @@
-import * as assert from 'assert'
+import * as assert from 'assert';
 
 export default function run(runner) {
   try {
-    runner()
+    runner();
   } catch (err) {
     console.error(formatError(err));
     process.exit(1);
   }
-  
+
   console.log('all tests passed!\n');
   process.exit(0);
 }
