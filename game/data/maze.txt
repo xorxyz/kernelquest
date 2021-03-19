@@ -1,0 +1,22 @@
++---0--1--2--3--4--5--6--7--8--9->
+|  xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+0  xXxox                       x
+|  xxx.x                       x
+1  xo.o.o.                     x
+|  x.xxxxx                     x
+2  xox                         x
+|  x                           x
+3  x                           x
+|  x                           x
+4  x                           x
+|  x                           x
+5  x                           x
+|  x                           x
+6  x                           x
+|  xxx                         x
+7  xox                         x
+|  x.xx                        x
+8  xo.o.o.ox                   x
+|  xxx.xxx.x                   x
+9  xo.oxo.ox                   x
+v  xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
