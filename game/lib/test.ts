@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import { esc, Style } from './esc';
 
 export default function run(runner) {
   try {
@@ -8,7 +9,7 @@ export default function run(runner) {
     process.exit(1);
   }
 
-  console.log('all tests passed!\n');
+  console.log(`${esc(Style.Invert)}all tests passed!\n${esc(Style.Reset)}`);
   process.exit(0);
 }
 
