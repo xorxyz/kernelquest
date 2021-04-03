@@ -9,4 +9,4 @@ tsc \
   --removeComments \
   ./scripting/interpreter.ts
 
-npm run minify
+jsmin --level 3 --overwrite 'dist/xsh.js'

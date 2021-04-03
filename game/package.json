@@ -5,8 +5,7 @@
   "scripts": {
     "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'",
     "test": "ts-node tests/*",
-    "build": "sh ./build.sh",
-    "minify": "jsmin --level 3 --overwrite 'dist/xsh.js'"
+    "build": "sh ./build.sh"
   },
   "author": "Jonathan Dupré <jonathan@diagonal.sh>",
   "license": "MIT",
