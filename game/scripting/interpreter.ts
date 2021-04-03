@@ -1,29 +1,46 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable indent */
-/* eslint-disable newline-per-chained-call */
-/* eslint-disable no-whitespace-before-property */
-
-import * as assert from 'assert';
-import test from '../lib/test';
+import { Compiler } from './compiler';
 import { Scanner } from './scanner';
+import { Validator } from './validator';
 
-const DEBUG = 1;
+const DEBUG = 0;
 const log = (...msg) => (console.log(...msg));
 const debug = (...msg) => (DEBUG ? log(...msg) : 0);
 
-type Paren = '[' | ']'
-type ProgramResult = any
+class Combinator {
+  type: string
+  private fn: Function
 
-class List extends Array {}
-class Stack extends Array { peek() { return this[this.length - 1]; }}
-class Term {
-  stacks: Array<any> = [new Stack()]
-  level = 0
-
-  get stack() {
-    return this.stacks[this.level];
+  constructor(op, fn) {
+    this.type = op;
+    this.fn = fn;
+    Object.defineProperty(this, 'fn', {
+      enumerable: false,
+    });
   }
 
+  exec() {
+    debug(this.type);
+    this.fn();
+  }
+
+  toString() { return this.type; }
+  valueOf() { return this.type; }
+}
+
+class Operator extends Combinator {}
+
+class List extends Array {}
+class Stack extends List { peek() { return this[this.length - 1]; }}
+
+class Factor {
+  level = 0
+  stacks: Array<any>
+
+  constructor(stack = new Stack()) {
+    this.stacks = [stack];
+  }
+
+  get stack() { return this.stacks[this.level]; }
   set stack(s) {
     this.stacks[this.level] = s;
   }
@@ -47,103 +64,132 @@ class Term {
 
     return this;
   }
+}
 
-  /** opens or closes a quotation */
-  p(paren: Paren) {
-    if (paren === '[') return this['[']();
-    if (paren === ']') return this[']']();
-    throw new Error('invalid value for paren');
-  }
-
-  ['[']() {
-    this.level++;
+export class Quotation extends Factor {
+  /* -- Reserved characters -- */
+  /** go down a level */
+  lparen() {
+    this.level--;
     this.stack = new Stack();
     debug('level:', this.level, `(${this.stack.join(',')})`);
     return this;
   }
 
-  [']']() {
+  /** go up a level */
+  rparen() {
     const { stack } = this;
     delete this.stacks[this.level];
-    this.level--;
+    this.level++;
     if (stack) {
       this.stack.push(List.from(stack));
       debug('level:', this.level, `(${this.stack.join(',')})`);
     }
     return this;
   }
-}
 
-export class Program extends Term {
-  constructor(stack?: Stack) {
-    super();
-    if (stack) {
-      this.stacks[0] = stack;
-    }
-  }
-
-  /* Literals */
+  /* -- Literals -- */
   /** pushes true */
-  t() { return this.push(true); }
-  /** pushes false */
-  f() { return this.push(false); }
-  /** pushes a number */
-  n(num: number) { return this.push(num); }
-  /** pushes a character */
-  c(str: string) { return this.push(str); }
-  /** pushes a string */
-  str(str: string) { return this.push(str); }
+  true() { return this.push(true); }
 
-  /* Operators */
+  /** pushes false */
+  false() { return this.push(false); }
+
+  /** pushes a number */
+  number(num: number) { return this.push(num); }
+
+  /** pushes a character */
+  char(str: string) { return this.push(str); }
+
+  /** pushes a string */
+  string(str: string) { return this.push(str); }
+
+  /* -- Operators -- */
   /** x y -> x + y */
   add() {
     debug('add');
-    const b = this.pop();
-    const a = this.pop();
+    const op = new Operator('add', () => {
+      const b = this.pop();
+      const a = this.pop();
+      this.push(a + b);
+    });
 
-    this.push(a + b);
+    if (this.level === 0) {
+      op.exec();
+    } else {
+      this.push(op);
+    }
 
     return this;
   }
 
-  /* Combinators */
+  /* -- Combinators -- */
   /** execute the program sitting on top of the stack */
-  exec() {
+  i() {
     debug('exec');
     const list = this.pop();
 
+    if (!(list instanceof List)) {
+      throw new Error('exec expects a list');
+    }
+
+    debug(list);
+
     list.forEach((word) => {
-      this.push(word);
+      if (word instanceof Operator) {
+        word.exec();
+      } else {
+        this.push(word);
+      }
     });
 
     return this;
   }
+}
 
+export class Program extends Quotation {
   /** returns whats on top of the stack */
-  get bye(): ProgramResult {
-    debug(this);
-    const result = this.peek();
+  get bye() {
     debug('bye');
-    debug(result);
+    const result = this.peek();
     return result;
   }
 }
 
-test(() => {
-  // const hi = new Program();
-  // const result = hi
-  //   . p('[') . n(1) .n(2) . add() . p(']') . exec()
-  //   . bye;
+export default class Interpreter {
+  stack: Stack
+  program: Program
 
-  // assert.strictEqual(result, 3, 'exec() executes binary programs.');
+  constructor(stack: Stack = new Stack()) {
+    this.stack = stack;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const hi2 = new Program();
-  const str = '[ 1 2 + ] exec';
-  const scanner = new Scanner(str);
-  const tokens = scanner.scan();
-  console.log(tokens);
+  run(str: string) {
+    debug(str);
 
-  // eslint-disable-next-line no-eval
-  // eval(str);
-});
+    const scanner = new Scanner(str);
+    const tokens = scanner.scan();
+
+    debug(tokens);
+
+    const validator = new Validator(tokens);
+
+    validator.validate();
+
+    const compiler = new Compiler(tokens);
+    const js = compiler.compile();
+
+    debug(js);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const hi = new Program(this.stack);
+    // eslint-disable-next-line no-eval
+    const result = eval(js);
+
+    debug(result);
+
+    this.program = hi;
+
+    return result;
+  }
+}
