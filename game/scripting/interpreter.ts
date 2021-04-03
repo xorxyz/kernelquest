@@ -2,7 +2,7 @@ import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
 import { Validator } from './validator';
 
-const DEBUG = 1;
+const DEBUG = 0;
 const log = (...msg) => (console.log(...msg));
 const debug = (...msg) => (DEBUG ? log(...msg) : 0);
 

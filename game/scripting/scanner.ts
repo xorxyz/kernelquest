@@ -56,6 +56,16 @@ export class Token {
     this.lexeme = lexeme;
     this.literal = literal;
     this.line = line;
+
+    if (type !== 'string' && type !== 'number') {
+      Object.defineProperty(this, 'literal', {
+        enumerable: false,
+      });
+    } else {
+      Object.defineProperty(this, 'lexeme', {
+        enumerable: false,
+      });
+    }
   }
 
   toString() {
