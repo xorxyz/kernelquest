@@ -2,7 +2,7 @@ import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
 import { Validator } from './validator';
 
-const DEBUG = 0;
+const DEBUG = 1;
 const log = (...msg) => (console.log(...msg));
 const debug = (...msg) => (DEBUG ? log(...msg) : 0);
 
@@ -179,8 +179,9 @@ export class Quotation extends Factor {
 
 export class VM extends Quotation {
   eval(js: string) {
-    // eslint-disable-next-line no-eval
-    const result = eval(js);
+    // eslint-disable-next-line no-new-func
+    const apply = new Function('begin', `'use strict';return (${js})`);
+    const result = apply(this);
 
     return result;
   }
@@ -229,3 +230,6 @@ export default class Interpreter {
     return this.stack.peek();
   }
 }
+
+const sh = new Interpreter();
+sh.exec('1 1 add .');

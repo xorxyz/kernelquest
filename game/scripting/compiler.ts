@@ -6,6 +6,7 @@ const types = {
   ']': 'rparen()',
   '+': 'add()',
   '.': 'period()',
+  '\0': 'period()',
 };
 
 export class Compiler {
@@ -16,7 +17,7 @@ export class Compiler {
   }
 
   compile() {
-    const words: Array<string> = ['this'];
+    const words: Array<string> = ['begin'];
     let previous: Token;
 
     this.tokens.forEach((token) => {
