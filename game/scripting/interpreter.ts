@@ -77,6 +77,7 @@ export class Quotation extends Factor {
     const result = this.peek();
     return result;
   }
+  eof() { this.period(); }
 
   /** start enumerating list. go down a level */
   lparen() {

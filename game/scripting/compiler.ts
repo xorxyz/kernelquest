@@ -6,7 +6,7 @@ const types = {
   ']': 'rparen()',
   '+': 'add()',
   '.': 'period()',
-  '\0': 'period()',
+  '\0': 'eof()',
 };
 
 export class Compiler {
