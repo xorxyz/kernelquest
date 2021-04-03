@@ -47,8 +47,8 @@ const keywords = {
 
 export class Token {
   type: TokenType
-  lexeme: string | null
-  literal: object | null
+  lexeme: string
+  literal?: object
   line: number
 
   constructor(type: TokenType, lexeme: string, literal: any, line: number) {
@@ -96,9 +96,9 @@ export class Scanner {
     return this.source.charAt(this.current);
   }
 
-  private addToken(type, lit) {
+  private addToken(type: TokenType, literal?) {
     const text = this.source.substring(this.start, this.current);
-    const token = new Token(type, text, lit, this.line);
+    const token = new Token(type, text, literal, this.line);
 
     this.tokens.push(token);
   }
@@ -141,7 +141,7 @@ export class Scanner {
 
     const text = this.source.substring(this.start, this.current);
     const type = keywords[text] || TokenType.IDENTIFIER;
-    this.addToken(type, null);
+    this.addToken(type);
   }
 
   private next() {

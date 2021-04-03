@@ -1,5 +1,5 @@
 import { Compiler } from './compiler';
-import { Scanner } from './scanner';
+import { Scanner, Token } from './scanner';
 import { Validator } from './validator';
 
 const DEBUG = 0;
@@ -38,6 +38,9 @@ class Factor {
 
   constructor(stack = new Stack()) {
     this.stacks = [stack];
+    Object.defineProperty(this, 'stacks', {
+      enumerable: false,
+    });
   }
 
   get stack() { return this.stacks[this.level]; }
@@ -68,7 +71,14 @@ class Factor {
 
 export class Quotation extends Factor {
   /* -- Reserved characters -- */
-  /** go down a level */
+  /** returns whats on top of the stack */
+  period() {
+    debug('period.');
+    const result = this.peek();
+    return result;
+  }
+
+  /** start enumerating list. go down a level */
   lparen() {
     this.level--;
     this.stack = new Stack();
@@ -76,13 +86,34 @@ export class Quotation extends Factor {
     return this;
   }
 
-  /** go up a level */
+  /** finish enumerating list. bring list up a level */
   rparen() {
     const { stack } = this;
     delete this.stacks[this.level];
     this.level++;
     if (stack) {
       this.stack.push(List.from(stack));
+      debug('level:', this.level, `(${this.stack.join(',')})`);
+    }
+    return this;
+  }
+
+  /** start enumerating set. go down a level */
+  lbrace() {
+    this.level--;
+    this.stack = new Stack();
+    debug('level:', this.level, `(${this.stack.join(',')})`);
+    return this;
+  }
+
+  /** finish enumerating set. bring set up a level */
+  rbrace() {
+    this.level++;
+    const { stack } = this;
+    delete this.stacks[this.level];
+    this.level++;
+    if (stack) {
+      this.stack.push(new Set(...stack));
       debug('level:', this.level, `(${this.stack.join(',')})`);
     }
     return this;
@@ -107,10 +138,9 @@ export class Quotation extends Factor {
   /* -- Operators -- */
   /** x y -> x + y */
   add() {
-    debug('add');
     const op = new Operator('add', () => {
       const b = this.pop();
-      const a = this.pop();
+      const a = this.pop() || '';
       this.push(a + b);
     });
 
@@ -147,26 +177,25 @@ export class Quotation extends Factor {
   }
 }
 
-export class Program extends Quotation {
-  /** returns whats on top of the stack */
-  get bye() {
-    debug('bye');
-    const result = this.peek();
+export class VM extends Quotation {
+  eval(js: string) {
+    // eslint-disable-next-line no-eval
+    const result = eval(js);
+
     return result;
   }
 }
 
 export default class Interpreter {
   stack: Stack
-  program: Program
+  tokens: Array<Token>
+  private vm: VM
 
   constructor(stack: Stack = new Stack()) {
     this.stack = stack;
   }
 
-  run(str: string) {
-    debug(str);
-
+  check(str: string) {
     const scanner = new Scanner(str);
     const tokens = scanner.scan();
 
@@ -176,20 +205,27 @@ export default class Interpreter {
 
     validator.validate();
 
-    const compiler = new Compiler(tokens);
+    this.tokens = tokens;
+  }
+
+  exec(str: string) {
+    debug(str);
+
+    this.check(str);
+
+    const compiler = new Compiler(this.tokens);
     const js = compiler.compile();
 
     debug(js);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const hi = new Program(this.stack);
-    // eslint-disable-next-line no-eval
-    const result = eval(js);
+    const vm = new VM(this.stack);
 
-    debug(result);
+    vm.eval(js);
 
-    this.program = hi;
+    this.vm = vm;
 
-    return result;
+    debug(vm);
+
+    return this.stack.peek();
   }
 }

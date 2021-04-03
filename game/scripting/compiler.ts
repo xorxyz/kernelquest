@@ -1,11 +1,11 @@
-import { Token } from './scanner';
+import { Token, TokenType } from './scanner';
 
 const literals = ['true', 'false', 'number', 'char', 'string'];
 const types = {
   '[': 'lparen()',
   ']': 'rparen()',
   '+': 'add()',
-  '\0': 'bye',
+  '.': 'period()',
 };
 
 export class Compiler {
@@ -16,10 +16,14 @@ export class Compiler {
   }
 
   compile() {
-    const words: Array<string> = ['hi'];
+    const words: Array<string> = ['this'];
+    let previous: Token;
 
     this.tokens.forEach((token) => {
-      let word;
+      if (previous && previous.type === TokenType.DOT &&
+          token.type === TokenType.EOF) { return; }
+
+      let word: string;
 
       if (literals.includes(token.type)) {
         word = `${token.type}(${token.literal})`;
@@ -29,11 +33,10 @@ export class Compiler {
         word = `${types[token.type]}`;
       }
 
-      if (!word) {
-        throw new Error(`couldnt compile: ${JSON.stringify(token)}`);
-      }
+      if (!word) throw new Error(`couldnt compile: ${JSON.stringify(token)}`);
 
       words.push(word);
+      previous = token;
     });
 
     return words.join(' . ');
