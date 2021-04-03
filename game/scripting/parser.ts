@@ -26,7 +26,7 @@ cycle (request, or command) ::=
   { compound-definition | term ( "." ) }
 */
 
-export class Validator {
+export class Parser {
   tokens: Array<Token>
   current = 0
 
@@ -34,12 +34,8 @@ export class Validator {
     this.tokens = tokens;
   }
 
-  validate(): void {
+  parse() {
 
-  }
-
-  parse(tokens) {
-    this.tokens = tokens;
   }
 
   private next() {

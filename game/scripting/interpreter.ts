@@ -1,6 +1,6 @@
 import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
-import { Validator } from './validator';
+import { Parser } from './parser';
 
 const DEBUG = 0;
 const log = (...msg) => (console.log(...msg));
@@ -202,9 +202,9 @@ export default class Interpreter {
 
     debug(tokens);
 
-    const validator = new Validator(tokens);
+    const parser = new Parser(tokens);
 
-    validator.validate();
+    parser.parse();
 
     this.tokens = tokens;
   }
