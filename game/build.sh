@@ -1,12 +1,11 @@
 #!/bin/sh
 
-mkdir -p dist && rm dist/*
-
+mkdir -p dist &&\
+rm dist/* &&\
 tsc \
-  --target es2015 \
+  --target es6 \
   --module amd \
   --outFile dist/xsh.js \
   --removeComments \
-  ./scripting/interpreter.ts
-
-jsmin --level 3 --overwrite 'dist/xsh.js'
+  ./scripting/interpreter.ts &&\
+./node_modules/.bin/jsmin --level 3 --overwrite 'dist/xsh.js'

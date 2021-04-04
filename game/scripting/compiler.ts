@@ -27,7 +27,7 @@ export class Compiler {
       let word: string;
 
       if (literals.includes(token.type)) {
-        word = `${token.type}(${token.literal})`;
+        word = `${token.type}(${JSON.stringify(token.literal)})`;
       } else if (token.type === 'identifier') {
         word = `${token.lexeme}()`;
       } else {

@@ -2,11 +2,12 @@ import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
 import { Parser } from './parser';
 
-const DEBUG = 0;
+let DEBUG = 0;
+
 const log = (...msg) => (console.log(...msg));
 const debug = (...msg) => (DEBUG ? log(...msg) : 0);
 
-class Combinator {
+export class Combinator {
   type: string
   private fn: Function
 
@@ -27,12 +28,13 @@ class Combinator {
   valueOf() { return this.type; }
 }
 
-class Operator extends Combinator {}
+export class Operator extends Combinator {}
 
-class List extends Array {}
-class Stack extends List { peek() { return this[this.length - 1]; }}
+export class List extends Array {}
+export class RuntimeError extends List {}
+export class Stack extends List { peek() { return this[this.length - 1]; }}
 
-class Factor {
+export class Factor {
   level = 0
   stacks: Array<any>
 
@@ -182,16 +184,20 @@ export class VM extends Quotation {
   eval(js: string) {
     // eslint-disable-next-line no-new-func
     const apply = new Function('begin', `'use strict';return (${js})`);
+
     const result = apply(this);
 
     return result;
   }
 }
 
-export default class Interpreter {
+export default class Intrepreter {
+  source: string
   stack: Stack
   tokens: Array<Token>
-  private vm: VM
+
+  get $DEBUG() { return DEBUG; }
+  set $DEBUG(value) { DEBUG = value; }
 
   constructor(stack: Stack = new Stack()) {
     this.stack = stack;
@@ -216,21 +222,20 @@ export default class Interpreter {
     this.check(str);
 
     const compiler = new Compiler(this.tokens);
-    const js = compiler.compile();
+    this.source = compiler.compile();
 
-    debug(js);
+    debug(this.source);
 
     const vm = new VM(this.stack);
 
-    vm.eval(js);
-
-    this.vm = vm;
+    try {
+      vm.eval(this.source);
+    } catch (err) {
+      return RuntimeError.from([err.name, err.message]);
+    }
 
     debug(vm);
 
     return this.stack.peek();
   }
 }
-
-const sh = new Interpreter();
-sh.exec('1 1 add .');
