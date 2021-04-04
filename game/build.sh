@@ -1,11 +1,12 @@
 #!/bin/sh
 
-mkdir -p dist &&\
-rm dist/* &&\
-tsc \
+rm -r dist
+mkdir -p dist \
+&& tsc \
   --target es6 \
-  --module amd \
-  --outFile dist/xsh.js \
+  --module es2020 \
+  --outDir dist \
   --removeComments \
-  ./scripting/interpreter.ts &&\
-./node_modules/.bin/jsmin --level 3 --overwrite 'dist/xsh.js'
+  --isolatedModules \
+  ./scripting/interpreter.ts \
+# && ./node_modules/.bin/jsmin --level 3 --overwrite 'dist/compiler.js'
