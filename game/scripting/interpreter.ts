@@ -1,3 +1,4 @@
+import { nextTick } from 'process';
 import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
 import { Parser } from './parser';
@@ -49,7 +50,9 @@ export class Factor {
   set stack(s) {
     this.stacks[this.level] = s;
   }
+}
 
+export class Quotation extends Factor {
   peek() {
     debug('peek', 'level:', this.level);
     debug('stack', this.stack);
@@ -60,7 +63,9 @@ export class Factor {
     const item = this.stack.pop();
     debug('pop', item, `(${this.stack.join(',')})`);
 
-    return item;
+    log(item);
+
+    return this;
   }
 
   push(item) {
@@ -69,9 +74,7 @@ export class Factor {
 
     return this;
   }
-}
 
-export class Quotation extends Factor {
   /* -- Reserved characters -- */
   /** returns whats on top of the stack */
   period() {
@@ -139,13 +142,8 @@ export class Quotation extends Factor {
   string(str: string) { return this.push(str); }
 
   /* -- Operators -- */
-  /** x y -> x + y */
-  add() {
-    const op = new Operator('add', () => {
-      const b = this.pop();
-      const a = this.pop() || '';
-      this.push(a + b);
-    });
+  $op(name: string, cb: Function) {
+    const op = new Operator(name, cb);
 
     if (this.level === 0) {
       op.exec();
@@ -154,6 +152,68 @@ export class Quotation extends Factor {
     }
 
     return this;
+  }
+
+  /** x y -> x + y */
+  add() {
+    return this.$op('add', () => {
+      const b = this.pop();
+      const a = this.pop() || '';
+      this.push(a + b);
+    });
+  }
+
+  mul() {
+    return this.$op('mul', () => {
+      const b = this.pop();
+      const a = this.pop() || '';
+      this.push(a * b);
+    });
+  }
+
+  dup() {
+    return this.$op('dup', () => {
+      const a = this.pop();
+      this.push(a);
+      this.push(a);
+    });
+  }
+
+  concat() {
+    return this.$op('concat', () => {
+      const b = this.pop();
+      const a = this.pop();
+      const result = a.concat(b);
+      this.push(result);
+    });
+  }
+
+  cons() {
+    return this.$op('cons', () => {
+      const b = this.pop();
+      const a = this.pop();
+      const result = List.from([a, b]);
+      this.push(result);
+    });
+  }
+
+  /** [1 2] [1 add] map -> [2 3] */
+  map() {
+    return this.$op('map', () => {
+      const program = this.pop();
+      const list = this.pop();
+      const result = new List();
+
+      list.forEach((item) => {
+        const l = List.from([item, ...program]);
+        this.push(l);
+        this.i();
+        const r = this.pop();
+        result.push(r);
+      });
+
+      this.push(result);
+    });
   }
 
   /* -- Combinators -- */

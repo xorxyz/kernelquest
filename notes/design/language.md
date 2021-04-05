@@ -19,16 +19,13 @@ cell   == 2 bytes
 char   == 1 byte
 ```
 
-1. simple: 
-  1. boolean: 00 01
-  2. integers: 00 01 03 1F FF (0-255)
-  3. chars: 🧙  (2 bytes)
-  2. floating point: 1.2, 1.23, 6.5e3, 23.1e-1 
-  2. characters: 'a 'A
-2. aggregate:
-  1. lists, or quoted programs: []
-  2. strings: "hello world"
-  3. sets: { 1 2 3 } 
+1. true, false
+2. numbers
+3. characters: 'a 'A
+4. chars: 🧙 (2 bytes)
+1. lists, or quoted programs: []
+2. strings: "hello world"
+3. sets: { 1 2 3 } 
 
 # built-in operators and combinators
 
