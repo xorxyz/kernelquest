@@ -1,0 +1,155 @@
+<main>
+
+<h2>challenge #1: gp and sheep</h2>
+
+<div id="output">
+<pre>
+xor/https (kernel.quest:443) (tty0)   
+login: guest                          
+password:                             
+last update: {{ LAST_UPDATE }}        
+</pre>
+
+<pre>
+> look
+</pre>
+
+<details>
+<pre></pre>You are in a room.</pre>
+<summary>room</summary>
+
+<pre><code>
+[ room ] 
+stdlib from use.
+
+"house" [ 6 6 bound 8 7 door ] name.
+"key" house lock name.
+
+house [
+  [3 2 [[location] scroll]]
+  [4 2 [10 gold]]
+] [exec put] map.
+
+room [
+  [0 0 you]
+  [5 2 house]
+  [1 1 [[walk] scroll]]
+  [1 7 [1 [herbs] spawn]]
+  [1 8 [1 [herbs] spawn]]
+  [2 7 [1 [herbs] spawn]]
+  [2 8 [1 [herbs] spawn]]
+  [12 6 sheep]
+  [13 7 sheep]
+  [16 3 key]
+] [exec put] map.
+
+"You are in a room." room describe.
+
+</code></pre>
+</details>
+
+<pre>
+> ls
+</pre>
+
+<details>
+  <summary>principals</summary>
+  <ul class="bulletless">
+    <li>👼 you</li>
+    <li>🐑 <a href="sheep.html">2 sheeps</a></li>
+    <li>🗝️ a key</li>
+    <li>👤 ???</li>
+  </ul>
+</details>
+<details>
+  <summary>assets</summary>
+  <ul class="bulletless">
+    <li>🌿 <a href="herbs.html">4 herbs</a></li>
+    <li>
+      <details open>
+        <summary>🏠 house</summary>
+        <ul class="bulletless">
+          <li>🔒🚪 a locked door</li>
+          <li>📜 2 scrolls</li>
+          <li>💰 <a href="gp.html">some gold</a></li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+<details>
+  <summary>boundaries</summary>
+  <ul class="bulletless">
+    <li>██, ░░ walls</li>
+  </ul>
+</details>
+<details>
+  <summary>capabilities</summary>
+  <ul class="bulletless">
+    <li><pre class="ma0">📜 <code>ref look  -> details</code></pre></li> 
+    <li><pre class="ma0">📜 <code>x y point -> ref</code></pre></li>
+    <li><pre class="ma0">📜 <code>ref take  -> item</code></pre></li>
+  </ul>
+</details>
+
+<pre>
+> 16 10 room draw
+</pre>
+
+<details open>
+<summary>draw</summary>
+<pre id="room">
+<code>
+  0 1 2 3 4 5 6 7 8 9 A B C D E F
+0👼..............................
+1..📜............................
+2..........████████████..........
+3..........██░░░░░░░░██........🗝️
+4..........██....📜💰██..........
+5..........██........██..........
+6..........██████..████..🐑......
+7..🌿🌿....░░░░🔒🚪░░░░....🐑....
+8..🌿🌿..........................
+9................................
+</code>
+</pre>
+</details>
+
+<pre>
+> music
+</pre>
+
+<details open>
+<summary>dungeon.wav:</summary>
+<audio loop controls id="player" src="music/dungeon.wav" preload="none"></audio>
+</details>
+
+</div> <!-- id="output" -->
+
+<div class="monospace mv2">
+  <code>&gt;</code>
+  <input id="prompt" type="text" size="35" maxlength="35" placeholder=""/>
+</div>
+
+<script src="scanner.js" type="module"></script>
+<script src="parser.js" type="module"></script>
+<script src="compiler.js" type="module"></script>
+<script src="interpreter.js" type="module"></script>
+
+<script src="game.js" type="module"></script>
+</main>
+
+
+<!--
+point:
+push a reference to what's at a set of x y coordinate
+1 turn, 1 sp
+
+location:
+get a set of x y coordinate from a reference
+1 turn, 1 sp
+
+walk:
+walk to a set of x y coordinate.
+1 turn, 1 sp (per traversed cell)
+-->

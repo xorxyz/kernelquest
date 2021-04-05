@@ -1,0 +1,92 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 1rem 10vw;
+}
+
+header, nav, main, article, pre, p, figure, img, h1, h2, h3 {
+  margin-left: 0;
+  max-width: 65ex;
+  text-align: left;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+main {
+  min-height: 80vh;
+}
+
+a { color: blue; }
+header a:visited { color: blue; }
+
+details { 
+  font-family: monospace;
+}
+
+blockquote {
+  padding-left: 2rem;
+  margin-left: 1rem;
+  border-left: .5ex solid #ccc;
+}
+
+blockquote:before, blockquote:after {
+  content: "\""
+}
+
+summary {
+  color: blue;
+}
+
+summary ~ * {
+  margin-top: 1ex;
+}
+
+textarea {
+  width: 35ex;
+  height: 25em;
+}
+
+footer {
+  margin-top: 7.5rem;
+  font-size: 0.75rem;
+}
+
+#room {
+  font-size: 1rem;
+  line-height: 1rem;
+}
+
+.list { padding-left: 0; }
+.list li { display: inline; }
+.list li:not(:first-child):before {
+  content: ', '
+}
+
+.bulletless {
+  list-style: none;
+  padding-left: 4ex;
+}
+
+.blue { color: blue; }
+.f4 { font-size: 1rem; }
+.mb1 { margin-bottom: 1rem; }
+.hidden { display: none; }
+.flex { display: flex; }
+.monospace { font-family: monospace; }
+.dib { display: inline-block; }
+.w-100 { width: 100% }
+.ma0 { margin: 0 }
+.mt0 { margin-top: 0; }
+.mv2 { margin: 2rem 0; }
+.pa05 { padding: 0.5rem; }
+.ph2 { padding: 0 2rem; }
+.tc { text-align: center; }
+.tr { text-align: right; }
+.w65 { width: 65ex; }
+.ba { border: 1px solid black; }
