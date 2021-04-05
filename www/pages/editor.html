@@ -1,0 +1,39 @@
+<main>
+<h2>editor</h2>
+
+<div class="monospace">
+  <code>&gt;</code>
+  <input id="prompt" type="text" size="35" maxlength="35" placeholder=""/>
+</div>
+
+<pre><code id="vm-state"></code></pre>
+
+<div id="output">
+  <details open>
+  <summary>draw</summary>
+  <pre id="room">
+  <code>
+    0 1 2 3 4 5 6 7 8 9 A B C D E F
+  0👼..............................
+  1................................
+  2................................
+  3................................
+  4................................
+  5................................
+  6................................
+  7................................
+  8................................
+  9................................
+  </code>
+  </pre>
+  </details>
+  </div> <!-- id="output" -->
+
+<script src="scanner.js" type="module"></script>
+<script src="parser.js" type="module"></script>
+<script src="compiler.js" type="module"></script>
+<script src="interpreter.js" type="module"></script>
+
+<script src="editor.js" type="module"></script>
+
+</main>

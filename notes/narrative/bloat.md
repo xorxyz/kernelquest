@@ -29,7 +29,7 @@ it can probably hold [1-3] more.
 [2-3] files. [the top one has [scribbles, a bunch of text] on it.]
 .. .. .. .. ..
 
-📄 file   (0-10 bytes) # 1 room = 10 bytes, 1 byte = 16 cells, 1 cell = 2 chars
+📄 file (0-10 bytes) # 1 room = 10 bytes, 1 byte = 16 cells, 1 cell = 2 chars
 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..

@@ -24,16 +24,15 @@ types:
 📜 documents
 📗 libraries
 🗝️ keys
-🧺 stores
-  🎁 wrapped gift
-  📦 package
-  ✉️ envelope (w/ seal?)
-🕯️ signal
-  🔥 fire
+🎁 wrapped gift
+📦 package
+✉️ envelope
+🕯️ candle
+🔥 fire
 ✨ power
-  🌠 shooting star
+🌠 shooting star
 💎 gem
-  💍 ring 
+💍 ring 
 
 reagents:
 🌿 herb

@@ -2,6 +2,7 @@
 
 today=$(date "+%Y-%m-%d%n")
 pages=$(find pages -type f | sed 's/pages\///g;s/.html//' | grep -v index)
+wikis=$(find wiki -type f | sed 's/wiki\///g;s/.html//' | grep -v index)
 posts=$(find posts -type f)
 
 print_page() (
@@ -16,6 +17,10 @@ cp -r js/*    public/
 
 for name in $pages; do
   print_page "| $name | " "pages/$name.html" > "public/$name.html"
+done
+
+for name in $wikis; do
+  print_page "| $name | " "wiki/$name.html" > "public/$name.html"
 done
 
 for filepath in $posts; do
