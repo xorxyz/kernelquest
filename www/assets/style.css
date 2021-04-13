@@ -39,6 +39,23 @@ blockquote:before, blockquote:after {
   content: "\""
 }
 
+input {
+  background-color: #111;
+  border: none;
+  border-radius: 0.125rem;
+  padding: 1ex;
+  color: #fff;
+}
+
+pre {
+  background-color: #111;
+  color: #fff;
+  border-radius: 0.125rem;
+  padding: 1ex;
+  letter-spacing: 0.125ex;
+  line-height: 2.6ex;
+}
+
 summary {
   color: blue;
 }
@@ -58,7 +75,6 @@ footer {
 }
 
 #room {
-  font-size: 1rem;
   line-height: 1rem;
 }
 
@@ -73,6 +89,7 @@ footer {
   padding-left: 4ex;
 }
 
+.bg-white { background-color: #fff; color: #000; }
 .blue { color: blue; }
 .f4 { font-size: 1rem; }
 .mb1 { margin-bottom: 1rem; }

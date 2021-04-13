@@ -59,6 +59,9 @@ documents i want to keep track of:
 # economics
 - [Bounded rationality](https://en.wikipedia.org/wiki/Bounded_rationality)
 
+# security
+- [Security Policy Alignment: A Formal Approach](http://isg.rhul.ac.uk/dusko/papers/1208-IEEE.pdf) -  a formalisation of security policy alignment for complex socio-technical systems based on predicates over sequences of actions. provides the foundations for existing and future methods for finding security weaknesses induced by misalignment of policies in sociotechnical systems. System models for attack generation can be understood as completeness checkers for policies. 
+
 # misc
 - [Concept of materials](https://simplifier.neocities.org/materials.html)
 - [Concept of surfaces](https://simplifier.neocities.org/surfaces.html)

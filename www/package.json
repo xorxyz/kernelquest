@@ -1,4 +1,7 @@
 {
+  "peerDependencies": {
+    "xor4-game": "4.0.0"
+  },
   "devDependencies": {
     "@types/node": "^14.14.37"
   }
