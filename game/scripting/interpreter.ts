@@ -1,7 +1,9 @@
-import { nextTick } from 'process';
-import { Compiler } from './compiler';
-import { Scanner, Token } from './scanner';
-import { Parser } from './parser';
+// eslint-disable-next-line import/no-unresolved
+import { Compiler } from './compiler.js';
+// eslint-disable-next-line import/no-unresolved
+import { Scanner, Token } from './scanner.js';
+// eslint-disable-next-line import/no-unresolved
+import { Parser } from './parser.js';
 
 let DEBUG = 0;
 

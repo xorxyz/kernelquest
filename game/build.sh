@@ -10,4 +10,4 @@ tsc \
   --isolatedModules \
   ./scripting/interpreter.ts
 
-# ./node_modules/.bin/jsmin --level 3 --overwrite 'dist/compiler.js'
+# ./node_modules/.bin/jsmin --level 3 --overwrite 'dist/interpreter.js'

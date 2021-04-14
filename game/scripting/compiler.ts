@@ -1,4 +1,5 @@
-import { Token, TokenType } from './scanner';
+// eslint-disable-next-line import/no-unresolved
+import { Token, TokenType } from './scanner.js';
 
 const literals = ['true', 'false', 'number', 'char', 'string'];
 const types = {
