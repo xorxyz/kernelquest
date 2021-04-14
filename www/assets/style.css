@@ -26,6 +26,7 @@ a { color: blue; }
 header a:visited { color: blue; }
 
 details { 
+  margin: 1ex 0;
   font-family: monospace;
 }
 
@@ -77,6 +78,16 @@ footer {
 #room {
   line-height: 1rem;
 }
+
+#output details ~ pre {
+  margin-bottom: 0;
+}
+
+#output pre ~ pre {
+  margin-top: 0;
+  border-radius: 0;
+}
+
 
 .list { padding-left: 0; }
 .list li { display: inline; }

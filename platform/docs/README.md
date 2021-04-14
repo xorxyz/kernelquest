@@ -1,4 +1,4 @@
-# xor/sys docs
+# xor/system docs
 
 *warning* this is still very much a work in progress.
 this system is not production-ready, use at your own risk.
@@ -12,28 +12,38 @@ this system is not production-ready, use at your own risk.
 
 # components
 
- x | name
+## agents
+
+ x | function (name)
 ---| ---
-   | library
-   | portal
+   | identity (google workspace)
+   | email (google workspace)
+   | calendars (gcal)
+
+## nodes
+
+ x | function (name)
+---| ---
+   | dns (namecheap)
+   | accounting (excel)
+   | wiki (custom static site)
+   | kanban (trello)
+   | www
+   | database
+   | rss
    | ssh
    | vpn
-   | iam
-   | email
-   | dns
-   | logs
-   | metrics
    | inventory
+   | logs
+   | backups
+   | portal
+   | metrics
    | risks
    | search
    | crons
    | irc
-   | rss
-   | calendars
    | sftp
-   | wiki
    | docs
    | xls
    | ppt
    | forms
-   | kanban
