@@ -65,7 +65,7 @@ export class Quotation extends Factor {
 
     log(item);
 
-    return this;
+    return item;
   }
 
   push(item) {
