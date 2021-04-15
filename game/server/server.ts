@@ -28,7 +28,7 @@ export default class GameServer {
     const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
 
-    this.engine.rooms[0].add(connection.player, 4, 4);
+    this.engine.rooms[0].add(connection.player, 4, 5);
     this.connections.add(connection);
     this.terminals.add(terminal);
 

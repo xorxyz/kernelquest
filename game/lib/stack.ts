@@ -1,16 +1,6 @@
-export class Stack<T> {
-  list: Array<T>
-
-  constructor() {
-    this.list = [];
-  }
-
+export class Stack<T> extends Array {
   clear() {
-    this.list.length = 0;
-  }
-
-  concat() {
-    return this.list.join(' ');
+    this.length = 0;
   }
 
   /** pop multiple values */
@@ -18,7 +8,7 @@ export class Stack<T> {
     const items: Array<any> = [];
 
     for (let i = 0; i < n; i++) {
-      const item = this.list.pop();
+      const item = this.pop();
       items.push(item);
     }
 
@@ -27,22 +17,10 @@ export class Stack<T> {
 
   /** peek at the value on top of the stack */
   peek() {
-    return this.list[this.length - 1];
+    return this[this.length - 1];
   }
 
   peekN(n: number) {
-    return this.list[n];
-  }
-
-  push(value: T) {
-    this.list.push(value);
-  }
-
-  pop() {
-    return this.list.pop();
-  }
-
-  get length() {
-    return this.list.length;
+    return this[n];
   }
 }

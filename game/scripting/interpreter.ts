@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/no-unresolved
-import { Compiler } from './compiler.js';
-// eslint-disable-next-line import/no-unresolved
-import { Scanner, Token } from './scanner.js';
-// eslint-disable-next-line import/no-unresolved
-import { Parser } from './parser.js';
+import { Stack } from '../lib/stack';
+import { Compiler } from './compiler';
+import { Scanner, Token } from './scanner';
+import { Parser } from './parser';
 
 let DEBUG = 1;
 
@@ -31,11 +29,24 @@ export class Combinator {
   valueOf() { return this.type; }
 }
 
-export class Operator extends Combinator {}
+export class Operator extends Combinator {
+  toJSON() { return this.type; }
+}
 
 export class List extends Array {}
-export class RuntimeError extends List {}
-export class Stack extends List { peek() { return this[this.length - 1]; }}
+export class RuntimeError extends List {
+  static from(args: Array<string>) {
+    const err = new RuntimeError();
+
+    if (args[0] === 'TypeError') {
+      err.push(args[0]);
+    } else {
+      args.forEach((arg) => err.push(arg));
+    }
+
+    return err;
+  }
+}
 
 export class Factor {
   level = 0
@@ -246,7 +257,10 @@ export class Quotation extends Factor {
 export class VM extends Quotation {
   eval(js: string) {
     // eslint-disable-next-line no-new-func
-    const apply = new Function('begin', `'use strict';return (${js})`);
+    const apply = new Function('begin', `
+      'use strict'; 
+      return (${js})
+    `);
 
     const result = apply(this);
 
@@ -256,13 +270,13 @@ export class VM extends Quotation {
 
 export default class Intrepreter {
   source: string
-  stack: Stack
+  stack: Stack<any>
   tokens: Array<Token>
 
   get $DEBUG() { return DEBUG; }
   set $DEBUG(value) { DEBUG = value; }
 
-  constructor(stack: Stack = new Stack()) {
+  constructor(stack: Stack<any> = new Stack()) {
     this.stack = stack;
   }
 
@@ -282,7 +296,11 @@ export default class Intrepreter {
   exec(str: string) {
     debug(str);
 
-    this.check(str);
+    try {
+      this.check(str);
+    } catch (err) {
+      return RuntimeError.from([err.name, err.message]);
+    }
 
     const compiler = new Compiler(this.tokens);
     this.source = compiler.compile();

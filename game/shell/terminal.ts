@@ -1,6 +1,6 @@
 import { Drop, PrintInventory, SwitchMode } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
-import Interpreter from './interpreter';
+import Interpreter, { RuntimeError } from '../scripting/interpreter';
 import { LineEditor } from './line_editor';
 import { CELL_WIDTH } from '../ui/components';
 import Connection from '../server/connection';
@@ -10,6 +10,7 @@ import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../lib/esc';
 import { ctrl } from './controller';
 import { Vector } from '../lib/math';
+import { debug } from '../lib/logging';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
@@ -70,10 +71,6 @@ export class Terminal {
       REFRESH_RATE,
     );
 
-    this.interpreter.on('spells', () => {
-      this.state.spellbook = !this.state.spellbook;
-    });
-
     this.render();
   }
 
@@ -117,19 +114,31 @@ export class Terminal {
     if (str === Keys.ENTER) {
       if (this.line.value) {
         const expr = this.line.value.trim();
-        const thing = this.interpreter.eval(expr);
+        const output = this.interpreter.exec(expr);
 
+        this.player.mana.decrease(expr.split(' ').length);
         this.stdout.push(this.state.prompt + expr);
         this.player.model.room.say(this.player, expr);
 
-        if (thing) {
-          this.stdout.push(thing.name);
+        debug(output);
 
-          if (thing instanceof Item) {
-            thing.position.copy(this.connection.player.position);
-            this.player.queue.push(new Drop(thing));
-          }
+        if (output) {
+          this.stdout.push(JSON.stringify(output));
         }
+
+        if (output instanceof RuntimeError) {
+          this.player.health.decrease(10);
+          this.stdout.push('Your spell fails. -10 hp');
+        }
+
+        // if (thing) {
+        //   this.stdout.push(thing.name);
+
+        //   if (thing instanceof Item) {
+        //     thing.position.copy(this.connection.player.position);
+        //     this.player.queue.push(new Drop(thing));
+        //   }
+        // }
 
         this.state.line = '';
         this.line.reset();
