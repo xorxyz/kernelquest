@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     queryEl.innerText = prompt + e.target.value
-    resultEl.innerText = result;
+    resultEl.innerText = JSON.stringify(result);
     e.target.value = '';
 
     outputEl.appendChild(queryEl)

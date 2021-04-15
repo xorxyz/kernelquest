@@ -5,7 +5,7 @@ import { Scanner, Token } from './scanner.js';
 // eslint-disable-next-line import/no-unresolved
 import { Parser } from './parser.js';
 
-let DEBUG = 0;
+let DEBUG = 1;
 
 const log = (...msg) => (console.log(...msg));
 const debug = (...msg) => (DEBUG ? log(...msg) : 0);
@@ -67,7 +67,7 @@ export class Quotation extends Factor {
 
     log(item);
 
-    return item;
+    return this;
   }
 
   push(item) {
@@ -159,23 +159,23 @@ export class Quotation extends Factor {
   /** x y -> x + y */
   add() {
     return this.$op('add', () => {
-      const b = this.pop();
-      const a = this.pop() || '';
+      const b = this.stack.pop();
+      const a = this.stack.pop() || '';
       this.push(a + b);
     });
   }
 
   mul() {
     return this.$op('mul', () => {
-      const b = this.pop();
-      const a = this.pop() || '';
+      const b = this.stack.pop();
+      const a = this.stack.pop() || '';
       this.push(a * b);
     });
   }
 
   dup() {
     return this.$op('dup', () => {
-      const a = this.pop();
+      const a = this.stack.pop();
       this.push(a);
       this.push(a);
     });
@@ -183,8 +183,8 @@ export class Quotation extends Factor {
 
   concat() {
     return this.$op('concat', () => {
-      const b = this.pop();
-      const a = this.pop();
+      const b = this.stack.pop();
+      const a = this.stack.pop();
       const result = a.concat(b);
       this.push(result);
     });
@@ -192,9 +192,10 @@ export class Quotation extends Factor {
 
   cons() {
     return this.$op('cons', () => {
-      const b = this.pop();
-      const a = this.pop();
-      const result = List.from([a, b]);
+      const b = this.stack.pop() as List;
+      const a = this.stack.pop() as List;
+      debug(a, b);
+      const result = List.from([a, ...b]);
       this.push(result);
     });
   }
@@ -202,15 +203,15 @@ export class Quotation extends Factor {
   /** [1 2] [1 add] map -> [2 3] */
   map() {
     return this.$op('map', () => {
-      const program = this.pop();
-      const list = this.pop();
+      const program = this.stack.pop();
+      const list = this.stack.pop();
       const result = new List();
 
       list.forEach((item) => {
         const l = List.from([item, ...program]);
         this.push(l);
         this.i();
-        const r = this.pop();
+        const r = this.stack.pop();
         result.push(r);
       });
 
@@ -222,7 +223,7 @@ export class Quotation extends Factor {
   /** execute the program sitting on top of the stack */
   i() {
     debug('exec');
-    const list = this.pop();
+    const list = this.stack.pop();
 
     if (!(list instanceof List)) {
       throw new Error('exec expects a list');
