@@ -3,6 +3,7 @@ const prompt = '> ';
 
 document.addEventListener('DOMContentLoaded', () => {
   console.debug('editor.js: DOMContentLoaded');
+
   const inputEl = document.getElementById('prompt');
   const outputEl = document.getElementById('output');
   const vmStateEl = document.getElementById('vm-state');
@@ -29,15 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     queryEl.innerText = prompt + e.target.value
-    resultEl.innerText = result;
+    resultEl.innerText = JSON.stringify(result);
     e.target.value = '';
     vmStateEl.innerText = renderVmState(sh);
     
-    outputEl.prepend(queryEl)
-    outputEl.prepend(resultEl);
+    outputEl.appendChild(queryEl)
+    outputEl.appendChild(resultEl);
   });
 })
 
 function renderVmState(vm) {
-  return `stack: [ ${vm.stack.join(' ')} ]`
+  return `stack: ${JSON.stringify(vm.stack)}`
 }

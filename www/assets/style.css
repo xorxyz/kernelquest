@@ -3,7 +3,7 @@ body {
   margin: 1rem 10vw;
 }
 
-header, nav, main, article, pre, p, figure, img, h1, h2, h3 {
+header, nav, main, article, p, figure, img, h1, h2, h3 {
   margin-left: 0;
   max-width: 65ex;
   text-align: left;
@@ -88,7 +88,6 @@ footer {
   border-radius: 0;
 }
 
-
 .list { padding-left: 0; }
 .list li { display: inline; }
 .list li:not(:first-child):before {
@@ -100,6 +99,7 @@ footer {
   padding-left: 4ex;
 }
 
+.bg-yellow { background-color: rgb(255, 249, 198); }
 .bg-white { background-color: #fff; color: #000; }
 .blue { color: blue; }
 .f4 { font-size: 1rem; }
@@ -111,7 +111,10 @@ footer {
 .w-100 { width: 100% }
 .ma0 { margin: 0 }
 .mt0 { margin-top: 0; }
+.mv1 { margin: 1rem 0; }
 .mv2 { margin: 2rem 0; }
+.pa1 { padding: 1ex; }
+.pa2 { padding: 2ex; }
 .pa05 { padding: 0.5rem; }
 .ph2 { padding: 0 2rem; }
 .tc { text-align: center; }

@@ -1,13 +1,6 @@
 <main>
 <h2>editor</h2>
 
-<div class="monospace">
-  <code>&gt;</code>
-  <input id="prompt" type="text" size="35" maxlength="35" placeholder=""/>
-</div>
-
-<pre><code id="vm-state"></code></pre>
-
 <div id="output">
   <details open>
   <summary>draw</summary>
@@ -28,6 +21,13 @@
   </pre>
   </details>
   </div> <!-- id="output" -->
+
+<div class="monospace mv1">
+  <code>&gt;</code>
+  <input id="prompt" type="text" size="35" maxlength="35" placeholder=""/>
+</div>
+
+<pre><code id="vm-state"></code></pre>
 
 <script src="scanner.js" type="module"></script>
 <script src="parser.js" type="module"></script>
