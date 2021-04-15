@@ -87,7 +87,7 @@ const stringify = (x) => (x ? JSON.stringify(x).replace(/"/g, '') : '');
 const trim = (x) => (x.length > 12 ? `${x.slice(0, 12)}..` : x);
 const nothing = `${esc(Style.Dim)}${'nothing       '}${esc(Style.Reset)}`;
 const DF = (p: Player, n: number) =>
-  (trim(stringify(p.stack.peekN(n))) || nothing).padEnd(14, ' ');
+  (trim(stringify(p.stack[p.stack.length - 1 - n])) || nothing).padEnd(14, ' ');
 
 export class Sidebar extends UiComponent {
   render({ player: p }) {
@@ -96,11 +96,11 @@ export class Sidebar extends UiComponent {
       '│ N: John       │',
       '│ P: 🧙Wizard   │',
       '│               │',
-      `│ ${DF(p, 4)}│`,
-      `│ ${DF(p, 3)}│`,
-      `│ ${DF(p, 2)}│`,
-      `│ ${DF(p, 1)}│`,
       `│ ${DF(p, 0)}│`,
+      `│ ${DF(p, 1)}│`,
+      `│ ${DF(p, 2)}│`,
+      `│ ${DF(p, 3)}│`,
+      `│ ${DF(p, 4)}│`,
       '│               │',
       '└───────────────┘',
     ];
