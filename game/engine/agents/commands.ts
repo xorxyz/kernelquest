@@ -1,8 +1,9 @@
 import { Agent } from './agents';
-import { Item } from '../things/items';
+import { Item, LiteralItem } from '../things/items';
 import { Terminal } from '../../shell/terminal';
 import { Vector } from '../../lib/math';
 import { debug } from '../../lib/logging';
+import { Thing } from '../things/things';
 
 const directions = [
   new Vector(0, -1),
@@ -71,6 +72,22 @@ export class Say extends Command {
   }
 
   execute() {
+    return true;
+  }
+}
+
+export class Wield extends Command {
+  execute(agent: Agent) {
+    let thing = agent.stack.pop();
+    debug(thing);
+    if (!thing) return false;
+    if (!(thing instanceof Thing)) {
+      thing = new LiteralItem(thing);
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    agent.dragging = thing;
+
     return true;
   }
 }

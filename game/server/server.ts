@@ -32,8 +32,9 @@ export default class GameServer {
     this.connections.add(connection);
     this.terminals.add(terminal);
 
-    socket.on('data', (buf: Buffer) =>
-      terminal.handleInput(buf.toString('hex')));
+    socket.on('data', (buf: Buffer) => {
+      terminal.handleInput(buf.toString('hex'));
+    });
 
     socket.on('error', (err) => {
       debug('error', err);

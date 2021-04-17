@@ -6,7 +6,6 @@ import { CELL_WIDTH } from '../ui/components';
 import Connection from '../server/connection';
 import { MainView } from '../ui/views';
 import { Keys, Signals } from '../lib/constants';
-import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../lib/esc';
 import { ctrl } from './controller';
 import { Vector } from '../lib/math';
@@ -33,6 +32,9 @@ export class Terminal {
   line: LineEditor = new LineEditor()
   view: MainView = new MainView()
   stdout: Array<string>
+
+  waiting = false
+
   private timer: NodeJS.Timeout
 
   get player() {
@@ -66,6 +68,17 @@ export class Terminal {
 
     this.interpreter = new Interpreter(this.player.stack);
 
+    this.interpreter.bus.on('push', () => {
+      const thing = this.player.dragging;
+
+      this.player.stack.push(thing);
+      this.player.dragging = null;
+
+      const idx = this.player.model.room.things.findIndex((t) => t === thing);
+      this.player.model.room.things.splice(idx);
+      debug(this.player.model.room.things);
+    });
+
     this.timer = setInterval(
       this.render.bind(this),
       REFRESH_RATE,
@@ -80,6 +93,8 @@ export class Terminal {
   }
 
   handleInput(str: string) {
+    if (this.waiting) return;
+
     if (str === Signals.SIGINT) {
       this.connection.end();
       return;
@@ -114,6 +129,7 @@ export class Terminal {
     if (str === Keys.ENTER) {
       if (this.line.value) {
         const expr = this.line.value.trim();
+
         const output = this.interpreter.exec(expr);
 
         this.player.mana.decrease(expr.split(' ').length);
@@ -131,17 +147,24 @@ export class Terminal {
           this.stdout.push('Your spell fails. -10 hp');
         }
 
-        // if (thing) {
-        //   this.stdout.push(thing.name);
+        // if (typeof output === 'number') {
+        //   const thing = new LiteralItem(output);
 
-        //   if (thing instanceof Item) {
-        //     thing.position.copy(this.connection.player.position);
-        //     this.player.queue.push(new Drop(thing));
-        //   }
+        //   thing.position.copy(this.connection.player.position);
+        //   this.player.queue.push(new Drop(thing));
         // }
 
         this.state.line = '';
         this.line.reset();
+
+        this.stdout.push('...');
+
+        this.waiting = true;
+        setTimeout(() => {
+          this.waiting = false;
+          this.stdout.push('ok.');
+          this.render();
+        }, 300);
       }
 
       this.switchModes();

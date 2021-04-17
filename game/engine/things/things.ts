@@ -9,10 +9,6 @@ export abstract class Thing extends Word {
   blocking = false
 }
 
-export abstract class LiteralItem extends Thing {
-  literal: Literal
-}
-
 export class WallTop extends Thing {
   name = 'wall-top'
   look = new Look('wall', '██', 'it looks like it\'s in your way')

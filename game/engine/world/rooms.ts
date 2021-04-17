@@ -2,7 +2,7 @@ import { debug } from '../../lib/logging';
 import { Matrix, matrixOf, Vector } from '../../lib/math';
 import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
-import { Command, Drop, Move, Drag, PickUp, Rotate } from '../agents/commands';
+import { Command, Drop, Move, Drag, PickUp, Rotate, Wield } from '../agents/commands';
 import { Item } from '../things/items';
 import { Thing } from '../things/things';
 import { Cell } from './cells';
@@ -99,6 +99,7 @@ export class Room extends Environment {
   }
 
   move(agent: Agent, command?: Command) {
+    if (agent.stamina.value === 0) return;
     if (command && command instanceof Move) {
       command.execute(agent);
     }
@@ -145,6 +146,10 @@ export class Room extends Environment {
       if (command instanceof Move) return;
 
       debug('command:', agent.name, 'calls', command);
+
+      if (command && command instanceof Wield) {
+        command.execute(agent);
+      }
 
       if (command instanceof Drag) {
         if (agent.dragging) return;

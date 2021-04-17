@@ -1,7 +1,9 @@
+import * as EventEmitter from 'events';
 import { Stack } from '../lib/stack';
 import { Compiler } from './compiler';
 import { Scanner, Token } from './scanner';
 import { Parser } from './parser';
+import { Thing } from '../engine/things/things';
 
 let DEBUG = 1;
 
@@ -45,10 +47,12 @@ export class RuntimeError extends List {
 }
 
 export class Factor {
+  bus: EventEmitter
   level = 0
   stacks: Array<any>
 
-  constructor(stack = new Stack()) {
+  constructor(stack: Stack<any>, bus: EventEmitter) {
+    this.bus = bus;
     this.stacks = [stack];
     Object.defineProperty(this, 'stacks', {
       enumerable: false,
@@ -161,12 +165,18 @@ export class Quotation extends Factor {
     return this;
   }
 
+  push() {
+    return this.$op('push', () => {
+      this.bus.emit('push');
+    });
+  }
+
   pop() {
     return this.$op('pop', () => {
       const item = this.stack.pop();
       debug('pop', item, `(${this.stack.join(',')})`);
-
       log(item);
+      this.bus.emit('pop', item);
     });
   }
 
@@ -313,21 +323,26 @@ export class Quotation extends Factor {
   }
 }
 
-export class VM extends Quotation {
+export class VM {
+  program: Quotation;
+
+  constructor(stack: Stack<Thing>, bus: EventEmitter) {
+    this.program = new Quotation(stack, bus);
+  }
+
   eval(js: string) {
     // eslint-disable-next-line no-new-func
-    const apply = new Function('begin', `
+    const result = (new Function('begin', `
       'use strict'; 
-      return (${js})
-    `);
-
-    const result = apply(this);
+      return (${js});
+    `))(this.program);
 
     return result;
   }
 }
 
 export default class Intrepreter {
+  bus = new EventEmitter()
   source: string
   stack: Stack<any>
   tokens: Array<Token>
@@ -367,7 +382,7 @@ export default class Intrepreter {
 
     debug(this.source);
 
-    const vm = new VM(this.stack);
+    const vm = new VM(this.stack, this.bus);
 
     try {
       vm.eval(this.source);
