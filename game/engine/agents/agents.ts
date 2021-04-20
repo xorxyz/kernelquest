@@ -10,14 +10,13 @@ import { Command, Move } from './commands';
 import { Room } from '../world/rooms';
 import Engine from '../engine';
 import { debug } from '../../lib/logging';
-import { Word } from '../../shell/types';
 import { Thing } from '../things/things';
 
 abstract class Capability {
   abstract bootstrap (agent: Agent): void
 }
 
-export abstract class Being extends Word {
+export abstract class Being {
   id: string = uuid.v4()
 
   position: Vector = new Vector()

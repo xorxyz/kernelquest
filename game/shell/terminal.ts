@@ -1,4 +1,4 @@
-import { Drop, PrintInventory, SwitchMode } from '../engine/agents/commands';
+import { PrintInventory, SwitchMode } from '../engine/agents/commands';
 import { CLOCK_MS_DELAY } from '../engine/engine';
 import Interpreter, { RuntimeError } from '../scripting/interpreter';
 import { LineEditor } from './line_editor';

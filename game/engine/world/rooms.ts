@@ -1,6 +1,5 @@
 import { debug } from '../../lib/logging';
 import { Matrix, matrixOf, Vector } from '../../lib/math';
-import { Environment } from '../../shell/types';
 import { Agent } from '../agents/agents';
 import { Command, Drop, Move, Drag, PickUp, Rotate, Wield } from '../agents/commands';
 import { Item } from '../things/items';
@@ -16,7 +15,7 @@ export interface IMessage {
   countdown: number
 }
 
-export class Room extends Environment {
+export class Room {
   name: string
   cells: Matrix<Cell>
 
@@ -45,7 +44,6 @@ export class Room extends Environment {
   }
 
   constructor() {
-    super();
     this.cells = matrixOf(16, 10, (x, y) => new Cell(x, y));
   }
 

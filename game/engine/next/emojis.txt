@@ -1,0 +1,103 @@
+gain xp by reaching lower dungeon levels
+lose xp by dying
+gain levels by gaining enough xp without dying
+
+bg color:
+  white: cursor
+  yellow: cursor warning
+  red: cursor danger
+
+  5 teams
+  pink
+  purple
+  blue
+  turquoise
+  green
+
+characters:
+👼 cherub, in-between runs
+🧝 elf, stronger, hp restores faster, harder to kill
+🧚 fairy, faster, natural light, sp restores faster, can heal
+🧙 wizard, spellbook, mp restores faster, spells deal more damage
+
+world map places (teleports you to the zone)
+🌲 fir
+🌳 tree
+🏔 snow mountain
+⛰ mountain
+🏘 village
+🏕 campsite
+🏰 castle
+⛲ fountain
+🏛 temple
+
+people:
+🤴 prince
+👸 princess
+🧑‍🌾 farmer
+💁 person tipping hand
+🙋 person raising hand
+👶 baby
+👦 boy
+👧 girl
+👨 man
+👨‍🦱 man w/ curly hair
+👨‍🦲 bald man 
+👩 woman
+👱‍♀️ woman w/ blond hair
+👩‍🦳 woman w/ white hair
+👴 old man
+👵 old woman
+
+critters:
+🐑 sheep, eats off excess data
+🐌 snail, spreads data
+🐕 dog, fetches
+🐈 cat, purrs
+🦌 deer, leads you to secrets
+🦉 owl, gives you tips
+
+magic:
+✨ magic effect -> appears when magic effect 
+
+🌈 light -> shines in a radial gradient
+🌊 water -> ~~, flows downstreams, accumulates in pools
+🌪 wind -> moves in circles, moves light things
+🔥 fire -> spreads, self-replicating
+⚡⚡ thunder -> sparks in right angles, discharges and disappears
+
+dungeon items (1 time use)
+🕯 candle -> light
+📜 scroll -> magic effects
+💰 gold -> gp
+🍄 mushroom -> hp
+🌿 herb -> mp
+📕📗📘 red, green, blue book -> info
+🗝 old key, door -> unlocked
+🔒 lock, locks a door
+
+monsters:
+🐛 bug, eats herbs
+🦟 mosquito, swarm and drain hp
+🐀 rat, hides, steals and stashes items
+🕷️🕸️ spider, creates webs, which drain stamina 
+🦇 bat, fly towards shadows, hurting you if in the way
+🐍 snake, bites, maybe poison
+👺 goblin, creates malware
+👹 ogre, destroys data
+🐉 dragon, sleeps, eats all the sheep, burns down villages, accumulates riches
+
+equipment (should break real fast)
+⛏ pick (mine data blocks)
+🪓 axe (wide attack)
+🗡 dagger (short range attack)
+🏹 bow (shoot arrows)
+🥾 boots (walk faster)
+🎒 backpack (bag of registers)
+🧳 luggage (bigger bag of registers)
+🎲 dice (generate random numbers)
+🧮 abacus (get numbers from numbers)
+🔮 orb (invoke spirits)
+💍 ring (+ luck)
+🛡 shield (+ protection)
+👑 crown (+ smarts)
