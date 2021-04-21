@@ -1,10 +1,10 @@
 import { PrintInventory, SwitchMode } from '../engine/agents/commands';
-import { CLOCK_MS_DELAY } from '../engine/engine';
-import Interpreter, { RuntimeError } from '../scripting/interpreter';
+import { CLOCK_MS_DELAY } from '../_deprecated/engine2/engine';
+import Interpreter, { RuntimeError } from '../engine/scripting/interpreter';
 import { LineEditor } from './line_editor';
-import { CELL_WIDTH } from '../ui/components';
-import Connection from '../server/connection';
-import { MainView } from '../ui/views';
+import { CELL_WIDTH } from '../game/ui/components';
+import Connection from '../game/server/connection';
+import { MainView } from '../game/ui/views';
 import { Keys, Signals } from '../lib/constants';
 import { Cursor, esc } from '../lib/esc';
 import { ctrl } from './controller';

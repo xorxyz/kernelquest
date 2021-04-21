@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
-import { debug } from '../lib/logging';
+import { debug } from '../../lib/logging';
 import { Player } from '../engine/agents/agents';
 
 export default class Connection {

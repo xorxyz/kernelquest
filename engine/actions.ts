@@ -1,4 +1,4 @@
-import { Vector } from '../../lib/math';
+import { Vector } from '../lib/math';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}

@@ -1,7 +1,8 @@
-import { Stack } from '../../lib/stack';
+import { Stack } from '../lib/stack';
 import { Thing } from './things';
+import { Memory } from './vm';
+import { Execution } from './agents';
 import { MAX_X, MAX_Y, TokenType } from './constants';
-import { Execution, Memory } from './vm';
 
 export abstract class RuntimeError extends Error {}
 export class MissingOperand extends RuntimeError {}
@@ -51,8 +52,7 @@ export abstract class Transform {
 }
 
 export abstract class Effect extends Transform {}
-export interface Program {
-  tokens: Array<Token>,
+export interface IProgram {
   transforms: Array<Transform>
 }
 
@@ -65,7 +65,7 @@ export class Scanner {
 export class Compiler {
   private scanner = new Scanner()
 
-  compile(code: string): Program {
+  compile(code: string) {
     const tokens = this.scanner.scan(code);
     const transforms = [];
     return { tokens, transforms };

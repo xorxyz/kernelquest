@@ -1,5 +1,5 @@
 import { Agent } from './agents';
-import { World } from './places';
+import { World } from './vm';
 
 export class Engine {
   world: World = new World()

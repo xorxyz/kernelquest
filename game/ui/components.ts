@@ -2,12 +2,12 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import { esc, Cursor, Style, Colors } from '../lib/esc';
-import { debug } from '../lib/logging';
-import { TakeN, takeN, Vector } from '../lib/math';
+import { esc, Cursor, Style, Colors } from '../../lib/esc';
+import { debug } from '../../lib/logging';
+import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { IState, Terminal } from '../shell/terminal';
+import { IState, Terminal } from '../../shell/terminal';
 
 const { Fg, Bg } = Colors;
 

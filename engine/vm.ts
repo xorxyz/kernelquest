@@ -1,11 +1,14 @@
 import * as fs from 'fs';
 import { promisify } from 'util';
-import { Vector } from '../../lib/math';
-import { Stack } from '../../lib/stack';
+import { Vector } from '../lib/math';
+import { Stack } from '../lib/stack';
 import { Ref } from './language';
 import { Agent } from './agents';
-import { DataStack, Memory } from './vm';
+import { Thing } from './things';
 import { DB_FILEPATH, MAX_X, MAX_Y } from './constants';
+
+export type Memory = Array<Thing>
+export type DataStack = Stack<Thing>
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -14,7 +17,7 @@ export interface Ports<T> {
   north: T, east: T, south: T, west: T
 }
 
-export abstract class Place {
+export abstract class Context {
   position: Vector
   ports: Ports<Cell|Room>
   stack: DataStack = new Stack()
@@ -24,7 +27,7 @@ export abstract class Place {
   }
 }
 
-export class Cell extends Place {
+export class Cell extends Context {
   ports: Ports<Cell>
   ref: Ref
   constructor(x: number, y: number, ref: Ref) {
@@ -57,7 +60,7 @@ export class Col extends Array {
   }
 }
 
-export class Room extends Place {
+export class Room extends Context {
   ports: Ports<Room>
   memory: Memory = []
 
@@ -92,6 +95,11 @@ export class Zone {
 export class World {
   zones: Set<Zone> = new Set()
   locations: Map<Agent, Room>
+
+  constructor() {
+    ['overworld', 'fountain', 'town',
+    ].forEach((name) => this.zones.add(new Zone(name)));
+  }
 
   async load() {
     const contents = await readFile(DB_FILEPATH, 'utf8');
