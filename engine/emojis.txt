@@ -4,144 +4,163 @@
   🟥 red     danger
 ]
 
-"teams" == [
-  🟦 blue
-  🟩 green
-  🟧 orange
-  🟪 purple
+"heroes" == [
+  🤴 the prince
+  👸 the princess
+  👼 cherubs
+  🧝 elves         sp  [ [dash] [swap] ]     ( fast & tough. )
+  🧚 fairies       hp  [ [heal] [cure] ]     ( emits light. care, influence. )
+  🧙 wizards       mp  [ [fire] [thunder] ]  ( smart & dangerous. )
 ]
 
-"heroes" == [
-  👼 cherub
-  🧚 fairy   hp  [ [heal] [cure] ]  ( emits light. )
-  🧝 elf     sp  [ [dash] [swap] ]  ( fast & tough. )
-  🧙 wizard  mp  [ [wind] [fire] ]  ( smart & dangerous. )
+"colors" == [
+  🟦 blue   ( 🟦🧚 🟦🧝 🟦🧙 )
+  🟩 green  ( 🟩🧚 🟩🧝 🟩🧙 )
+  🟧 orange ( 🟧🧚 🟧🧝 🟧🧙 )
+  🟪 purple ( 🟪🧚 🟪🧝 🟪🧙 )
 ]
 
 "places" == [
-  ⛲ fountain   ( home. )
-  🏘 village    ( shop, get quests. )
-  🌲 forest     ( 4x4 dungeon. )
-  🏕 campsite   ( rest, mini-games. )
-  ⛰ mountains  ( 4x4 dungeon. )
-  🏰 castle     ( 8x8x8 dungeon. )
-  🏔 peaks      ( empty space. )
-  🏛 temple     ( level up! )
+  ⛲ the fountain  ( home. the lobby? )
+  🏘 the village   ( sell loot, buy stuff, get quests. )
+  🌲 forests       ( 4x4 dungeon. )
+  🏕 campsites     ( rest areas, mini-games. )
+  ⛰ mountains     ( 4x4 dungeon. )
+  🏰 castles       ( 7x4x4 dungeon. )
+  🏔 peaks         ( empty spaces. )
+  🏛 the temple    ( level up! )
 ] ( teleports you to a zone. )
-
-( maybe leveling up means your agent gets to integrate newly created structures in the lower layers... )
 
 ( you "gain xp" by getting closer to the temple level.
   you "lose xp" by dying and having to backtrack or reset.
   you "gain levels" by reaching the end without dying. )
 
-"people" == [ 
-  🤴 prince
-  👸 princess
-  🧑‍🌾 farmer
+( maybe leveling up means your agent gets to integrate newly created structures in the lower layers... )
+
+"critters" == [
+  🐑 sheeps     ( eats off excess data. )
+  🐈 cats       ( purrs. )
+  🐕 dogs       ( fetches. )
+  🐝 bees       ( polinates flowers. )
+  🦌 the deer   ( leads you to secrets. )
+  🐌 the snail  ( spreads data. )
+  🦉 the owl    ( gives you tips. )
+] ( automatons. they help you in some way. )
+
+( these games we make, they're caricatures, illustrations. we can decide
+what we amplify and what we diminish. )
+
+"items" == [
+  (  name, durability, function signature. )
+  🕯 candle     1  :      -> light;               ( emit light for a moment. )
+  💎 gem        1  :      -> 0xFF 0xFF 0xFF 0xFF;
+  📜 scroll     1  :      -> [P] i
+  📕 book       1  :      -> "text" puts;         ( source code for the level? )
+  🦴 bone       1  :      -> [ ..ref? ];
+  🔒 lock       1  :      ->
+  🗝 key        1  :   🔒 -> [ 🔒 nothing ] maybe;
+  🍄 mushroom   1  :    n -> n hp incr;
+  🌿 herb       1  :    n -> n mp incr;
+  💰 gold       1  :    n -> n gp incr;
+] ( expandable resources. )
+
+"equipment" == [
+  ⛏ pick      ( mine data blocks. )
+  🥾 boots     ( walk faster. )
+  🎒 backpack  ( bag of registers. )
+  🧳 luggage   ( bigger bag of registers. )
+  🪓 axe       ( wide attack. )
+  🗡 dagger    ( short range attack. )
+  🏹 bow       ( shoot arrows. )
+  🧮 abacus    ( get numbers from numbers. )
+  🔮 orb       ( invoke spirits. )
+  🎲 dice      ( generate random numbers. )
+  💍 ring      ( + luck. )
+  🛡 shield    ( + protection. )
+  👑 crown     ( + smarts. )
+] ( assets. should break easily. )
+
+"monsters" == [
+  🐛 bugs        "eats crops."
+  🐀 rats        "hides, steals and stashes items"
+  🦇 bats        "fly towards shadows, hurting you if in the way"
+  🐺 wolves      "hunt in packs"
+  👺 goblins     "creates malware"
+]
+
+"bosses" == [
+  🐍 the snake   "bites, maybe poison"
+  🕷️ the spider  "creates webs 🕸️, which drain stamina" 
+  👹 the ogre    "destroys data"
+  🐲 the dragon  "sleeps, eats sheep, burns down villages, accumulates riches"
+] ( threats. )
+
+"people" == [
   👶 baby
   👦 boy
   👧 girl
   👨 man
-  👨‍🦱 man w/ curly hair
-  👨‍🦲 bald man 
   👩 woman
-  👱‍♀️ woman w/ blond hair
-  👩‍🦳 woman w/ white hair
   👴 old man
   👵 old woman
+  ( 🐎 horse? )
 ] ( you can have conversations with them. )
 
-"critters" == [
-  🐛 bug    ( eats plants. )
-  🐑 sheep  ( eats off excess data. )
-  🐌 snail  ( spreads data. )
-  🐝 bee    ( polinates flowers. )
-  🐕 dog    ( fetches. )
-  🐈 cat    ( purrs. )
-  🦌 deer   ( leads you to secrets. )
-  🦉 owl    ( gives you tips. )
-] ( they help you in some way. )
-
-"items" == [
-  (  name, durability, function signature. )
-  🕯 candle     1  :      -> light;  ( emit light for a moment. )
-  💎 gem        1  :      -> 0xFF 0xFF 0xFF 0xFF;
-  📜 scroll     1  :      -> [P] i
-  🦴 bone       1  :      -> [ ..ref? ];
-  📕 r_book     1  :      -> "text" puts;
-  📗 g_book    10  :      -> "text" puts;
-  📘 b_book   100  :      -> "text" puts;
-  🔒 lock       1  :      ->
-  🗝 key        1  : lock -> [ lock nothing ] maybe;
-  🍄 mushroom   1  :    n -> n hp incr;
-  🌿 herb       1  :    n -> n mp incr;
-  💰 gold       1  :    n -> n gp incr;
+"signals" == [
+  🙆 ok
+  🙅 no
+  🙇 bow
+  🙋 raise hand
+  💁 tip hand
+  🙍 frown
+  🙎 pout
 ]
-
-"monsters" == [
-  🦟 mosquito  "swarm and drain hp"
-  🐀 rat       "hides, steals and stashes items"
-  🕷️ spider    "creates webs 🕸️, which drain stamina" 
-  🦇 bat       "fly towards shadows, hurting you if in the way"
-  🐍 snake     "bites, maybe poison"
-  👺 goblin    "creates malware"
-  👹 ogre      "destroys data"
-  🐉 dragon    "sleeps, eats sheep, burns down villages, accumulates riches"
-]
-
-"equipment" == [
-  ⛏ pick      ( mine data blocks. )
-  🪓 axe       ( wide attack. )
-  🗡 dagger    ( short range attack. )
-  🏹 bow       ( shoot arrows. )
-  🥾 boots     ( walk faster. )
-  🎒 backpack  ( bag of registers. )
-  🧳 luggage   ( bigger bag of registers. )
-  🎲 dice      ( generate random numbers. )
-  🧮 abacus    ( get numbers from numbers. )
-  🔮 orb       ( invoke spirits. )
-  💍 ring      (+ luck. )
-  🛡 shield    (+ protection. )
-  👑 crown     (+ smarts. )
-] ( should break easily. )
 
 "particles" == [
   ✨ magic effect  ( appears when effects are invoked. )
-]
-
-"elements" == [
   🌈 light    ( shines in a radial gradient. )
   🌊 water    ( flows downstreams, accumulates in pools. )
   🌪 wind     ( moves in circles, moves light things. )
   🔥 fire     ( spreads, self-replicating. )
   ⚡⚡ thunder  ( sparks in right angles, discharges and disappears. )
-]
+] ( cellular automata? )
 
 "tiles" == [
-  ##  wall
   ~~  water
   /\  mountain
   φφ  forest
-  ``  grass
+  ``  grass  
   --  soil
+  ##  wall
 ]
 
 ( action language? )
 "operators" == [
-  .  noop
-  @  self
-  ,  wait
+  ( atoms: )
+  ..  noop
+  @.  self
+  ,.   wait
+  xF  1-16
+  'A  char
+  []  empty list
+
+  ( compounds: )
+  (.  .) comments
+  [.  .] lists
+  {.  .} sets
 
   ( flow control: )
-  ^  go north
-  >  go east 
-  v  go south
-  <  go west
-  X  end
+  ^.  go north
+  >.  go east 
+  v.  go south
+  <.  go west
+  X.  end
 
   ( stack: )
+  c.  cons
   d.  dup
+  f.  infra
+  i.  i
   s.  swap
   p.  pop
 
@@ -152,9 +171,12 @@
   /.  div
   %.  mod
 
-  ( conditionals: )
-  if 
-
   ( logic: )
+  ||  or
+  &&  and
   !.  not
+  ^.  xor
+
+  ( conditionals: )
+  if  ifte
 ]

@@ -68,7 +68,6 @@ export class Room extends Context {
   cols: Array<Col>
 
   agents: Set<Agent> = new Set()
-  ownership: Map<Ref, Agent | null> = new Map()
 
   constructor(x: number, y: number) {
     super(x, y);
@@ -90,11 +89,37 @@ export class Zone {
       return row;
     });
   }
+
+  find (agent: Agent) {
+    let room = null;
+    
+    this.rooms.forEach((y) => {
+      return y.forEach((x) => {
+        if (x.agents.has(agent)) {
+          room = x
+        }
+      })
+    });
+
+    return room;
+  }
+
+  add (agent: Agent, coord?: Vector) {
+    this.rooms[coord?.y || 0][coord.x || 0].agents.add(agent);
+  }
+
+  remove (agent: Agent, coord?: Vector) {
+    this.rooms[coord?.y || 0][coord.x || 0].agents.add(agent);
+  }
 }
 
 export class World {
+  admins: Set<Agent> = new Set()
+  mods: Set<Agent> = new Set()
+  players: Set<Agent> = new Set()
+
+  map: Map<Agent, Room>
   zones: Set<Zone> = new Set()
-  locations: Map<Agent, Room>
 
   constructor() {
     ['overworld', 'fountain', 'town',

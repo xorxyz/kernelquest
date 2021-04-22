@@ -2,7 +2,7 @@ import { Points, Vector } from '../lib/math';
 import { Stack } from '../lib/stack';
 import { Queue } from '../lib/queue';
 import { Compiler, IProgram, RuntimeError } from './language';
-import { Equipment, Item, Thing } from './things';
+import { Equipment, Item, Program, Thing } from './things';
 import { Action, NoAction } from './actions';
 import { DataStack, Room } from './vm';
 
@@ -11,13 +11,16 @@ export class SP extends Points {}
 export class MP extends Points {}
 export class GP extends Points {}
 
+export type Name = string
+export type Dict<T> = Record<Name, T>
+
 export class Execution {
   private level = 0
   private stacks: Array<any>
   private program: IProgram
+  private dict: Dict<Program>
 
-  constructor(program: IProgram, stack: DataStack) {
-    this.stacks = [stack];
+  constructor(program: IProgram) {
     this.program = program;
   }
 
@@ -29,9 +32,15 @@ export class Execution {
     this.stacks[this.level] = s;
   }
 
-  start() {
+  load(dict: Dict<Program>) {
+    this.dict = dict;
+  }
+
+  start(stack: DataStack) {
+    this.stacks = [stack];
+
     this.program.transforms.map((transform) =>
-      transform.fn.call(this, this.stack));
+      transform.fn.call(this, this.stack, this.dict));
 
     return this.stack.peek();
   }
@@ -70,10 +79,10 @@ export class Agent {
 
   exec(code: string) {
     const program = this.compiler.compile(code);
-    const execution = new Execution(program, this.stack);
+    const execution = new Execution(program);
 
     try {
-      execution.start();
+      execution.start(this.stack);
     } catch (err) {
       if (!(err instanceof RuntimeError)) {
         console.error('Unhandled error:', err);
