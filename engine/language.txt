@@ -1,0 +1,83 @@
+( # standard structures )
+
+( command language: )
+
+"operators" == [
+  ( atoms: )
+  ..  noop
+  @.  self
+  ,.   wait
+  xF  1-16 room sections
+  'A  char
+  []  empty list
+
+  ( compounds: )  
+  (.  .) comments
+  [.  .] lists
+  {.  .} sets
+
+  ( flow control: )
+  ^.  go north
+  >.  go east 
+  v.  go south
+  <.  go west
+  X.  end
+
+  ( stack: )
+  c.  cons
+  d.  dup
+  f.  infra
+  i.  i
+  p.  pop
+  s.  swap
+
+  ( arithmetics: )
+  +.  add
+  -.  sub
+  *.  mul
+  /.  div
+  %.  mod
+
+  ( logic: )
+  ||  or
+  &&  and
+  !.  not
+  ^.  xor
+
+  ( conditionals: )
+  if  ifte
+]
+
+"goals" == [
+  object property value
+]
+
+"mechanisms" == [
+  perception ( input. senses. )
+  action     ( output. commands? )
+]
+
+"beliefs" == [
+  [subject object verb timeframe certainty]
+  [object property min max]
+]
+
+"policies" = []
+
+"procedures" == [
+  storage        ( procedures, goals, observations, beliefs. )
+  parsing        ( meaning? )
+  analysis       ( valuation, ..? )
+  interpretation ( compute utility function? )
+  reasoning      ( inference rules. )
+  planning       ( problem solvers)
+]
+
+"processes" = [
+  ..procedures
+] ( capabilities. )
+
+"roles" == [
+  "commander"
+  "follower"
+]
