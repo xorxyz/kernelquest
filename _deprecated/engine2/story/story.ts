@@ -18,7 +18,7 @@
   - feedback should be unambiguous
  */
 
-import Graph, { INode } from '../../lib/graph';
+import Graph, { INode } from '../../../lib/graph';
 
 export abstract class FlatStateMachine {
   graph: Graph

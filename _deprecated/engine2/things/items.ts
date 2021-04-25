@@ -3,13 +3,13 @@
  */
 import { Agent } from '../agents/agents';
 import { Durability } from '../physics/durability';
-import { looks } from '../visuals/looks';
+import { Look, looks } from '../visuals/looks';
 import { Spell } from '../magic/spells';
 import { Thing } from './things';
 
 export abstract class Item extends Thing {
-  private owner: Agent | null = null
-  private durability: Durability = new Durability()
+  private owner: Agent | null
+  private durability: Durability
 
   abstract use(user, target?): Boolean
 }
@@ -20,6 +20,22 @@ export abstract class Consumable extends Item {
 
   use() {
     this.used = this.$use();
+    return true;
+  }
+}
+
+export abstract class Data extends Item {
+  look: Look
+
+  constructor(value: any) {
+    super();
+    this.name = `<data>${String(value)}`;
+    this.look = new Look(String(value), String(value).padEnd(2, ' '), value);
+  }
+}
+
+export class LiteralItem extends Data {
+  use() {
     return true;
   }
 }

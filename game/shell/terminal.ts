@@ -1,15 +1,15 @@
-import { Drop, PrintInventory, SwitchMode } from '../engine/agents/commands';
-import { CLOCK_MS_DELAY } from '../engine/engine';
-import Interpreter from './interpreter';
+import { PrintInventory, SwitchMode } from '../engine/agents/commands';
+import { CLOCK_MS_DELAY } from '../_deprecated/engine2/engine';
+import Interpreter, { RuntimeError } from '../engine/scripting/interpreter';
 import { LineEditor } from './line_editor';
-import { CELL_WIDTH } from '../ui/components';
-import Connection from '../server/connection';
-import { MainView } from '../ui/views';
+import { CELL_WIDTH } from '../game/ui/components';
+import Connection from '../game/server/connection';
+import { MainView } from '../game/ui/views';
 import { Keys, Signals } from '../lib/constants';
-import { Item } from '../engine/things/items';
 import { Cursor, esc } from '../lib/esc';
 import { ctrl } from './controller';
 import { Vector } from '../lib/math';
+import { debug } from '../lib/logging';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
@@ -32,6 +32,9 @@ export class Terminal {
   line: LineEditor = new LineEditor()
   view: MainView = new MainView()
   stdout: Array<string>
+
+  waiting = false
+
   private timer: NodeJS.Timeout
 
   get player() {
@@ -65,14 +68,21 @@ export class Terminal {
 
     this.interpreter = new Interpreter(this.player.stack);
 
+    this.interpreter.bus.on('push', () => {
+      const thing = this.player.dragging;
+
+      this.player.stack.push(thing);
+      this.player.dragging = null;
+
+      const idx = this.player.model.room.things.findIndex((t) => t === thing);
+      this.player.model.room.things.splice(idx);
+      debug(this.player.model.room.things);
+    });
+
     this.timer = setInterval(
       this.render.bind(this),
       REFRESH_RATE,
     );
-
-    this.interpreter.on('spells', () => {
-      this.state.spellbook = !this.state.spellbook;
-    });
 
     this.render();
   }
@@ -83,6 +93,8 @@ export class Terminal {
   }
 
   handleInput(str: string) {
+    if (this.waiting) return;
+
     if (str === Signals.SIGINT) {
       this.connection.end();
       return;
@@ -117,22 +129,42 @@ export class Terminal {
     if (str === Keys.ENTER) {
       if (this.line.value) {
         const expr = this.line.value.trim();
-        const thing = this.interpreter.eval(expr);
 
+        const output = this.interpreter.exec(expr);
+
+        this.player.mana.decrease(expr.split(' ').length);
         this.stdout.push(this.state.prompt + expr);
         this.player.model.room.say(this.player, expr);
 
-        if (thing) {
-          this.stdout.push(thing.name);
+        debug(output);
 
-          if (thing instanceof Item) {
-            thing.position.copy(this.connection.player.position);
-            this.player.queue.push(new Drop(thing));
-          }
+        if (output) {
+          this.stdout.push(JSON.stringify(output));
         }
+
+        if (output instanceof RuntimeError) {
+          this.player.health.decrease(10);
+          this.stdout.push('Your spell fails. -10 hp');
+        }
+
+        // if (typeof output === 'number') {
+        //   const thing = new LiteralItem(output);
+
+        //   thing.position.copy(this.connection.player.position);
+        //   this.player.queue.push(new Drop(thing));
+        // }
 
         this.state.line = '';
         this.line.reset();
+
+        this.stdout.push('...');
+
+        this.waiting = true;
+        setTimeout(() => {
+          this.waiting = false;
+          this.stdout.push('ok.');
+          this.render();
+        }, 300);
       }
 
       this.switchModes();

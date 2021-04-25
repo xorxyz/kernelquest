@@ -1,5 +1,7 @@
 import { Keys } from '../lib/constants';
-import { Drag, Command, Move, PickUp, SwitchMode, Rotate, Drop, PrintInventory } from '../engine/agents/commands';
+import {
+  Drag, Command, Move, PickUp, SwitchMode, Rotate, Drop, PrintInventory, Wield,
+} from '../engine/agents/commands';
 
 export function ctrl(str: string): Command | null {
   let command: Command | null = null;
@@ -34,6 +36,9 @@ export function ctrl(str: string): Command | null {
       break;
     case (Keys.LOWER_D):
       command = new Drop(null);
+      break;
+    case (Keys.LOWER_W):
+      command = new Wield();
       break;
     case (Keys.LOWER_I):
       command = new PrintInventory();

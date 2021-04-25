@@ -189,3 +189,16 @@ export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
 
   return arr;
 }, [[]]);
+
+export abstract class Points {
+  value: number = 100
+  cap: number = 100
+
+  increase(amount: number) {
+    this.value = Math.min(this.value + amount, this.cap);
+  }
+
+  decrease(amount: number) {
+    this.value = Math.max(this.value - amount, 0);
+  }
+}

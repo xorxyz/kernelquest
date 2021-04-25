@@ -2,12 +2,12 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import { esc, Cursor, Style, Colors } from '../lib/esc';
-import { debug } from '../lib/logging';
-import { TakeN, takeN, Vector } from '../lib/math';
+import { esc, Cursor, Style, Colors } from '../../lib/esc';
+import { debug } from '../../lib/logging';
+import { TakeN, takeN, Vector } from '../../lib/math';
 import { Player } from '../engine/agents/agents';
 import { Cell } from '../engine/world/cells';
-import { IState, Terminal } from '../shell/terminal';
+import { IState, Terminal } from '../../shell/terminal';
 
 const { Fg, Bg } = Colors;
 
@@ -83,9 +83,11 @@ export class Scroll extends UiComponent {
   }
 }
 
-const nothing = `${esc(Style.Dim)}${'nothing    '}${esc(Style.Reset)}`;
+const stringify = (x) => (x ? JSON.stringify(x.look?.bytes || x).replace(/"/g, '') : '');
+const trim = (x) => (x.length > 12 ? `${x.slice(0, 12)}..` : x);
+const nothing = `${esc(Style.Dim)}${'nothing.'.padEnd(11, ' ')}${esc(Style.Reset)}`;
 const DF = (p: Player, n: number) =>
-  (p.stack.peekN(n)?.name || nothing).padEnd(10, ' ');
+  (trim(stringify(p.stack[p.stack.length - 1 - n])) || nothing).padEnd(14, ' ');
 
 export class Sidebar extends UiComponent {
   render({ player: p }) {
@@ -94,12 +96,14 @@ export class Sidebar extends UiComponent {
       '│ N: John       │',
       '│ P: 🧙Wizard   │',
       '│               │',
-      `│ 4: ${DF(p, 4)}│`,
-      `│ 3: ${DF(p, 3)}│`,
-      `│ 2: ${DF(p, 2)}│`,
-      `│ 1: ${DF(p, 1)}│`,
-      `│ 0: ${DF(p, 0)}│`,
+      `│ A: ${((p as Player).dragging?.name || nothing).padEnd(11, ' ')}│`,
+      `│ B: ${nothing}│`,
       '│               │',
+      `│ 0: ${DF(p, 0)}│`,
+      `│ 1: ${DF(p, 1)}│`,
+      `│ 2: ${DF(p, 2)}│`,
+      `│ 3: ${DF(p, 3)}│`,
+      `│ 4: ${DF(p, 4)}│`,
       '└───────────────┘',
     ];
   }

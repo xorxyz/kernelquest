@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
-import { Token, TokenType } from './scanner.js';
+import { Token, TokenType } from './scanner';
 /*
 factor ::=
   atomic-symbol | integer-constant | character-constant | string-constant

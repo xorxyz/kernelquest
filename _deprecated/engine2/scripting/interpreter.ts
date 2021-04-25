@@ -1,9 +1,9 @@
-// eslint-disable-next-line import/no-unresolved
-import { Compiler } from './compiler.js';
-// eslint-disable-next-line import/no-unresolved
-import { Scanner, Token } from './scanner.js';
-// eslint-disable-next-line import/no-unresolved
-import { Parser } from './parser.js';
+import * as EventEmitter from 'events';
+import { Stack } from '../lib/stack';
+import { Compiler } from './compiler';
+import { Scanner, Token } from './scanner';
+import { Parser } from './parser';
+import { Thing } from '../engine/things/things';
 
 let DEBUG = 1;
 
@@ -31,17 +31,28 @@ export class Combinator {
   valueOf() { return this.type; }
 }
 
-export class Operator extends Combinator {}
+export class Operator extends Combinator {
+  toJSON() { return this.type; }
+}
 
 export class List extends Array {}
-export class RuntimeError extends List {}
-export class Stack extends List { peek() { return this[this.length - 1]; }}
+export class RuntimeError extends List {
+  static from(args: Array<string>) {
+    const err = new RuntimeError();
+
+    args.forEach((arg) => err.push(arg));
+
+    return err;
+  }
+}
 
 export class Factor {
+  bus: EventEmitter
   level = 0
   stacks: Array<any>
 
-  constructor(stack = new Stack()) {
+  constructor(stack: Stack<any>, bus: EventEmitter) {
+    this.bus = bus;
     this.stacks = [stack];
     Object.defineProperty(this, 'stacks', {
       enumerable: false,
@@ -55,33 +66,11 @@ export class Factor {
 }
 
 export class Quotation extends Factor {
-  peek() {
-    debug('peek', 'level:', this.level);
-    debug('stack', this.stack);
-    return this.stack.peek();
-  }
-
-  pop() {
-    const item = this.stack.pop();
-    debug('pop', item, `(${this.stack.join(',')})`);
-
-    log(item);
-
-    return this;
-  }
-
-  push(item) {
-    this.stack.push(item);
-    debug('push', item, `(${this.stack.join(',')})`);
-
-    return this;
-  }
-
   /* -- Reserved characters -- */
   /** returns whats on top of the stack */
   period() {
     debug('period.');
-    const result = this.peek();
+    const result = this.stack.peek();
     return result;
   }
   eof() { this.period(); }
@@ -129,19 +118,34 @@ export class Quotation extends Factor {
 
   /* -- Literals -- */
   /** pushes true */
-  true() { return this.push(true); }
+  true() {
+    this.stack.push(true);
+    return this;
+  }
 
   /** pushes false */
-  false() { return this.push(false); }
+  false() {
+    this.stack.push(false);
+    return this;
+  }
 
   /** pushes a number */
-  number(num: number) { return this.push(num); }
+  number(num: number) {
+    this.stack.push(num);
+    return this;
+  }
 
   /** pushes a character */
-  char(str: string) { return this.push(str); }
+  char(str: string) {
+    this.stack.push(str);
+    return this;
+  }
 
   /** pushes a string */
-  string(str: string) { return this.push(str); }
+  string(str: string) {
+    this.stack.push(str);
+    return this;
+  }
 
   /* -- Operators -- */
   $op(name: string, cb: Function) {
@@ -150,10 +154,30 @@ export class Quotation extends Factor {
     if (this.level === 0) {
       op.exec();
     } else {
-      this.push(op);
+      this.stack.push(op);
     }
 
     return this;
+  }
+
+  clear() {
+    this.stack.clear();
+    return this;
+  }
+
+  push() {
+    return this.$op('push', () => {
+      this.bus.emit('push');
+    });
+  }
+
+  pop() {
+    return this.$op('pop', () => {
+      const item = this.stack.pop();
+      debug('pop', item, `(${this.stack.join(',')})`);
+      log(item);
+      this.bus.emit('pop', item);
+    });
   }
 
   /** x y -> x + y */
@@ -161,23 +185,58 @@ export class Quotation extends Factor {
     return this.$op('add', () => {
       const b = this.stack.pop();
       const a = this.stack.pop() || '';
-      this.push(a + b);
+      if (typeof b !== 'number' || typeof a !== 'number') {
+        this.stack.push(RuntimeError.from(['err', 'add expects 2 numbers']));
+      } else {
+        this.stack.push(a + b);
+      }
     });
   }
 
   mul() {
     return this.$op('mul', () => {
       const b = this.stack.pop();
-      const a = this.stack.pop() || '';
-      this.push(a * b);
+      const a = this.stack.pop();
+
+      if (typeof b !== 'number' || typeof a !== 'number') {
+        this.stack.push(RuntimeError.from(['err', 'mul expects 2 numbers']));
+      } else {
+        this.stack.push(a * b);
+      }
+    });
+  }
+
+  div() {
+    return this.$op('div', () => {
+      const b = this.stack.pop();
+      const a = this.stack.pop();
+      if (typeof b !== 'number' || typeof a !== 'number') {
+        this.stack.push(RuntimeError.from(['err', 'div expects 2 numbers']));
+      } else {
+        this.stack.push(a / b);
+      }
     });
   }
 
   dup() {
     return this.$op('dup', () => {
       const a = this.stack.pop();
-      this.push(a);
-      this.push(a);
+      this.stack.push(a);
+      this.stack.push(a);
+    });
+  }
+
+  dip() {
+    return this.$op('dip', () => {
+      const b = this.stack.pop();
+      const a = this.stack.pop();
+      if (!(b instanceof List || typeof a === 'undefined')) {
+        this.stack.push(RuntimeError.from(['err', 'dip expects a value and a program.']));
+      } else {
+        this.stack.push(b);
+        this.i();
+        this.stack.push(a);
+      }
     });
   }
 
@@ -186,21 +245,42 @@ export class Quotation extends Factor {
       const b = this.stack.pop();
       const a = this.stack.pop();
       const result = a.concat(b);
-      this.push(result);
+      this.stack.push(result);
     });
   }
 
   cons() {
     return this.$op('cons', () => {
-      const b = this.stack.pop() as List;
-      const a = this.stack.pop() as List;
+      const b = this.stack.pop();
+      const a = this.stack.pop();
+
       debug(a, b);
-      const result = List.from([a, ...b]);
-      this.push(result);
+      if (a instanceof List && b instanceof List) {
+        const result = List.from([a, ...b]);
+        this.stack.push(result);
+      } else {
+        this.stack.push(RuntimeError.from(['err:', 'cons expects two lists']));
+      }
+    });
+  }
+
+  swap() {
+    return this.$op('swap', () => {
+      const b = this.stack.pop();
+      const a = this.stack.pop();
+
+      debug(a, b);
+      if (typeof a !== 'undefined' && typeof b !== 'undefined') {
+        this.stack.push(b);
+        this.stack.push(a);
+      } else {
+        this.stack.push(RuntimeError.from(['err:', 'swap expects 2 items']));
+      }
     });
   }
 
   /** [1 2] [1 add] map -> [2 3] */
+  /** [1 2] [add] map -> [3] */
   map() {
     return this.$op('map', () => {
       const program = this.stack.pop();
@@ -209,13 +289,13 @@ export class Quotation extends Factor {
 
       list.forEach((item) => {
         const l = List.from([item, ...program]);
-        this.push(l);
+        this.stack.push(l);
         this.i();
         const r = this.stack.pop();
         result.push(r);
       });
 
-      this.push(result);
+      this.stack.push(result);
     });
   }
 
@@ -235,7 +315,7 @@ export class Quotation extends Factor {
       if (word instanceof Operator) {
         word.exec();
       } else {
-        this.push(word);
+        this.stack.push(word);
       }
     });
 
@@ -243,26 +323,34 @@ export class Quotation extends Factor {
   }
 }
 
-export class VM extends Quotation {
+export class VM {
+  program: Quotation;
+
+  constructor(stack: Stack<Thing>, bus: EventEmitter) {
+    this.program = new Quotation(stack, bus);
+  }
+
   eval(js: string) {
     // eslint-disable-next-line no-new-func
-    const apply = new Function('begin', `'use strict';return (${js})`);
-
-    const result = apply(this);
+    const result = (new Function('begin', `
+      'use strict'; 
+      return (${js});
+    `))(this.program);
 
     return result;
   }
 }
 
 export default class Intrepreter {
+  bus = new EventEmitter()
   source: string
-  stack: Stack
+  stack: Stack<any>
   tokens: Array<Token>
 
   get $DEBUG() { return DEBUG; }
   set $DEBUG(value) { DEBUG = value; }
 
-  constructor(stack: Stack = new Stack()) {
+  constructor(stack: Stack<any> = new Stack()) {
     this.stack = stack;
   }
 
@@ -282,18 +370,27 @@ export default class Intrepreter {
   exec(str: string) {
     debug(str);
 
-    this.check(str);
+    try {
+      this.check(str);
+    } catch (err) {
+      console.error('check err:', err);
+      return RuntimeError.from([err.name, err.message]);
+    }
 
     const compiler = new Compiler(this.tokens);
     this.source = compiler.compile();
 
     debug(this.source);
 
-    const vm = new VM(this.stack);
+    const vm = new VM(this.stack, this.bus);
 
     try {
       vm.eval(this.source);
     } catch (err) {
+      console.error('eval err:', err);
+      if (err.name === 'TypeError') {
+        return RuntimeError.from(['err:', 'unknown word']);
+      }
       return RuntimeError.from([err.name, err.message]);
     }
 

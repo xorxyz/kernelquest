@@ -1,0 +1,262 @@
+( > for utf-8 terminals. )
+
+( # agents )
+
+( "reflective" agents: )
+
+"heroes" == [
+  🤴 the prince
+  👸 the princess
+  👼 cherubs
+  🧝 elves         sp  [ [dash] [swap] ]     ( fast & tough. )
+  🧚 fairies       hp  [ [heal] [cure] ]     ( emits light. care, influence. )
+  🧙 wizards       mp  [ [fire] [thunder] ]  ( smart & dangerous. )
+]
+
+"bosses" == [
+  🐍 the snake   "bites, maybe poison"
+  🕷️ the spider  "creates webs 🕸️, which drain stamina" 
+  👹 the ogre    "destroys data"
+  🐲 the dragon  "sleeps, eats sheep, burns down villages, accumulates riches"
+]
+
+( ## deliberative agents )
+
+"people" == [
+  👦 boy
+  👨 man
+  👴 old man
+  👧 girl
+  👩 woman
+  👵 old woman
+] ( you can have conversations with them. )
+
+"critters" == [
+  🐑 sheeps     ( eats off excess data. )
+  🐈 cats       ( purrs. )
+  🐕 dogs       ( fetches. )
+  🐌 the snail  ( spreads data. )
+  🦌 the deer   ( leads you to secrets. )
+  🦉 the owl    ( gives you tips. )
+] ( automatons. they help you in some way. )
+
+( ## reactive agents )
+
+"monsters" == [
+  🐛 bugs        "eats crops."
+  🐀 rats        "hides, steals and stashes items"
+  🦇 bats        "fly away from the light, hurting you if in the way"
+  🐺 wolves      "hunt in packs"
+  👻 ghosts       "scary"
+  👺 goblins     "creates malware"
+] ( threats. )
+
+( # world map )
+
+"places" == [
+  ⛲ the fountain  ( home. the lobby? )
+  🏘 the village   ( sell loot, buy stuff, get quests. )
+  🏕 campsites     ( player created rest areas. )
+  🌲 forests       ( 4 rooms (2x2) dungeon. )
+  ⛰ mountains     ( 8 rooms (2x2x2) dungeon. )
+  🏰 castles       ( 27 rooms (3x3x3) dungeon. )
+  🏔 peaks         ( empty spaces. )
+  🏛 the temple    ( level up! )
+] ( teleports you to a zone. )
+
+( # shops and dungeons )
+
+"items" == [
+  (  name, durability, function signature. )
+  🦴 bone       1  :      -> [ ..ref? ];
+  🕯 candle     1  :      -> light;               ( emit light for a moment. )
+  💎 gem        1  :      -> 0xFF 0xFF 0xFF 0xFF;
+  📜 scroll     1  :      -> [P] i
+  📕 book       1  :      -> "text" puts;         ( source code for the level? )
+  🔒 lock       1  :      ->
+  🗝 key        1  :   🔒 -> [ 🔒 nothing ] maybe;
+  🍄 mushroom   1  :    n -> n hp incr;
+  🌿 herb       1  :    n -> n mp incr;
+  💰 gold       1  :    n -> n gp incr;
+] ( expandable resources. )
+
+"equipment" == [
+  🗡 dagger    ( short range attack. )
+  🏹 bow       ( shoot arrows. )
+  💣 bomb      ( explodes after a bit. )
+  🥾 boots     ( walk faster. )
+  🎒 backpack  ( bag of registers. )
+  🧳 luggage   ( bigger bag of registers. )
+  🛡 shield    ( + protection. )
+  👑 crown     ( + luck )
+  💍 ring      ( + smarts. )
+  🎲 dice      ( generate random numbers. )
+] ( assets. should break easily. )
+
+"particles" == [
+  ✨ magic effect  ( appears when effects are invoked. )
+  🌈 light    ( shines in a radial gradient. )
+  🌊 water    ( flows downstreams, accumulates in pools. )
+  🌪 wind     ( moves in circles, moves light things. )
+  🔥 fire     ( spreads, self-replicating. )
+  ⚡⚡ thunder  ( sparks in right angles, discharges and disappears. )
+] ( cellular automata? )
+
+( # ui )
+
+"cursors" == [
+  ⬜ white   normal
+  🟨 yellow  warning
+  🟥 red     danger
+]
+
+"colors" == [
+  🟦 blue   ( 🟦🧚 🟦🧝 🟦🧙 )
+  🟩 green  ( 🟩🧚 🟩🧝 🟩🧙 )
+  🟧 orange ( 🟧🧚 🟧🧝 🟧🧙 )
+  🟪 purple ( 🟪🧚 🟪🧝 🟪🧙 )
+] ( to help distinguish between players. )
+
+( # maps )
+
+"emojis" == [
+  "✨👦👧👨👩👴👵🦴................"
+  "👑💍🛡🌊⚡⚡🌪🔥🌈................"
+  "🤴👸👼🐌🦌🦉🐲.................."
+  "🧙🧚🧝🐍🕷️👹...................."
+  "🐑🐈🐕.........................."
+  "..🐀🐛🦇🐺👺👻.................."
+  "🧳🎒🥾🗡🏹💣🎲🔒................"
+  "📜🍄🌿📕💎💰🕯🗝................"
+  "⛲🏘🌲🏕⛰🏰🏔🏛................"
+  "................................"
+] ( 60! )
+
+"blank" == [
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+  "................................"
+]
+
+"fountain" == [
+  "~~~~~~,.🌲+=+=+🌲...^.^..+=🌲+=+"
+  "~~~~~...............^.^.......🌲"
+  "~~~~,..........yay!.........🌲.."
+  "~~~~,.......📜..🧙🐌......🐈...."
+  "~~~~..........✨.........meow..>"
+  "~~~~~~~~~~..✨⛲👼✨  .........>"
+  "~~~~..........✨..............🐑"
+  "~~~~~~..........🤴.......beee..."
+  "~~~~~~~~~~. ..👨..👨.......🐑..."
+  "~~~~~~~~~~~~~~~~~~.......v.v...."
+]
+
+"world" == [
+  "🌲..~~``🌲..~~~~..🌲⛰000000⛰00"
+  "....~~~~..~~~~..🌲⛰⛰00🏔🏔🏔00"
+  "..``..~~~~~~..🏘⛰🌲⛰🏔🏔..🏛🏔"
+  "........~~~~....👹⛰🌲00🏔🐲..00"
+  "....--``~~~~..🌲⛰⛰..🏰🏰🏔🏔00"
+  "..~~~~~~~~~~🌲..🏕⛰⛰🏰🏰000000"
+  "~~~~~~..🤴👸🌲🐍🌲⛰⛰⛰⛰⛰00⛰"
+  "~~✨....🏰🏘🌲🌲🌲🌲🌲🌲⛰000000"
+  "✨⛲👼..🏘..``......🌲🕷️🌲⛰⛰00"
+  "~~✨......``.....🌲...🌲🌲🌲⛰00"
+]
+
+( you "gain xp" by getting closer to the temple level.
+  you "lose xp" by dying.
+  you "gain levels" by reaching the end without dying. 
+  in other words, xp is a function of the progress you made in a single run. )
+
+( maybe leveling up means your agent gets to integrate newly created structures in the lower layers? )
+
+"dungeon" == [
+  "##✨✨##########💎##############"
+  "✨🧝🧙✨##########💎🦇💎🦇💎####"
+  "##✨✨##🍄🌿🍄##💎🦴....🦇##🗝##"
+  "##....##......####....🦴########"
+  "##....🕯......................##"
+  "##🌿........##..################"
+  "##########..##........📕......##"
+  "##🕯..🔒....##......📕🕯📕....##"
+  "##💰📜##....##........📕......##"
+  "################################"
+]
+
+"campsite" == [
+  "..............🌲................"
+  "🌲..............🌲..........🌲.."
+  "........shh i'm sleeping........"
+  "🌲............⛺..............🌲"
+  "..🌲.........    .............🌲"
+  "............  🔥  ..........🌲.."
+  ".............    ..............."
+  "..🌲............................"
+  "🌲..........................🌲.."
+  "....🌲......🌲🌲..............🌲"
+]
+
+"garden" == [
+  "00✨0000000000000000000000000000"
+  "✨🧝✨🌻...💮🐝.....🌳🌱..[]{}00"
+  "00✨@........✨.x7..if......🌿00"
+  "00....>.v.s.d...xA.....+.🐇...00"
+  "00....^'A'Z.i...x0🌹...-.🌺...00"
+  "00🐁...🌹.......xF.....*....🌸00"
+  "00....🌼........🌷🐝.../.🌲...00"
+  "00..✨..||&&!.^........%......00"
+  "00🌱..🌲......🐞".AAAAAAAA."XX00"
+  "00000000000000000000000000000000"
+]
+
+( this is where you load and store code.
+  operators and combinators are encoded in 4-byte strings,
+  and stored on a row or on a column.
+  code is evaluated by virtual agents as they walk over cells. )
+
+(
+  ⛲ -> 🏘 -> 🌲 -> 🏕 -> ⛰ -> 🏰 -> 🏔 -> 🏛
+  🤴 👸 -> 👼 ⛲ -> 🧝 | 🧚 | 🧙
+  🗝 🔒 -> 💎 ⛲ -> 
+    🐕 | 🐈 | 🐑 -> 🦴
+  👦 -> 👨 -> 👴 -> 🦴
+  👧 -> 👩 -> 👵 -> 🦴
+  🧝 & 🧚 & 🧙 -> 👦 | 👧
+  🧝 -> 🌪
+  🧚 -> 🌊
+  🧙 -> ⚡⚡ 🔥
+  🐲 ->
+    👹 & 🕷️ & 🐍 -> 🦴 & 👑 | 🛡 | 💍
+    👺 | 👻 | 🐺 -> 🦴 & 🕯 | 📕 | 📜
+    🐀 | 🦇 | 🐛 -> 🦴 & 🍄 | 🌿 | 💰
+  💰 ->
+    🍄 | 🌿 | 🕯
+    🗡 | 🏹 | 💣
+    🥾 | 🎒 | 🧳
+  🍄 -> 🌊
+  🌿 -> ✨
+  🕯 -> 🌈
+  📕 -> 📜 📜 📜
+  ✨ 📜 -> 🌪 | 🌊 | ⚡⚡ | 🔥 -> ✨
+  🦴 -> ?
+)
+
+(
+  ?
+  "tiles" == [
+    🟫 🟩  φφ  forest
+    ⬜ 🟩  ``  grass
+    ⬜ 🟦  ~~  water
+    ⬜ 🟧  --  soil
+    🟦 ⬜  __  snow
+    ⬜ 🟫  /\  mountain
+  ]
+)

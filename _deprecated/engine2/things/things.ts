@@ -1,16 +1,11 @@
-import { esc, Style } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Literal, Word } from '../../shell/types';
 import { Look } from '../visuals/looks';
 
-export abstract class Thing extends Word {
+export abstract class Thing {
+  name: string
   position: Vector = new Vector()
   look: Look
-  blocking = false
-}
-
-export abstract class LiteralItem extends Thing {
-  literal: Literal
+  blocking = true
 }
 
 export class WallTop extends Thing {
@@ -43,7 +38,7 @@ export class Door extends Thing {
 
 export class Lock extends Thing {
   name = 'lock'
-  look = new Look('lock', '🔒', 'i\'ll ned a key to unlock that')
+  look = new Look('lock', '🔒', 'i\'ll need a key to unlock that')
   use() {
     return false;
   }

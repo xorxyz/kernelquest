@@ -14,6 +14,7 @@ export const Keys = {
   LOWER_I: '69',
   LOWER_P: '70',
   LOWER_R: '72',
+  LOWER_W: '77',
 };
 
 export const Signals = {
