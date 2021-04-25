@@ -57,6 +57,7 @@ export class Agent {
   hp = new HP()
   sp = new SP()
   mp = new MP()
+
   gp = new GP()
 
   get isAlive() { return this.hp.value > 0; }
