@@ -8,39 +8,42 @@
 - homoiconicity (code as data) 
 - self-interpreted
 - introspection, reflection and metaprogramming
+</pre>
 
-# data types
+<h2>data structures</h2>
 
+<pre>
 - literals of any type cause a value of that type to be pushed onto the stack
 - lists are just special cases of quoted programs
 - a function can consume any number of parameters from the stack and leave any number of results on the stack
 
-```
-data types
-atoms
+thing:  atom | compound
 
-true    yes, true, T. no, false, F.
-ascii   'a-'z 'A-'Z ( 1 byte. )
-hex     00-FF ( 2 bytes. )
-utf8    💎 ( 4 bytes. )
-word    combinator | operator | name ( 1 utf8. )
+## atoms
 
-compounds
+ref    ( a pointer that resolves to a cell's data. )
+truth  yes y. | no n. | maybe ?. (1 byte.)
+hex    00-FF ( 2 bytes. )
+ascii  'a-'z 'A-'Z ( 1 byte. )
+utf8   💎 ( 4 bytes. )
+word   combinator | operator | name ( 1 utf8. )
 
-set        n ( unique. ) atom
-string     n utf8
-list       n words
-program    n list
+## compounds
 
-memory
+set      n ( unique. ) ascii | hex
+list     n things
+string   n utf8
+stack    list
+program  n lists
 
-cell     1 utf8
-row      16 cells
-col      10 cells
-matrix   w rows h cols
-grid     16 rows 10 cols matrix
+## memory
 
-```
+cell    1 utf8
+port    ref to a neighbour cell ( n | e | s | w. )
+row     16 cells
+col     10 cells
+matrix  w rows h cols
+grid    16 rows 10 cols matrix
 
 # built-in operators and combinators
 
