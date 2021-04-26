@@ -1,7 +1,13 @@
 <article>
 <h1>design of the language</h1>
 
-<blockquote>one of these Joy inspired languages</blockquote> 
+<blockquote>
+  one of these <a href="https://hypercubed.github.io/joy/html/synops.html">Joy</a> inspired languages.
+</blockquote> 
+
+<blockquote>
+  there are no named formal parameters, no substitution of actual [parameters] for formal parameters, and no environment of name-value pairs. because there is no need for an environment, [the language] has an exceptionally simple algebra, and its programs are easily manipulated by hand and by other programs.
+</blockquote>
 
 <pre>
 - simple syntax
@@ -13,9 +19,11 @@
 <h2>data structures</h2>
 
 <pre>
-- literals of any type cause a value of that type to be pushed onto the stack
+- literals of any type cause a value of that type to be pushed
+  onto the stack
 - lists are just special cases of quoted programs
-- a function can consume any number of parameters from the stack and leave any number of results on the stack
+- a function can consume any number of parameters from the
+  stack and leave any number of results on the stack
 
 thing:  atom | compound
 
