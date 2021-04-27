@@ -47,7 +47,7 @@
   🐀 rats        "hides, steals and stashes items"
   🦇 bats        "fly away from the light, hurting you if in the way"
   🐺 wolves      "hunt in packs"
-  👻 ghosts       "scary"
+  👻 ghosts      "scary"
   👺 goblins     "creates malware"
 ] ( threats. )
 

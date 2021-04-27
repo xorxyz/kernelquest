@@ -1,14 +1,16 @@
 import * as fs from 'fs';
 import { promisify } from 'util';
-import { Vector } from '../lib/math';
-import { Stack } from '../lib/stack';
-import { Ref } from './language';
+import { Vector } from '../../lib/math';
+import { Stack } from '../../lib/stack';
 import { Agent } from './agents';
-import { Thing } from './things';
+import { Program, Thing } from './things';
 import { DB_FILEPATH, MAX_X, MAX_Y } from './constants';
+import { esc, Style } from '../../lib/esc';
 
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
+
+const empty = `${esc(Style.Dim)}..`;
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -17,35 +19,28 @@ export interface Ports<T> {
   north: T, east: T, south: T, west: T
 }
 
-export abstract class Context {
+export class Cell {
   position: Vector
-  ports: Ports<Cell|Room>
-  stack: DataStack = new Stack()
+  ports: Ports<Cell>
+  data: Thing | null = null
+  program: Program | null = null
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
   }
-}
 
-export class Cell extends Context {
-  ports: Ports<Cell>
-  ref: Ref
-  constructor(x: number, y: number, ref: Ref) {
-    super(x, y);
-    this.ref = ref;
+  render() {
+    return this.data?.appearance || empty;
   }
 }
 
 export class Row extends Array<Cell> {
-  constructor(memory: Memory, y: number) {
+  constructor(y: number) {
     super();
     this.length = MAX_X + 1;
 
     for (let x = 0; x < this.length; x++) {
-      const ref = new Ref(memory, x, y);
-      const cell = new Cell(x, y, ref);
-
-      this[x] = cell;
+      this[x] = new Cell(x, y);
     }
   }
 }
@@ -60,21 +55,41 @@ export class Col extends Array {
   }
 }
 
-export class Room extends Context {
+export class Room {
+  readonly position: Vector
   ports: Ports<Room>
-  memory: Memory = []
-
   rows: Array<Row>
   cols: Array<Col>
-
-  agents: Set<Agent> = new Set()
+  private agents: Set<Agent> = new Set()
 
   constructor(x: number, y: number) {
-    super(x, y);
+    this.position = new Vector(x, y);
+
     this.rows = new Array(MAX_Y + 1).fill(0)
-      .map((_, n) => new Row(this.memory, n));
+      .map((_, n) => new Row(n));
+
     this.cols = new Array(MAX_X + 1).fill(0)
       .map((_, n) => new Col(this.rows, n));
+  }
+
+  find(agent: Agent) {
+    return this.agents.has(agent);
+  }
+
+  add(agent: Agent) {
+    this.agents.add(agent);
+    agent.teleport(0, 0, this.viewAs());
+  }
+
+  remove(agent: Agent) {
+    this.agents.delete(agent);
+  }
+
+  scan() {}
+
+  viewAs() {
+    return new Proxy(this, {
+    });
   }
 }
 
@@ -90,26 +105,24 @@ export class Zone {
     });
   }
 
-  find (agent: Agent) {
-    let room = null;
-    
-    this.rooms.forEach((y) => {
-      return y.forEach((x) => {
-        if (x.agents.has(agent)) {
-          room = x
-        }
-      })
-    });
+  find(agent: Agent): Room | null {
+    let room: Room | null = null;
+
+    this.rooms.forEach((a) => a.forEach((b) => {
+      if (b.find(agent)) {
+        room = b;
+      }
+    }));
 
     return room;
   }
 
-  add (agent: Agent, coord?: Vector) {
-    this.rooms[coord?.y || 0][coord.x || 0].agents.add(agent);
+  add(agent: Agent, coord: Vector = new Vector(0, 0)) {
+    this.rooms[coord?.y || 0][coord.x].add(agent);
   }
 
-  remove (agent: Agent, coord?: Vector) {
-    this.rooms[coord?.y || 0][coord.x || 0].agents.add(agent);
+  remove(agent: Agent, coord: Vector = new Vector(0, 0)) {
+    this.rooms[coord?.y || 0][coord.x].add(agent);
   }
 }
 
@@ -119,11 +132,14 @@ export class World {
   players: Set<Agent> = new Set()
 
   map: Map<Agent, Room>
-  zones: Set<Zone> = new Set()
+  zones: Array<Zone> = []
 
   constructor() {
-    ['overworld', 'fountain', 'town',
-    ].forEach((name) => this.zones.add(new Zone(name)));
+    ['overworld'].forEach((name) => this.zones.push(new Zone(name)));
+  }
+
+  get defaultZone() {
+    return this.zones[0];
   }
 
   async load() {

@@ -5,9 +5,9 @@
 import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { debug } from '../../lib/logging';
 import { TakeN, takeN, Vector } from '../../lib/math';
-import { Player } from '../engine/agents/agents';
-import { Cell } from '../engine/world/cells';
-import { IState, Terminal } from '../../shell/terminal';
+import { Hero } from '../engine/agents';
+import { Cell } from '../engine/world';
+import { IState, Terminal } from '../shell/terminal';
 
 const { Fg, Bg } = Colors;
 
@@ -18,7 +18,7 @@ export const N_OF_LINES = 5;
 export const CELL_WIDTH = 2;
 
 interface Props {
-  player: Player,
+  player: Hero,
   state: IState
 }
 
@@ -36,7 +36,6 @@ export abstract class UiComponent {
     const { x, y } = this.position;
 
     return this.style + this.render(props)
-      // .map((a) => { console.log(a); return a; })
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
@@ -44,13 +43,12 @@ export abstract class UiComponent {
 
 export class Navbar extends UiComponent {
   style = esc(Style.Invert)
-  render() {
-    const what = ' xor4>';
-    const time = '970-01-01';
-    const place = 'King\'s Valley (0,0)';
+  render({ player }) {
+    const what = ' kernel.quest';
+    const time = player.tick;
 
     return [
-      [what, place, time].join('            ').padEnd(SCREEN_WIDTH, ' '),
+      [what, time].join('  ').padEnd(SCREEN_WIDTH, ' '),
     ];
   }
 }
@@ -72,38 +70,32 @@ export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
   render({ player }) {
-    return player.model.room.cells.map((r) => r.map((c) => c.render()).join(''));
+    return player.view.rows.map((row, y) =>
+      row.map((cell, x) => (
+        player.position.x === x && player.position.y === y
+          ? player.render()
+          : cell.render()
+      )).join(''));
   }
 }
 
-export class Scroll extends UiComponent {
-  render({ player: p }: Terminal) {
-    return p.spells.map((spell, i: number) =>
-      `${i + 1}: ${spell.command}`.padEnd(10, ' '));
-  }
-}
-
-const stringify = (x) => (x ? JSON.stringify(x.look?.bytes || x).replace(/"/g, '') : '');
-const trim = (x) => (x.length > 12 ? `${x.slice(0, 12)}..` : x);
-const nothing = `${esc(Style.Dim)}${'nothing.'.padEnd(11, ' ')}${esc(Style.Reset)}`;
-const DF = (p: Player, n: number) =>
-  (trim(stringify(p.stack[p.stack.length - 1 - n])) || nothing).padEnd(14, ' ');
+const nothing = `${esc(Style.Dim)}${'nothing.'.padEnd(10, ' ')}${esc(Style.Reset)}`;
 
 export class Sidebar extends UiComponent {
-  render({ player: p }) {
+  render() {
     return [
       '┌───────────────┐',
       '│ N: John       │',
       '│ P: 🧙Wizard   │',
       '│               │',
-      `│ A: ${((p as Player).dragging?.name || nothing).padEnd(11, ' ')}│`,
-      `│ B: ${nothing}│`,
+      `│ A: ${nothing} │`,
+      `│ B: ${nothing} │`,
       '│               │',
-      `│ 0: ${DF(p, 0)}│`,
-      `│ 1: ${DF(p, 1)}│`,
-      `│ 2: ${DF(p, 2)}│`,
-      `│ 3: ${DF(p, 3)}│`,
-      `│ 4: ${DF(p, 4)}│`,
+      '│               │',
+      '│               │',
+      '│               │',
+      '│               │',
+      '│               │',
       '└───────────────┘',
     ];
   }
@@ -151,10 +143,10 @@ export class Stats extends UiComponent {
       '┌───────────────┐',
       '│ LV: 01        │',
       '│ XP: 0         │',
-      `│ HP: ${Hp(p.health.value)}│`,
-      `│ SP: ${Sp(p.stamina.value)}│`,
-      `│ MP: ${Mp(p.mana.value)}│`,
-      `│ GP: ${p.wealth.value}       │`,
+      `│ HP: ${Hp(p.hp.value)}│`,
+      `│ SP: ${Sp(p.sp.value)}│`,
+      `│ MP: ${Mp(p.mp.value)}│`,
+      `│ GP: ${p.gp.value}       │`,
       `${'└'.padEnd(16, '─')}┘`,
     ];
   }
@@ -183,9 +175,11 @@ export class Input extends UiComponent {
   }
 }
 
+const dummyRoom: Array<Array<any>> = [];
+
 export class Speech extends UiComponent {
-  render({ player }: Terminal) {
-    return Array.from(player.model.room.messages)
+  render() {
+    return dummyRoom
       .map(([agent, message]) => [
         esc(Style.Invert),
         esc(Cursor.set(

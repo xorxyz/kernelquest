@@ -1,6 +1,6 @@
-import { Keys } from '../lib/constants';
-import { Vector } from '../lib/math';
-import { LINE_LENGTH } from '../game/ui/components';
+import { Vector } from '../../lib/math';
+import { Keys } from '../engine/constants';
+import { LINE_LENGTH } from '../ui/components';
 
 export class LineEditor {
   private line: string = ''

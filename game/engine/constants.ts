@@ -1,3 +1,21 @@
+export const CLOCK_MS_DELAY = 60;
+
+export const ROOM_WIDTH = 16;
+export const ROOM_HEIGHT = 10;
+export const MAX_X = ROOM_WIDTH - 1;
+export const MAX_Y = ROOM_HEIGHT - 1;
+
+export const DB_FILEPATH = '/tmp/xor4-test.txt';
+
+export enum TokenType {}
+
+export interface Token {
+  type: TokenType
+  lexeme: string
+  literal?: object
+  line: number
+}
+
 export const Keys = {
   SHIFT_ARROW_UP: '1b5b313b3241',
   SHIFT_ARROW_DOWN: '1b5b313b3242',

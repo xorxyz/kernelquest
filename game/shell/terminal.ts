@@ -1,20 +1,15 @@
-import { PrintInventory, SwitchMode } from '../engine/agents/commands';
-import { CLOCK_MS_DELAY } from '../_deprecated/engine2/engine';
-import Interpreter, { RuntimeError } from '../engine/scripting/interpreter';
+import { Cursor, esc } from '../../lib/esc';
+import { Vector } from '../../lib/math';
+import { Action, MoveAction, SwitchModeAction } from '../engine/actions';
+import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
+import Connection from '../server/connection';
+import { CELL_WIDTH } from '../ui/components';
+import { MainView } from '../ui/views';
 import { LineEditor } from './line_editor';
-import { CELL_WIDTH } from '../game/ui/components';
-import Connection from '../game/server/connection';
-import { MainView } from '../game/ui/views';
-import { Keys, Signals } from '../lib/constants';
-import { Cursor, esc } from '../lib/esc';
-import { ctrl } from './controller';
-import { Vector } from '../lib/math';
-import { debug } from '../lib/logging';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
 export interface IState {
-  spellbook: boolean,
   termMode: boolean
   prompt: string,
   line: string,
@@ -27,7 +22,6 @@ export class Terminal {
   id: number
   connection: Connection
   cursorPosition: Vector
-  interpreter: Interpreter
   state: IState
   line: LineEditor = new LineEditor()
   view: MainView = new MainView()
@@ -52,8 +46,8 @@ export class Terminal {
       'Last login: 2038-01-01',
       'Welcome.',
     ];
+
     this.state = {
-      spellbook: true,
       termMode: false,
       prompt: '> ',
       line: '',
@@ -65,19 +59,6 @@ export class Terminal {
         'Welcome.',
       ],
     };
-
-    this.interpreter = new Interpreter(this.player.stack);
-
-    this.interpreter.bus.on('push', () => {
-      const thing = this.player.dragging;
-
-      this.player.stack.push(thing);
-      this.player.dragging = null;
-
-      const idx = this.player.model.room.things.findIndex((t) => t === thing);
-      this.player.model.room.things.splice(idx);
-      debug(this.player.model.room.things);
-    });
 
     this.timer = setInterval(
       this.render.bind(this),
@@ -103,22 +84,10 @@ export class Terminal {
     if (this.state.termMode) {
       this.handleTerminalInput(str);
     } else {
-      const command = ctrl(str);
+      const action = this.ctrl(str);
 
-      if (command) {
-        if (command instanceof SwitchMode) {
-          this.switchModes();
-          return;
-        }
-        if (command instanceof PrintInventory) {
-          const msg = this.player.items.length
-            ? `You have: ${this.player.items.map((x, i) =>
-              `${String.fromCharCode(i + 97)}) ${x.name}`).join('  ')}`
-            : 'Your inventory is empty.';
-          this.stdout.push(msg);
-          return;
-        }
-        this.connection.player.queue.push(command);
+      if (action) {
+        this.player.schedule(action);
       }
     }
 
@@ -130,29 +99,9 @@ export class Terminal {
       if (this.line.value) {
         const expr = this.line.value.trim();
 
-        const output = this.interpreter.exec(expr);
+        this.player.exec(expr);
 
-        this.player.mana.decrease(expr.split(' ').length);
         this.stdout.push(this.state.prompt + expr);
-        this.player.model.room.say(this.player, expr);
-
-        debug(output);
-
-        if (output) {
-          this.stdout.push(JSON.stringify(output));
-        }
-
-        if (output instanceof RuntimeError) {
-          this.player.health.decrease(10);
-          this.stdout.push('Your spell fails. -10 hp');
-        }
-
-        // if (typeof output === 'number') {
-        //   const thing = new LiteralItem(output);
-
-        //   thing.position.copy(this.connection.player.position);
-        //   this.player.queue.push(new Drop(thing));
-        // }
 
         this.state.line = '';
         this.line.reset();
@@ -160,6 +109,7 @@ export class Terminal {
         this.stdout.push('...');
 
         this.waiting = true;
+
         setTimeout(() => {
           this.waiting = false;
           this.stdout.push('ok.');
@@ -173,6 +123,59 @@ export class Terminal {
     }
 
     this.render();
+  }
+
+  ctrl(str: string): Action | null {
+    let action: Action | null = null;
+
+    switch (str) {
+      case (Keys.ENTER):
+        action = new SwitchModeAction(this);
+        break;
+      case (Keys.ARROW_UP):
+        action = new MoveAction(this.player, 0, -1);
+        break;
+      case (Keys.ARROW_RIGHT):
+        action = new MoveAction(this.player, 1, 0);
+        break;
+      case (Keys.ARROW_DOWN):
+        action = new MoveAction(this.player, 0, 1);
+        break;
+      case (Keys.ARROW_LEFT):
+        action = new MoveAction(this.player, -1, 0);
+        break;
+        // case (Keys.SHIFT_ARROW_UP):
+        //   command = new Drag(0, -1);
+        //   break;
+        // case (Keys.SHIFT_ARROW_RIGHT):
+        //   command = new Drag(1, 0);
+        //   break;
+        // case (Keys.SHIFT_ARROW_DOWN):
+        //   command = new Drag(0, 1);
+        //   break;
+        // case (Keys.SHIFT_ARROW_LEFT):
+        //   command = new Drag(-1, 0);
+        //   break;
+        // case (Keys.LOWER_D):
+        //   command = new Drop(null);
+        //   break;
+        // case (Keys.LOWER_W):
+        //   command = new Wield();
+        //   break;
+        // case (Keys.LOWER_I):
+        //   command = new PrintInventory();
+        //   break;
+        // case (Keys.LOWER_P):
+        //   command = new PickUp();
+        //   break;
+        // case (Keys.LOWER_R):
+        //   command = new Rotate();
+        //   break;
+      default:
+        break;
+    }
+
+    return action;
   }
 
   render() {

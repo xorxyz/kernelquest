@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
 import { debug } from '../../lib/logging';
-import { Player } from '../engine/agents/agents';
+import { Hero } from '../engine/agents';
 
 export default class Connection {
-  player: Player
+  player: Hero
   socket: Socket | null
 
-  constructor(player: Player, socket: Socket) {
+  constructor(player: Hero, socket: Socket) {
     this.socket = socket;
     this.player = player;
 

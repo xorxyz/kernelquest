@@ -1,6 +1,6 @@
-import { Stack } from '../lib/stack';
+import { Stack } from '../../lib/stack';
 import { Thing } from './things';
-import { Memory } from './vm';
+import { Memory } from './world';
 import { Execution } from './agents';
 import { MAX_X, MAX_Y, TokenType } from './constants';
 

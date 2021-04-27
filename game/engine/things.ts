@@ -1,6 +1,6 @@
-import { Vector, Points } from '../lib/math';
+import { Vector, Points } from '../../lib/math';
 import { Char, DataType, IProgram, List, Ref, Transform } from './language';
-import { Room } from './vm';
+import { Room } from './world';
 
 export class Durability extends Points {}
 

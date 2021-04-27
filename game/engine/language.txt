@@ -53,8 +53,8 @@
 ]
 
 "mechanisms" == [
-  perception ( input. senses. )
-  action     ( output. commands? )
+  perception  ( input. senses. )
+  action      ( output. commands? )
 ]
 
 "beliefs" == [
@@ -78,6 +78,7 @@
 ] ( capabilities. )
 
 "roles" == [
-  "commander"
-  "follower"
+  "prince"
+  "princess"
+  "cherub"
 ]

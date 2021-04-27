@@ -3,27 +3,27 @@
 
 <blockquote>
   one of these <a href="https://hypercubed.github.io/joy/html/synops.html">Joy</a> inspired languages.
-</blockquote> 
-
-<blockquote>
-  there are no named formal parameters, no substitution of actual [parameters] for formal parameters, and no environment of name-value pairs. because there is no need for an environment, [the language] has an exceptionally simple algebra, and its programs are easily manipulated by hand and by other programs.
 </blockquote>
 
-<pre>
-- simple syntax
-- homoiconicity (code as data) 
-- self-interpreted
-- introspection, reflection and metaprogramming
-</pre>
+<ul>
+  <li>simple syntax</li>
+  <li>homoiconicity (code as data) </li>
+  <li>self-interpreted</li>
+  <li>introspection, reflection and metaprogramming</li>
+  <li>simple algebra, with programs easily manipulated by hand</li>
+</ul>
 
 <h2>data structures</h2>
 
+<ul>
+  <li>literals of any type cause a value of that type to be pushed
+  onto the stack</li>
+  <li>lists are just special cases of quoted programs</li>
+  <li>a function can consume any number of parameters from the
+  stack and leave any number of results on the stack</li>
+</ul>
+
 <pre>
-- literals of any type cause a value of that type to be pushed
-  onto the stack
-- lists are just special cases of quoted programs
-- a function can consume any number of parameters from the
-  stack and leave any number of results on the stack
 
 thing:  atom | compound
 
@@ -38,20 +38,22 @@ word   combinator | operator | name ( 1 utf8. )
 
 ## compounds
 
-set      n ( unique. ) ascii | hex
-list     n things
-string   n utf8
-stack    list
-program  n lists
+set      ( n unique atoms. )
+list     ( n things. )
+string   ( n utf8. )
+stack    ( basically a list. )
+program  ( n lists. )
 
 ## memory
 
-cell    1 utf8
-port    ref to a neighbour cell ( n | e | s | w. )
-row     16 cells
-col     10 cells
-matrix  w rows h cols
-grid    16 rows 10 cols matrix
+cell   ( 1 utf8. )
+port   ( ref to a neighbour cell,  n | e | s | w. )
+row    ( 16 cells. )
+col    ( 10 cells. )
+room   ( 16 x 10 cells. )
+zone   ( 16 x 10 rooms. )
+world  ( set of zones. )
+
 
 # built-in operators and combinators
 

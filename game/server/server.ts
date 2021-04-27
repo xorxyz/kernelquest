@@ -1,10 +1,9 @@
 import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
-import Engine from '../engine/engine';
+import { Engine } from '../engine/engine';
 import { Terminal } from '../shell/terminal';
-import { Player } from '../engine/agents/agents';
-import { CherubJob, WizardJob } from '../engine/agents/jobs';
-import { debug } from '../lib/logging';
+import { Cherub, Hero } from '../engine/agents';
+import { debug } from '../../lib/logging';
 
 export interface Params { src?: string }
 
@@ -24,41 +23,33 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     const id = this.i++;
-    const player = new Player(this.engine, 'john', new WizardJob());
+    const room = this.engine.world.defaultZone.rooms[0][0];
+    const player = new Hero(new Cherub());
+
+    debug(player);
+    this.engine.agents.add(player);
+    room.add(player);
+
     const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
 
-    this.engine.rooms[0].add(connection.player, 4, 5);
     this.connections.add(connection);
     this.terminals.add(terminal);
+
+    const disconnect = () => {
+      connection.end();
+      this.connections.delete(connection);
+      const r = this.engine.world.defaultZone.find(player);
+      if (r) r.remove(player);
+    };
 
     socket.on('data', (buf: Buffer) => {
       terminal.handleInput(buf.toString('hex'));
     });
 
-    socket.on('error', (err) => {
-      debug('error', err);
-      connection.end();
-      this.connections.delete(connection);
-      const room = this.engine.rooms.find((r) => r.agents.some((a) => a === player));
-      if (room) room.remove(player);
-    });
-
-    socket.on('end', () => {
-      debug('end');
-      connection.end();
-      this.connections.delete(connection);
-      const room = this.engine.rooms.find((r) => r.agents.some((a) => a === player));
-      if (room) room.remove(player);
-    });
-
-    socket.on('close', () => {
-      debug('close');
-      connection.end();
-      this.connections.delete(connection);
-      const room = this.engine.rooms.find((r) => r.agents.some((a) => a === player));
-      if (room) room.remove(player);
-    });
+    socket.on('error', disconnect);
+    socket.on('end', disconnect);
+    socket.on('close', disconnect);
   }
 
   listen(...args): void {
