@@ -1,11 +1,11 @@
-import { Points, Vector } from '../../lib/math';
+import { Points, Rectangle, Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
 import { Compiler, IProgram, RuntimeError } from './language';
 import { Equipment, Item, Program, Thing } from './things';
-import { Action, NoAction } from './actions';
-import { DataStack, Room } from './world';
-import { debug } from '../../lib/logging';
+import { Action } from './actions';
+import { Cell, DataStack, Room } from './world';
+import { bounds } from './constants';
 
 export class HP extends Points {}
 export class SP extends Points {}
@@ -52,20 +52,23 @@ export abstract class AgentType {
 }
 
 export class Agent {
-  tick: number = 0
+  cycle: number = 0
 
   name: string
   type: AgentType
+
+  private cell: Cell
+  private view: Room
+
   position: Vector = new Vector()
+  direction: Vector = new Vector()
   velocity: Vector = new Vector()
-  view: Room
 
   hp = new HP()
   sp = new SP()
   mp = new MP()
   gp = new GP()
 
-  private local: Room = new Room(0, 0)
   private queue: Queue<Action> = new Queue()
   private stack: Stack<Thing> = new Stack()
   private compiler: Compiler = new Compiler()
@@ -77,13 +80,22 @@ export class Agent {
 
   get isAlive() { return this.hp.value > 0; }
 
-  render() {
-    return this.type?.appearance || 'XX';
+  move () {
+    if (this.velocity.isZero()) return;
+    this.position.add(this.velocity);
+    if (!bounds.contains(this.position)) {
+      this.position.sub(this.velocity);
+    }
+    const friction = this.velocity.clone().absolute().invert();
+    this.velocity.sub(friction);
   }
 
-  teleport(x: number, y: number, room?: Room) {
-    this.position.setXY(x, y);
-    if (room) this.view = room;
+  enter (room: Room) {
+    this.view = room;
+  }
+
+  render() {
+    return this.type.appearance;
   }
 
   give(item: Item|Equipment) {
@@ -94,8 +106,8 @@ export class Agent {
     this.queue.add(action);
   }
 
-  takeTurn(tick: number) {
-    this.tick = tick;
+  takeTurn(cycle: number) {
+    this.cycle = cycle;
     const action = this.queue.next();
 
     return action;

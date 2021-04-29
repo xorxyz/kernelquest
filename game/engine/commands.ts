@@ -1,5 +1,5 @@
 import { debug } from '../../lib/logging';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from '../ui/terminal';
 import { Agent } from './agents';
 import { Item } from './things';
 

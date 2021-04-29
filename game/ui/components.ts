@@ -3,11 +3,10 @@
  * - input fields - edit lines before before evaluating them as expressions
  */
 import { esc, Cursor, Style, Colors } from '../../lib/esc';
-import { debug } from '../../lib/logging';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Hero } from '../engine/agents';
 import { Cell } from '../engine/world';
-import { IState, Terminal } from '../shell/terminal';
+import { IState, Terminal } from './terminal';
 
 const { Fg, Bg } = Colors;
 

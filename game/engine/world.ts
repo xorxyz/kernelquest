@@ -6,6 +6,7 @@ import { Agent } from './agents';
 import { Program, Thing } from './things';
 import { DB_FILEPATH, MAX_X, MAX_Y } from './constants';
 import { esc, Style } from '../../lib/esc';
+import { Queue } from '../../lib/queue';
 
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
@@ -19,11 +20,15 @@ export interface Ports<T> {
   north: T, east: T, south: T, west: T
 }
 
+export class Port {
+  a: Queue<Thing>
+  b: Queue<Thing>
+}
+
 export class Cell {
-  position: Vector
-  ports: Ports<Cell>
-  data: Thing | null = null
-  program: Program | null = null
+  readonly position: Vector
+  private ports: Ports<Cell>
+  private data: Thing | null = null
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
@@ -57,9 +62,9 @@ export class Col extends Array {
 
 export class Room {
   readonly position: Vector
-  ports: Ports<Room>
   rows: Array<Row>
   cols: Array<Col>
+  private ports: Ports<Room>
   private agents: Set<Agent> = new Set()
 
   constructor(x: number, y: number) {
@@ -78,18 +83,11 @@ export class Room {
 
   add(agent: Agent) {
     this.agents.add(agent);
-    agent.teleport(0, 0, this.viewAs());
+    agent.enter(new Proxy(this, {}));
   }
 
   remove(agent: Agent) {
     this.agents.delete(agent);
-  }
-
-  scan() {}
-
-  viewAs() {
-    return new Proxy(this, {
-    });
   }
 }
 

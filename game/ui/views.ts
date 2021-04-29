@@ -1,6 +1,6 @@
 import { esc, Screen, Style } from '../../lib/esc';
 import { CLOCK_MS_DELAY } from '../engine/constants';
-import { Terminal } from '../shell/terminal';
+import { Terminal } from './terminal';
 import {
   UiComponent,
   Navbar,
@@ -22,7 +22,7 @@ export abstract class View {
     const lines = Object.values(this.components).map((component) =>
       component.compile(terminal) + esc(Style.Reset));
 
-    const clear = terminal.connection.player.tick % CLEAR_RATE === 0
+    const clear = terminal.connection.player.cycle % CLEAR_RATE === 0
       ? esc(Screen.Clear)
       : '';
 

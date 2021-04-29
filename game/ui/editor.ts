@@ -1,8 +1,8 @@
 import { Vector } from '../../lib/math';
 import { Keys } from '../engine/constants';
-import { LINE_LENGTH } from '../ui/components';
+import { LINE_LENGTH } from './components';
 
-export class LineEditor {
+export class Editor {
   private line: string = ''
   private cursor: Vector = new Vector()
 

@@ -1,3 +1,6 @@
+const Xs = [0,1,0,-1];
+const Ys = [-1,0,1,0];
+
 /** 2d vector (xy) */
 export class Vector {
   x: number
@@ -10,6 +13,10 @@ export class Vector {
 
   static from(obj: { x: number, y: number }) {
     return new Vector(obj.x, obj.y);
+  }
+
+  isZero () {
+    return this.x === 0 && this.y === 0;
   }
 
   clone() {
@@ -97,7 +104,26 @@ export class Vector {
       || (this.y && v.y && Math.sign(this.y) !== Math.sign(v.y))
     );
   }
+
+  rotate () {
+    this.x = this.x;
+    this.y = this.y;
+    return this;
+  }
+
+  absolute () {
+    this.x = Math.sign(this.x);
+    this.y = Math.sign(this.y);
+    return this;
+  }
+
+  invert () {
+    this.x = this.x * -1;
+    this.y = this.y * -1;
+    return this;
+  }
 }
+
 /** 2d vector with random xy value */
 export class RandomVector extends Vector {
   constructor() {

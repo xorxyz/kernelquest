@@ -1,11 +1,11 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Action, MoveAction, SwitchModeAction } from '../engine/actions';
+import { Action, MoveAction, RotateAction, SwitchModeAction, WalkAction } from '../engine/actions';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
 import Connection from '../server/connection';
-import { CELL_WIDTH } from '../ui/components';
-import { MainView } from '../ui/views';
-import { LineEditor } from './line_editor';
+import { CELL_WIDTH } from './components';
+import { MainView } from './views';
+import { Editor } from './editor';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
@@ -23,7 +23,7 @@ export class Terminal {
   connection: Connection
   cursorPosition: Vector
   state: IState
-  line: LineEditor = new LineEditor()
+  line: Editor = new Editor()
   view: MainView = new MainView()
   stdout: Array<string>
 
@@ -128,6 +128,8 @@ export class Terminal {
   ctrl(str: string): Action | null {
     let action: Action | null = null;
 
+    console.log(str);
+
     switch (str) {
       case (Keys.ENTER):
         action = new SwitchModeAction(this);
@@ -143,6 +145,12 @@ export class Terminal {
         break;
       case (Keys.ARROW_LEFT):
         action = new MoveAction(this.player, -1, 0);
+        break;
+      case (Keys.CMD_ARROW_LEFT):
+        action = new WalkAction(this.player, -1, 0);
+        break;
+      case (Keys.CMD_ARROW_RIGHT):
+        action = new WalkAction(this.player, 1, 0);
         break;
         // case (Keys.SHIFT_ARROW_UP):
         //   command = new Drag(0, -1);
@@ -168,9 +176,9 @@ export class Terminal {
         // case (Keys.LOWER_P):
         //   command = new PickUp();
         //   break;
-        // case (Keys.LOWER_R):
-        //   command = new Rotate();
-        //   break;
+      case (Keys.LOWER_R):
+        action = new RotateAction(this.player);
+        break;
       default:
         break;
     }

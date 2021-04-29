@@ -49,12 +49,14 @@ input {
 }
 
 pre {
+  font-family: monospace;
   background-color: #111;
   color: #fff;
   border-radius: 0.125rem;
-  padding: 1ex;
+  padding: 2ex 2ex;
   letter-spacing: 0.125ex;
-  line-height: 2.6ex;
+  line-height: 1.75rem;
+  font-size: 1.25rem;
 }
 
 summary {
@@ -73,10 +75,6 @@ textarea {
 footer {
   margin-top: 7.5rem;
   font-size: 0.75rem;
-}
-
-#room {
-  line-height: 1rem;
 }
 
 #output details ~ pre {
