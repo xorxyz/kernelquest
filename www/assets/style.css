@@ -109,8 +109,10 @@ footer {
 .w-100 { width: 100% }
 .ma0 { margin: 0 }
 .mt0 { margin-top: 0; }
+.mv0 { margin-top: 0; margin-bottom: 0; }
 .mv1 { margin: 1rem 0; }
 .mv2 { margin: 2rem 0; }
+.pa0 { padding: 0; }
 .pa1 { padding: 1ex; }
 .pa2 { padding: 2ex; }
 .pa05 { padding: 0.5rem; }
