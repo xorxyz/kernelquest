@@ -24,7 +24,7 @@ export default class GameServer {
     const id = this.i++;
     const player = new Hero(new Cherub());
 
-    this.engine.addAgent(player);
+    this.engine.world.rooms[0].add(player);
 
     const connection = new Connection(player, socket);
     const terminal = new Terminal(id, connection);
@@ -35,7 +35,7 @@ export default class GameServer {
     const disconnect = () => {
       connection.end();
       this.connections.delete(connection);
-      this.engine.removeAgent(player);
+      this.engine.world.find(player)?.remove(player);
     };
 
     socket.on('data', (buf: Buffer) => {

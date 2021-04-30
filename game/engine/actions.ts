@@ -1,6 +1,9 @@
+import { debug } from '../../lib/logging';
 import { Vector } from '../../lib/math';
 import { Terminal } from '../ui/terminal';
-import { Agent } from './agents';
+import { Agent, AgentType, Critter, NPC } from './agents';
+import { bounds } from './constants';
+import { Room } from './world';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}
@@ -8,7 +11,7 @@ export class ActionFailure extends ActionResult {}
 
 export abstract class Action {
   abstract cost: number
-  abstract perform(): ActionResult
+  abstract perform(agent: Agent, room: Room): ActionResult
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
@@ -26,7 +29,7 @@ export class NoAction extends Action {
 export class SwitchModeAction extends Action {
   cost: 0
   terminal: Terminal
-  constructor(terminal: Terminal) {
+  constructor (terminal: Terminal) {
     super();
     this.terminal = terminal;
   }
@@ -36,20 +39,14 @@ export class SwitchModeAction extends Action {
   }
 }
 
-export class MoveAction extends Action {
+abstract class MoveAction extends Action {
   cost: 5
-  agent: Agent
-  direction: Vector
-  constructor(agent: Agent, x: number, y: number) {
-    super();
-    this.agent = agent;
-    this.direction = new Vector(x, y);
-  }
-  perform() {
-    if (this.agent.velocity.opposes(this.direction) ||
-        this.agent.velocity.isZero()) {
-      this.agent.velocity.add(this.direction);
-      this.agent.velocity.sub(this.agent.velocity);
+  abstract direction: Vector
+  perform(agent: Agent) {
+    if (agent.velocity.opposes(this.direction) ||
+        agent.velocity.isZero()) {
+      agent.direction = this.direction;
+      agent.velocity.add(this.direction);
       return new ActionSuccess();
     }
 
@@ -57,32 +54,42 @@ export class MoveAction extends Action {
   }
 }
 
+export class MoveNorthAction extends MoveAction {
+  direction = new Vector(0, -1)
+}
+export class MoveEastAction extends MoveAction {
+  direction = new Vector(1, 0)
+}
+export class MoveSouthAction extends MoveAction {
+  direction = new Vector(0, 1)
+}
+export class MoveWestAction extends MoveAction {
+  direction = new Vector(-1, 0)
+}
+
 export class RotateAction extends Action {
   cost: 1
-  agent: Agent
-  constructor(agent: Agent) {
-    super();
-    this.agent = agent;
-  }
-  perform() {
-    this.agent.direction.rotate();
+  perform(agent: Agent) {
+    agent.direction.rotate();
 
     return new ActionSuccess();
   }
 }
 
-export class WalkAction extends Action {
-  cost: 10
-  agent: Agent
-  direction: Vector
-  constructor(agent: Agent, x:number, y:number) {
+export class SpawnAction extends Action {
+  cost: 0
+  type: AgentType
+  constructor (type: AgentType) {
     super();
-    this.agent = agent;
-    this.direction = new Vector(x, y);
+    this.type = type;
   }
-  perform() {
-    this.agent.velocity.copy(this.direction);
-
+  perform(agent: Agent, room: Room) {
+    const spawned = new Agent(this.type);
+    spawned.position.copy(agent.position).add(agent.direction);
+    if (!bounds.contains(spawned.position)) {
+      return new ActionFailure();
+    }
+    room.add(spawned);
     return new ActionSuccess();
   }
 }

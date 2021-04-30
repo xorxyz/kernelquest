@@ -4,7 +4,7 @@
  */
 import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
-import { Hero } from '../engine/agents';
+import { Agent, Hero } from '../engine/agents';
 import { Cell } from '../engine/world';
 import { IState, Terminal } from './terminal';
 
@@ -16,13 +16,8 @@ export const LINE_LENGTH = 41;
 export const N_OF_LINES = 5;
 export const CELL_WIDTH = 2;
 
-interface Props {
-  player: Hero,
-  state: IState
-}
-
 export abstract class UiComponent {
-  abstract render(p: Props): Array<string>
+  abstract render(terminal: Terminal): Array<string>
 
   position: Vector
   style: string = ''
@@ -31,23 +26,22 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  compile(props: Props): string {
+  compile(terminal: Terminal): string {
     const { x, y } = this.position;
 
-    return this.style + this.render(props)
+    return this.style + this.render(terminal)
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
 }
 
+const title = 'kernel.quest';
+
 export class Navbar extends UiComponent {
   style = esc(Style.Invert)
   render({ player }) {
-    const what = ' kernel.quest';
-    const time = player.tick;
-
     return [
-      [what, time].join('  ').padEnd(SCREEN_WIDTH, ' '),
+      [title, player.cycle].join('  ').padEnd(SCREEN_WIDTH, ' '),
     ];
   }
 }
@@ -69,12 +63,7 @@ export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
   render({ player }) {
-    return player.view.rows.map((row, y) =>
-      row.map((cell, x) => (
-        player.position.x === x && player.position.y === y
-          ? player.render()
-          : cell.render()
-      )).join(''));
+    return (player as Agent).room.render();
   }
 }
 

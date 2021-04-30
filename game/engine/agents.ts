@@ -3,7 +3,7 @@ import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
 import { Compiler, IProgram, RuntimeError } from './language';
 import { Equipment, Item, Program, Thing } from './things';
-import { Action } from './actions';
+import { Action, NoAction } from './actions';
 import { Cell, DataStack, Room } from './world';
 import { bounds } from './constants';
 
@@ -56,13 +56,13 @@ export class Agent {
 
   name: string
   type: AgentType
+  
+  room: Room
+  cell: Cell
 
-  private cell: Cell
-  private view: Room
-
-  position: Vector = new Vector()
-  direction: Vector = new Vector()
-  velocity: Vector = new Vector()
+  position: Vector = new Vector(0, 0)
+  direction: Vector = new Vector(0, 1)
+  velocity: Vector = new Vector(0, 0)
 
   hp = new HP()
   sp = new SP()
@@ -80,22 +80,12 @@ export class Agent {
 
   get isAlive() { return this.hp.value > 0; }
 
-  move () {
-    if (this.velocity.isZero()) return;
-    this.position.add(this.velocity);
-    if (!bounds.contains(this.position)) {
-      this.position.sub(this.velocity);
-    }
-    const friction = this.velocity.clone().absolute().invert();
-    this.velocity.sub(friction);
+  render() {
+    return this.type.appearance;
   }
 
   enter (room: Room) {
-    this.view = room;
-  }
-
-  render() {
-    return this.type.appearance;
+    this.room = room
   }
 
   give(item: Item|Equipment) {
@@ -106,7 +96,7 @@ export class Agent {
     this.queue.add(action);
   }
 
-  takeTurn(cycle: number) {
+  takeTurn(cycle: number): Action | null {
     this.cycle = cycle;
     const action = this.queue.next();
 
