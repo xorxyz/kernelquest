@@ -3,23 +3,18 @@ import { Char, DataType, IProgram, List, Ref, Transform } from './language';
 import { Room } from './world';
 
 export class Durability extends Points {}
+export class Uses extends Points {}
+export interface Destination {
+  room: Room
+  position: Vector
+}
 
 export abstract class Thing {
-  name: string
-  type: DataType
-  ref: Ref
-  appearance: string
+  abstract name: string
+  readonly type: DataType
   position: Vector = new Vector()
   velocity: Vector = new Vector()
   durability: Durability = new Durability()
-
-  constructor(name: string) {
-    this.name = name;
-  }
-}
-
-export class Wall extends Thing {
-  type: Char
 }
 
 export abstract class Program extends Thing implements IProgram {
@@ -27,29 +22,23 @@ export abstract class Program extends Thing implements IProgram {
   transforms: Array<Transform>
 }
 
-export class Gem extends Program {}
-
-export class ParticleProgram extends Program {}
-export class Particle extends Program {
-  sequence: Array<ParticleProgram>
+export abstract class Particle extends Program {
+  sequence: Array<Program>
 }
-
-export class Uses extends Points {}
 
 export abstract class Item extends Program {
   uses: Uses
-
   abstract use(): void
 }
 
-export abstract class Equipment extends Program {
-}
+export abstract class Equipment extends Program {}
 
-export interface Destination {
-  room: Room
-  position: Vector
+export class Wall extends Thing {
+  name: 'wall'
+  type: Char
 }
 
 export class Teleporter extends Program {
+  name: 'teleporter'
   destination: Destination
 }

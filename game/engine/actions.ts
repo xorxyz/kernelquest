@@ -45,7 +45,6 @@ abstract class MoveAction extends Action {
   perform(agent: Agent) {
     if (agent.velocity.opposes(this.direction) ||
         agent.velocity.isZero()) {
-      agent.direction = this.direction;
       agent.velocity.add(this.direction);
       return new ActionSuccess();
     }

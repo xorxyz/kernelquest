@@ -1,11 +1,10 @@
-import { Points, Rectangle, Vector } from '../../lib/math';
+import { Points, Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
 import { Compiler, IProgram, RuntimeError } from './language';
 import { Equipment, Item, Program, Thing } from './things';
 import { Action, NoAction } from './actions';
 import { Cell, DataStack, Room } from './world';
-import { bounds } from './constants';
 
 export class HP extends Points {}
 export class SP extends Points {}
@@ -53,17 +52,13 @@ export abstract class AgentType {
 
 export class Agent {
   cycle: number = 0
-
   name: string
   type: AgentType
-  
   room: Room
   cell: Cell
-
   position: Vector = new Vector(0, 0)
   direction: Vector = new Vector(0, 1)
   velocity: Vector = new Vector(0, 0)
-
   hp = new HP()
   sp = new SP()
   mp = new MP()
@@ -119,62 +114,31 @@ export class Agent {
   }
 }
 
-export class Prince extends AgentType {
-  appearance = '👼'
-}
-export class Princess extends AgentType {
-  appearance = '👼'
-}
-export class Sage extends AgentType {
-  appearance = '👼'
-}
-export class Dragon extends AgentType {
-  appearance = '👼'
-}
-
-export class Deity extends Agent {
-  type: Prince | Princess | Sage | Dragon
-}
-
 export class Cherub extends AgentType {
   appearance = '👼'
 }
-
 export class Fairy extends AgentType {
-  appearance = '👼'
+  appearance = '🧚'
 }
 export class Elf extends AgentType {
-  appearance = '👼'
+  appearance = '🧝'
 }
 export class Wizard extends AgentType {
-  appearance = '👼'
+  appearance = '🧙'
 }
 
 export class Hero extends Agent {
   type: Cherub | Fairy | Elf | Wizard
-
   experience: number = 0
   get level() { return 1; }
 }
 
-export class Critter extends AgentType {
-  appearance = '👼'
-}
-export class Person extends AgentType {
-  appearance = '👼'
+export abstract class Critter extends AgentType {}
+export abstract class NPC extends AgentType {}
+export abstract class Monster extends AgentType {}
+export abstract class Boss extends AgentType {}
+
+export class Sheep extends Critter {
+  appearance = '🐑'
 }
 
-export class NPC extends Agent {
-  type: Critter | Person
-}
-
-export class Monster extends AgentType {
-  appearance = '👼'
-}
-export class Boss extends AgentType {
-  appearance = '👼'
-}
-
-export class Enemy extends Agent {
-  type: Monster | Boss
-}

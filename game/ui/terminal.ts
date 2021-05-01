@@ -6,7 +6,7 @@ import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
-import { Critter } from '../engine/agents';
+import { Critter, Sheep } from '../engine/agents';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
@@ -40,21 +40,13 @@ export class Terminal {
     this.id = id;
     this.connection = connection;
     this.cursorPosition = new Vector();
-    this.stdout = [
-      `xor/tcp (${host}) (tty${id})`,
-      'login: john',
-      'password:',
-      'Last login: 2038-01-01',
-      'Welcome.',
-    ];
-
     this.state = {
       termMode: false,
       prompt: '> ',
       line: '',
       stdout: [
         `xor/tcp (${host}) (tty${id})`,
-        'login: john',
+        'login: guest',
         'password:',
         'Last login: 2038-01-01',
         'Welcome.',
@@ -102,18 +94,18 @@ export class Terminal {
 
         this.player.exec(expr);
 
-        this.stdout.push(this.state.prompt + expr);
+        this.state.stdout.push(this.state.prompt + expr);
 
         this.state.line = '';
         this.line.reset();
 
-        this.stdout.push('...');
+        this.state.stdout.push('...');
 
         this.waiting = true;
 
         setTimeout(() => {
           this.waiting = false;
-          this.stdout.push('ok.');
+          this.state.stdout.push('ok.');
           this.render();
         }, 300);
       }
@@ -146,7 +138,7 @@ export class Terminal {
         action = new MoveWestAction();
         break;
       case (Keys.LOWER_P):
-        action = new SpawnAction(new Critter());
+        action = new SpawnAction(new Sheep());
         break;
       case (Keys.LOWER_R):
         action = new RotateAction();

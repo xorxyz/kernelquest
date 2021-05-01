@@ -8,19 +8,25 @@ export abstract class RuntimeError extends Error {}
 export class MissingOperand extends RuntimeError {}
 export class WrongInputType extends RuntimeError {}
 
-export abstract class DataType {}
+export abstract class DataType {
+  value: any
+  abstract name: string
+  get appearance () {
+    return this.value
+  }
+}
 
 export abstract class SimpleDataType extends DataType {}
-export class TruthValue extends SimpleDataType {}
-export class Integer extends SimpleDataType {}
-export class Char extends SimpleDataType {}
-export class Operator extends SimpleDataType {}
-export class Word extends SimpleDataType {}
+export abstract class TruthValue extends SimpleDataType {}
+export class Yes extends TruthValue { name: 'yes' }
+export class No extends TruthValue { name: 'no' }
+export class Hex extends SimpleDataType { name: 'hex' }
+export class Char extends SimpleDataType { name: 'char' }
+export class Operator extends SimpleDataType { name: 'op' }
+export class Word extends SimpleDataType { name: 'word' }
 
-export class CompoundDataType extends DataType {}
-export class List extends CompoundDataType {}
-export class String extends CompoundDataType {}
-export class Set extends CompoundDataType {}
+export abstract class CompoundDataType extends DataType {}
+export class List extends CompoundDataType { name: 'list' }
 
 export class Ref {
   readonly address: number
@@ -72,18 +78,18 @@ export class Compiler {
   }
 }
 
-// export class Add extends Transform {
-//   fn(this: Execution) {
-//     const b = this.stack.pop();
-//     if (typeof b === 'undefined') throw new MissingOperand();
-//     if (typeof b !== 'number') throw new WrongInputType();
+export class Add extends Transform {
+  fn(this: Execution) {
+    const b = this.stack.pop();
+    if (typeof b === 'undefined') throw new MissingOperand();
+    if (typeof b !== 'number') throw new WrongInputType();
 
-//     const a = this.stack.pop();
-//     if (typeof a === 'undefined') throw new MissingOperand();
-//     if (typeof a !== 'number') throw new WrongInputType();
+    const a = this.stack.pop();
+    if (typeof a === 'undefined') throw new MissingOperand();
+    if (typeof a !== 'number') throw new WrongInputType();
 
-//     const result = a + b;
+    const result = a + b;
 
-//     this.stack.push(result);
-//   }
-// }
+    this.stack.push(result);
+  }
+}

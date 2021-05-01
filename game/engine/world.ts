@@ -2,12 +2,11 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
-import { Agent } from './agents';
-import { Equipment, Item, Program, Thing } from './things';
-import { bounds, DB_FILEPATH, MAX_X, MAX_Y, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
-import { Cursor, esc, Line, Style } from '../../lib/esc';
 import { Queue } from '../../lib/queue';
-import { debug } from '../../lib/logging';
+import { esc, Style } from '../../lib/esc';
+import { Equipment, Item, Thing } from './things';
+import { Agent } from './agents';
+import { bounds, DB_FILEPATH, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
 
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
@@ -27,12 +26,14 @@ export class Port {
 }
 
 
-export class Cell {
+export class Cell extends Thing {
+  name = 'cell';
   readonly position: Vector
   readonly agents: Stack<Agent> = new Stack()
   readonly items: Stack<Item|Equipment> = new Stack()
 
   constructor(x: number, y: number) {
+    super();
     this.position = new Vector(x, y);
   }
 
@@ -55,40 +56,36 @@ export class Cell {
   }
 
   render() {
-    return ( this.agents.peek()?.type.appearance || this.items.peek()?.appearance || empty );
+    return ( 
+      this.agents.peek()?.type.appearance || 
+      this.items.peek()?.type.appearance || empty );
   }
 }
 
-export class Room {
+export class Room extends Thing {
+  name = 'room'
   readonly agents: Set<Agent> = new Set()
-  readonly rows: Array<Array<Cell>>
   readonly position: Vector
-
+  readonly rows: Array<Array<Cell>>
   private cells: Array<Cell>
 
   constructor(x: number, y: number) {
+    super();
     this.position = new Vector(x, y);
-
     this.rows = new Array(ROOM_HEIGHT).fill(0).map(() => []);
     this.cells = new Array(ROOM_WIDTH * ROOM_HEIGHT).fill(0).map((_, i) => {
       const y = Math.floor(i / ROOM_WIDTH);
       const x = y * ROOM_WIDTH + (ROOM_WIDTH - 1);
       const cell = new Cell(x, y);
-
+  
       this.rows[y].push(cell);
-
+  
       return cell;
-    });
-
+    })
   }
 
   has(agent: Agent): boolean {
     return this.cells.some(cell => cell.has(agent));
-  }
-
-  cellAt (position: Vector): Cell {
-    const index = position.y * ROOM_WIDTH + position.x;
-    return this.cells[index];
   }
 
   add(agent: Agent): Room {
@@ -103,10 +100,6 @@ export class Room {
 
   find(agent: Agent): Cell | null {
     return this.cells.find(cell => cell.has(agent)) || null;
-  }
-
-  collides (position: Vector) {
-    return !bounds.contains(position) || this.cellAt(position).agents[0];
   }
 
   move(agent: Agent): Room {
@@ -138,12 +131,23 @@ export class Room {
   render(): Array<string> {
     return this.rows.map((row) => row.map(r => r.render()).join(''));
   }
+
+  private cellAt (position: Vector): Cell {
+    const index = position.y * ROOM_WIDTH + position.x;
+    return this.cells[index];
+  }
+
+  private collides (position: Vector) {
+    return !bounds.contains(position) || this.cellAt(position).agents[0];
+  }
 }
 
-export class World {
+export class World extends Thing {
+  name: 'world'
   readonly rooms: Array<Room>
 
   constructor() {
+    super();
     this.rooms = new Array(ROOM_WIDTH * ROOM_HEIGHT).fill(0).map((_, i) => {
       const y = Math.floor(i / ROOM_WIDTH);
       const x = y * ROOM_WIDTH + (ROOM_WIDTH - 1)

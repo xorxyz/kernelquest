@@ -70,11 +70,11 @@ export class RoomMap extends UiComponent {
 const nothing = `${esc(Style.Dim)}${'nothing.'.padEnd(10, ' ')}${esc(Style.Reset)}`;
 
 export class Sidebar extends UiComponent {
-  render() {
+  render({ player }) {
     return [
       '┌───────────────┐',
-      '│ N: John       │',
-      '│ P: 🧙Wizard   │',
+      `│ N: ${player.name.padEnd(10)} │`,
+      `│ P: ${player.type.appearance.padEnd(10)} │`,
       '│               │',
       `│ A: ${nothing} │`,
       `│ B: ${nothing} │`,
@@ -141,10 +141,10 @@ export class Stats extends UiComponent {
 }
 
 export class Output extends UiComponent {
-  render({ stdout }: Terminal) {
+  render({ state }: Terminal) {
     return [
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
-      ...stdout
+      ...state.stdout
         .slice(-N_OF_LINES)
         .map((line) =>
           `│ ${(line || '').padEnd(LINE_LENGTH - 4, ' ')} │`),

@@ -24,6 +24,8 @@ export default class GameServer {
     const id = this.i++;
     const player = new Hero(new Cherub());
 
+    player.name = 'John';
+
     this.engine.world.rooms[0].add(player);
 
     const connection = new Connection(player, socket);
