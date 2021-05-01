@@ -1,50 +1,17 @@
 import { Points, Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
-import { Compiler, IProgram, RuntimeError } from './language';
+import { Execution, IProgram, RuntimeError } from './language';
 import { Equipment, Item, Program, Thing } from './things';
 import { Action, NoAction } from './actions';
 import { Cell, DataStack, Room } from './world';
+import { debug } from '../../lib/logging';
+import { Compiler } from './compiler';
 
 export class HP extends Points {}
 export class SP extends Points {}
 export class MP extends Points {}
 export class GP extends Points {}
-
-export type Name = string
-export type Dict<T> = Record<Name, T>
-
-export class Execution {
-  private level = 0
-  private stacks: Array<any>
-  private program: IProgram
-  private dict: Dict<Program>
-
-  constructor(program: IProgram) {
-    this.program = program;
-  }
-
-  get stack() {
-    return this.stacks[this.level];
-  }
-
-  set stack(s) {
-    this.stacks[this.level] = s;
-  }
-
-  load(dict: Dict<Program>) {
-    this.dict = dict;
-  }
-
-  start(stack: DataStack) {
-    this.stacks = [stack];
-
-    this.program.transforms.map((transform) =>
-      transform.fn.call(this, this.stack));
-
-    return this.stack.peek();
-  }
-}
 
 export abstract class AgentType {
   abstract appearance: string
@@ -103,14 +70,15 @@ export class Agent {
     const execution = new Execution(program);
 
     try {
-      execution.start(this.stack);
+      const result = execution.start(this.stack);
+      debug(result);
     } catch (err) {
       if (!(err instanceof RuntimeError)) {
         console.error('Unhandled error:', err);
       }
     }
 
-    return true;
+    return execution;
   }
 }
 
@@ -140,5 +108,10 @@ export abstract class Boss extends AgentType {}
 
 export class Sheep extends Critter {
   appearance = '🐑'
+}
+
+export class Generator extends Agent {
+  n: number
+
 }
 

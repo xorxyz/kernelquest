@@ -7,6 +7,7 @@ import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
 import { Critter, Sheep } from '../engine/agents';
+import { debug } from '../../lib/logging';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY;
 
@@ -87,27 +88,24 @@ export class Terminal {
     this.render();
   }
 
-  handleTerminalInput(str: string) {
+  async handleTerminalInput(str: string) {
     if (str === Keys.ENTER) {
       if (this.line.value) {
         const expr = this.line.value.trim();
 
-        this.player.exec(expr);
-
         this.state.stdout.push(this.state.prompt + expr);
-
         this.state.line = '';
         this.line.reset();
-
         this.state.stdout.push('...');
-
         this.waiting = true;
 
-        setTimeout(() => {
-          this.waiting = false;
-          this.state.stdout.push('ok.');
-          this.render();
-        }, 300);
+        const execution  = this.player.exec(expr);
+
+        await sleep(300);
+
+        this.waiting = false;
+        this.state.stdout.push('ok.');
+        this.render();
       }
 
       this.switchModes();
@@ -176,4 +174,9 @@ export class Terminal {
 
     this.connection.socket.write(cursorUpdate);
   }
+}
+
+function sleep (t: number) {
+  return new Promise((resolve) => 
+    setTimeout(() => resolve(null), t));
 }

@@ -1,8 +1,13 @@
+
+
 import { Stack } from '../../lib/stack';
-import { Thing } from './things';
-import { Memory } from './world';
-import { Execution } from './agents';
+import { Program, Thing } from './things';
+import { DataStack, Memory } from './world';
 import { MAX_X, MAX_Y, TokenType } from './constants';
+import { debug } from '../../lib/logging';
+
+export type Name = string
+export type Dict<T> = Record<Name, T>
 
 export abstract class RuntimeError extends Error {}
 export class MissingOperand extends RuntimeError {}
@@ -62,19 +67,38 @@ export interface IProgram {
   transforms: Array<Transform>
 }
 
-export class Scanner {
-  scan(code: string): Array<Token> {
-    return [];
+
+export class Execution {
+  private level = 0
+  private stacks: Array<any>
+  private program: IProgram
+  private dict: Dict<Program>
+
+  constructor(program: IProgram) {
+    this.program = program;
   }
-}
 
-export class Compiler {
-  private scanner = new Scanner()
+  get stack() {
+    return this.stacks[this.level];
+  }
 
-  compile(code: string) {
-    const tokens = this.scanner.scan(code);
-    const transforms = [];
-    return { tokens, transforms };
+  set stack(s) {
+    this.stacks[this.level] = s;
+  }
+
+  load(dict: Dict<Program>) {
+    this.dict = dict;
+  }
+
+  start(stack: DataStack) {
+    this.stacks = [stack];
+
+    this.program.transforms.map((transform) =>
+      transform.fn.call(this, this.stack));
+
+    debug(this.program);
+
+    return this.stack.peek();
   }
 }
 

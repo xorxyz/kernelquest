@@ -110,12 +110,12 @@ export class Room extends Thing {
       agent.position.sub(agent.velocity);
     }
 
-    const previousCell = agent.cell;
+    const currentCell = agent.cell;
     const nextCell = this.cellAt(agent.position);
     
     agent.velocity.sub(agent.velocity);
     nextCell.add(agent);
-    previousCell.remove(agent);
+    currentCell.remove(agent);
 
     return this;
   }

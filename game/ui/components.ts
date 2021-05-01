@@ -4,9 +4,9 @@
  */
 import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
-import { Agent, Hero } from '../engine/agents';
+import { Agent } from '../engine/agents';
 import { Cell } from '../engine/world';
-import { IState, Terminal } from './terminal';
+import { Terminal } from './terminal';
 
 const { Fg, Bg } = Colors;
 
@@ -73,11 +73,11 @@ export class Sidebar extends UiComponent {
   render({ player }) {
     return [
       '┌───────────────┐',
-      `│ N: ${player.name.padEnd(10)} │`,
-      `│ P: ${player.type.appearance.padEnd(10)} │`,
+      `│ n: ${player.name.padEnd(10)} │`,
+      `│ p: ${player.type.appearance.padEnd(10)} │`,
       '│               │',
-      `│ A: ${nothing} │`,
-      `│ B: ${nothing} │`,
+      `│ a: ${nothing} │`,
+      `│ b: ${nothing} │`,
       '│               │',
       '│               │',
       '│               │',
@@ -129,12 +129,12 @@ export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
     return [
       '┌───────────────┐',
-      '│ LV: 01        │',
-      '│ XP: 0         │',
-      `│ HP: ${Hp(p.hp.value)}│`,
-      `│ SP: ${Sp(p.sp.value)}│`,
-      `│ MP: ${Mp(p.mp.value)}│`,
-      `│ GP: ${p.gp.value}       │`,
+      '│ lv: 01        │',
+      '│ xp: 0         │',
+      `│ hp: ${Hp(p.hp.value)}│`,
+      `│ sp: ${Sp(p.sp.value)}│`,
+      `│ mp: ${Mp(p.mp.value)}│`,
+      `│ gp: ${p.gp.value}       │`,
       `${'└'.padEnd(16, '─')}┘`,
     ];
   }
@@ -166,7 +166,7 @@ export class Input extends UiComponent {
 const dummyRoom: Array<Array<any>> = [];
 
 export class Speech extends UiComponent {
-  render() {
+  render({ player }) {
     return dummyRoom
       .map(([agent, message]) => [
         esc(Style.Invert),

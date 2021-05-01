@@ -1,4 +1,3 @@
-import { debug } from '../../lib/logging';
 import { Vector } from '../../lib/math';
 import { Terminal } from '../ui/terminal';
 import { Agent, AgentType, Critter, NPC } from './agents';
