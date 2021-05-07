@@ -4,7 +4,7 @@ rm -r dist && mkdir -p dist
 
 tsc \
   --target es6 \
-  --module es2020 \
+  --module system \
   --outDir dist \
   --removeComments \
   --isolatedModules \
