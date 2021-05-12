@@ -78,11 +78,10 @@ export class Sidebar extends UiComponent {
       '│               │',
       `│ a: ${nothing} │`,
       `│ b: ${nothing} │`,
-      '│               │',
-      '│               │',
-      '│               │',
-      '│               │',
-      '│               │',
+      `│ c: ${nothing} │`,
+      `│ d: ${nothing} │`,
+      `│ e: ${nothing} │`,
+      `│ f: ${nothing} │`,
       '│               │',
       '└───────────────┘',
     ];
@@ -111,9 +110,9 @@ export class Box extends UiComponent {
 }
 
 const Points = (bg, n) => {
+  const str = `${String(n).padStart(3, ' ')} / 100 `;
   const i = Math.ceil(n / 10);
 
-  const str = `${n} of 100`.padStart(10, ' ');
   return (
     esc(Style.in(Fg.Black, bg, str.slice(0, i))) +
     esc(Style.in(Fg.White, Bg.Black, str.slice(i))) +

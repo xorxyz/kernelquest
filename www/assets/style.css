@@ -99,6 +99,7 @@ footer {
 
 .bg-yellow { background-color: rgb(255, 249, 198); }
 .bg-white { background-color: #fff; color: #000; }
+.bg-blue { background-color: blue; color: #fff; }
 .blue { color: blue; }
 .f4 { font-size: 1rem; }
 .mb1 { margin-bottom: 1rem; }
