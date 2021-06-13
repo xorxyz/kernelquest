@@ -1,80 +1,37 @@
-# `x37` (xor4/platform)
+# Platform Infrastructure
 
-[`x37`](x37) is an end-to-end private cloud system.
+## Dependencies
 
-# goals
+1. `cdk`
+2. `aws-cli`
+4. an AWS identity with CloudFormation admin permissions
+5. an AWS access key for that identity
 
-extend openbsd with a minimal core set of tools for building private clouds, including all the facilities required to run a [software factory](software-factory).
+## Bootstrapping an AWS account
 
-# who
+1. Login as root user
+1. Go to [My Security Credentials](https://console.aws.amazon.com/iam/home#/security_credentials)
+1. Create a new Access key
+1. [Install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+1. Run `aws configure`. You will need your user's Access Key ID and Secret Access Key. Default region name should be `ca-central-1`. Use `json` for default output format.
+1. Run `export WF_ENV=qa` with the actual account env (look in [lib/constants.ts](lib/constants.ts) for a list of existing environments)
+1. Run `cdk bootstrap`. This will create a CloudFormation stack allowing you to use the CDK.
 
-- indie sysadmins
-- sysops
-- fediverse
-- bootstrappers
+## Getting a shell
 
-# why
+You can also do this in the browser in the [Session Manager AWS console](https://ca-central-1.console.aws.amazon.com/systems-manager/session-manager/start-session?region=ca-central-1).
 
-waste:
-- everybody's building the same system from scratch over and over in isolation
-- same goes for infras
-- growth at all cost is invading our lives
-- the web has taken over the internet
+1. Install [the Session Manager plugin for the AWS CLI](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+1. Find the instance id of the VM you want to access: `aws ec2 describe-instances`
+1. Get a shell: `aws ssm start-session --target $INSTANCE_ID`
 
-complexity:
-- ["cloud giants"][cloud-giants] implement proprietary, non-standard APIs on top of open system software
-- web app proliferation
+## Useful commands
 
-scale:
-- small companies not keeping up with the rate of change
+ * `npm run test`    perform the jest unit tests
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk deploy`      deploy this stack to your default AWS account/region
 
-security:
-- sso is always an enterprise feature
-- risk measurement is expensive for a small business
+## Environment variables
 
-system overload:
-- tickets unanswered
-- users helpless
-- systems not monitored
-- sysadmins and security people burning out
-
-# how
-
-we need to slow down [and practice proper husbandry]:
-
-- people must be able to inspect, maintain and repair systems that they use
-- consider how to feed waste back into the system
-- encourage ownership of data
-- curate existing solutions
-- reduce cruft & bloat to a minimum
-- leverage data exhausts
-- monitor energy use
-- use small units?
-  - MHz for cpu clock speeds
-  - KBs for ram capacity
-  - MBs for storage capacity
-
-# what
-
-an end-to-end private cloud system:
-
-- a single package
-- can be run by a single indie sysadmin
-- can host a handful of small businesses
-- secure, private and safe and open by default
-- bare metal clustering
-- curated package registry
-- simple, standard, modular
-- makes it easier for teams to test, deploy and manage systems
-- distributed & autonomous
-- continuously audited
-- can be run on older systems
-- can be run on low quality connections
-- built on openbsd
-
-# reference
-
-- [x37]: https://diagonal.systems/docs/x37
-- [software-factory]: https://github.com/jondavid-black/DevOpsForDefense/blob/master/Meetup/2019/2019-07%20DO4D%20-%20Software%20Factory.pdf
-- [cloud-giants]: https://www.dndbeyond.com/monsters/cloud-giant
-- [k3s-arch]: https://rancher.com/docs/k3s/latest/en/architecture
+ * `ENV`              see `lib/constants.ts` for values.
+ * `AWS_REGION`       defaults to `ca-central-1`. overwrite to deploy to different regions.

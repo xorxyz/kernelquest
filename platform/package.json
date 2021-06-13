@@ -1,0 +1,38 @@
+{
+  "name": "platform-infra",
+  "version": "0.1.0",
+  "bin": {
+    "infra": "bin/infra.js"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "npm run lint && jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.106.0",
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "aws-cdk": "1.106.0",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloudwatch": "^1.107.0",
+    "@aws-cdk/aws-ec2": "^1.106.0",
+    "@aws-cdk/aws-iam": "^1.106.1",
+    "@aws-cdk/aws-logs": "^1.107.0",
+    "@aws-cdk/core": "1.106.0",
+    "cdk-constants": "^3.0.3",
+    "source-map-support": "^0.5.16"
+  }
+}
