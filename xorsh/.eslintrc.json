@@ -1,0 +1,54 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["."],
+        "extensions": [".ts"]
+      }
+    }
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "max-classes-per-file": "off",
+    "import/extensions": "off",
+    "no-unused-vars": "off",
+    "no-plusplus": "off",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "vars": "all",
+      "args": "after-used",
+      "ignoreRestSiblings": false
+    }],
+    "no-use-before-define": "off",
+    "no-new": "off",
+    "lines-between-class-members": "off",
+    "no-console": "off",
+    "func-names": "off",
+    "prefer-arrow-callback": "off",
+    "import/prefer-default-export": "off",
+    "class-methods-use-this": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "object-curly-newline": ["error", {
+      "ImportDeclaration": { "multiline": true, "minProperties": 9}
+    }]
+  }
+}

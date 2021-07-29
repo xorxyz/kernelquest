@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
-import { Queue } from '../../lib/queue';
 import { esc, Style } from '../../lib/esc';
 import { Equipment, Item, Thing } from './things';
 import { Agent } from './agents';
@@ -21,20 +20,53 @@ export interface Ports<T> {
 }
 
 export class Port {
-  a: Queue<Thing>
-  b: Queue<Thing>
+  stack: Stack<Thing>
 }
 
+export class Tile {
+  chars: string
+}
 
 export class Cell extends Thing {
-  name = 'cell';
+  name: string
+  ports: Array<Port> = []
   readonly position: Vector
-  readonly agents: Stack<Agent> = new Stack()
-  readonly items: Stack<Item|Equipment> = new Stack()
+  readonly tile: Tile = new Tile()
+  readonly items: Stack<Item|Equipment> = new Stack<Item|Equipment>()
+  readonly agents: Stack<Agent> = new Stack<Agent>()
 
   constructor(x: number, y: number) {
     super();
     this.position = new Vector(x, y);
+    this.name = String(x) + String(y)
+  }
+
+  private get north () { return this.ports[0] }
+  private get east () { return this.ports[1] }
+  private get south () { return this.ports[2] }
+  private get west () { return this.ports[3] }
+
+  private get top () { return this.north?.stack.peek() }
+  private get right () { return this.east?.stack.peek() }
+  private get bottom () { return this.south?.stack.peek() }
+  private get left () { return this.west?.stack.peek() }
+
+  update (cycle: number) {
+    if (this.top && this.bottom) {
+      // vertical collision
+    }  else if (this.top) {
+      this.pass(this.north, this.south)
+    } else if (this.bottom) {
+      this.pass(this.south, this.north)
+    }
+
+    if (this.left && this.right) {
+      // horizontal collision
+    } else if (this.left) {
+      this.pass(this.west, this.east)
+    } else if (this.right) {
+      this.pass(this.east, this.west)
+    }
   }
 
   has (agent: Agent) {
@@ -60,6 +92,14 @@ export class Cell extends Thing {
       this.agents.peek()?.type.appearance || 
       this.items.peek()?.type.appearance || empty );
   }
+
+  private pass (portA: Port, portB: Port) {
+    const thing: Thing | undefined = portA.stack.pop();
+
+    if (!thing) return;
+
+    portB.stack.push(thing)
+  }
 }
 
 export class Room extends Thing {
@@ -67,7 +107,9 @@ export class Room extends Thing {
   readonly agents: Set<Agent> = new Set()
   readonly position: Vector
   readonly rows: Array<Array<Cell>>
-  private cells: Array<Cell>
+  readonly cells: Array<Cell>
+  readonly cellsByXY: Record<string, Cell> = {}
+  readonly ports: Array<Port> = []
 
   constructor(x: number, y: number) {
     super();
@@ -79,8 +121,15 @@ export class Room extends Thing {
       const cell = new Cell(x, y);
   
       this.rows[y].push(cell);
+      this.cellsByXY[cell.name] = cell;
   
       return cell;
+    })
+  }
+
+  load (cells: Array<Cell>) {
+    this.cells.forEach((cell, i) => {
+      cell.tile.chars = cells[i].tile.chars
     })
   }
 
@@ -162,10 +211,50 @@ export class World extends Thing {
   async load() {
     const contents = await readFile(DB_FILEPATH, 'utf8');
 
-    return contents;
+    const [ err, mapFile ] = parseMapFile(contents)
+
+    if (err) {
+      console.error(err)
+      throw new Error('couldnt parse map file.')
+    } else {
+      (mapFile as MapFile).rooms.map((room, i) => {
+        this.rooms[i].load(room.cells);
+      })
+    }
   }
 
-  async save(contents) {
+  async save() {
+    const contents = {
+      rooms: JSON.stringify(this.rooms)
+    }
+
     await writeFile(DB_FILEPATH, contents);
+  }
+}
+
+class MapFile {
+  rooms: Array<Room> = []
+
+  static from (contents) {
+    const mapFile = new MapFile();
+    const loaded = JSON.parse(contents);
+
+    if (!loaded.rooms) {
+      throw new Error('map file is missing the "rooms" key.')
+    }
+
+    mapFile.rooms = loaded.rooms;
+
+    return mapFile;
+  }
+}
+
+type MaybeMapFile = [ Error, null ] | [ null, MapFile ]
+
+function parseMapFile (contents: string): MaybeMapFile {
+  try { 
+    return [ null, MapFile.from(contents) ]
+  } catch (err) {
+    return [ err, null ]
   }
 }

@@ -1,17 +1,23 @@
 /*
  * Written by Jonathan Dupré
- * Copyright Diagonal Systems Inc.
+ * Copyright 2019-2020-2021 Diagonal Systems Inc.
  */
 import { Engine } from './engine/engine';
+import { World } from './engine/world';
 import GameServer from './server/server';
 
 const PORT = process.env.PORT || 3000;
-
-const engine = new Engine();
+const world = new World();
+const engine = new Engine({ world });
 const server = new GameServer(engine);
 
-server.listen(PORT, () => {
-  console.log('listening on', PORT);
+(async function main () {
+  console.log('loading world...');
+  await world.load();
 
-  engine.start();
-});
+  server.listen(PORT, () => {
+    console.log('listening on', PORT);
+  
+    engine.start();
+  });
+})()

@@ -1,5 +1,5 @@
-export interface StateTransition {}
 export interface State {}
+export interface StateTransition {}
 
 export abstract class FSM {
   current: State

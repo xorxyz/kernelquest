@@ -1,4 +1,4 @@
-import sdk from '@/shared/lib/sdk' 
+import sdk from '@/shared/lib/sdk'
 
 export default {
   namespaced: true,
@@ -7,7 +7,7 @@ export default {
   },
   mutations: {
     login (state, user) {
-      state.user = user || { name : '' }
+      state.user = user || { name: '' }
     },
     logout (state) {
       state.user = null
@@ -17,20 +17,19 @@ export default {
     async signup ({ commit, dispatch }, user) {
       try {
         var newUser = await sdk.signup(user)
-
       } catch (err) {
         console.error(err, err.statusCode)
 
         if (err.statusCode === 400) {
           console.log('400')
-          await dispatch('layout/createAlert', { 
-            title: 'Sorry.', 
+          await dispatch('layout/createAlert', {
+            title: 'Sorry.',
             message: 'The server said: "' + error.message + '"'
           }, { root: true })
           console.log('dispatched')
         } else if (err.statusCode === 502) {
-          await dispatch('layout/createAlert', { 
-            title: 'Sorry.', 
+          await dispatch('layout/createAlert', {
+            title: 'Sorry.',
             message: 'The server is probably still loading.'
           }, { root: true })
         } else {
@@ -43,7 +42,7 @@ export default {
         throw err
       }
     },
-    async activate ({ commit, dispatch}, code) {
+    async activate ({ commit, dispatch }, code) {
       try {
         await sdk.activate(code)
 
@@ -68,7 +67,6 @@ export default {
         var user = await sdk.login(credentials)
 
         commit('login', user)
-
       } catch (err) {
         console.error(err)
 
@@ -82,14 +80,14 @@ export default {
         } else if (err.statusCode === 403) {
           await dispatch('layout/createAlert', {
             title: 'Oh no.',
-            message: 'Those credentials didn\'t work. \n',
+            message: 'Those credentials didn\'t work. \n'
           }, { root: true })
         } else {
           await dispatch('layout/createAlert', {
             title: 'Oh no.',
             message:
               'Something happened. \n' +
-              'Or the connection\'s no bueno.' 
+              'Or the connection\'s no bueno.'
           }, { root: true })
         }
 

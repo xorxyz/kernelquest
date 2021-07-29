@@ -5,8 +5,6 @@
 ( "reflective" agents: )
 
 "heroes" == [
-  🤴 the prince
-  👸 the princess
   👼 cherubs
   🧝 elves         sp  [ [dash] [swap] ]     ( fast & tough. )
   🧚 fairies       hp  [ [heal] [cure] ]     ( emits light. care, influence. )
@@ -16,29 +14,30 @@
 "bosses" == [
   🐍 the snake   "bites, maybe poison"
   🕷️ the spider  "creates webs 🕸️, which drain stamina" 
-  👹 the ogre    "destroys data"
-  🐲 the dragon  "sleeps, eats sheep, burns down villages, accumulates riches"
+  👹 the ogre    "accumulates riches"
+  🐲 the dragon  "sleeps, eats sheep, burns down villages, grants wishes"
 ]
 
 ( ## deliberative agents )
 
 "people" == [
   👦 boy
-  👨 man
-  👴 old man
   👧 girl
+  👨 man
   👩 woman
+  👴 old man
   👵 old woman
 ] ( you can have conversations with them. )
 
 "critters" == [
-  🐑 sheeps     ( eats off excess data. )
-  🐈 cats       ( purrs. )
-  🐕 dogs       ( fetches. )
-  🐌 the snail  ( spreads data. )
-  🦌 the deer   ( leads you to secrets. )
-  🦉 the owl    ( gives you tips. )
+  🐑 sheeps     ( eats grass. )
 ] ( automatons. they help you in some way. )
+
+"sages" == [
+  🐌 the snail  
+  🦌 the deer   
+  🦉 the owl    
+]
 
 ( ## reactive agents )
 
@@ -54,13 +53,12 @@
 ( # world map )
 
 "places" == [
-  ⛲ the fountain  ( home. the lobby? )
-  🏘 the village   ( sell loot, buy stuff, get quests. )
-  🏕 campsites     ( player created rest areas. )
-  🌲 forests       ( 4 rooms (2x2) dungeon. )
-  ⛰ mountains     ( 8 rooms (2x2x2) dungeon. )
-  🏰 castles       ( 27 rooms (3x3x3) dungeon. )
-  🏔 peaks         ( empty spaces. )
+  ⛲ the fountain  ( checkpoint )
+  🏕 campsites     ( get quests )
+  🏘 villages      ( sell loot, buy stuff, read books )
+  🌲 forests       ( gather resources )
+  ⛰ mountains     ( gather resources )
+  🏰 castles       ( solve puzzles, find flags )
   🏛 the temple    ( level up! )
 ] ( teleports you to a zone. )
 
@@ -90,16 +88,17 @@
   🛡 shield    ( + protection. )
   👑 crown     ( + luck )
   💍 ring      ( + smarts. )
-  🎲 dice      ( generate random numbers. )
 ] ( assets. should break easily. )
 
-"particles" == [
+"particles" == [
   ✨ magic effect  ( appears when effects are invoked. )
-  🌈 light    ( shines in a radial gradient. )
+]
+
+"elements" == [
   🌊 water    ( flows downstreams, accumulates in pools. )
-  🌪 wind     ( moves in circles, moves light things. )
+  🌬️ air     ( moves in circles, moves light things. )
+  🌱earth    ( grows organcially. )
   🔥 fire     ( spreads, self-replicating. )
-  ⚡⚡ thunder  ( sparks in right angles, discharges and disappears. )
 ] ( cellular automata? )
 
 ( # ui )
@@ -111,10 +110,8 @@
 ]
 
 "colors" == [
-  🟦 blue   ( 🟦🧚 🟦🧝 🟦🧙 )
-  🟩 green  ( 🟩🧚 🟩🧝 🟩🧙 )
-  🟧 orange ( 🟧🧚 🟧🧝 🟧🧙 )
   🟪 purple ( 🟪🧚 🟪🧝 🟪🧙 )
+  🟧 orange ( 🟧🧚 🟧🧝 🟧🧙 )
 ] ( to help distinguish between players. )
 
 "spells" = [
