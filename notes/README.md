@@ -52,6 +52,7 @@ documents i want to keep track of:
 - [The Theory of Concatenative Combinators](http://nsl.com/misc/papers/The%20Theory%20of%20Concatenative%20Combinators.htm)
 - [Mathematical foundations of Joy](http://www.kevinalbrecht.com/code/joy-mirror/j02maf.html)
 - [From Frege To Godel. 1967](https://web.archive.org/web/20070717222735/http://www.andrew.cmu.edu:80/user/cebrown/notes/vonHeijenoort.html)
+- [Outline of a mathematical theory of computation](https://ropas.snu.ac.kr/~kwang/520/readings/sco70.pdf)
 
 # systems
 - [Multi-agent system](https://en.wikipedia.org/wiki/Multi-agent_system)

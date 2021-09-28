@@ -1,40 +1,30 @@
 import * as readline from 'readline';
-import { Stack } from '../../lib/stack';
-import { Compiler } from './compiler';
-import { Execution, Thing } from './interpreter';
+import { Interpreter } from './interpreter';
 
 class Repl {
-  line: string = ''
+  interpreter = new Interpreter()
   rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     prompt: 'xor> '
   })
-  compiler = new Compiler()
-  stack: Stack<Thing> = new Stack();
 
   constructor () {
-    this.rl.on('line', async (line) => {
-      await this.interpret(line.trim());
+    this.rl
+      .on('line', this.handleLine.bind(this))
+      .on('close', this.close.bind(this))
+      .prompt();
+  }
 
-      this.rl.prompt();
-    }).on('close', () => {
-      console.log('Have a great day!');
-      process.exit(0);
-    });
-    
+  async handleLine (line: string) {
+    await this.interpreter.interpret(line.trim());
+
     this.rl.prompt();
   }
 
-  async interpret (line: string) {
-    console.log('processing...');
-
-    const program = this.compiler.compile(line);
-    const execution = new Execution(program);
-
-    execution.start(this.stack)
-
-    console.log('ok. stack:', execution.stack);
+  close () {
+    console.log('thanks, bye!');
+    process.exit(0);
   }
 }
 

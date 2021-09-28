@@ -41,6 +41,7 @@ export default class GameServer {
     };
 
     socket.on('data', (buf: Buffer) => {
+      console.log(buf);
       terminal.handleInput(buf.toString('hex'));
     });
 
