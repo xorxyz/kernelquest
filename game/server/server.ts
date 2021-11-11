@@ -28,26 +28,27 @@ export default class GameServer {
 
     this.engine.world.rooms[0].add(player);
 
-    const connection = new Connection(player, socket);
+    const connection = new Connection(player, socket, () => {
+      const room = this.engine.world.find(player)
+      
+      if (room) room.remove(player);
+
+      this.connections.delete(connection);
+    });
+
     const terminal = new Terminal(id, connection);
 
     this.connections.add(connection);
     this.terminals.add(terminal);
-
-    const disconnect = () => {
-      connection.end();
-      this.connections.delete(connection);
-      this.engine.world.find(player)?.remove(player);
-    };
 
     socket.on('data', (buf: Buffer) => {
       console.log(buf);
       terminal.handleInput(buf.toString('hex'));
     });
 
-    socket.on('error', disconnect);
-    socket.on('end', disconnect);
-    socket.on('close', disconnect);
+    socket.on('error', connection.disconnect);
+    socket.on('end', connection.disconnect);
+    socket.on('close', connection.disconnect);
   }
 
   listen(...args): void {

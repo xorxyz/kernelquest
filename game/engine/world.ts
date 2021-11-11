@@ -172,6 +172,9 @@ export class Room extends Thing {
   remove(agent: Agent): Room {
     const cell = this.cells.find(c => c.has(agent));
     if (cell) cell.remove(agent);
+    else {
+      console.log('cant find cell with agent')
+    }
     this.agents.delete(agent)
 
     return this;

@@ -70,9 +70,11 @@ export class Terminal {
   handleInput(str: string) {
     if (this.waiting) return;
 
+    console.log('input str was:', str)
+
     if (str === Signals.SIGINT) {
-      this.connection.end();
-      return;
+      console.log('received sigint!')
+      return this.connection.disconnect();
     }
 
     if (this.state.termMode) {

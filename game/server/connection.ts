@@ -6,22 +6,13 @@ import { Hero } from '../engine/agents';
 export default class Connection {
   player: Hero
   socket: Socket | null
+  public disconnect
 
-  constructor(player: Hero, socket: Socket) {
+  constructor(player: Hero, socket: Socket, disconnect) {
     this.socket = socket;
     this.player = player;
-
-    socket.on('close', this.handleExit.bind(this));
+    this.disconnect = disconnect;
 
     debug('client connected');
-  }
-
-  end() {
-    this.socket?.end();
-    this.socket = null;
-  }
-
-  handleExit() {
-    debug('exit');
   }
 }
