@@ -217,8 +217,8 @@ export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
 }, [[]]);
 
 export abstract class Points {
-  value: number = 100
-  cap: number = 100
+  value: number = 10
+  cap: number = 10
 
   increase(amount: number) {
     this.value = Math.min(this.value + amount, this.cap);

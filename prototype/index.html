@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <link rel="stylesheet" href="node_modules/xterm/css/xterm.css"/>
     <script src="./vendor/widechar_width.js"></script>
+    <script src="./vendor/unicode14.js"></script>
     <script src="node_modules/xterm/lib/xterm.js"></script>
     <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
     <script src="node_modules/xterm-addon-attach/lib/xterm-addon-attach.js"></script>
@@ -16,15 +17,14 @@
     <title>xor4 alpha</title>
   </head>
   <body class="flex w-100 vh-100 items-center justify-center flex-column">
-    <h1>kernel.quest demo</h1>
-    <main id="container" class="ba b1 b--white">
+    <main id="container" class="ba bw1 b--white">
       <div id="terminal"></div>
     </main>
-    <audio loop controls autoplay 
+    <audio 
+      preload loop controls autoplay hidden
       id="player"
       class="ma2"
-      src="https://www.kernel.quest/music/title_screen.wav" 
-      preload="none">
+      src="https://www.kernel.quest/music/dungeon.wav" >
     </audio>
   </body>
 </html>

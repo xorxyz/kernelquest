@@ -42,15 +42,17 @@ export class Terminal {
     this.connection = connection;
     this.cursorPosition = new Vector();
     this.state = {
-      termMode: false,
+      termMode: true,
       prompt: '> ',
       line: '',
       stdout: [
         `xor/tcp (${host}) (tty${id})`,
         'login: guest',
         'password:',
+        '',
         'Last login: 2038-01-01',
         'Welcome.',
+        '',
       ],
     };
 
@@ -63,6 +65,7 @@ export class Terminal {
   }
 
   switchModes() {
+    return // disable for now
     this.state.termMode = !this.state.termMode;
     this.drawCursor();
   }

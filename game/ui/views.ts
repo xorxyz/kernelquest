@@ -34,11 +34,11 @@ export const components: Record<string, UiComponent> = {};
 
 const nav = new Navbar(1, 1);
 const profile = new Sidebar(1, 3);
-const stats = new Stats(1, 15);
-const output = new Output(20, 15);
-const prompt = new Input(20, 21);
-const axis = new Axis(23, 3);
-const room = new RoomMap(axis.position.x + 1, axis.position.y + 1);
+const stats = new Stats(1, 16);
+const output = new Output(22, 16);
+const prompt = new Input(22, 24);
+const axis = new Axis(23 + 5, 4);
+const room = new RoomMap(axis.position.x + 2, axis.position.y + 1);
 const speech = new Speech(room.position.x, room.position.y);
 
 components.nav = nav;

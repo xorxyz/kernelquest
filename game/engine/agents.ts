@@ -15,6 +15,7 @@ export class GP extends Points {}
 
 export abstract class AgentType {
   abstract appearance: string
+  abstract name: string
 }
 
 export class Agent {
@@ -30,7 +31,7 @@ export class Agent {
   sp = new SP()
   mp = new MP()
   gp = new GP()
-
+  holding: Item | null = null
   private queue: Queue<Action> = new Queue()
   private stack: Stack<Thing> = new Stack()
   private compiler: Compiler = new Compiler()
@@ -84,15 +85,19 @@ export class Agent {
 
 export class Cherub extends AgentType {
   appearance = '👼'
+  name = 'cherub'
 }
 export class Fairy extends AgentType {
   appearance = '🧚'
+  name = 'fairy'
 }
 export class Elf extends AgentType {
   appearance = '🧝'
+  name = 'elf'
 }
 export class Wizard extends AgentType {
   appearance = '🧙'
+  name = 'wizard'
 }
 
 export class Hero extends Agent {
@@ -108,6 +113,7 @@ export abstract class Boss extends AgentType {}
 
 export class Sheep extends Critter {
   appearance = '🐑'
+  name = 'sheep'
 }
 
 export class Generator extends Agent {

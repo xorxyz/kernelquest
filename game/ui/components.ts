@@ -10,10 +10,10 @@ import { Terminal } from './terminal';
 
 const { Fg, Bg } = Colors;
 
-export const SCREEN_WIDTH = 60;
-export const SCREEN_HEIGHT = 20;
-export const LINE_LENGTH = 41;
-export const N_OF_LINES = 5;
+export const SCREEN_WIDTH = 72;
+export const SCREEN_HEIGHT = 25;
+export const LINE_LENGTH = 50;
+export const N_OF_LINES = 7;
 export const CELL_WIDTH = 2;
 
 export abstract class UiComponent {
@@ -40,9 +40,10 @@ const title = 'kernel.quest';
 export class Navbar extends UiComponent {
   style = esc(Style.Invert)
   render({ player }) {
-    return [
-      [title, player.cycle].join('  ').padEnd(SCREEN_WIDTH, ' '),
-    ];
+    return [(
+      title.padEnd(SCREEN_WIDTH/2 - 1, ' ') + 
+      String(player.cycle).padStart(SCREEN_WIDTH/2 - 1, ' ')
+    ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
 
@@ -67,23 +68,24 @@ export class RoomMap extends UiComponent {
   }
 }
 
-const nothing = `${esc(Style.Dim)}${'nothing.'.padEnd(10, ' ')}${esc(Style.Reset)}`;
+const nothing = n => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style.Reset)}`;
 
 export class Sidebar extends UiComponent {
   render({ player }) {
     return [
-      '┌───────────────┐',
-      `│ n: ${player.name.padEnd(10)} │`,
-      `│ p: ${player.type.appearance.padEnd(10)} │`,
-      '│               │',
-      `│ a: ${nothing} │`,
-      `│ b: ${nothing} │`,
-      `│ c: ${nothing} │`,
-      `│ d: ${nothing} │`,
-      `│ e: ${nothing} │`,
-      `│ f: ${nothing} │`,
-      '│               │',
-      '└───────────────┘',
+      '┌───────────────────┐',
+      `│ name: ${player.name.padEnd(11)} │`,
+      `│ path: ${(player.type.appearance + ' ' + player.type.name).padEnd(11)} │`,
+      `│ hand: ${nothing(11)} │`,
+      '│                   │',
+      '│ inventory:        │',
+      `│ 0: ${nothing(10)}     │`,
+      `│ 1: ${nothing(10)}     │`,
+      `│ 2: ${nothing(10)}     │`,
+      `│ 3: ${nothing(10)}     │`,
+      `│ 4: ${nothing(10)}     │`,
+      '│                   │',
+      '└───────────────────┘',
     ];
   }
 }
@@ -110,12 +112,11 @@ export class Box extends UiComponent {
 }
 
 const Points = (bg, n) => {
-  const str = `${String(n).padStart(3, ' ')} / 100 `;
-  const i = Math.ceil(n / 10);
+  const str = `${String(n).padStart(3, ' ')} / 10 `;
 
   return (
-    esc(Style.in(Fg.Black, bg, str.slice(0, i))) +
-    esc(Style.in(Fg.White, Bg.Black, str.slice(i))) +
+    esc(Style.in(Fg.Black, bg, str.slice(0, n))) +
+    esc(Style.in(Fg.White, Bg.Black, str.slice(n))) + 
     esc(Style.Reset)
   );
 };
@@ -127,14 +128,16 @@ const Mp = (n) => Points(Bg.Blue, n);
 export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
     return [
-      '┌───────────────┐',
-      '│ lv: 01        │',
-      '│ xp: 0         │',
-      `│ hp: ${Hp(p.hp.value)}│`,
-      `│ sp: ${Sp(p.sp.value)}│`,
-      `│ mp: ${Mp(p.mp.value)}│`,
-      `│ gp: ${p.gp.value}       │`,
-      `${'└'.padEnd(16, '─')}┘`,
+      '┌───────────────────┐',
+      '│ lv: 01            │',
+      '│ xp: 0             │',
+      '│                   │',
+      `│ hp: ${Hp(p.hp.value)}     │`,
+      `│ sp: ${Sp(p.sp.value)}     │`,
+      `│ mp: ${Mp(p.mp.value)}     │`,
+      `│ gp: ${String(p.gp.value).padEnd(14, ' ')}│`,
+      '│                   │',
+      `${'└'.padEnd(20, '─')}┘`,
     ];
   }
 }
