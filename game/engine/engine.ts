@@ -1,6 +1,8 @@
 import Clock from '../../lib/clock';
 import { World } from './world';
 import { CLOCK_MS_DELAY } from './constants';
+import { Vector } from '../../lib/math';
+import { Book, Flag, Tree, Wall } from './things';
 
 export interface EngineOptions {
   world?: World
@@ -14,7 +16,30 @@ export class Engine {
 
   constructor(opts?: EngineOptions) {
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
-    this.world = opts?.world || new World()
+    this.world = opts?.world || new World();
+
+    const trees = [
+      [5,0],
+      [1,1],
+      [3,1],
+      [4,1],
+      [0,2],
+      [1,4],
+    ]
+    
+    trees.forEach(([x,y]) => {
+      this.world.rooms[0]
+        .cellAt(Vector.from({ x, y }))
+        .items.push(new Tree())
+    })
+
+    this.world.rooms[0]
+      .cellAt(Vector.from({ x: 4, y: 0 }))
+      .items.push(new Book())
+
+    this.world.rooms[0]
+      .cellAt(Vector.from({ x: 14, y: 8 }))
+      .items.push(new Flag())
 
     this.clock.on('tick', this.update.bind(this));
   }
@@ -25,6 +50,7 @@ export class Engine {
     this.world.rooms.forEach((room) => {
       room.cells.forEach(cell => {
         cell.update(this.cycle);
+        cell.owner = null;
       });
 
       room.agents.forEach((agent) => {
@@ -32,10 +58,14 @@ export class Engine {
     
         if (action && action.authorize(agent)) {
           action.perform(agent, room);
+        } else {
+          agent.sp.increase(1);
         }
 
-        room.move(agent);
-        agent.sp.increase(10);
+        const cell = room.cellAt(agent.position.clone().add(agent.direction));
+        if (cell) {
+          cell.owner = agent;
+        }
       })
     });
   }

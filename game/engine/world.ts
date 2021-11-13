@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
-import { esc, Style } from '../../lib/esc';
+import { Colors, esc, Style } from '../../lib/esc';
 import { Equipment, Item, Thing } from './things';
 import { Agent } from './agents';
 import { bounds, DB_FILEPATH, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
@@ -10,7 +10,7 @@ import { bounds, DB_FILEPATH, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
 
-const empty: string = `${esc(Style.Dim)}..`;
+const empty: string = `..`;
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -30,6 +30,7 @@ export class Tile {
 export class Cell extends Thing {
   name: string
   ports: Array<Port> = []
+  owner: Agent | null = null
   readonly position: Vector
   readonly tile: Tile = new Tile()
   readonly items: Stack<Item|Equipment> = new Stack<Item|Equipment>()
@@ -88,9 +89,16 @@ export class Cell extends Thing {
   }
 
   render() {
-    return ( 
+    const glyph = ( 
       this.agents.peek()?.type.appearance || 
-      this.items.peek()?.type.appearance || empty );
+      this.items.peek()?.appearance || empty
+    );
+
+    return Style.in(
+      this.owner ? Colors.Bg.Blue : Colors.Bg.Black, 
+      this.owner ? Colors.Fg.Black : Colors.Fg.White, 
+      glyph
+    );
   }
 
   private pass (portA: Port, portB: Port) {
@@ -184,7 +192,7 @@ export class Room extends Thing {
     return this.rows.map((row) => row.map(r => r.render()).join(''));
   }
 
-  private cellAt (position: Vector): Cell {
+  cellAt (position: Vector): Cell {
     const index = position.y * ROOM_WIDTH + position.x;
     return this.cells[index];
   }

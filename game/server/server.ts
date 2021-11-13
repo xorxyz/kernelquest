@@ -25,8 +25,14 @@ export default class GameServer {
     const player = new Hero(new Wizard());
 
     player.name = 'Guest';
+    player.hp.increase(10);
+    player.mp.increase(10);
 
     this.engine.world.rooms[0].add(player);
+
+    // setInterval(() => {
+    //   player.direction.rotate();
+    // }, 1000)
 
     const connection = new Connection(player, socket, () => {
       const room = this.engine.world.find(player)

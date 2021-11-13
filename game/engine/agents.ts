@@ -25,7 +25,7 @@ export class Agent {
   room: Room
   cell: Cell
   position: Vector = new Vector(0, 0)
-  direction: Vector = new Vector(0, 1)
+  direction: Vector = new Vector(1, 0)
   velocity: Vector = new Vector(0, 0)
   hp = new HP()
   sp = new SP()
@@ -45,6 +45,10 @@ export class Agent {
 
   render() {
     return this.type.appearance;
+  }
+
+  looksAt () {
+    return this.cell.position.clone();
   }
 
   enter (room: Room) {

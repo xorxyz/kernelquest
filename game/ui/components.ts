@@ -129,13 +129,13 @@ export class Stats extends UiComponent {
   render({ player: p }: Terminal) {
     return [
       '┌───────────────────┐',
-      '│ lv: 01            │',
-      '│ xp: 0             │',
+      '│ level: 1          │',
+      '│ experience: 0     │',
+      `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
-      `│ hp: ${Hp(p.hp.value)}     │`,
-      `│ sp: ${Sp(p.sp.value)}     │`,
-      `│ mp: ${Mp(p.mp.value)}     │`,
-      `│ gp: ${String(p.gp.value).padEnd(14, ' ')}│`,
+      `│ health:  ${Hp(p.hp.value)}│`,
+      `│ stamina: ${Sp(p.sp.value)}│`,
+      `│ magic:   ${Mp(p.mp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];

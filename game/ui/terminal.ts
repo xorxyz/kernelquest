@@ -9,7 +9,7 @@ import { Editor } from './editor';
 import { Critter, Sheep } from '../engine/agents';
 import { debug } from '../../lib/logging';
 
-export const REFRESH_RATE = CLOCK_MS_DELAY;
+export const REFRESH_RATE = CLOCK_MS_DELAY * 4;
 
 export interface IState {
   termMode: boolean
@@ -104,7 +104,7 @@ export class Terminal {
         this.state.stdout.push('...');
         this.waiting = true;
 
-        const execution  = this.player.exec(expr);
+        const execution = this.player.exec(expr);
 
         await sleep(300);
 

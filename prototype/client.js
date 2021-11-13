@@ -2,6 +2,13 @@ const ws = new WebSocket('ws://localhost:3737');
 
 document.addEventListener('DOMContentLoaded', e => {
   const term = new window.Terminal({
+    theme: {
+      black: '#000000',
+      green: '#0CFF24',
+      red: '#F92672',
+      blue: '#66D9EF',
+      pink: "#F14AFF"
+    },
     cols: 72,
     rows: 25,
     fontSize: 21,

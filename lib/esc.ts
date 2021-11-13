@@ -14,6 +14,7 @@ export const Colors = {
   Fg: {
     Black: '[30m',
     White: '[37m',
+    Green: '[32m'
   },
 };
 

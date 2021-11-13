@@ -1,3 +1,4 @@
+import { Colors, Style } from '../../lib/esc';
 import { Vector, Points } from '../../lib/math';
 import { Char, DataType, IProgram, List, Ref, Transform } from './language';
 import { Room } from './world';
@@ -15,6 +16,7 @@ export abstract class Thing {
   position: Vector = new Vector()
   velocity: Vector = new Vector()
   durability: Durability = new Durability()
+  appearance: string
 }
 
 export abstract class Program extends Thing implements IProgram {
@@ -31,14 +33,41 @@ export abstract class Item extends Program {
   abstract use(): void
 }
 
-export abstract class Equipment extends Program {}
+export abstract class Equipment extends Program {
+  appearance: string
+}
 
 export class Wall extends Thing {
-  name: 'wall'
-  type: Char
+  name = 'wall'
+  appearance =  Style.in(Colors.Bg.White, Colors.Fg.Black, '##')
+}
+
+export class Tree extends Thing {
+  name = 'tree'
+  appearance = '🌲'
+}
+
+export class Grass extends Thing {
+  name = 'grass'
+  appearance = Style.in(Colors.Bg.Black, Colors.Fg.Green, '##')
+}
+
+export class Flag extends Thing {
+  name = 'flag'
+  appearance = '🚩'
+}
+
+export class Book extends Thing {
+  name = 'book'
+  appearance = '📕'
+}
+
+export class Gold extends Thing {
+  name = 'gold'
+  appearance = '💰'
 }
 
 export class Teleporter extends Program {
-  name: 'teleporter'
+  name = 'teleporter'
   destination: Destination
 }

@@ -11,6 +11,7 @@ export class Vector {
     this.y = y;
   }
 
+  /** return a new Vector from the give xy object */
   static from(obj: { x: number, y: number }) {
     return new Vector(obj.x, obj.y);
   }
@@ -19,6 +20,7 @@ export class Vector {
     return this.x === 0 && this.y === 0;
   }
 
+  /** return a new Vector with the same xy */
   clone() {
     return new Vector(this.x, this.y);
   }
@@ -49,7 +51,7 @@ export class Vector {
     return this;
   }
 
-  /** copy the xy from a given vector */
+  /** set the same xy as a given vector */
   copy(v: Vector) {
     this.x = v.x;
     this.y = v.y;
@@ -217,7 +219,7 @@ export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
 }, [[]]);
 
 export abstract class Points {
-  value: number = 10
+  value: number = 0
   cap: number = 10
 
   increase(amount: number) {
