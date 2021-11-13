@@ -142,7 +142,27 @@ export class MoveCursorAction extends TerminalAction {
   perform() {
     const withinBounds = true
     if (withinBounds) {
-      this.terminal.cursor.position.add(this.direction);
+      this.terminal.cursorPosition.add(this.direction);
+    }
+    return new ActionSuccess();
+  }
+}
+
+
+export class MoveCursorToAction extends TerminalAction {
+  cost: 0
+  terminal: Terminal
+  destination: Vector
+  constructor (terminal: Terminal, destination: Vector) {
+    super();
+    this.terminal = terminal;
+    this.destination = destination;
+  }
+  authorize() { return true }
+  perform() {
+    const withinBounds = true
+    if (withinBounds) {
+      this.terminal.cursorPosition.copy(this.destination);
     }
     return new ActionSuccess();
   }
@@ -158,12 +178,13 @@ export class SelectCellAction extends TerminalAction {
   authorize() { return true }
   perform() {
     this.terminal.switchModes();
-    const expr = this.terminal.cursor.position.x + ' ' + this.terminal.cursor.position.y + ' xy';
+    const expr = this.terminal.cursorPosition.x + ' ' + this.terminal.cursorPosition.y + ' xy';
     this.terminal.lineEditor.line = expr;
     console.log('line', expr);
     console.log(this.terminal.lineEditor);
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);
+    this.terminal.switchModes();
     return new ActionSuccess();
   }
 }

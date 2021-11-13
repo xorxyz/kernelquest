@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', e => {
     rows: 25,
     fontSize: 21,
     cursorBlink: true,
+    // cursorStyle: 'bar',
+    cursorWidth: 12,
+    customGlyphs: true,
     fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace'
   });
 
@@ -28,4 +31,6 @@ document.addEventListener('DOMContentLoaded', e => {
   term.loadAddon(attachAddon);
   term.open(containerElement);
   fitAddon.fit();
+
+  term.focus();
 });

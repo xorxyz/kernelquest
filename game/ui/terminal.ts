@@ -1,6 +1,6 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Action, MoveCursorAction, RotateAction, SelectCellAction, SpawnAction, SwitchModeAction, TerminalAction } from '../engine/actions';
+import { Action, MoveCursorAction, MoveCursorToAction, RotateAction, SelectCellAction, SpawnAction, SwitchModeAction, TerminalAction } from '../engine/actions';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
 import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
@@ -22,8 +22,7 @@ const host = process.env.HOST || 'localhost:3000';
 export class Terminal {
   id: number
   connection: Connection
-  cursor: Agent
-  cursorPosition: Vector
+  cursorPosition: Vector = new Vector()
   state: IState
   lineEditor: Editor = new Editor()
   view: MainView
@@ -37,11 +36,10 @@ export class Terminal {
     return this.connection.player;
   }
 
-  constructor(id: number, connection: Connection, cursor: Agent) {
+  constructor(id: number, connection: Connection) {
     this.id = id;
     this.connection = connection;
-    this.cursor = cursor;
-    this.cursorPosition = new Vector(0, 0);
+    this.cursorPosition.copy(connection.player.position);
     this.view = new MainView()
     this.state = {
       termMode: true,
@@ -140,6 +138,18 @@ export class Terminal {
       case (Keys.ENTER):
         action = new SwitchModeAction(this);
         break;
+      case (Keys.CTRL_ARROW_UP):
+        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 0));
+        break;
+      case (Keys.CTRL_ARROW_RIGHT):
+        action = new MoveCursorToAction(this, new Vector(15, this.cursorPosition.y));
+        break;
+      case (Keys.CTRL_ARROW_DOWN):
+        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 9));
+        break;
+      case (Keys.CTRL_ARROW_LEFT):
+        action = new MoveCursorToAction(this, new Vector(0, this.cursorPosition.y));
+        break;
       case (Keys.ARROW_UP):
         action = new MoveCursorAction(this, new Vector(0, -1));
         break;
@@ -185,8 +195,8 @@ export class Terminal {
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.cursor.position.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.cursor.position.y,
+        this.view.components.room.position.x + (this.cursorPosition.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.cursorPosition.y,
       ));
 
     this.connection.socket.write(cursorUpdate);

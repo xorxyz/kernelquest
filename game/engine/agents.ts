@@ -106,7 +106,7 @@ export class Wizard extends AgentType {
 }
 
 export class CursorAgentType extends AgentType {
-  appearance = esc(Colors.Bg.White)
+  appearance = esc(Colors.Bg.White) + esc(Colors.Fg.Black) + 'AA'
   name = 'cursor'
 }
 
