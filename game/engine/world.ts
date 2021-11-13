@@ -4,7 +4,7 @@ import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Colors, esc, Style } from '../../lib/esc';
 import { Equipment, Item, Thing } from './things';
-import { Agent } from './agents';
+import { Agent, Cursor } from './agents';
 import { bounds, DB_FILEPATH, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
 
 export type Memory = Array<Thing>
@@ -93,12 +93,14 @@ export class Cell extends Thing {
       this.agents.peek()?.type.appearance || 
       this.items.peek()?.appearance || empty
     );
+  
+    let style = esc(Colors.Bg.Black) + esc(Colors.Fg.White)
 
-    return Style.in(
-      this.owner ? Colors.Bg.Blue : Colors.Bg.Black, 
-      this.owner ? Colors.Fg.Black : Colors.Fg.White, 
-      glyph
-    );
+    if (this.owner && !(this.owner instanceof Cursor)) {
+      style = esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
+    }
+
+    return style + glyph + esc(Style.Reset);
   }
 
   private pass (portA: Port, portB: Port) {
@@ -189,7 +191,9 @@ export class Room extends Thing {
   }
 
   render(): Array<string> {
-    return this.rows.map((row) => row.map(r => r.render()).join(''));
+    return this.rows.map((row) => row.map(cell => {
+      return cell.render()
+    }).join(''));
   }
 
   cellAt (position: Vector): Cell {

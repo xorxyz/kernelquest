@@ -57,7 +57,7 @@ export class Engine {
         const action = agent.takeTurn(this.cycle);
     
         if (action && action.authorize(agent)) {
-          action.perform(agent, room);
+          action.perform(room, agent);
         } else {
           agent.sp.increase(1);
         }

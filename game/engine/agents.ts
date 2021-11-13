@@ -7,6 +7,7 @@ import { Action, NoAction } from './actions';
 import { Cell, DataStack, Room } from './world';
 import { debug } from '../../lib/logging';
 import { Compiler } from './compiler';
+import { Colors, esc, Style } from '../../lib/esc';
 
 export class HP extends Points {}
 export class SP extends Points {}
@@ -104,10 +105,20 @@ export class Wizard extends AgentType {
   name = 'wizard'
 }
 
+export class CursorAgentType extends AgentType {
+  appearance = esc(Colors.Bg.White)
+  name = 'cursor'
+}
+
 export class Hero extends Agent {
   type: Cherub | Fairy | Elf | Wizard
   experience: number = 0
   get level() { return 1; }
+}
+
+export class Cursor extends Agent {
+  type: CursorAgentType
+  cursor: null
 }
 
 export abstract class Critter extends AgentType {}

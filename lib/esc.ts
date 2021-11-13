@@ -9,7 +9,7 @@ export const Colors = {
     White: '[47m',
     Red: '[41m',
     Green: '[42m',
-    Blue: '[46m',
+    Blue: '[46m'
   },
   Fg: {
     Black: '[30m',

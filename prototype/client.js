@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', e => {
       green: '#0CFF24',
       red: '#F92672',
       blue: '#66D9EF',
-      pink: "#F14AFF"
+      pink: "#F14AFF",
     },
     cols: 72,
     rows: 25,

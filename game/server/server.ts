@@ -2,7 +2,7 @@ import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
 import { Engine } from '../engine/engine';
 import { Terminal } from '../ui/terminal';
-import { Cherub, Hero, Wizard } from '../engine/agents';
+import { Agent, Cursor, CursorAgentType, Hero, Wizard } from '../engine/agents';
 
 export interface Params { src?: string }
 
@@ -23,26 +23,30 @@ export default class GameServer {
   async onConnection(socket: Socket) {
     const id = this.i++;
     const player = new Hero(new Wizard());
+    const cursor = new Cursor(new CursorAgentType());
 
     player.name = 'Guest';
     player.hp.increase(10);
     player.mp.increase(10);
+    player.position.setXY(4,4)
+
+    cursor.position.setXY(8, 5)
 
     this.engine.world.rooms[0].add(player);
-
-    // setInterval(() => {
-    //   player.direction.rotate();
-    // }, 1000)
+    this.engine.world.rooms[0].add(cursor);
 
     const connection = new Connection(player, socket, () => {
       const room = this.engine.world.find(player)
       
-      if (room) room.remove(player);
+      if (room) {
+        room.remove(player);
+        room.remove(cursor);
+      }
 
       this.connections.delete(connection);
     });
 
-    const terminal = new Terminal(id, connection);
+    const terminal = new Terminal(id, connection, cursor);
 
     this.connections.add(connection);
     this.terminals.add(terminal);

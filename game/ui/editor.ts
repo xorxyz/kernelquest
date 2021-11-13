@@ -3,19 +3,11 @@ import { Keys } from '../engine/constants';
 import { LINE_LENGTH } from './components';
 
 export class Editor {
-  private line: string = ''
-  private cursor: Vector = new Vector()
+  line: string = ''
+  readonly cursor: Vector = new Vector()
 
   get value() {
     return this.line;
-  }
-
-  get x() {
-    return this.cursor.x;
-  }
-
-  get y() {
-    return this.cursor.y;
   }
 
   /* returns true if input box needs an update */
@@ -29,12 +21,16 @@ export class Editor {
 
     if (this.line.length === LINE_LENGTH - 6) return false;
 
+    console.log('inserting str', str)
+
     const bytes = Buffer.from(str, 'hex');
     const chars = this.line.split('');
     const { x } = this.cursor;
 
     this.line = [...chars.slice(0, x), bytes, ...chars.slice(x)].join('');
     this.cursor.x++;
+
+    console.log('editr line: "' + this.line + '"');
 
     return true;
   }

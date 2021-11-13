@@ -1,15 +1,14 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Action, MoveEastAction, MoveNorthAction, MoveSouthAction, MoveWestAction, RotateAction, SpawnAction, SwitchModeAction } from '../engine/actions';
+import { Action, MoveCursorAction, RotateAction, SelectCellAction, SpawnAction, SwitchModeAction, TerminalAction } from '../engine/actions';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
 import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
-import { Critter, Sheep } from '../engine/agents';
-import { debug } from '../../lib/logging';
+import { Agent, Sheep } from '../engine/agents';
 
-export const REFRESH_RATE = CLOCK_MS_DELAY * 4;
+export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
 export interface IState {
   termMode: boolean
@@ -23,10 +22,11 @@ const host = process.env.HOST || 'localhost:3000';
 export class Terminal {
   id: number
   connection: Connection
+  cursor: Agent
   cursorPosition: Vector
   state: IState
-  line: Editor = new Editor()
-  view: MainView = new MainView()
+  lineEditor: Editor = new Editor()
+  view: MainView
   stdout: Array<string>
 
   waiting = false
@@ -37,21 +37,23 @@ export class Terminal {
     return this.connection.player;
   }
 
-  constructor(id: number, connection: Connection) {
+  constructor(id: number, connection: Connection, cursor: Agent) {
     this.id = id;
     this.connection = connection;
-    this.cursorPosition = new Vector();
+    this.cursor = cursor;
+    this.cursorPosition = new Vector(0, 0);
+    this.view = new MainView()
     this.state = {
       termMode: true,
-      prompt: '> ',
+      prompt: '$ ',
       line: '',
       stdout: [
         `xor/tcp (${host}) (tty${id})`,
+        '',
         'login: guest',
         'password:',
         '',
         'Last login: 2038-01-01',
-        'Welcome.',
         '',
       ],
     };
@@ -65,7 +67,7 @@ export class Terminal {
   }
 
   switchModes() {
-    return // disable for now
+    // return // disable for now
     this.state.termMode = !this.state.termMode;
     this.drawCursor();
   }
@@ -83,9 +85,11 @@ export class Terminal {
     if (this.state.termMode) {
       this.handleTerminalInput(str);
     } else {
-      const action = this.ctrl(str);
+      const action = this.getActionForKey(str);
 
-      if (action) {
+      if (action instanceof TerminalAction) {
+        action.perform(this.player.room, this.player)
+      } else if (action) {
         this.player.schedule(action);
       }
     }
@@ -95,12 +99,14 @@ export class Terminal {
 
   async handleTerminalInput(str: string) {
     if (str === Keys.ENTER) {
-      if (this.line.value) {
-        const expr = this.line.value.trim();
+      console.log('enter', this.lineEditor.value, '.');
+      if (this.lineEditor.value) {
+        const expr = this.lineEditor.value.trim();
+        console.log('got line value', expr)
 
         this.state.stdout.push(this.state.prompt + expr);
         this.state.line = '';
-        this.line.reset();
+        this.lineEditor.reset();
         this.state.stdout.push('...');
         this.waiting = true;
 
@@ -111,34 +117,40 @@ export class Terminal {
         this.waiting = false;
         this.state.stdout.push('ok.');
         this.render();
+      } else {
+        this.switchModes();
       }
-
-      this.switchModes();
-    } else if (this.line.insert(str) && this.view.components.prompt) {
-      this.state.line = this.line.value.replace('\n', '');
+    } else if (this.lineEditor.insert(str) && this.view.components.prompt) {
+      this.state.line = this.lineEditor.value.replace('\n', '');
     }
 
     this.render();
   }
 
-  ctrl(str: string): Action | null {
+  getActionForKey(str: string): Action | null {
     let action: Action | null = null;
 
     switch (str) {
+      case (Keys.ESCAPE):
+        action = new SwitchModeAction(this);
+        break;
+      case (Keys.SPACE):
+        action = new SelectCellAction(this);
+        break;
       case (Keys.ENTER):
         action = new SwitchModeAction(this);
         break;
       case (Keys.ARROW_UP):
-        action = new MoveNorthAction();
+        action = new MoveCursorAction(this, new Vector(0, -1));
         break;
       case (Keys.ARROW_RIGHT):
-        action = new MoveEastAction();
+        action = new MoveCursorAction(this, new Vector(1, 0));
         break;
       case (Keys.ARROW_DOWN):
-        action = new MoveSouthAction();
+        action = new MoveCursorAction(this, new Vector(0, 1));
         break;
       case (Keys.ARROW_LEFT):
-        action = new MoveWestAction();
+        action = new MoveCursorAction(this, new Vector(-1, 0));
         break;
       case (Keys.LOWER_P):
         action = new SpawnAction(new Sheep());
@@ -169,12 +181,12 @@ export class Terminal {
 
     const cursorUpdate = this.state.termMode
       ? esc(Cursor.setXY(
-        this.view.components.prompt.position.x + this.line.x + 4,
+        this.view.components.prompt.position.x + this.lineEditor.cursor.x + 4,
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.player.position.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.player.position.y,
+        this.view.components.room.position.x + (this.cursor.position.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.cursor.position.y,
       ));
 
     this.connection.socket.write(cursorUpdate);

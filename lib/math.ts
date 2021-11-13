@@ -107,12 +107,6 @@ export class Vector {
     );
   }
 
-  rotate () {
-    this.x = this.x;
-    this.y = this.y;
-    return this;
-  }
-
   absolute () {
     this.x = Math.sign(this.x);
     this.y = Math.sign(this.y);

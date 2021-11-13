@@ -78,7 +78,7 @@ export class Sidebar extends UiComponent {
       `│ path: ${(player.type.appearance + ' ' + player.type.name).padEnd(11)} │`,
       `│ hand: ${nothing(11)} │`,
       '│                   │',
-      '│ inventory:        │',
+      '│ mind:             │',
       `│ 0: ${nothing(10)}     │`,
       `│ 1: ${nothing(10)}     │`,
       `│ 2: ${nothing(10)}     │`,
@@ -134,8 +134,8 @@ export class Stats extends UiComponent {
       `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
       `│ health:  ${Hp(p.hp.value)}│`,
-      `│ stamina: ${Sp(p.sp.value)}│`,
       `│ magic:   ${Mp(p.mp.value)}│`,
+      `│ stamina: ${Sp(p.sp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];
