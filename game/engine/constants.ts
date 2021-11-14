@@ -42,10 +42,13 @@ export const Keys = {
   BACKSPACE: '7f',
   TAB: '09',
   SPACE: '20',
+  LOWER_B: '62',
   LOWER_D: '64',
+  LOWER_G: '67',
   LOWER_I: '69',
   LOWER_P: '70',
   LOWER_R: '72',
+  LOWER_S: '73',
   LOWER_W: '77',
 };
 

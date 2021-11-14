@@ -91,7 +91,8 @@ export class Cell extends Thing {
   render() {
     const glyph = ( 
       this.agents.peek()?.type.appearance || 
-      this.items.peek()?.appearance || empty
+      this.items.peek()?.appearance || 
+      (this.owner?.holding?.appearance) || empty
     );
   
     let style = esc(Colors.Bg.Black) + esc(Colors.Fg.White)

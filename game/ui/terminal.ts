@@ -6,8 +6,6 @@ import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
-import { Agent, Sheep } from '../engine/agents';
-import { Thing } from '../engine/things';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -194,11 +192,20 @@ export class Terminal {
       case (Keys.ARROW_LEFT):
         action = new MoveCursorAction(this, new Vector(-1, 0));
         break;
+      case (Keys.LOWER_B):
+        action = new BackStepAction();
+        break;
       case (Keys.LOWER_P):
-        action = new SpawnAction(new Sheep());
+        action = new PutAction();
+        break;
+      case (Keys.LOWER_G):
+        action = new GetAction();
         break;
       case (Keys.LOWER_R):
         action = new RotateAction();
+        break;
+      case (Keys.LOWER_S):
+        action = new StepAction();
         break;
       default:
         break;
