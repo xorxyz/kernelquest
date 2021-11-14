@@ -27,7 +27,7 @@ export default class GameServer {
     player.name = 'Guest';
     player.hp.increase(10);
     player.mp.increase(10);
-    player.position.setXY(4,4)
+    player.position.setXY(3,0)
 
     this.engine.world.rooms[0].add(player);
 

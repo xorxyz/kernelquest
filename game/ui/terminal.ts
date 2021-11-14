@@ -1,12 +1,13 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Action, MoveCursorAction, MoveCursorToAction, RotateAction, SelectCellAction, SpawnAction, SwitchModeAction, TerminalAction } from '../engine/actions';
+import { Action, BackStepAction, GetAction, MoveCursorAction, MoveCursorToAction, PutAction, RotateAction, SelectCellAction, SpawnAction, StepAction, SwitchModeAction, TerminalAction } from '../engine/actions';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
 import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
 import { Agent, Sheep } from '../engine/agents';
+import { Thing } from '../engine/things';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -105,15 +106,21 @@ export class Terminal {
         this.state.stdout.push(this.state.prompt + expr);
         this.state.line = '';
         this.lineEditor.reset();
-        this.state.stdout.push('...');
         this.waiting = true;
 
-        const execution = this.player.exec(expr);
+        this.player.exec(expr);
 
-        await sleep(300);
+        const action = this.getActionForWord(expr);
+
+        console.log(action)
+
+        if (action instanceof TerminalAction) {
+          action.perform(this.player.room, this.player)
+        } else if (action) {
+          this.player.schedule(action);
+        }
 
         this.waiting = false;
-        this.state.stdout.push('ok.');
         this.render();
       } else {
         this.switchModes();
@@ -123,6 +130,31 @@ export class Terminal {
     }
 
     this.render();
+  }
+
+  getActionForWord(str: string): Action | null {
+    let action: Action | null = null;
+    switch (str) {
+      case 'rotate':
+        action = new RotateAction()
+        break;
+      case 'step':
+        action = new StepAction()
+        break;
+      case 'backstep':
+        action = new BackStepAction()
+        break;
+      case 'get':
+        action = new GetAction()
+        break;
+      case 'put':
+        action = new PutAction()
+        break;
+      default:
+        break;
+    }
+
+    return action;
   }
 
   getActionForKey(str: string): Action | null {

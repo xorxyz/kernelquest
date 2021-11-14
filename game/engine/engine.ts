@@ -62,6 +62,8 @@ export class Engine {
           agent.sp.increase(1);
         }
 
+        agent.room.move(agent);
+
         const cell = room.cellAt(agent.position.clone().add(agent.direction));
         if (cell) {
           cell.owner = agent;

@@ -34,7 +34,7 @@ export class Agent {
   gp = new GP()
   holding: Item | null = null
   private queue: Queue<Action> = new Queue()
-  private stack: Stack<Thing> = new Stack()
+  stack: Stack<Thing> = new Stack()
   private compiler: Compiler = new Compiler()
   private inventory: Array<Item | Equipment> = []
 
@@ -49,7 +49,7 @@ export class Agent {
   }
 
   looksAt () {
-    return this.cell.position.clone();
+    return this.position.clone().add(this.direction);
   }
 
   enter (room: Room) {
@@ -73,6 +73,7 @@ export class Agent {
 
   exec(code: string) {
     const program = this.compiler.compile(code);
+    console.log('program', program)
     const execution = new Execution(program);
 
     try {

@@ -109,6 +109,68 @@ export class RotateAction extends Action {
   }
 }
 
+export class StepAction extends Action {
+  cost: 0
+  authorize() { return true }
+  perform(ctx: Room, agent: Agent) {
+    if (agent.velocity.opposes(agent.direction) ||
+        agent.velocity.isZero()) {
+      agent.velocity.add(agent.direction);
+      return new ActionSuccess();
+    }
+
+    return new ActionFailure();
+  }
+}
+
+export class BackStepAction extends Action {
+  cost: 0
+  authorize() { return true }
+  perform(ctx: Room, agent: Agent) {
+    if (agent.velocity.opposes(agent.direction) ||
+        agent.velocity.isZero()) {
+      agent.velocity.add(agent.direction.clone().invert());
+      return new ActionSuccess();
+    }
+
+    return new ActionFailure();
+  }
+}
+
+
+export class GetAction extends Action {
+  cost: 0
+  authorize() { return true }
+  perform(ctx: Room, agent: Agent) {
+    const cell = ctx.cellAt(agent.looksAt());
+    console.log('cell', cell);
+    if (cell.items.peek()) {
+      const item = cell.items.pop();
+      console.log('item', item);
+      agent.holding = item;
+      return new ActionSuccess();
+    }
+
+    return new ActionFailure();
+  }
+}
+
+export class PutAction extends Action {
+  cost: 0
+  authorize() { return true }
+  perform(ctx: Room, agent: Agent) {
+    const cell = ctx.cellAt(agent.looksAt());
+    if (!cell.items.peek()) {
+      cell.items.push(agent.holding);
+      agent.holding = null;
+      return new ActionSuccess();
+    }
+
+    return new ActionFailure();
+  }
+}
+
+
 export class SpawnAction extends Action {
   cost: 0
   type: AgentType

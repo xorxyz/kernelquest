@@ -76,7 +76,7 @@ export class Sidebar extends UiComponent {
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
       `│ path: ${(player.type.appearance + ' ' + player.type.name).padEnd(11)} │`,
-      `│ hand: ${nothing(11)} │`,
+      `│ hand: ${((player.holding?.appearance + player.holding?.name)||nothing(11)).padEnd(11)} │`,
       '│                   │',
       '│ mind:             │',
       `│ 0: ${nothing(10)}     │`,
