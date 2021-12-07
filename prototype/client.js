@@ -1,6 +1,16 @@
 const ws = new WebSocket('ws://localhost:3737');
 
 document.addEventListener('DOMContentLoaded', e => {
+  const playerEl = document.getElementById('player');
+  const playButtonEl = document.getElementById('play');
+
+  playButtonEl.addEventListener('click', (e) => {
+    playerEl.muted = !playerEl.muted;
+    playButtonEl.textContent = playerEl.muted
+      ? 'Music is muted'
+      : 'Music is not muted'
+  });
+
   const term = new window.Terminal({
     theme: {
       black: '#000000',
@@ -13,7 +23,6 @@ document.addEventListener('DOMContentLoaded', e => {
     rows: 25,
     fontSize: 21,
     cursorBlink: true,
-    // cursorStyle: 'bar',
     cursorWidth: 12,
     customGlyphs: true,
     fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace'
