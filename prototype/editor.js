@@ -1,20 +1,17 @@
 let grid;
 let palette;
 
-const StandardGlyphs = Array.from(
-  `🌬️✨👼🐑🚩🔒🗝️🦠💀🐲💍🛡️👑
-  🌊👦🧚🏛️🏕️💰📕🐀👻🐍🕯️🏹🐌 
-  🌱👨🧝🌲🏘️🍓🗺️🐛🐺🕷️🥾⚔️🦌
-  🔥👴🧙⛰️🏰🍵📜🦇👺👹🎒💣🦉`
-).concat([
+const StandardGlyphs = [
+  '🌬️','✨','👼','🐑','🚩','🔒','🗝️','🦠','💀','🐲','💍','🛡️','👑',
+  '🌊','👦','🧚','🏛️','🏕️','💰','📕','🐀','👻','🐍','🕯️','🏹','🐌', 
+  '🌱','👨','🧝','🌲','🏘️','🍓','🗺️','🐛','🐺','🕷️','🥾','⚔️','🦌',
+  '🔥','👴','🧙','⛰️','🏰','🍵','📜','🦇','👺','👹','🎒','💣','🦉',
   '##', '++', '--', 
   '~~', '..', ',,',
   '──', '│.', 
   '┌─', '┐.', '└─', '┘.',
-  '├─', '┤.', '┬─', '┴─', '┼─', 
-]);
-
-console.log(StandardGlyphs);
+  '├─', '┤.', '┬─', '┴─', '┼─'
+];
 
 const Styles = `
 .. gray
@@ -24,16 +21,14 @@ const Styles = `
 🔒 bg-white black
 ~~ bg-blue white
 ,, b--white green
-🕷 bg-red
+🕷️ bg-red
  `.trim()
   .split('\n')
   .map(str => str.replace(' ', '\t').split('\t'));
 
-console.log(Styles);
-
 class Palette {
   el
-  selected = '#'
+  selected = '##'
 
   constructor (el) {
     this.el = el;
@@ -43,15 +38,18 @@ class Palette {
     const elements = StandardGlyphs.map(glyph => {
       const el = document.createElement('div');
     
+      el.innerText = glyph;
+
+      el.addEventListener('click', (e) => {
+        const selected = e.target.alt || e.target.innerText;
+        if (!StandardGlyphs.includes(selected)) return false;
+        this.selected = selected;
+        this.update();
+      })
+    
       if (glyph === this.selected) {
         el.classList = 'bg-blue black'
       }
-    
-      el.innerText = glyph;
-      el.addEventListener('click', (e) => {
-        this.selected = e.target.alt || e.target.innerText;
-        this.update();
-      })
 
       console.log('selected ' + this.selected);
       return twemoji.parse(el);
@@ -64,6 +62,7 @@ class Palette {
 class Cell {
   x
   y
+  el
   defaultClassList = 'w2 h2 ba flex items-center justify-center monospace'
 
   constructor (x, y) {
@@ -76,29 +75,52 @@ class Cell {
     this.el.addEventListener('click', this.onClick.bind(this));
   }
 
+  get glyph () {
+    return this.el.innerText || this.el.firstElementChild?.alt;
+  }
+
+  static fromJSON (obj) {
+    const cell = new Cell(obj.x, obj.y);
+
+    cell.el.innerText = obj.glyph;
+    const style = Styles.find(([glyph]) => glyph === cell.glyph);
+    if (style) cell.el.classList += ' ' + style[1];
+    twemoji.parse(cell.el);
+
+    return cell;
+  }
+
+  toJSON () {
+    return {
+      x: this.x,
+      y: this.y,
+      glyph: this.glyph
+    }
+  }
+
   onClick () {
     console.log('clicked a cell', this.x, this.y);
     this.el.classList = this.defaultClassList;
 
-    const glyph = this.el.innerText || this.el.firstElementChild?.alt;
-
-    if (glyph === palette.selected) {
+    if (this.glyph === palette.selected) {
       this.el.classList += ' ' + 'gray';
-      this.el.textContent = '..'
+      this.el.innerText = '..'
     } else {
-      const style = Styles.find(([glyph]) => glyph === palette.selected);
-      const classList = style[1];
-      if (style) this.el.classList += ' ' + classList;
-      this.el.textContent = palette.selected;
+      const style = Styles.find(([glyph]) =>glyph === palette.selected);
+      if (style) this.el.classList += ' ' + style[1];
+      this.el.innerText = palette.selected;
       twemoji.parse(this.el);
     }
   }
 }
 
 class Row {
+  y
   cells
   el
-  constructor (w, y) { 
+
+  constructor (w, y) {
+    this.y = y;
     this.cells = Array(w).fill(0).map((_, x) => new Cell(x, y));
     this.el = document.createElement('div');
     this.el.classList = 'flex'
@@ -106,21 +128,115 @@ class Row {
       this.el.appendChild(cell.el);
     })
   }
+
+  static fromJSON (obj) {
+    const row = new Row(obj.cells.length, obj.y);
+
+    row.cells = row.cells.map((_, i) => {
+      return Cell.fromJSON(obj.cells[i]);
+    });
+
+    row.el.innerHTML = '';
+    row.cells.forEach((cell) => {
+      row.el.appendChild(cell.el);
+    });
+
+    return row;
+  }
+
+  toJSON () {
+    return {
+      y: this.y,
+      cells: this.cells.map(cell => cell.toJSON())
+    }
+  }
 }
 
 class Grid {
+  el
   rows
-  constructor (w, h) {
+  constructor (el, w, h) {
+    this.el = el
     this.rows = Array(h).fill(0).map((_, y) => new Row(w, y));
+  }
+
+  load (obj) {
+    this.rows = obj.rows.map(row => Row.fromJSON(row));
+    console.log(this.rows)
+    this.el.innerHTML = '';
+    this.rows.forEach((row) => {
+      this.el.appendChild(row.el);
+    });
+    twemoji.parse(this.el);
+  }
+
+  save () {
+    return {
+      rows: this.rows.map(row => {
+        return row.toJSON();
+      })
+    }
+  }
+}
+
+function loadMap (name) {
+  const item = localStorage.getItem('xor-editor:maps:' + name);
+  return item ? JSON.parse(item) : null
+}
+
+function saveMap (name, value) {
+  localStorage.setItem('xor-editor:maps:' + name, JSON.stringify(value));
+}
+
+document.loadMap = loadMap;
+document.saveMap = saveMap;
+
+class List {
+  el
+  constructor (el, items) {
+    this.el = el
+
+    const listEl = document.createElement('ol');
+    listEl.classList = 'list pl0 ma3'
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      const button = document.createElement('button');
+      button.innerText = item;
+      li.appendChild(button);
+      listEl.appendChild(li);
+    })
+    
+    this.el.appendChild(listEl);
   }
 }
 
 document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid');
   const paletteEl = document.getElementById('palette');
+  const mapsEl = document.getElementById('maps');
 
-  grid = new Grid(16, 10);
+  const saveEl = document.getElementById('save');
+  const loadEl = document.getElementById('load');
+
+  saveEl.addEventListener('click', e => {
+    const obj = grid.save();
+    console.log(obj);
+    saveMap('test', obj);   
+  })
+
+  loadEl.addEventListener('click', e => {
+    const obj = loadMap('test');
+    grid.load(obj);
+  })
+
+  grid = new Grid(gridEl, 16, 10);
   palette = new Palette(paletteEl);
+  // maps = new List(mapsEl, [
+  //   'Untitled',
+  //   'Untitled (1)', 
+  //   'Untitled (2)'
+  // ]);
 
   grid.rows.forEach((row) => {
     gridEl.appendChild(row.el);
