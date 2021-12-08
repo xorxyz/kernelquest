@@ -11,8 +11,7 @@ const StandardGlyphs = Array.from(
   '~~', '..', ',,',
   '──', '│.', 
   '┌─', '┐.', '└─', '┘.',
-  '├─', '┤.', '┬─', '┴─',
-  '┼─', 
+  '├─', '┤.', '┬─', '┴─', '┼─', 
 ]);
 
 console.log(StandardGlyphs);
@@ -123,9 +122,9 @@ document.addEventListener('DOMContentLoaded', e => {
   grid = new Grid(16, 10);
   palette = new Palette(paletteEl);
 
-  palette.update();
-
   grid.rows.forEach((row) => {
     gridEl.appendChild(row.el);
-  })
+  });
+
+  palette.update();
 });
