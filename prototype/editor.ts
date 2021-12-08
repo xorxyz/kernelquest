@@ -1,3 +1,5 @@
+
+
 let grid;
 let palette;
 
@@ -41,18 +43,20 @@ class Palette {
       el.innerText = glyph;
 
       el.addEventListener('click', (e) => {
-        const selected = e.target.alt || e.target.innerText;
-        if (!StandardGlyphs.includes(selected)) return false;
+        const selected = 
+          (e.target as HTMLElement).getAttribute('alt') || 
+          (e.target as HTMLElement).innerText;
+        if (!StandardGlyphs.includes(selected)) return;
         this.selected = selected;
         this.update();
       })
     
       if (glyph === this.selected) {
-        el.classList = 'bg-blue black'
+        el.className = 'bg-blue black'
       }
 
       console.log('selected ' + this.selected);
-      return twemoji.parse(el);
+      return global.twemoji.parse(el);
     });
 
     this.el.replaceChildren(...elements);
@@ -62,21 +66,20 @@ class Palette {
 class Cell {
   x
   y
-  el
+  el: HTMLElement
   defaultClassList = 'w2 h2 ba flex items-center justify-center monospace'
 
   constructor (x, y) {
     this.x = x;
     this.y = y;
     this.el = document.createElement('div');
-    this.el.classList = this.defaultClassList;
-    this.el.classList += ' gray';
+    this.el.className = this.defaultClassList;
     this.el.innerText = '..';
     this.el.addEventListener('click', this.onClick.bind(this));
   }
 
   get glyph () {
-    return this.el.innerText || this.el.firstElementChild?.alt;
+    return (this.el).getAttribute('alt') || (this.el).innerText;
   }
 
   static fromJSON (obj) {
@@ -84,8 +87,8 @@ class Cell {
 
     cell.el.innerText = obj.glyph;
     const style = Styles.find(([glyph]) => glyph === cell.glyph);
-    if (style) cell.el.classList += ' ' + style[1];
-    twemoji.parse(cell.el);
+    if (style) cell.el.className += ' ' + style[1];
+    global.twemoji.parse(cell.el);
 
     return cell;
   }
@@ -100,16 +103,16 @@ class Cell {
 
   onClick () {
     console.log('clicked a cell', this.x, this.y);
-    this.el.classList = this.defaultClassList;
+    this.el.className = this.defaultClassList;
 
     if (this.glyph === palette.selected) {
-      this.el.classList += ' ' + 'gray';
+      this.el.className += ' ' + 'gray';
       this.el.innerText = '..'
     } else {
       const style = Styles.find(([glyph]) =>glyph === palette.selected);
-      if (style) this.el.classList += ' ' + style[1];
+      if (style) this.el.className += ' ' + style[1];
       this.el.innerText = palette.selected;
-      twemoji.parse(this.el);
+      global.twemoji.parse(this.el);
     }
   }
 }
@@ -123,7 +126,7 @@ class Row {
     this.y = y;
     this.cells = Array(w).fill(0).map((_, x) => new Cell(x, y));
     this.el = document.createElement('div');
-    this.el.classList = 'flex'
+    this.el.className = 'flex'
     this.cells.forEach(cell => {
       this.el.appendChild(cell.el);
     })
@@ -167,7 +170,7 @@ class Grid {
     this.rows.forEach((row) => {
       this.el.appendChild(row.el);
     });
-    twemoji.parse(this.el);
+    global.twemoji.parse(this.el);
   }
 
   save () {
@@ -188,16 +191,13 @@ function saveMap (name, value) {
   localStorage.setItem('xor-editor:maps:' + name, JSON.stringify(value));
 }
 
-document.loadMap = loadMap;
-document.saveMap = saveMap;
-
 class List {
   el
   constructor (el, items) {
     this.el = el
 
     const listEl = document.createElement('ol');
-    listEl.classList = 'list pl0 ma3'
+    listEl.className = 'list pl0 ma3'
 
     items.forEach(item => {
       const li = document.createElement('li');
@@ -211,7 +211,7 @@ class List {
   }
 }
 
-document.addEventListener('DOMContentLoaded', e => {
+window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid');
   const paletteEl = document.getElementById('palette');
   const mapsEl = document.getElementById('maps');
@@ -219,13 +219,13 @@ document.addEventListener('DOMContentLoaded', e => {
   const saveEl = document.getElementById('save');
   const loadEl = document.getElementById('load');
 
-  saveEl.addEventListener('click', e => {
+  saveEl?.addEventListener('click', e => {
     const obj = grid.save();
     console.log(obj);
     saveMap('test', obj);   
   })
 
-  loadEl.addEventListener('click', e => {
+  loadEl?.addEventListener('click', e => {
     const obj = loadMap('test');
     grid.load(obj);
   })
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', e => {
   // ]);
 
   grid.rows.forEach((row) => {
-    gridEl.appendChild(row.el);
+    gridEl?.appendChild(row.el);
   });
 
   palette.update();

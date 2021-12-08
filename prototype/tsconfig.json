@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "noEmit": true,
+    "noEmit": false,
     "outDir": "build",
-    "target":"ES2018",
+    "target":"es2018",
     "module": "commonjs",
     "lib": [
-			"es2018"
+			"es2018",
+      "dom"
 		],
     "declaration": true,
     "strict": true,
@@ -29,6 +30,7 @@
 		"**/*.ts"
 	],
 	"exclude": [
-    "node_modules"
+    "node_modules",
+    "build"
 	]
 }
