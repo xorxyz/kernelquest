@@ -1,16 +1,16 @@
 {
   "name": "xor4-prototype",
   "version": "0.0.0",
-  "description": "Target release date: September 17, 2021",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "server": "ts-node server.ts",
+    "client": "npm run client:watch & npm run client:serve && fg",
     "client:serve": "http-serve",
-    "client:watch": "tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client:watch": "mkdir -p build && tsc --watch"
   },
   "author": "kareniel",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "@walletconnect/client": "^2.0.0-beta.20",
     "express": "^4.17.1",
