@@ -5,8 +5,8 @@ body {
   font-size: 16;
 }
 
-#brush {
-  max-width: 40ex;
+#palette {
+  max-width: 36ex;
 }
 
 .green {
