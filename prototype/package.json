@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "server": "ts-node server.ts",
-    "client:serve": "http-serve build",
-    "client:watch": "cp -r editor.html style.css favicon.ico vendor build/ && tsc --watch",
+    "client:serve": "http-serve",
+    "client:watch": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kareniel",

@@ -1,27 +1,34 @@
-
+interface Window {
+  twemoji: any
+}
 
 let grid;
 let palette;
 
 const StandardGlyphs = [
-  '🌬️','✨','👼','🐑','🚩','🔒','🗝️','🦠','💀','🐲','💍','🛡️','👑',
+  '🌬️','✨','👼','🐑','🚩','🔒','🔑','🦠','💀','🐲','💍','🛡️','👑',
   '🌊','👦','🧚','🏛️','🏕️','💰','📕','🐀','👻','🐍','🕯️','🏹','🐌', 
   '🌱','👨','🧝','🌲','🏘️','🍓','🗺️','🐛','🐺','🕷️','🥾','⚔️','🦌',
   '🔥','👴','🧙','⛰️','🏰','🍵','📜','🦇','👺','👹','🎒','💣','🦉',
   '##', '++', '--', 
   '~~', '..', ',,',
+  '~^', '~>', '~v', '~<',
   '──', '│.', 
   '┌─', '┐.', '└─', '┘.',
   '├─', '┤.', '┬─', '┴─', '┼─'
 ];
 
 const Styles = `
-.. gray
+.. mid-gray
 ## bg-moon-gray black b--white
 ++ bg-white black
 -- bg-white black
 🔒 bg-white black
 ~~ bg-blue white
+~^ bg-blue white
+~> bg-blue white
+~v bg-blue white
+~< bg-blue white
 ,, b--white green
 🕷️ bg-red
  `.trim()
@@ -44,7 +51,7 @@ class Palette {
 
       el.addEventListener('click', (e) => {
         const selected = 
-          (e.target as HTMLElement).getAttribute('alt') || 
+          (e.target as HTMLImageElement).alt || 
           (e.target as HTMLElement).innerText;
         if (!StandardGlyphs.includes(selected)) return;
         this.selected = selected;
@@ -56,7 +63,7 @@ class Palette {
       }
 
       console.log('selected ' + this.selected);
-      return global.twemoji.parse(el);
+      return window.twemoji.parse(el);
     });
 
     this.el.replaceChildren(...elements);
@@ -64,8 +71,9 @@ class Palette {
 }
 
 class Cell {
-  x
-  y
+  x: number
+  y: number
+  glyph: string
   el: HTMLElement
   defaultClassList = 'w2 h2 ba flex items-center justify-center monospace'
 
@@ -73,24 +81,27 @@ class Cell {
     this.x = x;
     this.y = y;
     this.el = document.createElement('div');
-    this.el.className = this.defaultClassList;
-    this.el.innerText = '..';
     this.el.addEventListener('click', this.onClick.bind(this));
-  }
-
-  get glyph () {
-    return (this.el).getAttribute('alt') || (this.el).innerText;
+    this.setGlyph('..')
   }
 
   static fromJSON (obj) {
     const cell = new Cell(obj.x, obj.y);
-
-    cell.el.innerText = obj.glyph;
-    const style = Styles.find(([glyph]) => glyph === cell.glyph);
-    if (style) cell.el.className += ' ' + style[1];
-    global.twemoji.parse(cell.el);
+    
+    cell.setGlyph(obj.glyph);
 
     return cell;
+  }
+
+  setGlyph (glyph: string) {
+    this.glyph = glyph;
+    this.el.innerText = glyph;
+    this.el.className = this.defaultClassList;
+
+    const style = Styles.find(([glyph]) => glyph === this.glyph);
+    if (style) this.el.className = this.defaultClassList + ' ' + style[1];
+
+    window.twemoji.parse(this.el);
   }
 
   toJSON () {
@@ -102,17 +113,18 @@ class Cell {
   }
 
   onClick () {
-    console.log('clicked a cell', this.x, this.y);
+    console.log('clicked a cell', this.x, this.y, this.glyph);
     this.el.className = this.defaultClassList;
 
+    const style = Styles.find(([glyph]) => glyph === palette.selected);
+    if (style) this.el.className = this.defaultClassList + ' ' + style[1];
+
     if (this.glyph === palette.selected) {
-      this.el.className += ' ' + 'gray';
       this.el.innerText = '..'
     } else {
-      const style = Styles.find(([glyph]) =>glyph === palette.selected);
-      if (style) this.el.className += ' ' + style[1];
-      this.el.innerText = palette.selected;
-      global.twemoji.parse(this.el);
+      this.glyph = palette.selected;
+      this.el.innerText = this.glyph;
+      window.twemoji.parse(this.el);
     }
   }
 }
@@ -170,7 +182,7 @@ class Grid {
     this.rows.forEach((row) => {
       this.el.appendChild(row.el);
     });
-    global.twemoji.parse(this.el);
+    window.twemoji.parse(this.el);
   }
 
   save () {
