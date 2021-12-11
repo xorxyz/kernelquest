@@ -50,7 +50,7 @@ export class FileManager {
       const text = await file.text();
       const json = JSON.parse(text);
 
-      console.log(json);
+      debug(json);
 
       this.grid.load(json);
     } catch (err) {
@@ -77,10 +77,13 @@ export class FileManager {
     this.reset();
     debug('in save_as');
     const text = JSON.stringify(this.grid.toJSON());
-    const blob = new Blob([text]);
+    const blob = new Blob([text], {
+      type: 'application/json'
+    });
     const objectURL = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectURL;
+    a.download = 'level.json';
     a.type = "json";
     a.target = "_blank";
     a.click();

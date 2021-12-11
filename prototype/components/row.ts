@@ -7,17 +7,28 @@ export type RowExport = {
 }
 
 export class Row extends EventEmitter {
+  w
   y
   cells: Array<Cell>
   el
 
   constructor (w, y) {
     super();
+    this.w = w;
     this.y = y;
-    this.cells = Array(w).fill(0).map((_, x) => new Cell(x, y));
     this.el = document.createElement('div');
-    this.el.className = 'flex'
-    this.cells.forEach(cell => {
+    this.el.className = 'flex';
+    this.reset();
+  }
+
+  reset () {
+    this.cells = Array(this.w).fill(0).map((_, x) => new Cell(x, this.y));
+    this.render();
+  }
+
+  render () {
+    this.el.innerHTML = '';
+    this.cells.forEach((cell) => {
       this.el.appendChild(cell.el);
       cell.on('cell:click', e => {
         this.emit('cell:click', e);
@@ -25,7 +36,7 @@ export class Row extends EventEmitter {
       cell.on('cell:right-click', e => {
         this.emit('cell:right-click', e);
       });
-    })
+    });
   }
 
   static fromJSON (obj: RowExport) {
@@ -35,10 +46,7 @@ export class Row extends EventEmitter {
       return Cell.fromJSON(obj.cells[i]);
     });
 
-    row.el.innerHTML = '';
-    row.cells.forEach((cell) => {
-      row.el.appendChild(cell.el);
-    });
+    row.render();
 
     return row;
   }
