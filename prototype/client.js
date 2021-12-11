@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', e => {
   });
 
   const containerElement = document.getElementById('container');
+
   const fitAddon = new window.FitAddon.FitAddon();
   const attachAddon = new window.AttachAddon.AttachAddon(ws);
-  
   const unicode14Addon = new Unicode14Addon(true);
   term.loadAddon(unicode14Addon);
   term.unicode.activeVersion = '14';

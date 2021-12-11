@@ -6,27 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css"/>
-    <script src="./vendor/widechar_width.js"></script>
-    <script src="./vendor/unicode14.js"></script>
-    <script src="node_modules/xterm/lib/xterm.js"></script>
-    <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
-    <script src="node_modules/xterm-addon-attach/lib/xterm-addon-attach.js"></script>
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
-    <script type="module" src="./build/editor.js"></script>
+    <script type="module" src="editor.ts"></script>
     <title>xor4 editor</title>
   </head>
   <body class="flex w-100 vh-100 items-center justify-center flex-column">
-      <div class="flex">
-        <div>
+      <main class="flex">
+        <section class="flex flex-column justify-center items-center">
+          <header class="tl ma3 w-100 ph3">
+            <select id="file_menu">
+              <option value="file">-- File --</option>
+              <option value="new_file">New File</option>
+              <option value="open_file">Open File</option>
+              <option value="save_as">Save As...</option>
+            </select>
+            <input id="file_input" type="file" class="dn" accept=".json"/>
+          </header>
+
           <div id="grid" autofocus tabindex="0" class="f3 pointer ma3"></div>
-          <div id="palette" tabindex="1" class="white f3 flex flex-wrap pointer"></div>
-        </div>
-        <div>
-          <button id="save">save</button> 
-          <button id="load">load</button>
-          <div id="maps" tabindex="1" class="f4 ba"></div>
-        </div>
-      </div>
+
+          <div id="palette" tabindex="1" class="white f3 flex flex-wrap pointer ma3 pa3 tl"></div>
+        </section>
+      </main>
   </body>
 </html>

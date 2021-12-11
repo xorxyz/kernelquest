@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
+    "isolatedModules": true,
     "noEmit": false,
     "outDir": "build",
     "target":"es2018",
-    "module": "commonjs",
+    "module": "es6",
     "lib": [
 			"es2018",
       "dom"
@@ -26,11 +27,12 @@
       "./node_modules/@types"
 		]
   },
-	"include": [
-		"**/*.ts"
+	"include": [
+    "components/*.ts",
+    "lib/*.ts",
+    "editor.ts"
 	],
 	"exclude": [
-    "node_modules",
     "build"
 	]
 }
