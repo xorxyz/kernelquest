@@ -19,6 +19,7 @@ export class TerminalWidget {
 
     const term = new Terminal({
       theme: {
+        background: '#000000',
         black: '#000000',
         green: '#0CFF24',
         red: '#F92672',

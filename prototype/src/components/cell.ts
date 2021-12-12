@@ -1,4 +1,4 @@
-import * as EventEmitter from "events"
+import EventEmitter from "events"
 import { Styles } from "../constants"
 
 export type CellExport = {

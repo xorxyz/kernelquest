@@ -1,4 +1,4 @@
-import * as EventEmitter from "events";
+import EventEmitter from "events";
 import { Cell, CellExport } from "./cell";
 
 export type RowExport = {
