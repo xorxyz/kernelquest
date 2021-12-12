@@ -1,4 +1,10 @@
 // from https://github.com/fluffos/fluffos/blob/master/src/www/xterm-addon-unicode14.js
+import { 
+  widechar_ambiguous, 
+  widechar_private_use, 
+  widechar_wcwidth, 
+  widechar_widened_in_9 
+} from './widechar_width';
 
 const UnicodeV14 = /** @class */ (function () {
   function UnicodeV14() {
@@ -16,7 +22,7 @@ const UnicodeV14 = /** @class */ (function () {
   return UnicodeV14;
 }());
 
-const Unicode14Addon = /** @class */ (function () {
+export const Unicode14Addon = /** @class */ (function () {
   function Unicode14Addon() {
   }
 

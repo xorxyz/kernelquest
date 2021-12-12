@@ -1,7 +1,7 @@
-import * as http from 'http';
-import * as express from 'express';
-import * as WebSocket from 'ws';
-import * as childProcess from 'child_process';
+const http = require('http');
+const childProcess = require('child_process');
+const WebSocket = require('ws');
+const express = require('express');
 
 const PORT = 3737;
 
@@ -25,8 +25,8 @@ wss.on('connection', ws => {
 
   console.log('started sh');
 
-  client.stdout.on('data', (buf: Buffer) => ws.send(buf.toString()))
-  client.stderr.on('data', (buf: Buffer) => ws.send(buf.toString()))
+  client.stdout.on('data', (buf: Buffer) => ws.send(buf.toString()))
+  client.stderr.on('data', (buf: Buffer) => ws.send(buf.toString()))
 
   ws.on('message', (msg) => {
     client.stdin.write(Buffer.from(msg as string, 'utf8'))

@@ -1,5 +1,5 @@
 import * as EventEmitter from "events"
-import { Styles } from "../lib/constants"
+import { Styles } from "../constants"
 
 export type CellExport = {
   x: number

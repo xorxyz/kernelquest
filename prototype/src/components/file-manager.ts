@@ -1,4 +1,4 @@
-import { debug } from "../lib/utils";
+import { debug } from "../utils";
 import { Grid } from "./grid";
 
 export class FileManager {

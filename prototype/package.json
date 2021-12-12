@@ -7,8 +7,8 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "server": "ts-node server.ts",
-    "start": "parcel -p 8080 editor.html --https --no-cache"
+    "server": "ts-node server",
+    "start": "parcel -p 8080 src/editor.html --https --no-cache"
   },
   "author": "kareniel",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "ts-node": "^10.2.0",
     "twemoji": "^13.1.0",
     "ws": "^8.1.0",
-    "xterm": "^4.13.0",
+    "xterm": "^4.15.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0"
   },

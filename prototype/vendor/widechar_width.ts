@@ -12,10 +12,10 @@
 /* Special width values */
 const widechar_nonprint = -1;     // The character is not printable.
 const widechar_combining = -2;    // The character is a zero-width combiner.
-const widechar_ambiguous = -3;    // The character is East-Asian ambiguous width.
-const widechar_private_use = -4;  // The character is for private use.
+export const widechar_ambiguous = -3;    // The character is East-Asian ambiguous width.
+export const widechar_private_use = -4;  // The character is for private use.
 const widechar_unassigned = -5;   // The character is unassigned.
-const widechar_widened_in_9 = -6; // Width is 1 in Unicode 8, 2 in Unicode 9+.
+export const widechar_widened_in_9 = -6; // Width is 1 in Unicode 8, 2 in Unicode 9+.
 const widechar_non_character = -7; // The character is a noncharacter.
 
 /* Simple ASCII characters - used a lot, so we check them first. */
@@ -1316,7 +1316,7 @@ const widechar_unassigned_table = [
 ];
 
 /* Non-characters. */
-const widechar_nonchar_table = [
+export const widechar_nonchar_table = [
     [0x0FDD0, 0x0FDEF],
     [0x0FFFE, 0x0FFFF],
     [0x1FFFE, 0x1FFFF],
@@ -1338,7 +1338,7 @@ const widechar_nonchar_table = [
 ];
 
 /* Characters that were widened from with 1 to 2 in Unicode 9. */
-const widechar_widened_table = [
+export const widechar_widened_table = [
     [0x1F004, 0x1F004],
     [0x1F0CF, 0x1F0CF],
     [0x1F170, 0x1F171],
@@ -1406,7 +1406,7 @@ function widechar_in_table(data, ucs) {
 }
 
 /* Return the width of character c, or a special negative value. */
-function widechar_wcwidth(c) {
+export function widechar_wcwidth(c) {
     if (widechar_in_table(widechar_ascii_table, c))
         return 1;
     if (widechar_in_table(widechar_private_table, c))
