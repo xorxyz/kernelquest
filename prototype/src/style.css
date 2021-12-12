@@ -10,7 +10,8 @@ body {
 }
 
 #palette {
-  max-width: 36ex;
+  max-width: 38ex;
+  max-height: 20ex;
 }
 
 .green {

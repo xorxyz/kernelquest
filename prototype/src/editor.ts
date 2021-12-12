@@ -8,6 +8,10 @@ import { Tabs } from "./components/tabs";
 
 new TerminalWidget();
 
+// window.addEventListener('beforeunload', e => {
+//   e.preventDefault(); 
+// });
+
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;
   const paletteEl = document.getElementById('palette') as HTMLDivElement;

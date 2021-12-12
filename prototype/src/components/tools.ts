@@ -1,5 +1,4 @@
 import { StandardGlyphs } from "../constants";
-import { debug } from "../utils";
 
 declare global {
   interface Window {
@@ -7,7 +6,7 @@ declare global {
   }
 }
 
-export class Palette {
+export class Tools {
   el: HTMLDivElement
   selected: string = '##'
 

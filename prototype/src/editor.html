@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
     <script type="module" src="editor.ts"></script>
-    <title>xor4 editor</title>
+    <title>xor4 prototype</title>
   </head>
   <body class="flex w-100 vh-100 items-center justify-center flex-column">
     <main>
       
-      <div class="h2 w-100 flex mv1">
+      <div id="tab_buttons" class="h2 w-100 flex mv1">
         <button id="play_button" class="mr1 ph3 bl bt br flex items-center pointer">
           🏰 Play
         </button>
@@ -25,14 +25,14 @@
 
       <div id="tabs" class="" style="width: 55rem; height: 38rem;">
 
-        <div value="play">
+        <div value="play" class="hidden">
           <div id="container" class="ba bw1 b--white">
             <div id="terminal" autofocus tabindex="0"></div>
           </div>
         </div>
 
-        <div value="edit" class="ba bw1 b--white h-100 flex flex-column justify-start items-start hidden">
-          <header class="tl ma2 w-100 ph2">
+        <div value="edit" class="ba bw1 b--white h-100 flex flex-column justify-start items-start">
+          <header class="tl w-100 pa1 bb bw05 bg-white black">
             <select id="file_menu">
               <option value="file">-- File --</option>
               <option value="new_file">New File</option>
@@ -41,8 +41,20 @@
             </select>
             <input id="file_input" type="file" class="dn" accept=".json"/>
           </header>
-          <div id="grid" autofocus tabindex="0" class="f3 pointer ma2"></div>
-          <div id="palette" tabindex="1" class="white f4 flex flex-wrap pointer ma2 pa3 tl"></div>
+          <div class="flex w-100">
+            <div class="flex br h-100">
+              <div id="palette" tabindex="1" class="white f5 flex flex-wrap items-start justify-start pointer ma1 pa1 tl"></div>
+            </div>
+            <div class="flex w-100 justify-center items-center">
+              <div id="grid" autofocus tabindex="0" class="f3 pointer mv2"></div>
+            </div>
+          </div>
+          <div class="bt bw05 flex pa1 w-100 h3 f4 items-end h-100 ">
+            <div class="flex items-center w-100">
+              <span class="ph2">anon@editor:$</span>
+              <input type="text" class="ma1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
+            </div>
+          </div> 
         </div>
 
       </div>
