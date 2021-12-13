@@ -39,10 +39,19 @@
               <option value="open_file">Open File</option>
               <option value="save_as">Save As...</option>
             </select>
+            <select id="run_menu">
+              <option value="run">-- Run --</option>
+              <option value="play">Play level</option>
+            </select>
             <input id="file_input" type="file" class="dn" accept=".json"/>
           </header>
           <div class="flex w-100">
-            <div class="flex br h-100">
+            <div class="flex br h-100 flex-column">
+              <div class="ma1 flex">
+                <button class="mr1 ph2 bl bt br flex items-center pointer f6">🖐️Move</button>
+                <button class="mr1 ph2 bl bt br flex items-center pointer f6 bg-gray white">🖌️Paint</button>
+                <button class="mr1 ph2 bl bt br flex items-center pointer f6">✂️Select</button>
+              </div>
               <div id="palette" tabindex="1" class="white f5 flex flex-wrap items-start justify-start pointer ma1 pa1 tl"></div>
             </div>
             <div class="flex w-100 justify-center items-center">
