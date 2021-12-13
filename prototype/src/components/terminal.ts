@@ -13,8 +13,8 @@ export class TerminalWidget {
     playButtonEl.addEventListener('click', (e) => {
       playerEl.muted = !playerEl.muted;
       playButtonEl.textContent = playerEl.muted
-        ? 'Music is muted'
-        : 'Music is not muted'
+        ? '🔇 Music is muted'
+        : '🔊 Music is not muted'
     });
 
     const term = new Terminal({

@@ -2,13 +2,13 @@
   "name": "xor4-prototype",
   "version": "0.0.0",
   "description": "",
-  "source": "editor.ts",
-  "main": "dist/editor.js",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
     "server": "ts-node server",
-    "start": "parcel -p 8080 src/editor.html --https --no-cache"
+    "start": "parcel -p 8080 src/index.html --https --no-cache"
   },
   "author": "kareniel",
   "license": "MIT",

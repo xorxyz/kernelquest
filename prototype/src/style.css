@@ -10,7 +10,7 @@ body {
 }
 
 #palette {
-  max-width: 38ex;
+  max-width: 60ex;
   max-height: 20ex;
 }
 
@@ -23,4 +23,9 @@ img.emoji {
   width: 1.25em;
   margin: 0 .05em 0 .1em;
   vertical-align: -0.1em;
+}
+
+#tab_buttons button.is-active {
+  background-color: #555;
+  color: #aaa;
 }

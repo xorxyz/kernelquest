@@ -4,28 +4,71 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
-    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css"/>
-    <script src="./vendor/widechar_width.js"></script>
-    <script src="./vendor/unicode14.js"></script>
-    <script src="node_modules/xterm/lib/xterm.js"></script>
-    <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
-    <script src="node_modules/xterm-addon-attach/lib/xterm-addon-attach.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
-    <script type="module" src="./client.js"></script>
-    <title>xor4 alpha</title>
+    <script type="module" src="script.ts"></script>
+    <title>xor4 prototype</title>
   </head>
   <body class="flex w-100 vh-100 items-center justify-center flex-column">
-    <main id="container" class="ba bw1 b--white">
-      <div id="terminal" autofocus tabindex="0"></div>
+    <main>
+      
+      <div id="tab_buttons" class="h2 w-100 flex mv1">
+        <button id="play_button" value="play" class="mr1 ph3 bl bt br flex items-center pointer">
+          🏰 Play
+        </button>
+        <button id="edit_button" value="edit" class="mr1 ph3 bl bt br flex items-center pointer">
+          🐑 Edit
+        </button>
+      </div>
+
+      <div id="tabs" class="" style="width: 55rem; height: 38rem;">
+
+        <div value="play" class="hidden">
+          <div id="container" class="ba bw1 b--white">
+            <div id="terminal" autofocus tabindex="0"></div>
+          </div>
+        </div>
+
+        <div value="edit" class="ba bw1 b--white h-100 flex flex-column justify-start items-start">
+          <header class="tl w-100 pa1 bb bw05 bg-white black">
+            <select id="file_menu">
+              <option value="file">-- File --</option>
+              <option value="new_file">New File</option>
+              <option value="open_file">Open File</option>
+              <option value="save_as">Save As...</option>
+            </select>
+            <input id="file_input" type="file" class="dn" accept=".json"/>
+          </header>
+          <div class="flex w-100">
+            <div class="flex br h-100">
+              <div id="palette" tabindex="1" class="white f5 flex flex-wrap items-start justify-start pointer ma1 pa1 tl"></div>
+            </div>
+            <div class="flex w-100 justify-center items-center">
+              <div id="grid" autofocus tabindex="0" class="f3 pointer mv2"></div>
+            </div>
+          </div>
+          <div class="bt bw05 flex pa1 w-100 h3 f4 items-end h-100 ">
+            <div class="flex items-center w-100">
+              <span class="ph2">anon@editor:$</span>
+              <input id="text_input" type="text" class="ma1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
+            </div>
+          </div> 
+        </div>
+      </div>
+
+    <div id="music_player">
+      <button id="play" class="mv1">🔇 Music is muted</button>
+      <audio 
+        preload autoplay loop hidden muted
+        id="player"
+        class="ma2"
+        src="https://www.kernel.quest/music/village.wav">
+        <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
+        <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
+      </audio>
+    </div>
     </main>
-    <button id="play">Music is muted</button>
-    <audio 
-      preload autoplay loop hidden muted
-      id="player"
-      class="ma2"
-      src="https://www.kernel.quest/music/dungeon.wav" >
-    </audio>
   </body>
 </html>

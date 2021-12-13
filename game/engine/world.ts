@@ -1,19 +1,14 @@
-import * as fs from 'fs';
-import { promisify } from 'util';
 import { Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Colors, esc, Style } from '../../lib/esc';
 import { Equipment, Item, Thing } from './things';
 import { Agent, Cursor } from './agents';
-import { bounds, DB_FILEPATH, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
+import { bounds, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
 
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
 
 const empty: string = `..`;
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
 
 export interface Ports<T> {
   north: T, east: T, south: T, west: T
@@ -222,55 +217,5 @@ export class World extends Thing {
 
   find(agent: Agent): Room | null {
     return this.rooms.find(room => room.has(agent)) || null;
-  }
-
-  async load() {
-    const contents = await readFile(DB_FILEPATH, 'utf8');
-
-    const [ err, mapFile ] = parseMapFile(contents)
-
-    if (err) {
-      console.error(err)
-      throw new Error('couldnt parse map file.')
-    } else {
-      (mapFile as MapFile).rooms.map((room, i) => {
-        this.rooms[i].load(room.cells);
-      })
-    }
-  }
-
-  async save() {
-    const contents = {
-      rooms: JSON.stringify(this.rooms)
-    }
-
-    await writeFile(DB_FILEPATH, contents);
-  }
-}
-
-class MapFile {
-  rooms: Array<Room> = []
-
-  static from (contents) {
-    const mapFile = new MapFile();
-    const loaded = JSON.parse(contents);
-
-    if (!loaded.rooms) {
-      throw new Error('map file is missing the "rooms" key.')
-    }
-
-    mapFile.rooms = loaded.rooms;
-
-    return mapFile;
-  }
-}
-
-type MaybeMapFile = [ Error, null ] | [ null, MapFile ]
-
-function parseMapFile (contents: string): MaybeMapFile {
-  try { 
-    return [ null, MapFile.from(contents) ]
-  } catch (err) {
-    return [ err, null ]
   }
 }
