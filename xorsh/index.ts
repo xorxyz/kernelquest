@@ -12,8 +12,8 @@ const engine = new Engine({ world });
 const server = new GameServer(engine);
 
 (async function main () {
-  console.log('loading world...');
-  await world.load();
+  // console.log('loading world...');
+  // await world.load();
 
   server.listen(PORT, () => {
     console.log('listening on', PORT);

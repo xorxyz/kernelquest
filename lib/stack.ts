@@ -16,7 +16,7 @@ export class Stack<T> extends Array {
   }
 
   /** peek at the value on top of the stack */
-  peek(): T | null {
+  peek(): T | null {
     return this[this.length - 1] || null;
   }
 

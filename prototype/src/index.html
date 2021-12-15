@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
-    <script type="module" src="script.ts"></script>
+    <script type="module" src="app.ts"></script>
     <title>xor4 prototype</title>
   </head>
   <body class="flex w-100 vh-100 items-center justify-center flex-column">
@@ -58,7 +58,9 @@
               <div id="grid" autofocus tabindex="0" class="f3 pointer mv2"></div>
             </div>
           </div>
-          <div class="bt bw05 flex pa1 w-100 h3 f4 items-end h-100 ">
+          <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 ">
+            <div id="messages" class="h-100 flex flex-column ba w-100 white overflow-y-scroll" style="height: 12rem;">
+            </div>
             <div class="flex items-center w-100">
               <span class="ph2">anon@editor:$</span>
               <input id="text_input" type="text" class="ma1 pa1 w-100 bg-black white bw0 b--solid monospace"/>

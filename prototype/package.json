@@ -7,7 +7,7 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "server": "ts-node server",
+    "server": "ts-node websocket-proxy",
     "start": "parcel -p 8080 src/index.html --https --no-cache"
   },
   "author": "kareniel",

@@ -2,11 +2,8 @@ import { FileManager } from "./components/file-manager";
 import { Grid } from "./components/grid";
 import { Palette } from "./components/palette";
 import { debug } from "./utils";
-
-import { TerminalWidget } from './components/terminal';
 import { Tabs } from "./components/tabs";
-
-new TerminalWidget();
+import { EditorTerminal } from './components/editor-terminal';
 
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;
@@ -19,17 +16,19 @@ window.document.addEventListener('DOMContentLoaded', e => {
   const editButton = document.getElementById('edit_button') as HTMLButtonElement;
   const tabsEl = document.getElementById('tabs') as HTMLDivElement;
 
+  const messagesEl = document.getElementById('messages') as HTMLInputElement;
   const textInputEl = document.getElementById('text_input') as HTMLInputElement;
 
   const tabs = new Tabs(tabsEl, tabButtons)
   const grid = new Grid(gridEl, 16, 10);
   const palette = new Palette(paletteEl);
-  
+
+  new EditorTerminal(textInputEl, messagesEl);
+
   playButton.addEventListener('click', () => tabs.select('play'));
   editButton.addEventListener('click', () => tabs.select('edit'));
 
   new FileManager(fileMenuEl, fileInputEl, grid);
-
 
   grid.on('cell:click', e => {
     debug('clicked a cell', e);
@@ -50,15 +49,3 @@ window.document.addEventListener('DOMContentLoaded', e => {
   palette.update();
 });
 
-
-// import { World } from '../../game/engine/world';
-// import { Engine } from '../../game/engine/engine';
-
-// const world = new World();
-// const engine = new Engine({ world });
-
-// (async function main () {
-//   console.log('loading world...');
-
-//   engine.start();
-// })()

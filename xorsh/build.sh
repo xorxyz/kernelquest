@@ -8,6 +8,6 @@ tsc \
   --outDir dist \
   --removeComments \
   --isolatedModules \
-  ./scripting/interpreter.ts
+  ./interpreter.ts
 
 # ./node_modules/.bin/jsmin --level 3 --overwrite 'dist/interpreter.js'

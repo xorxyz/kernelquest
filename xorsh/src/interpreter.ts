@@ -1,9 +1,6 @@
 import { Stack } from "../../lib/stack";
 import { StandardLibrary } from "./stdlib";
-import { Thing } from "./world";
 import { Compiler, Word } from './compiler';
-
-type DataStack = Stack<Thing>
 
 export interface IProgram {
   words: Array<Word>
@@ -18,7 +15,7 @@ export class Execution {
     this.program = program;
   }
 
-  get stack(): DataStack {
+  get stack(): Stack<Word> {
     return this.stacks[this.level];
   }
 
@@ -26,7 +23,7 @@ export class Execution {
     this.stacks[this.level] = s;
   }
 
-  start(stack: DataStack) {
+  start(stack: Stack<Word>) {
     this.stacks = [stack];
 
     this.program.words.map((word: Word) => word.fn.call(this, this.stack));
@@ -36,21 +33,19 @@ export class Execution {
 }
 
 export class Interpreter {
-  stack: Stack<Thing> = new Stack()
+  stack: Stack<Word> = new Stack()
   compiler = new Compiler(StandardLibrary)
 
-  async interpret (line: string) {
-    await new Promise((done) => setTimeout(done, 200));
-  
+  async interpret (line: string) {  
     try {
       const program = this.compiler.compile(line);
+      console.log(program);
+
       const execution = new Execution(program);
   
-      execution.start(this.stack)
-  
-      console.log(execution.stack);
-    } catch (err) {
-      console.log(err.message)
+      execution.start(this.stack);
+    } catch (err: any) {
+      console.error(err.message);
     }
   }
 }

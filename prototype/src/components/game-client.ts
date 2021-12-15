@@ -3,7 +3,7 @@ import * as AttachAddon from "xterm-addon-attach";
 import * as FitAddon from "xterm-addon-fit";
 import { Unicode14Addon } from '../../vendor/unicode14';
 
-export class TerminalWidget {
+export class GameClient {
   constructor () {
     const ws = new WebSocket('ws://localhost:3737');
 
