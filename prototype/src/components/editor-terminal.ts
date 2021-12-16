@@ -1,4 +1,4 @@
-import { Interpreter } from "../interpreter";
+import { Interpreter } from "../interpreter/interpreter";
 
 export class EditorTerminal {
   messagesEl
@@ -15,8 +15,10 @@ export class EditorTerminal {
       } catch (err) {
         if (err instanceof Error) this.say('err: ' + err.message);
       }
+
+      console.log(this.interpreter.stack);
   
-      this.say('stack> ' + this.interpreter.stack.join(' '));
+      this.say('stack> ' + this.interpreter.stack.map(a => a.value).join(' '));
 
       textInputEl.value = '';
     })

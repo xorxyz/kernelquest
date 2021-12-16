@@ -1,34 +1,58 @@
-import { Interpretation } from "./interpretation";
+import { Stack } from "../../../lib/stack";
 import { operatorTokens, Scanner, Token } from "./lexer";
-import { operators } from "./stdlib";
+import stdlib from "./stdlib";
+
+export type StackFn = (stack: Stack<Factor>) => void;
+
+export abstract class Factor {
+  lexeme: string
+  constructor (lexeme: string) {
+    this.lexeme = lexeme
+  }
+  abstract validate(stack: Stack<Factor>)
+  abstract execute(stack: Stack<Factor>)
+  _validate (stack: Stack<Factor>) {
+    this.validate(stack);
+  }
+  _execute (stack: Stack<Factor>) {
+    this.execute(stack);
+  }
+}
+
+
+export class Literal extends Factor {
+  value: any
+
+  constructor (lexeme: string, value?: any) {
+    super(lexeme);
+
+    this.value = value;
+  }
+
+  validate(stack: Stack<Factor>) {
+    return true;
+  }
+
+  execute(stack: Stack<Factor>) {
+    stack.push(this);
+  }
+}
+
+export type Term = Array<Factor>;
+
+export type List = Array<Literal>;
+
+export type Dictionary = Record<string, Factor>
 
 export class Word {
-  lexeme: string
-  fn: Function
-
-  constructor (lexeme: string, fn: Function) {
-    this.lexeme = lexeme;
-    this.fn = fn;
-  }
-
-  static from (dict: Dictionary, token: Token): Word | null {
-    const word = dict[token.lexeme];
-
-    if (!(word instanceof Word)) return null;
-
-    return word;
-  }
+  name: string
+  term: Term
 }
 
-export class Literal extends Word {
-  constructor (lexeme: string, value: any) {
-    super(lexeme, function (this: Interpretation) {
-      this.stack.push(value)
-    })
-  }
+export interface IProgram {
+  tokens: Array<Token>
+  term: Term
 }
-
-export type Dictionary = Record<string, Word>
 
 export class Compiler {
   private scanner = new Scanner()
@@ -36,19 +60,20 @@ export class Compiler {
   dict: Dictionary
 
   constructor (dict?: Dictionary) {
-    this.dict = Object.assign({}, dict)
+    this.dict = Object.assign({}, stdlib);
   }
 
-  compile(code: string) {
+  compile(code: string): IProgram {
     const tokens = this.scanner.scan(code);
-    const words: Array<Word> = tokens.reduce((arr: Array<Word>, token: Token) => {
+    const term: Array<Factor> = tokens.reduce((arr: Array<Factor>, token: Token) => {
       if (!token.lexeme) return arr;
 
       if (typeof token.literal !== 'undefined') {
         if (operatorTokens.includes(token.lexeme)) {
-          const word = Word.from(operators, token);
-          if (!word) throw new Error('word not found: ' + token.lexeme)
-          arr.push(word);
+          const factor = this.dict[token.lexeme];
+
+          if (!factor) throw new Error('factor not found: ' + token.lexeme)
+          arr.push(factor);
           return arr
         } else {
           const literal = new Literal(token.lexeme, token.literal);
@@ -56,16 +81,16 @@ export class Compiler {
           return arr
         }
       } else {
-        const word = Word.from(this.dict, token);
-        if (!word) throw new Error('word not found: ' + token.lexeme)
-        arr.push(word);
+        const factor = this.dict[token.lexeme];
+        if (!factor) throw new Error('factor not found: ' + token.lexeme)
+        arr.push(factor);
         return arr
       }
     }, []);
 
     return { 
       tokens, 
-      words
+      term
     };
   }
 }

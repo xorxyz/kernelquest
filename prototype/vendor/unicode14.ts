@@ -7,7 +7,7 @@ import {
 } from './widechar_width';
 
 const UnicodeV14 = /** @class */ (function () {
-  function UnicodeV14() {
+  function UnicodeV14(this: any) {
     this.version = '14';
   }
 

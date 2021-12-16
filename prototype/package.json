@@ -8,7 +8,10 @@
   "types": "dist/types.d.ts",
   "scripts": {
     "server": "ts-node websocket-proxy",
-    "start": "parcel -p 8080 src/index.html --https --no-cache"
+    "check": "tsc --noEmit",
+    "check:watch": "tsc --noEmit --watch",
+    "client": "parcel -p 8080 src/index.html --https --no-cache",
+    "start": "npm run client & npm run check:watch && fg"
   },
   "author": "kareniel",
   "license": "MIT",

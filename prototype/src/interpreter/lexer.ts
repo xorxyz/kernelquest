@@ -154,7 +154,7 @@ export class Scanner {
   }
 
   private scanToken() {
-    const char = this.next();
+    let char = this.next();
 
     switch (char) {
       case ' ':
@@ -164,19 +164,22 @@ export class Scanner {
       case '\n':
         this.line++;
         break;
-      case '-':
-        this.next();
-        if (isDigit(char)) {
-          this.number(true);
-        } else {
-          throw new Error('expected digit after minus sign');
-        }
-        break;
       case '"': this.string(); break;
       case TokenType.DOT: this.addToken(TokenType.DOT, char); break;
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, char); break;
-      case TokenType.MINUS: this.addToken(TokenType.MINUS, char); break;
+      case TokenType.MINUS:
+        const nextChar = this.peek();
+        // negative number
+        if (isDigit(nextChar)) {
+          this.number(true);
+        // subtraction
+        } else if ([TokenType.EOF, ' '].includes(nextChar)) {
+          this.addToken(TokenType.MINUS, char);
+        } else {
+          throw new Error('minus sign can only be followed by a number or a space');
+        }
+        break;
       case TokenType.SLASH: this.addToken(TokenType.SLASH, char); break;
       case TokenType.LEFT_BRACKET: this.addToken(TokenType.LEFT_BRACKET, char); break;
       case TokenType.RIGHT_BRACKET: this.addToken(TokenType.RIGHT_BRACKET, char); break;
