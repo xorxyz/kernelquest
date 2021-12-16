@@ -1,4 +1,5 @@
 import { StackFn } from "../types";
+import { LiteralString } from "./literals";
 import { Operator } from "./operators";
 
 export class Combinator extends Operator {
@@ -32,9 +33,16 @@ export const drop = new Combinator(['drop', 'zap', 'pop'], ['any'], stack => {
   stack.pop();
 });
 
+export const concat = new Combinator(['concat', 'cat'], ['string', 'string'], stack => {
+  const a = stack.pop();
+  const b = stack.pop();
+
+  stack.push(new LiteralString(a.value + b.value));
+});
+
 const combinators = {};
 
-[dup, swap, drop].forEach(combinator => {
+[dup, swap, drop, concat].forEach(combinator => {
   combinator.aliases.forEach(alias => {
     combinators[alias] = combinator;
   })
