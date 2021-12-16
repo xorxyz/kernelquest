@@ -1,35 +1,35 @@
-import { Factor, Literal, Term } from "../compiler";
+import { Factor, Literal, Term } from "../types";
 
 export const True = new Literal('true', true);
 export const False = new Literal('false', false);
 
-const literals = {
-  true: True,
-  false: False
-}
-
-export default literals;
+True.type = 'truth';
+False.type = 'truth';
 
 export class LiteralNumber extends Literal {
-  constructor (lexeme, n: number) {
-    super(lexeme, n);
+  type = 'number'
+  constructor (n: number) {
+    super(String(n), n);
   }
 }
 
 export class LiteralString extends Literal {
-  constructor (lexeme, str: string) {
-    super(lexeme, str);
+  type = 'string'
+  constructor (str: string) {
+    super('"' + str + '"', str);
   }
 }
 
 export class LiteralSet extends Literal {
-  constructor (lexeme, set: Set<Literal>) {
-    super(lexeme, set);
+  type = 'set'
+  constructor (set: Set<Literal>) {
+    super('{}', set);
   }
 }
 
 export class Quotation extends Literal {
-  constructor (lexeme, arr: Array<Factor|Term>) {
-    super(lexeme, arr);
+  type = 'quotation'
+  constructor (arr: Array<Factor|Term>) {
+    super('[]', arr);
   }
 }

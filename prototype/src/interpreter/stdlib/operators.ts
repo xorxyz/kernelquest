@@ -1,96 +1,69 @@
 import { Stack } from "../../../../lib/stack";
-import { Factor, Term } from "../compiler";
+import { Factor, Literal, StackFn } from "../types";
+import { LiteralNumber } from "./literals";
 
 export class Operator extends Factor {
   signature: Array<string>
   execute
 
-  constructor (lexeme: string, signature: Array<string>, execute) {
+  constructor (lexeme: string, signature: Array<string>, execute: StackFn) {
     super(lexeme);
     this.signature = signature;
     this.execute = execute;
   }
 
-  validate (stack: Stack<Factor | Term>) {
+  validate (stack: Stack<Factor>) {
     if (this.signature.length > stack.length) {
-      throw new Error('missing operand(s)');
+      throw new Error(
+        'missing operand(s), expected ' + this.signature.join(', ')
+      );
     }
-  
-    this.signature.forEach((argumentType, i) => {
-      const a = stack.peekN(i);
-      if (argumentType !== 'any' && typeof a !== argumentType) {
-        throw new Error('fn signature doesnt match at least one stack type');
+
+    const args = stack.slice(-this.signature.length);
+
+    args.forEach((arg: Factor, i) => {
+      const type = this.signature[i];
+      if (!(arg instanceof Literal)) {
+        throw new Error('arg not instanceof Literal');
       }
-    })
+      if (type !== 'any' && arg.type !== type) {
+        throw new Error(
+          `signature doesn't match stack type. 
+          expected: '${type}' got: '${arg.type}' at arg ${i}`
+        );
+      }
+    });
   }
 }
 
-export const SumOperator = new Operator('+', ['number', 'number'], stack => {
-  const b = stack.pop();
-  const a = stack.pop();
-  const result = a + b;
+export const sum = new Operator('+', ['number', 'number'], (stack) => {
+  const [b] = stack.popN(1);
+  const [a] = stack.popN(1);
+  const result = (a as LiteralNumber).value + (b as LiteralNumber).value;
 
-  stack.push(result);
+  stack.push(new LiteralNumber(result));
 });
 
-const operators = {};
+export const difference = new Operator('-', ['number', 'number'], (stack) => {
+  const [b] = stack.popN(1);
+  const [a] = stack.popN(1);
+  const result = (a as LiteralNumber).value - (b as LiteralNumber).value;
 
-[SumOperator].forEach(operator => {
-  operators[operator.lexeme] = operator;
+  stack.push(new LiteralNumber(result));
 });
 
-export default operators;
+export const product = new Operator('*', ['number', 'number'], (stack) => {
+  const [b] = stack.popN(1);
+  const [a] = stack.popN(1);
+  const result = (a as LiteralNumber).value * (b as LiteralNumber).value;
 
+  stack.push(new LiteralNumber(result));
+});
 
-// export class DifferenceOperator extends Operator {
-//   lexeme = '-'
-//   signature = ['number', 'number']
+export const division = new Operator('/', ['number', 'number'], (stack) => {
+  const [b] = stack.popN(1);
+  const [a] = stack.popN(1);
+  const result = (a as LiteralNumber).value / (b as LiteralNumber).value;
 
-//   fn (stack) {  
-//     const b = stack.pop();
-//     const a = stack.pop();
-//     const result = a - b;
-  
-//     stack.push(result);
-//   }
-// }
-
-// export class ProductOperator extends Operator {
-//   lexeme = '*'
-//   signature = ['number', 'number']
-
-//   fn (stack) {  
-//     const b = stack.pop();
-//     const a = stack.pop();
-//     const result = a * b;
-  
-//     stack.push(result);
-//   }
-// }
-
-// export class DivisionOperator extends Operator {
-//   lexeme = '/'
-//   signature = ['number', 'number']
-
-//   fn (stack) {  
-//     const b = stack.pop();
-//     const a = stack.pop();
-//     const result = a / b;
-  
-//     stack.push(result);
-//   }
-// }
-
-// const operators = {};
-
-// [
-//   SumOperator,
-//   DifferenceOperator,
-//   ProductOperator,
-//   DivisionOperator
-// ].forEach(ctor => {
-//   operators[ctor.lexeme] = ctor;
-//   ctor.aliases.forEach(alias => {
-//     operators[alias] = ctor;
-//   })
-// })
+  stack.push(new LiteralNumber(result));
+});

@@ -4,7 +4,8 @@
  */
 
 import { Stack } from "../../../lib/stack";
-import { Compiler, Factor, IProgram } from './compiler';
+import { Compiler } from './compiler';
+import { Factor, IProgram } from "./types";
 
 export class Interpretation {
   private level = 0
@@ -26,8 +27,10 @@ export class Interpretation {
   start(stack: Stack<Factor>) {
     this.stacks = [stack];
 
-    this.program.term.map((word: Factor) => word.validate(this.stack));
-    this.program.term.map((word: Factor) => word.execute(this.stack));
+    this.program.term.map((factor: Factor) => {
+      factor.validate(this.stack);
+      factor.execute(this.stack);
+    });
 
     return this;
   }

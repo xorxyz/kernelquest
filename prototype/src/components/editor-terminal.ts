@@ -15,10 +15,8 @@ export class EditorTerminal {
       } catch (err) {
         if (err instanceof Error) this.say('err: ' + err.message);
       }
-
-      console.log(this.interpreter.stack);
   
-      this.say('stack> ' + this.interpreter.stack.map(a => a.value).join(' '));
+      this.say('stack> ' + this.interpreter.stack.map(a => a.lexeme).join(' '));
 
       textInputEl.value = '';
     })
@@ -35,6 +33,5 @@ export class EditorTerminal {
       // behavior: 'smooth',
       top: this.messagesEl.scrollHeight
     })
-
   }
 }

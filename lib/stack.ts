@@ -21,6 +21,6 @@ export class Stack<T> extends Array {
   }
 
   peekN(n: number): T | null {
-    return this[n] || null;
+    return this[this.length - 1 - n] || null;
   }
 }
