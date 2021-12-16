@@ -1,27 +1,15 @@
 import { operatorTokens, Scanner, Token } from "./lexer";
-import { drop, dup, swap } from "./stdlib/combinators";
+import { Dictionary, Factor, IProgram } from "./types";
 import { LiteralNumber, LiteralString } from "./stdlib/literals";
-import { difference, division, product, sum } from "./stdlib/operators";
-import { Dictionary, Factor, IProgram, Literal } from "./types";
+import operators from "./stdlib/operators";
+import combinators from "./stdlib/combinators";
 
 export class Compiler {
   private scanner = new Scanner()
   tokens: Array<Token>
-  dict: Dictionary = {}
-
-  constructor () {
-    const operators = [sum, difference, product, division];
-    const combinators = [dup, swap, drop];
-
-    operators.forEach(operator => {
-      this.dict[operator.lexeme] = operator;
-    })
-
-    combinators.forEach(combinator => {
-      combinator.aliases.forEach(alias => {
-        this.dict[alias] = combinator;
-      })
-    })
+  dict: Dictionary = {
+    ...operators,
+    ...combinators
   }
 
   compile(code: string): IProgram {

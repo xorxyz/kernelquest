@@ -67,3 +67,11 @@ export const division = new Operator('/', ['number', 'number'], (stack) => {
 
   stack.push(new LiteralNumber(result));
 });
+
+const operators = {};
+
+[sum, difference, product, division].forEach(operator => {
+  operators[operator.lexeme] = operator;
+})
+
+export default operators;

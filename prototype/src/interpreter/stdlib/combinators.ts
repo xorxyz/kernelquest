@@ -31,3 +31,13 @@ export const swap = new Combinator(['swap'], ['any', 'any'], stack => {
 export const drop = new Combinator(['drop', 'zap', 'pop'], ['any'], stack => {
   stack.pop();
 });
+
+const combinators = {};
+
+[dup, swap, drop].forEach(combinator => {
+  combinator.aliases.forEach(alias => {
+    combinators[alias] = combinator;
+  })
+})
+
+export default combinators;
