@@ -34,15 +34,14 @@ export class Quotation extends Literal {
   constructor (program: IProgram) {
     super('[]', program.term);
     this.program = program
-    console.log('program', program);
     this.render();
   }
   push(factor: Factor) {
-    this.program.term.push(factor)
-    this.value.push(factor);
+    this.program.term.push(factor);
     this.render();
   }
   render() {
     this.lexeme = '[' + this.program.term.map((t:Factor) => t.lexeme).join(', ') + ']';
+    this.value = this.program.term;
   }
 }
