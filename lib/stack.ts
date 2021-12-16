@@ -3,9 +3,13 @@ export class Stack<T> extends Array {
     this.length = 0;
   }
 
+  pop (): T | undefined {
+    return super.pop()
+  }
+
   /** pop multiple values */
-  popN(n): Array<T> {
-    const items: Array<T> = [];
+  popN(n): Array<T | undefined> {
+    const items: Array<T | undefined> = [];
 
     for (let i = 0; i < n; i++) {
       const item = this.pop();

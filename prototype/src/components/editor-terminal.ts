@@ -13,7 +13,10 @@ export class EditorTerminal {
       try {
         this.interpreter.interpret(textInputEl.value);
       } catch (err) {
-        if (err instanceof Error) this.say('err: ' + err.message);
+        if (err instanceof Error) {
+          this.say('err: ' + err.message);
+          console.error(err);
+        }
       }
   
       this.say('stack> ' + this.interpreter.stack.map(a => a.lexeme).join(' '));

@@ -6,6 +6,7 @@ export abstract class Factor {
   constructor (lexeme: string) {
     this.lexeme = lexeme
   }
+
   abstract validate(stack: Stack<Factor>)
   abstract execute(stack: Stack<Factor>)
   _validate (stack: Stack<Factor>) {
@@ -44,7 +45,7 @@ export type Dictionary = Record<string, Factor>
 
 export interface IProgram {
   tokens: Array<Token>
-  term: Term
+  term: Array<Factor>
 }
 
-export type StackFn = (stack: Stack<Factor|Term|Literal>) => void;
+export type StackFn = (stack: Stack<Factor>) => void;

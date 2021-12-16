@@ -13,6 +13,7 @@ export class Interpretation {
   private program: IProgram
 
   constructor(program: IProgram) {
+    console.log(program);
     this.program = program;
   }
 
@@ -26,7 +27,7 @@ export class Interpretation {
 
   start(stack: Stack<Factor>) {
     this.stacks = [stack];
-
+    console.log(this.program.term);
     this.program.term.map((factor: Factor) => {
       factor.validate(this.stack);
       factor.execute(this.stack);
@@ -42,11 +43,14 @@ export class Interpreter {
 
   interpret (line: string): Interpretation {  
     const term = this.compiler.compile(line);
-    console.log('term:', term);
+    console.log('line:', line, 'term:', term);
     
     const interpretation = new Interpretation(term);
+
+    interpretation.start(this.stack);
+
     console.log('interpretation:', interpretation);
 
-    return interpretation.start(this.stack);
+    return interpretation;
   }
 }

@@ -1,4 +1,5 @@
-import { Factor, Literal, Term } from "../types";
+import { Token } from "../lexer";
+import { Factor, IProgram, Literal, Term } from "../types";
 
 export const True = new Literal('true', true);
 export const False = new Literal('false', false);
@@ -29,7 +30,19 @@ export class LiteralSet extends Literal {
 
 export class Quotation extends Literal {
   type = 'quotation'
-  constructor (arr: Array<Factor|Term>) {
-    super('[]', arr);
+  program: IProgram
+  constructor (program: IProgram) {
+    super('[]', program.term);
+    this.program = program
+    console.log('program', program);
+    this.render();
+  }
+  push(factor: Factor) {
+    this.program.term.push(factor)
+    this.value.push(factor);
+    this.render();
+  }
+  render() {
+    this.lexeme = '[' + this.program.term.map((t:Factor) => t.lexeme).join(', ') + ']';
   }
 }

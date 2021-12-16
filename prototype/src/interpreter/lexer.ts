@@ -21,7 +21,9 @@ export enum TokenType {
   IDENTIFIER = 'identifier',
   STRING = 'string',
   NUMBER = 'number',
-  EOF = '\0'
+  EOF = '\0',
+  QUOTATION = 'quotation',
+  ATOM = 'atom'
 }
 
 export const operatorTokens: Array<string> = [
@@ -149,6 +151,21 @@ export class Scanner {
     this.addToken(type);
   }
 
+  private quotation() {
+    while (this.peek() !== TokenType.RIGHT_BRACKET && !this.isAtEnd()) {
+      this.next();
+    }
+
+    if (this.isAtEnd()) {
+      throw new Error('unterminated quotation.');
+    }
+
+    // get the final right bracket
+    this.next();
+
+    this.addToken(TokenType.QUOTATION, this.source.trim());  
+  }
+
   private next() {
     return this.source.charAt(this.current++);
   }
@@ -181,8 +198,12 @@ export class Scanner {
         }
         break;
       case TokenType.SLASH: this.addToken(TokenType.SLASH, char); break;
-      case TokenType.LEFT_BRACKET: this.addToken(TokenType.LEFT_BRACKET, char); break;
-      case TokenType.RIGHT_BRACKET: this.addToken(TokenType.RIGHT_BRACKET, char); break;
+      case TokenType.LEFT_BRACKET: 
+        this.quotation(); 
+        break;
+      case TokenType.RIGHT_BRACKET:
+        this.quotation(); 
+        break;
       case TokenType.SEMICOLON: this.addToken(TokenType.SEMICOLON, char); break;
       case '=':
         if (this.match('=')) {
