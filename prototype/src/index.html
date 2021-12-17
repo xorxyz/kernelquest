@@ -15,11 +15,11 @@
     <main>
       
       <div id="tab_buttons" class="h2 w-100 flex mv1">
-        <button id="play_button" value="play" class="mr1 ph3 bl bt br flex items-center pointer">
-          🏰 Play
-        </button>
         <button id="edit_button" value="edit" class="mr1 ph3 bl bt br flex items-center pointer">
-          🐑 Edit
+          🐑 Editor
+        </button>
+        <button id="play_button" value="play" class="mr1 ph3 bl bt br flex items-center pointer">
+          🏰 Game
         </button>
       </div>
 
@@ -41,7 +41,7 @@
             </select>
             <select id="run_menu">
               <option value="run">-- Run --</option>
-              <option value="play">Play level</option>
+              <option value="play">▶️ Play level</option>
             </select>
             <input id="file_input" type="file" class="dn" accept=".json"/>
           </header>
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 ">
-            <div id="messages" class="h-100 flex flex-column ba w-100 white overflow-y-scroll" style="height: 12rem;">
+            <div id="messages" class="h-100 flex flex-column w-100 white overflow-y-scroll" style="height: 12rem;">
             </div>
             <div class="flex items-center w-100">
               <span class="ph2">anon@editor:$</span>
