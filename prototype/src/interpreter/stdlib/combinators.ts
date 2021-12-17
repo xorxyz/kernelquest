@@ -1,4 +1,6 @@
 import { Interpretation } from "../interpreter";
+import { Token, TokenType } from "../lexer";
+import { Factor, Literal } from "../types";
 import { Quotation } from "./literals";
 import { Operator } from "./operators";
 
@@ -28,10 +30,10 @@ export const i = new Combinator(['i', 'exec'], ['quotation'], stack => {
 });
 
 export const cons = new Combinator(['cons'], ['quotation', 'any'], stack => {
-  const thing = stack.pop();
+  const factor = stack.pop() as Literal;
   const quotation = stack.pop() as Quotation;
   
-  if (thing) quotation.push(thing);
+  if (factor) quotation.add(factor);
   stack.push(quotation);
 });
 
@@ -40,11 +42,18 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => 
   const list = stack.pop() as Quotation;
 
   const interpretation = new Interpretation(program.value);
+  const results = new Quotation();
 
   list.value.term.map(factor => {
     stack.push(factor);
     interpretation.run(stack);
+    const result = stack.pop();
+    if (result) {
+      results.add(result);
+    }
   });
+
+  stack.push(results);
 });
 
 const combinators = {};

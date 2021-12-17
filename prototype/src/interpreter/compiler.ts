@@ -1,5 +1,5 @@
-import { operatorTokens, Scanner, Token, TokenType } from "./lexer";
-import { Dictionary, Factor, IProgram } from "./types";
+import { Scanner, Token, TokenType } from "./lexer";
+import { Dictionary, Factor, IProgram, Literal, Term } from "./types";
 import literals, { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
 import operators from "./stdlib/operators";
 import combinators from "./stdlib/combinators";
@@ -12,66 +12,92 @@ export class Compiler {
     ...operators,
     ...combinators
   }
+  level = 0
 
-  compile(code: string, recursive?: boolean): IProgram {
+  compile(code: string): IProgram {
     console.log('compiling: ', code);
     const tokens = this.scanner.scan(code);
     console.log('got tokens:', tokens);
-    const term: Array<Factor> = tokens.reduce((arr: Array<Factor>, token: Token) => {
-      if (!token.lexeme) return arr;
-      console.log('token:', token);
-
-      if (typeof token.literal !== 'undefined') {
-        if (operatorTokens.includes(token.lexeme)) {
-          const factor = this.dict[token.lexeme];
-
-          if (!factor) throw new Error('factor not found: ' + token.lexeme);
-          arr.push(factor);
-          return arr;
-        } else if (token.type === TokenType.STRING) {
-          const literal = new LiteralString(token.literal as unknown as string);
-          arr.push(literal);
-          return arr;
-        } else if (token.type === TokenType.NUMBER) {
-          const literal = new LiteralNumber(token.literal as unknown as number);
-          arr.push(literal);
-          return arr;
-        } else if (token.type === TokenType.QUOTATION) {
-          if (recursive) throw new Error('only one level of recursion allowed');
-          if (!token.literal || typeof token.literal !== 'string') {
-            throw new Error('quotation missing token.literal');
-          }
-          const compiler = new Compiler();
-          console.log('compiler', compiler);
-          const program = compiler.compile(dequote(token.literal || '[]'), true);
-          console.log('program', program);
-          const literal = new Quotation(program);
-          console.log('literal', literal);
-          arr.push(literal);
-          return arr;
-        } else {
-          throw new Error('unhandled case oops');
-        }
-      } else {
-        console.log('token', token)
-        const factor = this.dict[token.lexeme];
-        console.log('token', token)
-        if (!factor) throw new Error('name not found: ' + token.lexeme)
-        arr.push(factor);
-        return arr
-      }
-    }, []);
+    const term: Array<Factor> = tokens.reduce(this.parseToken.bind(this), []);
+    this.level = 0;
 
     return { 
       tokens, 
       term
     };
   }
-}
 
-function dequote (quoted: string) {
-  console.log('quoted', quoted);
-  const dequoted = quoted.split('').slice(1).slice(0, -1).join('').trim();
-  console.log('dequoted', dequoted);
-  return dequoted
+  parseToken (term: Array<Factor>, token: Token, index: number): Term {
+    if (!token.lexeme) return term;
+
+    let literal: Literal
+    const previous = term[term.length - 1]
+  
+    console.log('parsing token: ', token);
+    console.log('level:', this.level);
+
+    if (Object.keys(this.dict).includes(token.lexeme)) {
+      const factor = this.dict[token.lexeme];
+
+      if (this.level > 0 && previous instanceof Quotation) {
+        console.log('adding token to quotation');
+        previous.push(token);
+      } else {
+        console.log('adding string to term');
+        term.push(factor);
+      }
+
+      return term;
+    }
+
+    switch (token.type) {
+      case TokenType.STRING: 
+        if (this.level > 0 && previous instanceof Quotation) {
+          console.log('adding token to quotation');
+          previous.push(token);
+        } else {
+          console.log('adding string to term');
+          literal = new LiteralString(token.literal as unknown as string);
+          term.push(literal);
+        }
+        break;
+      case TokenType.NUMBER: 
+        if (this.level > 0 && previous instanceof Quotation) {
+          console.log('adding token to quotation', token);
+          previous.push(token);
+        } else {
+          console.log('adding number to term');
+          literal = new LiteralNumber(token.literal as unknown as number);
+          term.push(literal);
+        }
+        break;
+      case TokenType.LEFT_BRACKET:
+        if (this.level > 0 && previous instanceof Quotation) {
+          console.log('adding token to quotation', token);
+          previous.push(token);
+        } else {
+          console.log('adding quotation to term');
+          literal = new Quotation();
+          term.push(literal);
+        }
+        this.level++;
+        break;
+      case TokenType.RIGHT_BRACKET:
+        if (this.level === 1 && previous instanceof Quotation) {
+          console.log('closing quotation');
+          this.level = 0;
+        } else if (previous instanceof Quotation) {
+          console.log('adding token to quotation', token);
+          previous.push(token);
+          this.level--;
+        } else {
+          throw new Error('unhandled right bracket case');
+        }
+        break;
+      default:
+        throw new Error(`unrecognized token type: '${token.type}'`);
+    }
+
+    return term;
+  }
 }

@@ -3,6 +3,7 @@ import { Token } from "./lexer";
 
 export abstract class Factor {
   lexeme: string
+  value?: any;
   constructor (lexeme: string) {
     this.lexeme = lexeme
   }

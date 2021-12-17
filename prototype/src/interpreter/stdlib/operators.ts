@@ -15,9 +15,11 @@ export class Operator extends Factor {
   }
 
   validate (stack: Stack<Factor>) {
+    if (!this.signature.length) return;
+ 
     if (this.signature.length > stack.length) {
       throw new Error(
-        'missing operand(s), expected ' + this.signature.join(', ')
+        `missing operand(s), expected [${this.signature.join(' ')}]`
       );
     }
 
@@ -96,12 +98,15 @@ export const cat = new Operator(['cat'], ['string', 'string'], stack => {
   stack.push(new LiteralString(a.value + b.value));
 });
 
+export const clear = new Operator(['clear'], [], stack => {
+  stack.popN(stack.length);
+});
 
 const operators = {};
 
 [
   sum, difference, product, division,
-  dup, swap, drop, cat
+  dup, swap, drop, cat, clear
 ].forEach(operator => {
   operator.aliases.forEach(alias => {
     operators[alias] = operator;
