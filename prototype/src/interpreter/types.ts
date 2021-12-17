@@ -18,7 +18,6 @@ export abstract class Factor {
   }
 }
 
-
 export class Literal extends Factor {
   value: any
   type: string

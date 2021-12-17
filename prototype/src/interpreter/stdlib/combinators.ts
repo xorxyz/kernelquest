@@ -1,7 +1,7 @@
 import { Interpretation } from "../interpreter";
 import { Token, TokenType } from "../lexer";
 import { Factor, Literal } from "../types";
-import { Quotation } from "./literals";
+import { LiteralNumber, LiteralRef, Quotation } from "./literals";
 import { Operator } from "./operators";
 
 export class Combinator extends Operator {}
@@ -56,9 +56,39 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => 
   stack.push(results);
 });
 
+
+export const ref = new Operator(['ref'], ['number', 'number'], stack => {
+  const y = stack.pop() as LiteralNumber;
+  const x = stack.pop() as LiteralNumber;
+  const ref = new LiteralRef(x.value, y.value);
+  ref.render('cell');
+  stack.push(ref);
+});
+
+export const struct = new Operator(['struct'], ['ref', 'number', 'number'], stack => {
+  stack.pop() as LiteralNumber;
+  stack.pop() as LiteralNumber;
+  stack.pop() as LiteralRef;
+
+  const ref = new LiteralRef(0, 0);
+  ref.render('struct')
+  stack.push(ref);
+});
+
+export const route = new Operator(['route'], ['ref', 'ref'], stack => {
+  stack.pop() as LiteralRef;
+  stack.pop() as LiteralRef;
+  const ref = new LiteralRef(0, 0);
+  ref.render('route');
+  stack.push(ref);
+});
+
 const combinators = {};
 
-[concat, i, cons, map].forEach(combinator => {
+[
+  concat, i, cons, map,
+  ref, struct, route  
+].forEach(combinator => {
   combinator.aliases.forEach(alias => {
     combinators[alias] = combinator;
   })

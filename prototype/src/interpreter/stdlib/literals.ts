@@ -1,12 +1,25 @@
+declare global  {
+  interface ProxyConstructor {
+      new <TSource extends object, TTarget extends object>(target: TSource, handler: ProxyHandler<TSource>): TTarget;
+  }
+}
+
 import { Compiler } from "../compiler";
 import { Token, TokenType } from "../lexer";
 import { Factor, IProgram, Literal } from "../types";
+import { Vector } from "../../../../lib/math";
 
-export const True = new Literal('true', true);
-export const False = new Literal('false', false);
+export class LiteralTruth extends Literal {
+  lexeme: string
+  value: Boolean
+  type = 'truth'
+  constructor (value: Boolean) {
+    super(String(value), value);
+  }
+}
 
-True.type = 'truth';
-False.type = 'truth';
+const t = new LiteralTruth(true);
+const f = new LiteralTruth(false);
 
 export class LiteralNumber extends Literal {
   type = 'number'
@@ -81,9 +94,30 @@ export class Quotation extends Literal {
   }
 }
 
+export class LiteralRef extends Literal {
+  type = 'ref'
+  value: typeof Proxy
+  constructor (x: number, y: number, handler?: ProxyHandler<any>) {
+    super(`ref<xy>`, new Proxy(new Vector(x,y), handler || {}))
+  }
+
+  render (str) {
+    this.lexeme = `ref<${str}>`;
+  }
+}
+
+export class Direction extends Literal {
+  value: Vector
+}
+
+const north = new Direction('north', new Vector(0, -1));
+const east = new Direction('east', new Vector(1, 0));
+const south = new Direction('south', new Vector(0, 1));
+const west = new Direction('west', new Vector(-1, 0));
+
 const literals = {};
 
-[True, False].forEach((literal) => {
+[t, f, north, east, south, west].forEach((literal) => {
   literals[literal.lexeme] = literal;
 })
 

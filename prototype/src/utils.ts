@@ -1,1 +1,1 @@
-export const debug = console.log;
+export const debug = console.log.bind(console);

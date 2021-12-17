@@ -4,6 +4,7 @@ import { Palette } from "./components/palette";
 import { debug } from "./utils";
 import { Tabs } from "./components/tabs";
 import { EditorTerminal } from './components/editor-terminal';
+import { AudioPlayer } from "./components/audio-player";
 
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;
@@ -12,21 +13,25 @@ window.document.addEventListener('DOMContentLoaded', e => {
   const fileInputEl = document.getElementById('file_input') as HTMLInputElement;
   
   const tabButtons = document.getElementById('tab_buttons') as HTMLDivElement;
-  const playButton = document.getElementById('play_button') as HTMLButtonElement;
-  const editButton = document.getElementById('edit_button') as HTMLButtonElement;
+  const editorTabButton = document.getElementById('editor_tab_button') as HTMLButtonElement;
+  const gameTabButton = document.getElementById('game_tab_button') as HTMLButtonElement;
   const tabsEl = document.getElementById('tabs') as HTMLDivElement;
 
   const messagesEl = document.getElementById('messages') as HTMLInputElement;
   const textInputEl = document.getElementById('text_input') as HTMLInputElement;
+
+  const mutedButtonEl = document.getElementById('mute_button') as HTMLButtonElement;
+  const audioEl = document.getElementById('audio_player') as HTMLAudioElement;
 
   const tabs = new Tabs(tabsEl, tabButtons)
   const grid = new Grid(gridEl, 16, 10);
   const palette = new Palette(paletteEl);
 
   new EditorTerminal(textInputEl, messagesEl);
+  new AudioPlayer(mutedButtonEl, audioEl);
 
-  playButton.addEventListener('click', () => tabs.select('play'));
-  editButton.addEventListener('click', () => tabs.select('edit'));
+  editorTabButton.addEventListener('click', () => tabs.select('edit'));
+  gameTabButton.addEventListener('click', () => tabs.select('play'));
 
   new FileManager(fileMenuEl, fileInputEl, grid);
 
@@ -48,4 +53,3 @@ window.document.addEventListener('DOMContentLoaded', e => {
 
   palette.update();
 });
-

@@ -8,7 +8,7 @@ export class EditorTerminal {
     this.interpreter = new Interpreter();
 
     textInputEl.addEventListener('change', async () => {
-      this.say('anon@editor:$ ' + textInputEl.value);
+      this.say('$ ' + textInputEl.value);
 
       try {
         this.interpreter.interpret(textInputEl.value);
