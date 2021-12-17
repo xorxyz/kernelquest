@@ -69,16 +69,23 @@
         </div>
       </div>
 
-    <div id="music_player">
-      <button id="mute_button" class="mv1">🔇 Music is muted</button>
-      <audio 
-        preload autoplay loop hidden muted
-        id="audio_player"
-        class="ma2"
-        src="https://www.kernel.quest/music/village.wav">
-        <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
-        <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
-      </audio>
+    <div class="flex justify-between items-center w-100">
+      <div id="music_player">
+        <button id="mute_button" class="mv1">🔇 Music is muted</button>
+        <audio 
+          preload autoplay loop hidden muted
+          id="audio_player"
+          class="ma2"
+          src="https://www.kernel.quest/music/village.wav">
+          <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
+          <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
+        </audio>
+      </div>
+      <div class="gray f7 mv1 tr">
+        <span>Copyright 2019-2022 Jonathan Dupré. All rights reserved</span>
+        <br>
+        <span id="version"></span>
+      </div>
     </div>
     </main>
   </body>
