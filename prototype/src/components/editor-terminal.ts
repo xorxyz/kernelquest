@@ -8,7 +8,7 @@ export class EditorTerminal {
     this.interpreter = new Interpreter();
 
     textInputEl.addEventListener('change', async () => {
-      this.say(textInputEl.value);
+      this.say('anon@editor:$ ' + textInputEl.value);
 
       try {
         this.interpreter.interpret(textInputEl.value);
@@ -33,7 +33,6 @@ export class EditorTerminal {
     this.messagesEl.appendChild(lineEl);
 
     (this.messagesEl).scrollTo({
-      // behavior: 'smooth',
       top: this.messagesEl.scrollHeight
     })
   }

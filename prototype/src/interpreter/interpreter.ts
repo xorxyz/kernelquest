@@ -25,7 +25,7 @@ export class Interpretation {
     this.stacks[this.level] = s;
   }
 
-  start(stack: Stack<Factor>) {
+  run(stack: Stack<Factor>) {
     this.stacks = [stack];
     console.log(this.program.term);
     this.program.term.map((factor: Factor) => {
@@ -47,7 +47,7 @@ export class Interpreter {
     
     const interpretation = new Interpretation(term);
 
-    interpretation.start(this.stack);
+    interpretation.run(this.stack);
 
     console.log('interpretation:', interpretation);
 

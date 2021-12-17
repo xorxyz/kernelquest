@@ -23,6 +23,7 @@ export class LiteralString extends Literal {
 
 export class LiteralSet extends Literal {
   type = 'set'
+  value: Set<Literal>
   constructor (set: Set<Literal>) {
     super('{}', set);
   }
@@ -30,18 +31,25 @@ export class LiteralSet extends Literal {
 
 export class Quotation extends Literal {
   type = 'quotation'
-  program: IProgram
+  value: IProgram
   constructor (program: IProgram) {
     super('[]', program.term);
-    this.program = program
+    this.value = program
     this.render();
   }
   push(factor: Factor) {
-    this.program.term.push(factor);
+    this.value.term.push(factor);
     this.render();
   }
   render() {
-    this.lexeme = '[' + this.program.term.map((t:Factor) => t.lexeme).join(', ') + ']';
-    this.value = this.program.term;
+    this.lexeme = '[' + this.value.term.map((t:Factor) => t.lexeme).join(' ') + ']';
   }
 }
+
+const literals = {};
+
+[True, False].forEach((literal) => {
+  literals[literal.lexeme] = literal;
+})
+
+export default literals;

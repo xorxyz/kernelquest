@@ -1,6 +1,6 @@
 import { operatorTokens, Scanner, Token, TokenType } from "./lexer";
 import { Dictionary, Factor, IProgram } from "./types";
-import { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
+import literals, { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
 import operators from "./stdlib/operators";
 import combinators from "./stdlib/combinators";
 
@@ -8,6 +8,7 @@ export class Compiler {
   private scanner = new Scanner()
   tokens: Array<Token>
   dict: Dictionary = {
+    ...literals,
     ...operators,
     ...combinators
   }
@@ -55,7 +56,7 @@ export class Compiler {
         console.log('token', token)
         const factor = this.dict[token.lexeme];
         console.log('token', token)
-        if (!factor) throw new Error('factor not found: ' + token.lexeme)
+        if (!factor) throw new Error('name not found: ' + token.lexeme)
         arr.push(factor);
         return arr
       }
