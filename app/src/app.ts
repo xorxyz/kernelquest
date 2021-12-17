@@ -7,6 +7,8 @@ import { EditorTerminal } from './components/editor-terminal';
 import { AudioPlayer } from "./components/audio-player";
 import game from "./game";
 
+const { version } = require('../package.json')
+
 game.engine.start();
 
 window.document.addEventListener('DOMContentLoaded', e => {
@@ -25,6 +27,10 @@ window.document.addEventListener('DOMContentLoaded', e => {
 
   const mutedButtonEl = document.getElementById('mute_button') as HTMLButtonElement;
   const audioEl = document.getElementById('audio_player') as HTMLAudioElement;
+
+  const versionEl = document.getElementById('version') as HTMLSpanElement;
+
+  versionEl.innerText = ('XOR v' + String(version));
 
   const tabs = new Tabs(tabsEl, tabButtons)
   const grid = new Grid(gridEl, 16, 10);
