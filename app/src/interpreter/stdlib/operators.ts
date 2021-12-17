@@ -1,6 +1,6 @@
 import { Stack } from "../../../../lib/stack";
 import { Factor, Literal, StackFn } from "../types";
-import { LiteralNumber, LiteralRef, LiteralString, LiteralXY } from "./literals";
+import { LiteralNumber, LiteralRef, LiteralString } from "./literals";
 
 export class Operator extends Factor {
   signature: Array<string>
