@@ -5,6 +5,9 @@ import { debug } from "./utils";
 import { Tabs } from "./components/tabs";
 import { EditorTerminal } from './components/editor-terminal';
 import { AudioPlayer } from "./components/audio-player";
+import game from "./game";
+
+game.engine.start();
 
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;

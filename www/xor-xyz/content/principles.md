@@ -7,4 +7,4 @@
 1. Co-creation
 1. Avoid the trap of a “one size fits all” approach
 1. Build into the games opportunities to accommodate a variety of player proclivities and preferences when it comes to curiosity and uncertainty.
-1. learn by doing
+1. Learn by doing

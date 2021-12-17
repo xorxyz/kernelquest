@@ -1,9 +1,8 @@
-import { threadId } from 'worker_threads';
 import { Vector } from '../../lib/math';
 import { Terminal } from '../ui/terminal';
 import { Agent, AgentType, Critter, NPC } from './agents';
 import { bounds, Keys } from './constants';
-import { Item, Thing } from './things';
+import { Equipment, Item, Thing } from './things';
 import { Room } from './world';
 
 export abstract class ActionResult {}
@@ -13,7 +12,7 @@ export class ActionFailure extends ActionResult {}
 export abstract class Action {
   abstract cost: number
   private context: Room | null = null
-  private subject: Agent | null = null
+  private subject: Agent | null = null
   private object: Agent | Thing | null = null
   abstract perform(context: Room, subject: Agent): ActionResult
 
@@ -147,7 +146,9 @@ export class GetAction extends Action {
     if (cell.items.peek()) {
       const item = cell.items.pop();
       console.log('item', item);
-      agent.holding = item;
+      if (item instanceof Item) {
+        agent.holding = item;
+      }
       return new ActionSuccess();
     }
 

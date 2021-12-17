@@ -21,7 +21,7 @@ export abstract class AgentType {
 
 export class Agent {
   cycle: number = 0
-  name: string
+  name: string = ''
   type: AgentType
   room: Room
   cell: Cell

@@ -1,11 +1,23 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { Action, BackStepAction, GetAction, MoveCursorAction, MoveCursorToAction, PutAction, RotateAction, SelectCellAction, SpawnAction, StepAction, SwitchModeAction, TerminalAction } from '../engine/actions';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
-import Connection from '../server/connection';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
+import { 
+  Action, 
+  BackStepAction, 
+  GetAction, 
+  MoveCursorAction, 
+  MoveCursorToAction, 
+  PutAction, 
+  RotateAction, 
+  SelectCellAction, 
+  StepAction, 
+  SwitchModeAction, 
+  TerminalAction
+} from '../engine/actions';
+import { Hero } from '../engine/agents';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -18,9 +30,14 @@ export interface IState {
 
 const host = process.env.HOST || 'localhost:3000';
 
+export interface IConnection {
+  write: (str: string) => void
+  player: Hero
+}
+
 export class Terminal {
   id: number
-  connection: Connection
+  connection: IConnection
   cursorPosition: Vector = new Vector()
   state: IState
   lineEditor: Editor = new Editor()
@@ -35,17 +52,15 @@ export class Terminal {
     return this.connection.player;
   }
 
-  constructor(id: number, connection: Connection) {
-    this.id = id;
+  constructor(connection: IConnection) {
     this.connection = connection;
-    this.cursorPosition.copy(connection.player.position);
     this.view = new MainView()
     this.state = {
       termMode: true,
       prompt: '$ ',
       line: '',
       stdout: [
-        `xor/tcp (${host}) (tty${id})`,
+        `xor/tcp (${host})`,
         '',
         'login: guest',
         'password:',
@@ -63,6 +78,10 @@ export class Terminal {
     this.render();
   }
 
+  disconnect () {
+    console.log('TODO')
+  }
+
   switchModes() {
     // return // disable for now
     this.state.termMode = !this.state.termMode;
@@ -76,7 +95,7 @@ export class Terminal {
 
     if (str === Signals.SIGINT) {
       console.log('received sigint!')
-      return this.connection.disconnect();
+      return this.disconnect();
     }
 
     if (this.state.termMode) {
@@ -215,17 +234,17 @@ export class Terminal {
   }
 
   render() {
-    if (!this.connection.socket) return;
+    if (!this.connection) return;
 
     const output = this.view.compile(this);
 
-    this.connection.socket.write(output);
+    this.connection.write(output);
 
     this.drawCursor();
   }
 
   drawCursor() {
-    if (!this.connection.socket) return;
+    if (!this.connection) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 
     const cursorUpdate = this.state.termMode
@@ -238,11 +257,6 @@ export class Terminal {
         this.view.components.room.position.y + this.cursorPosition.y,
       ));
 
-    this.connection.socket.write(cursorUpdate);
+    this.connection.write(cursorUpdate);
   }
-}
-
-function sleep (t: number) {
-  return new Promise((resolve) => 
-    setTimeout(() => resolve(null), t));
 }
