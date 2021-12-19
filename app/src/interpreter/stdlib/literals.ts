@@ -59,14 +59,6 @@ export class Quotation extends Literal {
     this.value.push(factor);
   }
 
-  addToken (token: Token) {
-    const compiler = new Compiler();
-    const term = compiler.compile(token.lexeme);
-    term.forEach(factor => {
-      this.add(factor);
-    })
-  }
-
   toString () {
     return `[${this.value.map(f => f.toString()).join(' ')}]`
   }

@@ -87,6 +87,26 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => 
   stack.push(results);
 });
 
+// [C] [B] [A] -> B || A
+export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], stack => {
+  const a = stack.pop() as Quotation;
+  const b = stack.pop() as Quotation;
+  const c = stack.pop() as Quotation;
+
+  const test = new Interpretation(c.value);
+  test.run(stack);
+  const tested = stack.pop();
+
+  console.log('tested value:', tested?.value);
+
+  const term = tested && tested.value
+    ? b.value
+    : a.value;
+
+  const interpretation = new Interpretation(term);
+  interpretation.run(stack);
+});
+
 export const ref = new Operator(['ref'], ['number', 'number'], stack => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
@@ -115,7 +135,7 @@ const combinators = {};
 [
   concat, cons, unit, 
   i, dip,
-  map,
+  map, ifte,
   ref, struct, route  
 ].forEach(combinator => {
   combinator.aliases.forEach(alias => {

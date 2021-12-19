@@ -20,83 +20,82 @@ export class Compiler {
     const tokens = this.scanner.scan(code);
     debug('got tokens:', tokens);
     const term: Array<Factor> = tokens.reduce(this.parseToken.bind(this), []);
-    this.level = 0;
+    if (this.level !== 0) {
+      console.log('this.level', this.level);
+      this.level = 0;
+      throw new Error('unbalanced brackets');
+    }
 
     return term;
   }
 
-  parseToken (term: Array<Factor>, token: Token, index: number): Term {
+  parseToken (term: Array<Factor>, token: Token): Term {
     if (!token.lexeme) return term;
 
-    let literal: Literal
-    const previous = term[term.length - 1]
+    let factor: Factor | undefined;
+    let previous = term[term.length - 1];
   
     debug('parsing token: ', token);
-    debug('level:', this.level);
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
-      const factor = this.dict[token.lexeme];
+      factor = this.dict[token.lexeme];
 
       if (this.level > 0 && previous instanceof Quotation) {
         debug('adding token to quotation');
-        previous.addToken(token);
+        previous.add(factor);
       } else {
         debug('adding string to term');
         term.push(factor);
       }
-
-      return term;
     }
+
+    console.log('factor?', factor)
 
     switch (token.type) {
       case TokenType.STRING: 
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation');
-          previous.addToken(token);
+          previous.add(new LiteralString(token.lexeme));
         } else {
           debug('adding string to term');
-          literal = new LiteralString(token.literal as unknown as string);
-          term.push(literal);
+          factor = new LiteralString(token.literal as unknown as string);
         }
         break;
       case TokenType.NUMBER: 
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation', token);
-          previous.addToken(token);
+          previous.add(new LiteralNumber(Number(token.lexeme)));
         } else {
           debug('adding number to term');
-          literal = new LiteralNumber(token.literal as unknown as number);
-          term.push(literal);
+          factor = new LiteralNumber(token.literal as unknown as number);
         }
         break;
       case TokenType.LEFT_BRACKET:
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation', token);
-          previous.addToken(token);
+          previous.add(new Quotation());
         } else {
           debug('adding quotation to term');
-          literal = new Quotation();
-          term.push(literal);
+          factor = new Quotation();
         }
         this.level++;
         break;
       case TokenType.RIGHT_BRACKET:
-        if (this.level === 1 && previous instanceof Quotation) {
-          debug('closing quotation');
-          this.level = 0;
-        } else if (previous instanceof Quotation) {
-          debug('adding token to quotation', token);
-          previous.addToken(token);
-          this.level--;
-        } else {
-          throw new Error('unhandled right bracket case');
-        }
+        console.log('TERM', term);
+        this.level--;
         break;
       case TokenType.IDENTIFIER:
-        throw new Error(`'${token.lexeme}' is not a recognized word`);
+        if (!factor) {
+          throw new Error(`'${token.lexeme}' is not a recognized word`);
+        }
+        break;
       default:
         throw new Error(`unrecognized token type: '${token.type}'`);
     }
+
+    if (factor) term.push(factor);
+    
+    debug('now at level:', this.level);
 
     return term;
   }

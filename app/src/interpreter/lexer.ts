@@ -176,8 +176,12 @@ export class Scanner {
         }
         break;
       case TokenType.SLASH: this.addToken(TokenType.SLASH, char); break;
-      case TokenType.LEFT_BRACKET: this.addToken(TokenType.LEFT_BRACKET, char); break;
-      case TokenType.RIGHT_BRACKET: this.addToken(TokenType.RIGHT_BRACKET, char); break;
+      case TokenType.LEFT_BRACKET: 
+        this.addToken(TokenType.LEFT_BRACKET, char);
+        break;
+      case TokenType.RIGHT_BRACKET: 
+        this.addToken(TokenType.RIGHT_BRACKET, char); 
+        break;
       case TokenType.SEMICOLON: this.addToken(TokenType.SEMICOLON, char); break;
       case '=':
         if (this.match('=')) {
@@ -185,6 +189,8 @@ export class Scanner {
         } else {
           throw new Error('single \'=\' is illegal');
         }
+        break;
+      case ' ':
         break;
       default: {
         if (isDigit(char)) {
