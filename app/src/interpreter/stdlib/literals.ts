@@ -1,6 +1,6 @@
 declare global  {
   interface ProxyConstructor {
-      new <TSource extends object, TTarget extends object>(target: TSource, handler: ProxyHandler<TSource>): TTarget;
+    new <TSource extends object, TTarget extends object>(target: TSource, handler: ProxyHandler<TSource>): TTarget;
   }
 }
 
@@ -52,22 +52,10 @@ export class Quotation extends Literal {
   }
 
   add (factor: Factor) {
-    const dict = {
-      LiteralNumber: TokenType.NUMBER,
-      LiteralString: TokenType.STRING,
-      Quotation: TokenType.QUOTATION
-    }
-    
-    const ctorName = Object.getPrototypeOf(factor).constructor.name;
-    const tokenType = dict[ctorName];
-
-    if (!tokenType) {
-      throw new Error(`token type not found for ctor: '${ctorName}'`)
-    }
-
-    this.push(
-      new Token(tokenType, factor.lexeme, factor.value, 0)
-    );
+    this.value.term.push(factor);
+    this.push(new Token(TokenType.ATOM, factor.lexeme, factor.value, 0));
+    this.compile();
+    this.render();
   }
 
   push(token: Token) {
@@ -101,7 +89,7 @@ export class LiteralRef extends Literal {
     super(`ref<xy>`, new Proxy(new Vector(x,y), handler || {}))
   }
 
-  render (str) {
+  render (str: string) {
     this.lexeme = `ref<${str}>`;
   }
 }

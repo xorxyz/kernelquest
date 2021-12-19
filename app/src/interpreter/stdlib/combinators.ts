@@ -1,6 +1,5 @@
+import { debug } from "../../utils";
 import { Interpretation } from "../interpreter";
-import { Token, TokenType } from "../lexer";
-import { Factor, Literal } from "../types";
 import { LiteralNumber, LiteralRef, Quotation } from "./literals";
 import { Operator } from "./operators";
 
@@ -16,6 +15,31 @@ export const concat = new Combinator(['concat'], ['quotation', 'quotation'], sta
   }));
 });
 
+// [b] [a] -> [[b] a]
+export const cons = new Combinator(['cons'], ['quotation', 'quotation'], stack => {
+  const a = stack.pop() as Quotation;
+  const b = stack.pop() as Quotation;
+
+  const next = new Quotation();
+
+  next.add(b);
+  a.value.term.forEach(factor => {
+    debug('factor', factor);
+    next.add(factor)
+  });
+  
+  stack.push(next);
+});
+
+// [a] -> [[a]]
+export const unit = new Combinator(['unit'], ['quotation'], stack => {
+  const a = stack.pop() as Quotation;
+  const next = new Quotation();
+
+  next.add(a);
+  stack.push(next);
+});
+
 export const i = new Combinator(['i', 'exec'], ['quotation'], stack => {
   const program = stack.pop() as Quotation;
   
@@ -29,12 +53,21 @@ export const i = new Combinator(['i', 'exec'], ['quotation'], stack => {
   }
 });
 
-export const cons = new Combinator(['cons'], ['quotation', 'any'], stack => {
-  const factor = stack.pop() as Literal;
-  const quotation = stack.pop() as Quotation;
+// [B] [A] -> A [B]
+export const dip = new Combinator(['dip'], ['quotation', 'quotation'], stack => {
+  const a = stack.pop() as Quotation;
+  const b = stack.pop() as Quotation;
   
-  if (factor) quotation.add(factor);
-  stack.push(quotation);
+  const interpretation = new Interpretation(a.value);
+
+  try {
+    interpretation.run(stack);
+    stack.push(b);
+  } catch (err) {
+    stack.push(a);
+    stack.push(b);
+    throw err;
+  }
 });
 
 export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => {
@@ -55,7 +88,6 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => 
 
   stack.push(results);
 });
-
 
 export const ref = new Operator(['ref'], ['number', 'number'], stack => {
   const y = stack.pop() as LiteralNumber;
@@ -86,7 +118,9 @@ export const route = new Operator(['route'], ['ref', 'ref'], stack => {
 const combinators = {};
 
 [
-  concat, i, cons, map,
+  concat, cons, unit, 
+  i, dip,
+  map,
   ref, struct, route  
 ].forEach(combinator => {
   combinator.aliases.forEach(alias => {

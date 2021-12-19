@@ -1,5 +1,4 @@
 import { StandardGlyphs } from "../constants";
-import { debug } from "../utils";
 
 declare global {
   interface Window {

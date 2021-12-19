@@ -1,4 +1,7 @@
 import EventEmitter from "events"
+import { Tree } from "../../../game/engine/things"
+import { Room } from "../../../game/engine/world"
+import { Vector } from "../../../lib/math"
 import { Styles } from "../constants"
 
 export type CellExport = {
@@ -8,17 +11,15 @@ export type CellExport = {
 }
 
 export class Cell extends EventEmitter {
-  x: number
-  y: number
+  vector: Vector
   glyph: string
   readonly el: HTMLElement
   defaultClassList = 'w2 h2 ba flex items-center justify-center monospace'
 
-  constructor (x, y) {
+  constructor (x: number, y: number) {
     super();
 
-    this.x = x;
-    this.y = y;
+    this.vector = new Vector(x, y);
     this.el = document.createElement('div');
     this.setGlyph('..');
 
@@ -44,6 +45,17 @@ export class Cell extends EventEmitter {
     return cell;
   }
 
+  render (room: Room) {
+    const gameCell = room.cellAt(this.vector);
+    const glyph = ( 
+      gameCell.agents.peek()?.type.appearance || 
+      gameCell.items.peek()?.appearance || 
+      (gameCell.owner?.holding?.appearance) || 
+      '..'
+    );
+    this.el.innerText = glyph;
+  }
+
   setGlyph (glyph: string) {
     this.glyph = glyph;
     this.el.innerText = glyph;
@@ -57,8 +69,8 @@ export class Cell extends EventEmitter {
 
   toJSON (): CellExport {
     return {
-      x: this.x,
-      y: this.y,
+      x: this.vector.x,
+      y: this.vector.y,
       glyph: this.glyph
     }
   }

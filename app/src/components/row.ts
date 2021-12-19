@@ -1,4 +1,6 @@
 import EventEmitter from "events";
+import { Tree } from "../../../game/engine/things";
+import { Room } from "../../../game/engine/world";
 import { Cell, CellExport } from "./cell";
 
 export type RowExport = {
@@ -7,40 +9,57 @@ export type RowExport = {
 }
 
 export class Row extends EventEmitter {
-  w
-  y
+  width: number
+  y: number
   cells: Array<Cell>
-  el
+  el: HTMLElement
+  room: Room
 
-  constructor (w, y) {
+  constructor (width: number, y: number, room: Room) {
     super();
-    this.w = w;
+
+    this.width = width;
     this.y = y;
     this.el = document.createElement('div');
     this.el.className = 'flex';
+    this.room = room;
     this.reset();
   }
 
   reset () {
-    this.cells = Array(this.w).fill(0).map((_, x) => new Cell(x, this.y));
+    this.cells = Array(this.width).fill(0).map((_, x) => {
+      const cell = new Cell(x, this.y);
+
+      cell.on('cell:click', e => {
+        this.emit('cell:click', e);
+
+        const isInEditMode = true;
+        if (isInEditMode) {
+          const tree = new Tree();
+          const gameCell = this.room.cellAt(cell.vector);
+          gameCell.items.push(tree);
+        }
+      });
+
+      cell.on('cell:right-click', e => {
+        this.emit('cell:right-click', e);
+      });
+
+      return cell;
+    });
     this.render();
   }
 
   render () {
     this.el.innerHTML = '';
     this.cells.forEach((cell) => {
+      cell.render(this.room);
       this.el.appendChild(cell.el);
-      cell.on('cell:click', e => {
-        this.emit('cell:click', e);
-      });
-      cell.on('cell:right-click', e => {
-        this.emit('cell:right-click', e);
-      });
     });
   }
 
-  static fromJSON (obj: RowExport) {
-    const row = new Row(obj.cells.length, obj.y);
+  static fromJSON (obj: RowExport, room: Room) {
+    const row = new Row(obj.cells.length, obj.y, room);
 
     row.cells = row.cells.map((_, i) => {
       return Cell.fromJSON(obj.cells[i]);
