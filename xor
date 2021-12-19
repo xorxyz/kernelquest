@@ -1,7 +1,0 @@
-#!/bin/sh
-
-XOR_DIR=$(cd -- "$(dirname "$0")" && pwd -P)
-SCRIPT="$1"
-
-if [ "$SCRIPT" = "" ]; then SCRIPT="play"; fi
-export XOR_DIR && sh "$XOR_DIR/bin/$SCRIPT" "$@"

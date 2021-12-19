@@ -1,0 +1,21 @@
+{
+  "name": "xor4-server",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'"
+  },
+  "author": "Jonathan Dupré <jonathan@diagonal.sh>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^13.13.40",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
