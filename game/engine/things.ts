@@ -1,6 +1,6 @@
 import { Colors, Style } from '../../lib/esc';
 import { Vector, Points } from '../../lib/math';
-import { Char, DataType, IProgram, List, Ref, Transform } from './language';
+import { DataType, IProgram, List, Transform } from '../../_deprecated/files/language';
 import { Room } from './world';
 
 export class Durability extends Points {}

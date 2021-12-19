@@ -1,15 +1,20 @@
-import { FileManager } from "./components/file-manager";
-import { Grid } from "./components/grid";
-import { Palette } from "./components/palette";
 import { debug } from "./utils";
-import { Tabs } from "./components/tabs";
-import { EditorTerminal } from './components/editor-terminal';
-import { AudioPlayer } from "./components/audio-player";
-import game from "./game";
+import { Tabs } from "./layout/tabs";
+import { AudioPlayer } from "./layout/audio-player";
+import { Engine } from '../../game/engine';
+import { World } from '../../game/engine/world';
+import { Grid } from "./editor/grid";
+import { Palette } from "./editor/palette";
+import { Cell } from "./editor/cell";
+import { EditorTerminal } from "./editor/terminal";
+import { FileManager } from "./editor/file-manager";
 
 const { version } = require('../package.json')
-
-game.engine.start();
+const world = new World();
+const engine = new Engine({ world });
+const game = {
+  engine
+}
 
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;
@@ -30,24 +35,15 @@ window.document.addEventListener('DOMContentLoaded', e => {
 
   const versionEl = document.getElementById('version') as HTMLSpanElement;
 
-  versionEl.innerText = ('XOR v' + String(version));
-
   const tabs = new Tabs(tabsEl, tabButtons)
-  const grid = new Grid(gridEl, 16, 10);
+  const grid = new Grid(gridEl, game.engine);
   const palette = new Palette(paletteEl);
-
-  new EditorTerminal(textInputEl, messagesEl);
-  new AudioPlayer(mutedButtonEl, audioEl);
-
-  editorTabButton.addEventListener('click', () => tabs.select('edit'));
-  gameTabButton.addEventListener('click', () => tabs.select('play'));
-
-  new FileManager(fileMenuEl, fileInputEl, grid);
 
   grid.on('cell:click', e => {
     debug('clicked a cell', e);
-    const glyph = e.cell.glyph === palette.selected ? '..' : palette.selected;
-    e.cell.setGlyph(glyph);
+    (e.cell as Cell).render(grid.room);
+    // const glyph = e.cell.glyph === palette.selected ? '..' : palette.selected;
+    // e.cell.setGlyph(glyph);
   });
 
   grid.on('cell:right-click', e => {
@@ -56,9 +52,16 @@ window.document.addEventListener('DOMContentLoaded', e => {
     palette.update();
   });
 
-  grid.rows.forEach((row) => {
-    gridEl?.appendChild(row.el);
-  });
+  new EditorTerminal(textInputEl, messagesEl);
+  new AudioPlayer(mutedButtonEl, audioEl);
+  new FileManager(fileMenuEl, fileInputEl, grid);
+
+  editorTabButton.addEventListener('click', () => tabs.select('edit'));
+  gameTabButton.addEventListener('click', () => tabs.select('play'));
 
   palette.update();
+
+  versionEl.innerText = ('XOR alpha v' + String(version));
+
+  textInputEl.focus();
 });

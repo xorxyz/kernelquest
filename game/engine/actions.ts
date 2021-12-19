@@ -1,7 +1,7 @@
 import { Vector } from '../../lib/math';
 import { Terminal } from '../ui/terminal';
 import { Agent, AgentType, Critter, NPC } from './agents';
-import { bounds, Keys } from './constants';
+import { bounds, Keys } from '../constants';
 import { Equipment, Item, Thing } from './things';
 import { Room } from './world';
 

@@ -1,5 +1,5 @@
 import { Vector } from '../../lib/math';
-import { Keys } from '../engine/constants';
+import { Keys } from '../constants';
 import { LINE_LENGTH } from './components';
 
 export class Editor {

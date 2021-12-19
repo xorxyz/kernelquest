@@ -7,31 +7,68 @@
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap">
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
     <script type="module" src="app.ts"></script>
     <title>xor4 prototype</title>
   </head>
-  <body class="flex w-100 vh-100 items-center justify-center flex-column">
-    <main>
-      
-      <div id="tab_buttons" class="h2 w-100 flex mv1">
-        <button id="editor_tab_button" value="edit" class="mr1 ph3 bl bt br flex items-center pointer">
-          🐑 Editor
-        </button>
-        <button id="game_tab_button" value="play" class="mr1 ph3 bl bt br flex items-center pointer">
-          🏰 Game
-        </button>
-      </div>
-
-      <div id="tabs" class="" style="width: 55rem; height: 38rem;">
-
-        <div value="play" class="hidden">
-          <div id="container" class="ba bw1 b--white">
-            <div id="terminal" autofocus tabindex="0"></div>
+<body class="flex w-100 vh-100 flex-column">
+  <nav class="bg-darkest w-100 flex h3 justify-center mb3">
+    <div class="container h-100 flex items-center justify-between">
+      <a href="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
+        <span class="icon f2">🏰</span>
+      </a>
+      <div class="flex justify-between w-100">
+        <div id="tab_buttons" class="h-100 w5 flex pv0 mh5 f6">
+          <button id="editor_tab_button" value="edit" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+            Editor
+          </button>
+          <button id="game_tab_button" value="play" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+            Game
+          </button>
+          <button id="levels_tab_button" value="levels" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
+            Levels
+          </button>
+          <button id="score_tab_button" value="score" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
+            Score
+          </button>
+          <button id="score_tab_button" value="score" class="tab pa2 mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
+            Manual
+          </button>
+        </div>
+        <div class="flex">
+          <div class="mr3 flex items-center justify-center">
+            👑 2
+          </div>
+          <div class="mr4 flex items-center justify-center">
+            🚩 37
           </div>
         </div>
+      </div>
+      <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100">
+        <div class="pv0 flex h-100 items-center">
+          <input id="user-menu-toggle" type="checkbox" class="dn">
+          <label for="user-menu-toggle" class="mv0 pv0 pointer link avatar grow w2 h2 dib br-pill ba bw1 b--border"></label>
+          <!-- <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4">
+            <div class="mt2 ph2 absolute top-3 right-0 bg-white black br3 shadow flex flex-column w5 pv2 z-5">
+              <div>
+                <div class="pointer br3 ma1 black hover-bg-purple pv2 ph2 flex flex-row items-center">
+                  <span>⇥</span>
+                  <span class="mh2">Log In</span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-bg z-4 fixed top-0 left-0 w-100 h-100 bg-black-40 mt0 pointer"></div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main class="w-100 h-100 flex flex-column items-center justify-center">
+    <div class="mv1">
+      <div id="tabs" class="" style="width: 55rem; height: 38rem;">
 
-        <div value="edit" class="ba bw1 b--white h-100 flex flex-column justify-start items-start">
+        <div value="edit" class="ba bw1 br1 b--white h-100 flex flex-column justify-start items-start">
           <header class="tl w-100 pa1 bb bw05 bg-white black">
             <select id="file_menu">
               <option value="file">-- File --</option>
@@ -45,7 +82,8 @@
             </select>
             <input id="file_input" type="file" class="dn" accept=".json"/>
           </header>
-          <div class="flex w-100">
+
+          <div class="flex w-100 bg-black">
             <div class="flex br h-100 flex-column">
               <div class="ma1 flex">
                 <button class="mr1 ph2 bl bt br flex items-center pointer f6">🖐️Move</button>
@@ -55,38 +93,59 @@
               <div id="palette" tabindex="1" class="white f5 flex flex-wrap items-start justify-start pointer ma1 pa1 tl"></div>
             </div>
             <div class="flex w-100 justify-center items-center">
-              <div id="grid" autofocus tabindex="0" class="f3 pointer mv2"></div>
+              <div id="grid" autofocus tabindex="0" class="bl bt b--gray f3 pointer mv2 bg-black"></div>
             </div>
           </div>
-          <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100">
+
+          <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 bg-black">
             <div id="messages" class="h-100 flex flex-column w-100 white overflow-y-scroll" style="height: 12rem;">
             </div>
             <div class="flex items-center w-100">
               <span class="ph2">$ </span>
-              <input id="text_input" type="text" class="ma1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
+              <input id="text_input" type="text" class="mh1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
             </div>
           </div> 
         </div>
+
+        <div value="play" class="hidden ba bw1 br1 bg-black" style="height: 38rem;">
+          <div id="container" class="ba bw1 b--white">
+            <div id="terminal" autofocus tabindex="0"></div>
+          </div>
+        </div>
       </div>
 
-    <div class="flex justify-between items-center w-100">
-      <div id="music_player">
-        <button id="mute_button" class="mv1">🔇 Music is muted</button>
-        <audio 
-          preload autoplay loop hidden muted
-          id="audio_player"
-          class="ma2"
-          src="https://www.kernel.quest/music/village.wav">
-          <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
-          <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
-        </audio>
-      </div>
-      <div class="gray f7 mv1 tr">
-        <span>Copyright 2019-2022 Jonathan Dupré. All rights reserved</span>
-        <br>
-        <span id="version"></span>
+      <div class="mv1 flex justify-between items-center w-100">
+        <div id="music_player">
+          <button id="mute_button" class="mv1">🔇 Music is muted</button>
+          <audio 
+            preload autoplay loop hidden muted
+            id="audio_player"
+            class="ma2"
+            src="https://www.kernel.quest/music/village.wav">
+            <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
+            <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
+          </audio>
+        </div>
       </div>
     </div>
+
     </main>
+    <footer id="footer" class="w-100 flex justify-center bg-black-30 ph3">
+      <div class="container pv4 w-100 tc f7 white-30">
+
+        <p>
+          <span id="version"></span>
+        </p>
+        <span>Copyright 2019-2022 Jonathan Dupré. All rights reserved</span>
+
+        <!-- <span><a href="/" class="router-link-exact-active router-link-active">xor</a> by <a href="/users/kareniel" class="">@kareniel</a> at <a href="https://diagonal.sh" target="_new">  Diagonal Systems</a></span>
+        <p>Develop creative thinking by solving computer security puzzles with friends.</p>
+        <span>© </span><a href="https://diagonal.sh" target="_new"> Diagonal Systems</a> · 
+        <a href="/faq" class="">FAQ</a> · <a href="/terms" class="">Terms</a> · 
+        <a href="/privacy" class="">Privacy</a> · 
+        <a href="../public/.well-known/security.txt">Security</a> -->
+
+      </div>
+    </footer>
   </body>
 </html>

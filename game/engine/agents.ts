@@ -1,13 +1,15 @@
 import { Points, Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
-import { Execution, IProgram, RuntimeError } from './language';
-import { Equipment, Item, Program, Thing } from './things';
-import { Action, NoAction } from './actions';
-import { Cell, DataStack, Room } from './world';
+import { Equipment, Item } from './things';
+import { Action } from './actions';
+import { Cell, Room } from './world';
 import { debug } from '../../lib/logging';
-import { Compiler } from './compiler';
-import { Colors, esc, Style } from '../../lib/esc';
+import { Compiler } from '../../interpreter/compiler';
+import { Colors, esc } from '../../lib/esc';
+import { Interpretation } from '../../interpreter';
+import { Factor } from '../../interpreter/types';
+import { RuntimeError } from '../../_deprecated/files/language';
 
 export class HP extends Points {}
 export class SP extends Points {}
@@ -34,7 +36,7 @@ export class Agent {
   gp = new GP()
   holding: Item | null = null
   private queue: Queue<Action> = new Queue()
-  stack: Stack<Thing> = new Stack()
+  stack: Stack<Factor> = new Stack()
   private compiler: Compiler = new Compiler()
   private inventory: Array<Item | Equipment> = []
 
@@ -72,12 +74,11 @@ export class Agent {
   }
 
   exec(code: string) {
-    const program = this.compiler.compile(code);
-    console.log('program', program)
-    const execution = new Execution(program);
+    const term = this.compiler.compile(code);
+    const execution = new Interpretation(term);
 
     try {
-      const result = execution.start(this.stack);
+      const result = execution.run(this.stack);
       debug(result);
     } catch (err) {
       if (!(err instanceof RuntimeError)) {
