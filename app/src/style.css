@@ -1,8 +1,39 @@
 body {
-  background-color: #000;
+  background-color: #25203D;
   color: #fff;
   font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
   font-size: 16;
+}
+
+.avatar {
+  background-color: #414161;
+  background-image: url('../public/kareniel.png');
+  background-size: contain;
+  transition: 0.3s;
+}
+
+.avatar.is-empty {
+  background-image: url('../public/empty-avatar.png') !important
+}
+
+.tab {
+  border-bottom: 0.25rem solid transparent;
+}
+
+.tab.is-selected {
+  border-bottom: 0.25rem solid #6464D8;
+}
+
+.purple {
+  color: #7676ff;
+}
+
+.container {
+  width: 1096px;
+}
+
+.bg-darkest {
+  background-color: #131023;
 }
 
 .hidden {

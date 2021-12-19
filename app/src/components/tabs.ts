@@ -22,9 +22,9 @@ export class Tabs {
     Array.from(this.buttons.children).forEach(tab => {
       const value = tab.getAttribute('value');
       if (value === key) {
-        tab.classList.add('bg-gray', 'white');
+        tab.classList.add('is-selected');
       } else {
-        tab.classList.remove('bg-gray', 'white');
+        tab.classList.remove('is-selected');
       }
     })
 

@@ -14,7 +14,7 @@ export class Cell extends EventEmitter {
   vector: Vector
   glyph: string
   readonly el: HTMLElement
-  defaultClassList = 'w2 h2 ba flex items-center justify-center monospace'
+  defaultClassList = 'w2 h2 bb br flex items-center justify-center monospace'
 
   constructor (x: number, y: number) {
     super();
