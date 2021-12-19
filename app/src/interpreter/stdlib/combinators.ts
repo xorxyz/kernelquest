@@ -1,5 +1,6 @@
 import { debug } from "../../utils";
 import { Interpretation } from "../interpreter";
+import { Factor } from "../types";
 import { LiteralNumber, LiteralRef, Quotation } from "./literals";
 import { Operator } from "./operators";
 
@@ -9,10 +10,7 @@ export const concat = new Combinator(['concat'], ['quotation', 'quotation'], sta
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
 
-  stack.push(new Quotation({
-    term: b.value.term.concat(a.value.term),
-    tokens: b.value.tokens.concat(a.value.tokens)
-  }));
+  stack.push(new Quotation(b.value.concat(a.value)));
 });
 
 // [b] [a] -> [[b] a]
@@ -23,7 +21,7 @@ export const cons = new Combinator(['cons'], ['quotation', 'quotation'], stack =
   const next = new Quotation();
 
   next.add(b);
-  a.value.term.forEach(factor => {
+  a.value.forEach(factor => {
     debug('factor', factor);
     next.add(factor)
   });
@@ -31,9 +29,9 @@ export const cons = new Combinator(['cons'], ['quotation', 'quotation'], stack =
   stack.push(next);
 });
 
-// [a] -> [[a]]
-export const unit = new Combinator(['unit'], ['quotation'], stack => {
-  const a = stack.pop() as Quotation;
+// a -> [a]
+export const unit = new Combinator(['unit'], ['any'], stack => {
+  const a = stack.pop() as Factor;
   const next = new Quotation();
 
   next.add(a);
@@ -77,7 +75,7 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], stack => 
   const interpretation = new Interpretation(program.value);
   const results = new Quotation();
 
-  list.value.term.map(factor => {
+  list.value.map(factor => {
     stack.push(factor);
     interpretation.run(stack);
     const result = stack.pop();
@@ -93,25 +91,22 @@ export const ref = new Operator(['ref'], ['number', 'number'], stack => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
   const ref = new LiteralRef(x.value, y.value);
-  ref.render('cell');
   stack.push(ref);
 });
 
 export const struct = new Operator(['struct'], ['ref', 'number', 'number'], stack => {
   stack.pop() as LiteralNumber;
   stack.pop() as LiteralNumber;
-  stack.pop() as LiteralRef;
+  const c = stack.pop() as LiteralRef;
 
-  const ref = new LiteralRef(0, 0);
-  ref.render('struct')
+  const ref = new LiteralRef(c.vector.x, c.vector.y);
   stack.push(ref);
 });
 
 export const route = new Operator(['route'], ['ref', 'ref'], stack => {
   stack.pop() as LiteralRef;
-  stack.pop() as LiteralRef;
-  const ref = new LiteralRef(0, 0);
-  ref.render('route');
+  const b = stack.pop() as LiteralRef;
+  const ref = new LiteralRef(b.vector.x, b.vector.y);
   stack.push(ref);
 });
 

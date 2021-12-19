@@ -5,10 +5,11 @@ declare global  {
 }
 
 import { Compiler } from "../compiler";
-import { Token, TokenType } from "../lexer";
-import { Factor, IProgram, Literal } from "../types";
+import { Token } from "../lexer";
+import { Factor, Literal, Term } from "../types";
 import { Vector } from "../../../../lib/math";
 
+// () -> Truth
 export class LiteralTruth extends Literal {
   lexeme: string
   value: Boolean
@@ -21,6 +22,7 @@ export class LiteralTruth extends Literal {
 const t = new LiteralTruth(true);
 const f = new LiteralTruth(false);
 
+// () -> Number
 export class LiteralNumber extends Literal {
   type = 'number'
   constructor (n: number) {
@@ -28,6 +30,7 @@ export class LiteralNumber extends Literal {
   }
 }
 
+// () -> String
 export class LiteralString extends Literal {
   type = 'string'
   constructor (str: string) {
@@ -35,6 +38,7 @@ export class LiteralString extends Literal {
   }
 }
 
+// () -> Set
 export class LiteralSet extends Literal {
   type = 'set'
   value: Set<Literal>
@@ -43,65 +47,61 @@ export class LiteralSet extends Literal {
   }
 }
 
+// () -> Quotation
 export class Quotation extends Literal {
   type = 'quotation'
-  value: IProgram
-  constructor (program?: IProgram) {
-    super('[]', program || { term: [], tokens: [] });
-    this.render();
+  value: Term
+  constructor (term?: Term) {
+    super('[]', term || []);
   }
 
   add (factor: Factor) {
-    this.value.term.push(factor);
-    this.push(new Token(TokenType.ATOM, factor.lexeme, factor.value, 0));
-    this.compile();
-    this.render();
+    this.value.push(factor);
   }
 
-  push(token: Token) {
-    this.value.tokens.push(token);
-    this.compile();
-    this.render();
-  }
-
-  compile () {
+  addToken (token: Token) {
     const compiler = new Compiler();
-    console.log('about to compile', this.value);
-    this.value = compiler.compile(this.value.tokens.map(t => t.lexeme).join(' '));
-    console.log('compiled', this);
+    const term = compiler.compile(token.lexeme);
+    term.forEach(factor => {
+      this.add(factor);
+    })
   }
 
-  render() {
-    this.lexeme = (
-      '[' + 
-      this.value.tokens.slice(0, -1)
-                       .map((t:Token) => t.lexeme)
-                       .join(' ') + 
-      ']'
-    );
+  toString () {
+    return `[${this.value.map(f => f.toString()).join(' ')}]`
   }
 }
 
-export class LiteralRef extends Literal {
+// () -> Ref
+export class LiteralRef extends LiteralNumber {
   type = 'ref'
-  value: typeof Proxy
-  constructor (x: number, y: number, handler?: ProxyHandler<any>) {
-    super(`ref<xy>`, new Proxy(new Vector(x,y), handler || {}))
+  vector: Vector
+  constructor (x: number, y: number) {
+    super((y * 16) + x)
+
+    this.vector = new Vector(x, y);
   }
 
-  render (str: string) {
-    this.lexeme = `ref<${str}>`;
+  toString() {
+    return `[${this.vector.x} ${this.vector.y} ref]`
   }
 }
 
-export class Direction extends Literal {
-  value: Vector
+// () -> Direction
+export class Direction extends Quotation {
+  type = 'direction'
+  vector: Vector
+  constructor (lexeme: string, x:number, y:number) {
+    super([new LiteralNumber(x), new LiteralNumber(y)]);
+
+    this.lexeme = lexeme;
+  }
 }
 
-const north = new Direction('north', new Vector(0, -1));
-const east = new Direction('east', new Vector(1, 0));
-const south = new Direction('south', new Vector(0, 1));
-const west = new Direction('west', new Vector(-1, 0));
+const north = new Direction('north', 0, -1);
+const east = new Direction('east', 1, 0);
+const south = new Direction('south', 0, 1);
+const west = new Direction('west', -1, 0);
 
 const literals = {};
 

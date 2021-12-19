@@ -15,17 +15,14 @@ export class Compiler {
   }
   level = 0
 
-  compile(code: string): IProgram {
+  compile(code: string): Term {
     debug('compiling: ', code);
     const tokens = this.scanner.scan(code);
     debug('got tokens:', tokens);
     const term: Array<Factor> = tokens.reduce(this.parseToken.bind(this), []);
     this.level = 0;
 
-    return { 
-      tokens, 
-      term
-    };
+    return term;
   }
 
   parseToken (term: Array<Factor>, token: Token, index: number): Term {
@@ -42,7 +39,7 @@ export class Compiler {
 
       if (this.level > 0 && previous instanceof Quotation) {
         debug('adding token to quotation');
-        previous.push(token);
+        previous.addToken(token);
       } else {
         debug('adding string to term');
         term.push(factor);
@@ -55,7 +52,7 @@ export class Compiler {
       case TokenType.STRING: 
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation');
-          previous.push(token);
+          previous.addToken(token);
         } else {
           debug('adding string to term');
           literal = new LiteralString(token.literal as unknown as string);
@@ -65,7 +62,7 @@ export class Compiler {
       case TokenType.NUMBER: 
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation', token);
-          previous.push(token);
+          previous.addToken(token);
         } else {
           debug('adding number to term');
           literal = new LiteralNumber(token.literal as unknown as number);
@@ -75,7 +72,7 @@ export class Compiler {
       case TokenType.LEFT_BRACKET:
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation', token);
-          previous.push(token);
+          previous.addToken(token);
         } else {
           debug('adding quotation to term');
           literal = new Quotation();
@@ -89,7 +86,7 @@ export class Compiler {
           this.level = 0;
         } else if (previous instanceof Quotation) {
           debug('adding token to quotation', token);
-          previous.push(token);
+          previous.addToken(token);
           this.level--;
         } else {
           throw new Error('unhandled right bracket case');

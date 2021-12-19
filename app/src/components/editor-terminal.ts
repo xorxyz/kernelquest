@@ -19,7 +19,7 @@ export class EditorTerminal {
         }
       }
   
-      this.say('stack> ' + this.interpreter.stack.map(a => a.lexeme).join(' '));
+      this.say('stack> ' + this.interpreter.stack.map(factor => factor.toString()).join(' '));
 
       textInputEl.value = '';
     })

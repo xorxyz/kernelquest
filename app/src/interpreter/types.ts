@@ -2,6 +2,7 @@ import { Stack } from "../../../lib/stack";
 import { Token } from "./lexer";
 
 export abstract class Factor {
+  type: string
   lexeme: string
   value?: any;
   constructor (lexeme: string) {
@@ -10,22 +11,27 @@ export abstract class Factor {
 
   abstract validate(stack: Stack<Factor>)
   abstract execute(stack: Stack<Factor>)
+  abstract toString (): string
   _validate (stack: Stack<Factor>) {
     this.validate(stack);
   }
   _execute (stack: Stack<Factor>) {
     this.execute(stack);
   }
+
 }
 
 export class Literal extends Factor {
-  value: any
-  type: string
+  value: any  
 
   constructor (lexeme: string, value?: any) {
     super(lexeme);
 
     this.value = value;
+  }
+
+  toString () {
+    return this.lexeme;
   }
 
   validate() {

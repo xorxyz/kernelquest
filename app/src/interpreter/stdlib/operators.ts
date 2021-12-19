@@ -1,6 +1,6 @@
 import { Stack } from "../../../../lib/stack";
 import { Factor, Literal, StackFn } from "../types";
-import { LiteralNumber, LiteralRef, LiteralString } from "./literals";
+import { LiteralNumber, LiteralString } from "./literals";
 
 export class Operator extends Factor {
   signature: Array<string>
@@ -37,6 +37,10 @@ export class Operator extends Factor {
         );
       }
     });
+  }
+
+  toString() {
+    return this.lexeme
   }
 }
 
@@ -102,11 +106,19 @@ export const clear = new Operator(['clear'], [], stack => {
   stack.popN(stack.length);
 });
 
+export const typeOf = new Operator(['typeof'], ['any'], stack => {
+  const a = stack.pop();
+  
+  if (a) {
+    stack.push(new LiteralString(a.type));
+  }
+});
+
 const operators = {};
 
 [
   sum, difference, product, division,
-  dup, swap, drop, cat, clear
+  dup, swap, drop, cat, clear, typeOf
 ].forEach(operator => {
   operator.aliases.forEach(alias => {
     operators[alias] = operator;

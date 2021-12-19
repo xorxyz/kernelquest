@@ -5,16 +5,17 @@
 
 import { Stack } from "../../../lib/stack";
 import { Compiler } from './compiler';
-import { Factor, IProgram } from "./types";
+import { Token } from "./lexer";
+import { Quotation } from "./stdlib/literals";
+import { Factor, IProgram, Term } from "./types";
 
 export class Interpretation {
   private level = 0
   private stacks: Array<any>
-  private program: IProgram
+  private term: Term
 
-  constructor(program: IProgram) {
-    console.log(program);
-    this.program = program;
+  constructor(term: Term) {
+    this.term = term;
   }
 
   get stack(): Stack<Factor> {
@@ -27,8 +28,8 @@ export class Interpretation {
 
   run(stack: Stack<Factor>) {
     this.stacks = [stack];
-    console.log(this.program.term);
-    this.program.term.map((factor: Factor) => {
+    console.log(this.term);
+    this.term.map((factor: Factor) => {
       factor.validate(this.stack);
       factor.execute(this.stack);
     });
