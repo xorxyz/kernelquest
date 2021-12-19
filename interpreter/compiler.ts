@@ -1,9 +1,11 @@
 import { Scanner, Token, TokenType } from "./lexer";
-import { Dictionary, Factor, Term } from "./types";
+import { Factor, Term } from "./types";
 import literals, { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
 import operators from "./operators";
 import combinators from "./combinators";
 import { debug } from "../app/src/utils";
+
+export type Dictionary = Record<string, Factor>
 
 export class Compiler {
   private scanner = new Scanner()

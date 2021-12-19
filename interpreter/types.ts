@@ -1,5 +1,4 @@
 import { Stack } from "../lib/stack";
-import { Token } from "./lexer";
 
 export abstract class Factor {
   type: string
@@ -46,12 +45,3 @@ export class Literal extends Factor {
 export type Term = Array<Factor>;
 
 export type List = Array<Literal>;
-
-export type Dictionary = Record<string, Factor>
-
-export interface IProgram {
-  tokens: Array<Token>
-  term: Array<Factor>
-}
-
-export type StackFn = (stack: Stack<Factor>) => void;
