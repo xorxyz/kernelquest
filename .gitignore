@@ -3,3 +3,4 @@ dist
 .cache
 build
 .DS_Store
+_deprecated/**/package-lock.json
