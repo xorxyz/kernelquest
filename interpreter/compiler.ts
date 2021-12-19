@@ -1,6 +1,6 @@
 import { Scanner, Token, TokenType } from "./lexer";
 import { Factor, Term } from "./types";
-import literals, { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
+import literals, { LiteralNumber, LiteralString, Quotation } from "./literals";
 import operators from "./operators";
 import combinators from "./combinators";
 import { debug } from "../app/src/utils";
