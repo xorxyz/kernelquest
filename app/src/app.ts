@@ -57,4 +57,6 @@ window.document.addEventListener('DOMContentLoaded', e => {
   palette.update();
 
   versionEl.innerText = ('XOR v' + String(version));
+
+  textInputEl.focus();
 });

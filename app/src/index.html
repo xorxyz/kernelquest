@@ -12,22 +12,25 @@
     <script type="module" src="app.ts"></script>
     <title>xor4 prototype</title>
   </head>
-<body class="flex w-100 vh-100  flex-column">
+<body class="flex w-100 vh-100 flex-column">
   <nav class="bg-darkest w-100 flex h3 justify-center mb3">
-    <div class="w-100 h-100 flex items-center justify-between ph3 pv0" style="max-width: 1096px;">
+    <div class="container h-100 flex items-center justify-between">
       <a href="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
-        <img alt="xor" class="mr3" style="height: 2.4rem;" src="../public/xor.svg">
+        <span class="icon f2">🏰</span>
       </a>
-      <div id="tab_buttons" class="h-100 w5 flex pv0 mh3">
-        <button id="editor_tab_button" value="edit" class="tab mr1 ph4 pv1 b--none button-reset bg-darkest white pointer">
+      <div id="tab_buttons" class="h-100 w5 flex pv0 mh5 f6">
+        <button id="editor_tab_button" value="edit" class="tab mr3 w3 mr1 ph1 pv1 b--none button-reset bg-darkest white pointer">
           Editor
         </button>
-        <button id="game_tab_button" value="play" class="tab mr1 ph4 pv1 b--none button-reset bg-darkest white pointer">
+        <button id="game_tab_button" value="play" class="tab mr3 w3 mr1 ph1 pv1 b--none button-reset bg-darkest white pointer">
           Game
         </button>
+        <!-- <button id="leaderboard_tab_button" value="leaderboard" class="tab mr1 ph4 pv1 b--none button-reset bg-darkest gray pointer">
+          Leaderboard
+        </button> -->
       </div>
       <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100">
-        <div class="mh3 pv0 flex h-100 items-center">
+        <div class="pv0 flex h-100 items-center">
           <input id="user-menu-toggle" type="checkbox" class="dn">
           <label for="user-menu-toggle" class="mv0 pv0 pointer link avatar is-empty grow w2 h2 dib br-pill ba bw1 b--border"></label>
           <!-- <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4">
