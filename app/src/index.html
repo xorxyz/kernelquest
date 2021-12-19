@@ -49,16 +49,10 @@
     </div>
   </nav>
   <main class="w-100 h-100 flex flex-column items-center justify-center">
-    <div class="mv4">
+    <div class="mv1">
       <div id="tabs" class="" style="width: 55rem; height: 38rem;">
 
-        <div value="play" class="hidden ba bw1 bg-black" style="height: 38rem;">
-          <div id="container" class="ba bw1 b--white">
-            <div id="terminal" autofocus tabindex="0"></div>
-          </div>
-        </div>
-
-        <div value="edit" class="ba bw1 b--white h-100 flex flex-column justify-start items-start">
+        <div value="edit" class="ba bw1 br1 b--white h-100 flex flex-column justify-start items-start">
           <header class="tl w-100 pa1 bb bw05 bg-white black">
             <select id="file_menu">
               <option value="file">-- File --</option>
@@ -72,6 +66,7 @@
             </select>
             <input id="file_input" type="file" class="dn" accept=".json"/>
           </header>
+
           <div class="flex w-100 bg-black">
             <div class="flex br h-100 flex-column">
               <div class="ma1 flex">
@@ -85,6 +80,7 @@
               <div id="grid" autofocus tabindex="0" class="bl bt b--gray f3 pointer mv2 bg-black"></div>
             </div>
           </div>
+
           <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 bg-black">
             <div id="messages" class="h-100 flex flex-column w-100 white overflow-y-scroll" style="height: 12rem;">
             </div>
@@ -94,8 +90,15 @@
             </div>
           </div> 
         </div>
+
+        <div value="play" class="hidden ba bw1 br1 bg-black" style="height: 38rem;">
+          <div id="container" class="ba bw1 b--white">
+            <div id="terminal" autofocus tabindex="0"></div>
+          </div>
+        </div>
       </div>
-      <div class="flex justify-between items-center w-100">
+
+      <div class="mv1 flex justify-between items-center w-100">
         <div id="music_player">
           <button id="mute_button" class="mv1">🔇 Music is muted</button>
           <audio 
