@@ -3,11 +3,9 @@
  * manipulate typescript objects with js's reflection capabilities 
  */
 
-import { Stack } from "../../../lib/stack";
+import { Stack } from "../lib/stack";
 import { Compiler } from './compiler';
-import { Token } from "./lexer";
-import { Quotation } from "./stdlib/literals";
-import { Factor, IProgram, Term } from "./types";
+import { Factor, Term } from "./types";
 
 export class Interpretation {
   private level = 0

@@ -1,8 +1,8 @@
 import { createServer, Server, Socket } from 'net';
 import Connection from './connection';
-import { Engine } from '../engine/engine';
-import { Terminal } from '../ui/terminal';
-import { Hero, Wizard } from '../engine/agents';
+import { Engine } from '../game/engine';
+import { Terminal } from '../game/ui/terminal';
+import { Hero, Wizard } from '../game/engine/agents';
 
 export interface Params { src?: string }
 
@@ -41,7 +41,10 @@ export default class GameServer {
       this.connections.delete(connection);
     });
 
-    const terminal = new Terminal(id, connection);
+    const terminal = new Terminal({
+      player,
+      write: () => {}
+    });
 
     this.connections.add(connection);
     this.terminals.add(terminal);

@@ -1,6 +1,6 @@
-import { Engine } from "../../../game/engine/engine"
+import { Engine } from "../../../game/engine"
 import { Room } from "../../../game/engine/world"
-import { Component } from "./component"
+import { Component } from "../component"
 import { Row, RowExport } from "./row"
 
 export type GridExport = {

@@ -1,6 +1,6 @@
-import { debug } from "../../utils";
-import { Interpretation } from "../interpreter";
-import { Factor } from "../types";
+import { debug } from "../app/src/utils";
+import { Interpretation } from ".";
+import { Factor } from "./types";
 import { LiteralNumber, LiteralRef, Quotation } from "./literals";
 import { Operator } from "./operators";
 

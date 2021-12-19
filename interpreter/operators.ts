@@ -1,5 +1,5 @@
-import { Stack } from "../../../../lib/stack";
-import { Factor, Literal, StackFn } from "../types";
+import { Stack } from "../lib/stack";
+import { Factor, Literal, StackFn } from "./types";
 import { LiteralNumber, LiteralString } from "./literals";
 
 export class Operator extends Factor {

@@ -1,4 +1,4 @@
-import { Stack } from "../../../lib/stack";
+import { Stack } from "../lib/stack";
 import { Token } from "./lexer";
 
 export abstract class Factor {

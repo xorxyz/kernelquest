@@ -2,9 +2,9 @@
  * Written by Jonathan Dupré
  * Copyright 2019-2020-2021 Diagonal Systems Inc.
  */
-import { Engine } from './engine/engine';
+import { Engine } from './engine';
 import { World } from './engine/world';
-import GameServer from './server/server';
+import GameServer from '../server/server';
 
 const PORT = process.env.PORT || 3000;
 const world = new World();

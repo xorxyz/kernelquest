@@ -26,8 +26,9 @@
 		]
   },
 	"include": [
-		"**/*.ts"
-	],
+		"**/*.ts", 
+    "../_deprecated/files/language.ts"
+  ],
 	"exclude": [
     "node_modules",
     "var"

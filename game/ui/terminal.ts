@@ -1,6 +1,6 @@
 import { Cursor, esc } from '../../lib/esc';
 import { Vector } from '../../lib/math';
-import { CLOCK_MS_DELAY, Keys, Signals } from '../engine/constants';
+import { CLOCK_MS_DELAY, Keys, Signals } from '../constants';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';

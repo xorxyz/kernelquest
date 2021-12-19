@@ -1,4 +1,4 @@
-import { Interpreter } from "../interpreter/interpreter";
+import { Interpreter } from "../../../interpreter";
 
 export class EditorTerminal {
   messagesEl

@@ -1,9 +1,9 @@
 import { Scanner, Token, TokenType } from "./lexer";
-import { Dictionary, Factor, IProgram, Literal, Term } from "./types";
+import { Dictionary, Factor, Term } from "./types";
 import literals, { LiteralNumber, LiteralString, Quotation } from "./stdlib/literals";
-import operators from "./stdlib/operators";
-import combinators from "./stdlib/combinators";
-import { debug } from "../utils";
+import operators from "./operators";
+import combinators from "./combinators";
+import { debug } from "../app/src/utils";
 
 export class Compiler {
   private scanner = new Scanner()

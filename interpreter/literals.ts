@@ -1,13 +1,5 @@
-declare global  {
-  interface ProxyConstructor {
-    new <TSource extends object, TTarget extends object>(target: TSource, handler: ProxyHandler<TSource>): TTarget;
-  }
-}
-
-import { Compiler } from "../compiler";
-import { Token } from "../lexer";
-import { Factor, Literal, Term } from "../types";
-import { Vector } from "../../../../lib/math";
+import { Vector } from "../lib/math";
+import { Factor, Literal, Term } from "./types";
 
 // () -> Truth
 export class LiteralTruth extends Literal {

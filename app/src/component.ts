@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { Store } from "../store";
+import { Store } from "./store";
 
 export abstract class Component extends EventEmitter {
   el: HTMLElement

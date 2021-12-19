@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { Socket } from 'net';
-import { debug } from '../../lib/logging';
-import { Hero } from '../engine/agents';
+import { debug } from '../lib/logging';
+import { Hero } from '../game/engine/agents';
 
 export default class Connection {
   player: Hero

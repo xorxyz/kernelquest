@@ -1,9 +1,9 @@
 
 
 import { Stack } from '../../lib/stack';
-import { Program, Thing } from './things';
-import { DataStack, Memory } from './world';
-import { MAX_X, MAX_Y, TokenType } from './constants';
+import { Program, Thing } from '../../game/engine/things';
+import { DataStack, Memory } from '../../game/engine/world';
+import { MAX_X, MAX_Y, TokenType } from '../../game/constants';
 import { debug } from '../../lib/logging';
 
 export type Name = string

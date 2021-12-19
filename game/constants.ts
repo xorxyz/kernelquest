@@ -1,4 +1,4 @@
-import { Rectangle, Vector } from "../../lib/math";
+import { Rectangle, Vector } from "../lib/math";
 
 export const CLOCK_MS_DELAY = 60;
 

@@ -1,14 +1,20 @@
-import { FileManager } from "./components/file-manager";
-import { Grid } from "./components/grid";
-import { Palette } from "./components/palette";
 import { debug } from "./utils";
-import { Tabs } from "./components/tabs";
-import { EditorTerminal } from './components/editor-terminal';
-import { AudioPlayer } from "./components/audio-player";
-import game from "./game";
-import { Cell } from "./components/cell";
+import { Tabs } from "./layout/tabs";
+import { AudioPlayer } from "./layout/audio-player";
+import { Engine } from '../../game/engine';
+import { World } from '../../game/engine/world';
+import { Grid } from "./editor/grid";
+import { Palette } from "./editor/palette";
+import { Cell } from "./editor/cell";
+import { EditorTerminal } from "./editor/terminal";
+import { FileManager } from "./editor/file-manager";
 
 const { version } = require('../package.json')
+const world = new World();
+const engine = new Engine({ world });
+const game = {
+  engine
+}
 
 window.document.addEventListener('DOMContentLoaded', e => {
   const gridEl = document.getElementById('grid') as HTMLDivElement;
@@ -45,7 +51,6 @@ window.document.addEventListener('DOMContentLoaded', e => {
     palette.selected = e.cell.glyph || '..';
     palette.update();
   });
-
 
   new EditorTerminal(textInputEl, messagesEl);
   new AudioPlayer(mutedButtonEl, audioEl);

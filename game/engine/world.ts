@@ -3,7 +3,7 @@ import { Stack } from '../../lib/stack';
 import { Colors, esc, Style } from '../../lib/esc';
 import { Equipment, Item, Thing } from './things';
 import { Agent, Cursor } from './agents';
-import { bounds, ROOM_HEIGHT, ROOM_WIDTH } from './constants';
+import { bounds, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 
 export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>

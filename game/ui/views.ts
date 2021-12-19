@@ -1,5 +1,5 @@
 import { esc, Screen, Style } from '../../lib/esc';
-import { CLOCK_MS_DELAY } from '../engine/constants';
+import { CLOCK_MS_DELAY } from '../constants';
 import { Terminal } from './terminal';
 import {
   UiComponent,
