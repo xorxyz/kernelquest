@@ -1,5 +1,5 @@
 import { debug } from "../utils";
-import { Grid } from "./grid";
+import { Grid } from "../grid";
 
 export class FileManager {
   selectEl: HTMLSelectElement

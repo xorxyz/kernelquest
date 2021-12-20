@@ -1,8 +1,8 @@
-import { Points, Vector } from '../../lib/math';
+import { getRandomDirection, Points, Vector } from '../../lib/math';
 import { Stack } from '../../lib/stack';
 import { Queue } from '../../lib/queue';
 import { Equipment, Item } from './things';
-import { Action } from './actions';
+import { Action, MoveAction, RotateAction, StepAction } from './actions';
 import { Cell, Room } from './world';
 import { debug } from '../../lib/logging';
 import { Compiler } from '../../interpreter/compiler';
@@ -19,6 +19,7 @@ export class GP extends Points {}
 export abstract class AgentType {
   abstract appearance: string
   abstract name: string
+  abstract capabilities: Array<Capability>
 }
 
 export class Agent {
@@ -36,15 +37,21 @@ export class Agent {
   gp = new GP()
   holding: Item | null = null
   private queue: Queue<Action> = new Queue()
-  stack: Stack<Factor> = new Stack()
+  private stack: Stack<Factor> = new Stack()
   private compiler: Compiler = new Compiler()
   private inventory: Array<Item | Equipment> = []
 
   constructor(type: AgentType) {
     this.type = type;
+
+    type.capabilities.forEach((cap) => {
+      cap.bootstrap(this.queue);
+    });
   }
 
-  get isAlive() { return this.hp.value > 0; }
+  get isAlive() { 
+    return this.hp.value > 0;
+  }
 
   render() {
     return this.type.appearance;
@@ -93,23 +100,28 @@ export class Agent {
 export class Cherub extends AgentType {
   appearance = '👼'
   name = 'cherub'
+  capabilities = []
 }
 export class Fairy extends AgentType {
   appearance = '🧚'
   name = 'fairy'
+  capabilities = []
 }
 export class Elf extends AgentType {
   appearance = '🧝'
   name = 'elf'
+  capabilities = []
 }
 export class Wizard extends AgentType {
   appearance = '🧙'
   name = 'wizard'
+  capabilities = []
 }
 
 export class CursorAgentType extends AgentType {
   appearance = esc(Colors.Bg.White) + esc(Colors.Fg.Black) + 'AA'
   name = 'cursor'
+  capabilities = []
 }
 
 export class Hero extends Agent {
@@ -123,18 +135,43 @@ export class Cursor extends Agent {
   cursor: null
 }
 
-export abstract class Critter extends AgentType {}
 export abstract class NPC extends AgentType {}
-export abstract class Monster extends AgentType {}
-export abstract class Boss extends AgentType {}
+export abstract class Friend extends AgentType {}
+export abstract class Critter extends AgentType {}
+export abstract class Foe extends AgentType {}
+
+
+export class Generator extends Agent {
+  n: number
+}
+
+abstract class Capability {
+  abstract bootstrap (queue: Queue<Action>): void
+}
+
+export class RandomWalkCapability extends Capability {
+  delayMs: number
+  timer: NodeJS.Timeout
+
+  constructor(delayMs: number = 1000) {
+    super();
+    this.delayMs = delayMs;
+  }
+
+  bootstrap(queue: Queue<Action>) {
+    debug('bootstrap random walk');
+    this.timer = setInterval(() => {
+      const direction = getRandomDirection();
+
+      queue.push(
+        new MoveAction(direction),
+      );
+    }, this.delayMs);
+  }
+}
 
 export class Sheep extends Critter {
   appearance = '🐑'
   name = 'sheep'
+  capabilities = [new RandomWalkCapability()]
 }
-
-export class Generator extends Agent {
-  n: number
-
-}
-

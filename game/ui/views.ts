@@ -1,6 +1,6 @@
 import { esc, Screen, Style } from '../../lib/esc';
 import { CLOCK_MS_DELAY } from '../constants';
-import { Terminal } from './terminal';
+import { TTY } from './tty';
 import {
   UiComponent,
   Navbar,
@@ -18,7 +18,7 @@ const CLEAR_RATE = CLOCK_MS_DELAY;
 export abstract class View {
   components: Record<string, UiComponent>
 
-  compile(terminal: Terminal): string {
+  compile(terminal: TTY): string {
     const lines = Object.values(this.components).map((component) =>
       component.compile(terminal) + esc(Style.Reset));
 

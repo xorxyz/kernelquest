@@ -18,8 +18,10 @@ export class EditorTerminal {
           console.error(err);
         }
       }
+
+      const term = this.interpreter.stack.map(factor => factor.toString()).join(' ')
   
-      this.say('stack> ' + this.interpreter.stack.map(factor => factor.toString()).join(' '));
+      this.say(`[${term}]`);
 
       textInputEl.value = '';
     })

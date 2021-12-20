@@ -1,13 +1,13 @@
 import { Stack } from "../lib/stack";
-import { Factor, Literal, StackFn } from "./types";
+import { Factor, Literal } from "./types";
 import { LiteralNumber, LiteralString } from "./literals";
 
 export class Operator extends Factor {
   signature: Array<string>
-  execute: StackFn
+  execute: (stack: Stack<Factor>) => void
   aliases: Array<string>
 
-  constructor (aliases: Array<string>, signature: Array<string>, execute: StackFn) {
+  constructor (aliases: Array<string>, signature: Array<string>, execute: (stack: Stack<Factor>) => void) {
     super(aliases[0]);
     this.signature = signature;
     this.execute = execute;

@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+    <link rel="stylesheet" href="../public/xterm.css"/>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap">
     <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
     <script type="module" src="app.ts"></script>
@@ -36,12 +36,15 @@
             Manual
           </button>
         </div>
-        <div class="flex">
+        <div class="flex mh3">
           <div class="mr3 flex items-center justify-center">
-            👑 2
+            👑 3
           </div>
-          <div class="mr4 flex items-center justify-center">
+          <div class="mr3 flex items-center justify-center">
             🚩 37
+          </div>
+          <div class="mr3 flex items-center justify-center">
+            💀 1337
           </div>
         </div>
       </div>
@@ -107,8 +110,8 @@
           </div> 
         </div>
 
-        <div value="play" class="hidden ba bw1 br1 bg-black" style="height: 38rem;">
-          <div id="container" class="ba bw1 b--white">
+        <div value="play" class="ba bw1 br1 bg-black" style="height: 38rem;">
+          <div id="terminal-container" class="container ba bw1 b--white">
             <div id="terminal" autofocus tabindex="0"></div>
           </div>
         </div>
