@@ -13,7 +13,7 @@
   "author": "kareniel",
   "license": "MIT",
   "dependencies": {
-    "@walletconnect/client": "^2.0.0-beta.20",
+    "@walletconnect/client": "^2.0.0-beta.21",
     "ethers": "^5.5.2",
     "events": "^3.3.0",
     "express": "^4.17.1",
