@@ -51,6 +51,7 @@ window.document.addEventListener('DOMContentLoaded', e => {
   const tabButtons = document.getElementById('tab_buttons') as HTMLDivElement;
   const editorTabButton = document.getElementById('editor_tab_button') as HTMLButtonElement;
   const gameTabButton = document.getElementById('game_tab_button') as HTMLButtonElement;
+  const levelsTabButton = document.getElementById('levels_tab_button') as HTMLButtonElement;
   const tabsEl = document.getElementById('tabs') as HTMLDivElement;
   const messagesEl = document.getElementById('messages') as HTMLInputElement;
   const textInputEl = document.getElementById('text_input') as HTMLInputElement;
@@ -72,9 +73,12 @@ window.document.addEventListener('DOMContentLoaded', e => {
 
   editorTabButton.addEventListener('click', () => tabs.select('edit'));
   gameTabButton.addEventListener('click', () => tabs.select('play'));
+  levelsTabButton.addEventListener('click', () => tabs.select('levels'));
 
   palette.update();
   textInputEl.focus();
+
+  tabs.select('levels');
 
   engine.clock.on('tick', () => {
     grid.render();
