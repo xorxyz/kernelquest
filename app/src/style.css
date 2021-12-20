@@ -1,3 +1,30 @@
+/* $pale=#D1D1D8
+$light=#414161
+$dark=#38344E //#303043
+$darker=#25203D//#1F1F33
+$light-purple=#7676FF
+$purple=#6464D8
+$blue=#357edd
+$darkest=#131023 // #181529 //#14142C
+
+$window=#1C1C35
+$term=#070714
+$sidebar=#14142C
+$border=#383865
+  
+.bg-window
+  background-color: $window
+.bg-term
+  background-color: $term
+  ::-moz-selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+  ::selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+.bg-darkest
+  background-color: $darkest */
+
 body {
   background-color: #25203D;
   /* background-color: #000; */
@@ -29,8 +56,16 @@ body {
   color: #7676ff;
 }
 
+.bg-purple {
+  background-color: #6464D8;
+}
+
 .container {
   width: 55rem;
+}
+
+.bg-dark {
+  background-color: #38344E;
 }
 
 .bg-darkest {
@@ -60,4 +95,23 @@ img.emoji {
 #tab_buttons button.is-active {
   background-color: #555;
   color: #aaa;
+}
+
+.button {
+  box-shadow: 0px 7px 0px 0px rgba(0,0,0,0.3);
+  display: inline-block;
+}
+
+.button:hover {
+  animation: btn 0.15s ease 0.05s both;
+}
+
+@keyframes btn {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  100% {
+    transform: translate(0px, 3px);
+    box-shadow: 0px 4px 0px 0px rgba(0,0,0,0.3);
+  }
 }
