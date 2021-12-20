@@ -6,7 +6,7 @@ import { esc, Cursor, Style, Colors } from '../../lib/esc';
 import { TakeN, takeN, Vector } from '../../lib/math';
 import { Agent } from '../engine/agents';
 import { Cell } from '../engine/world';
-import { Terminal } from './terminal';
+import { TTY } from './tty';
 
 const { Fg, Bg } = Colors;
 
@@ -17,7 +17,7 @@ export const N_OF_LINES = 7;
 export const CELL_WIDTH = 2;
 
 export abstract class UiComponent {
-  abstract render(terminal: Terminal): Array<string>
+  abstract render(terminal: TTY): Array<string>
 
   position: Vector
   style: string = ''
@@ -26,7 +26,7 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  compile(terminal: Terminal): string {
+  compile(terminal: TTY): string {
     const { x, y } = this.position;
 
     return this.style + this.render(terminal)
@@ -126,7 +126,7 @@ const Sp = (n) => Points(Bg.Green, n);
 const Mp = (n) => Points(Bg.Blue, n);
 
 export class Stats extends UiComponent {
-  render({ player: p }: Terminal) {
+  render({ player: p }: TTY) {
     return [
       '┌───────────────────┐',
       '│ level: 1          │',
@@ -143,7 +143,7 @@ export class Stats extends UiComponent {
 }
 
 export class Output extends UiComponent {
-  render({ state }: Terminal) {
+  render({ state }: TTY) {
     return [
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
       ...state.stdout

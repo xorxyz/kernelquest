@@ -3,6 +3,7 @@ import { World } from './world';
 import { CLOCK_MS_DELAY } from '../constants';
 import { Vector } from '../../lib/math';
 import { Book, Flag, Tree } from './things';
+import { debug } from '../../lib/logging';
 
 export interface EngineOptions {
   world?: World
@@ -12,34 +13,12 @@ export interface EngineOptions {
 export class Engine {
   cycle: number = 0
   world: World
-  private clock: Clock
+  readonly clock: Clock
 
   constructor(opts?: EngineOptions) {
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.world = opts?.world || new World();
-
-    const trees = [
-      [5,0],
-      [1,1],
-      [3,1],
-      [4,1],
-      [0,2],
-      [1,4],
-    ]
-    
-    trees.forEach(([x,y]) => {
-      this.world.rooms[0]
-        .cellAt(Vector.from({ x, y }))
-        .items.push(new Tree())
-    })
-
-    this.world.rooms[0]
-      .cellAt(Vector.from({ x: 4, y: 0 }))
-      .items.push(new Book())
-
-    this.world.rooms[0]
-      .cellAt(Vector.from({ x: 14, y: 8 }))
-      .items.push(new Flag())
+    debug('creating engine');
 
     this.clock.on('tick', this.update.bind(this));
   }
@@ -53,7 +32,7 @@ export class Engine {
         cell.owner = null;
       });
 
-      room.agents.forEach((agent) => {
+      room.agents.forEach((agent) => {
         const action = agent.takeTurn(this.cycle);
     
         if (action && action.authorize(agent)) {
@@ -72,6 +51,12 @@ export class Engine {
     });
   }
 
-  start() { this.clock.start(); }
-  pause() { this.clock.pause(); }
+  start() { 
+    this.clock.start();
+    debug('started engine.') 
+  }
+  pause() { 
+    this.clock.pause(); 
+    debug('paused engine.')
+  }
 }

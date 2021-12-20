@@ -15,7 +15,7 @@ export class Tabs {
         throw new Error('tabs: attribute value is missing for tab');
       }
     })  
-    this.select('edit');
+    this.select('play');
   }
 
   select (key: string) {

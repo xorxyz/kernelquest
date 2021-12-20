@@ -35,7 +35,7 @@ export interface IConnection {
   player: Hero
 }
 
-export class Terminal {
+export class TTY {
   id: number
   connection: IConnection
   cursorPosition: Vector = new Vector()

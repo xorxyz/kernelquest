@@ -1,5 +1,5 @@
 import { Vector } from '../../lib/math';
-import { Terminal } from '../ui/terminal';
+import { TTY } from '../ui/tty';
 import { Agent, AgentType, Critter, NPC } from './agents';
 import { bounds, Keys } from '../constants';
 import { Equipment, Item, Thing } from './things';
@@ -31,8 +31,8 @@ export class NoAction extends Action {
 
 export class SwitchModeAction extends Action {
   cost: 0
-  terminal: Terminal
-  constructor (terminal: Terminal) {
+  terminal: TTY
+  constructor (terminal: TTY) {
     super();
     this.terminal = terminal;
   }
@@ -42,9 +42,13 @@ export class SwitchModeAction extends Action {
   }
 }
 
-abstract class MoveAction extends Action {
+export class MoveAction extends Action {
   cost: 5
-  abstract direction: Vector
+  direction: Vector
+  constructor (direction: Vector) {
+    super();
+    this.direction = direction;
+  }
   perform(ctx, agent: Agent) {
     if (agent.velocity.opposes(this.direction) ||
         agent.velocity.isZero()) {
@@ -194,9 +198,9 @@ export abstract class TerminalAction extends Action {}
 
 export class MoveCursorAction extends TerminalAction {
   cost: 0
-  terminal: Terminal
+  terminal: TTY
   direction: Vector
-  constructor (terminal: Terminal, direction: Vector) {
+  constructor (terminal: TTY, direction: Vector) {
     super();
     this.terminal = terminal;
     this.direction = direction;
@@ -214,9 +218,9 @@ export class MoveCursorAction extends TerminalAction {
 
 export class MoveCursorToAction extends TerminalAction {
   cost: 0
-  terminal: Terminal
+  terminal: TTY
   destination: Vector
-  constructor (terminal: Terminal, destination: Vector) {
+  constructor (terminal: TTY, destination: Vector) {
     super();
     this.terminal = terminal;
     this.destination = destination;
@@ -233,8 +237,8 @@ export class MoveCursorToAction extends TerminalAction {
 
 export class SelectCellAction extends TerminalAction {
   cost: 0
-  terminal: Terminal
-  constructor (terminal: Terminal) {
+  terminal: TTY
+  constructor (terminal: TTY) {
     super();
     this.terminal = terminal;
   }
