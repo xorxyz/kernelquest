@@ -7,8 +7,6 @@ import { TTY } from "../../../game/ui/tty";
 import { Unicode14Addon } from '../../vendor/unicode14';
 import { Component } from "../component";
 
-const ws = new WebSocket('ws://localhost:3737');
-
 export class GameTerminal extends Component {
   xterm: Terminal
   render
@@ -32,15 +30,12 @@ export class GameTerminal extends Component {
     });
     
     const fitAddon = new FitAddon.FitAddon();
-    const attachAddon = new AttachAddon.AttachAddon(ws);
     const unicode14Addon = new Unicode14Addon();
     
+    
     this.xterm.loadAddon(fitAddon);
-    this.xterm.loadAddon(attachAddon);
     this.xterm.loadAddon(unicode14Addon);
-    
     this.xterm.unicode.activeVersion = '14';
-    
     this.xterm.open(el);
     
     this.xterm.focus();
@@ -49,13 +44,11 @@ export class GameTerminal extends Component {
 
     player.room = engine.world.rooms[0];
 
-    const tty = new TTY({
+    new TTY({
       player,
       write: (str) => {
         this.xterm.write(str);
       }
     });
-
-    tty.render();
   }
 }
