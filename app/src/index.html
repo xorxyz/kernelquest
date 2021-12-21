@@ -12,66 +12,116 @@
     <script type="module" src="app.ts"></script>
     <title>xor4 prototype</title>
   </head>
-<body class="flex w-100 vh-100 flex-column">
-  <nav class="bg-darkest w-100 flex h3 justify-center mb3">
-    <div class="container h-100 flex items-center justify-between">
-      <a href="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
-        <span class="icon f2">🏰</span>
-      </a>
-      <div class="flex justify-between w-100">
-        <div id="tab_buttons" class="h-100 w5 flex pv0 mh5 f6">
-          <button id="editor_tab_button" value="edit" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
-            Editor
-          </button>
-          <button id="game_tab_button" value="play" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
-            Game
-          </button>
-          <button id="levels_tab_button" value="levels" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
-            Levels
-          </button>
-          <button id="score_tab_button" value="score" class="tab mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
-            Score
-          </button>
-          <button id="score_tab_button" value="score" class="tab pa2 mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white-50 ">
-            Manual
-          </button>
-        </div>
-        <div class="flex mh3">
-          <div class="mr3 flex items-center justify-center">
-            👑 3
+  <body class="flex w-100 vh-100 flex-column">
+    <header class="pv2 w-100 bg-darkest flex">&nbsp;</header>
+    <nav class="bg-darkest w-100 flex h3 justify-center mb4 pb2">
+      <div class="container h-100 flex items-center justify-between">
+        <a href="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
+          <span class="icon f2">🏰</span>
+        </a>
+        <div class="flex justify-between w-100">
+          <div id="tab_buttons" class="h-100 w5 flex pv0 mh5 f6">
+            <button id="levels_tab_button" value="levels" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+              Levels
+            </button>
+            <button id="editor_tab_button" value="edit" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+              Editor
+            </button>
+            <button id="game_tab_button" value="play" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+              Game
+            </button>
           </div>
-          <div class="mr3 flex items-center justify-center">
-            🚩 37
-          </div>
-          <div class="mr3 flex items-center justify-center">
-            💀 1337
+          <div class="flex mh3">
+            <div class="mr3 flex items-center justify-center">
+              👑 0
+            </div>
+            <div class="mr3 flex items-center justify-center">
+              💀 0
+            </div>
           </div>
         </div>
-      </div>
-      <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100">
-        <div class="pv0 flex h-100 items-center">
-          <input id="user-menu-toggle" type="checkbox" class="dn">
-          <label for="user-menu-toggle" class="mv0 pv0 pointer link avatar grow w2 h2 dib br-pill ba bw1 b--border"></label>
-          <!-- <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4">
-            <div class="mt2 ph2 absolute top-3 right-0 bg-white black br3 shadow flex flex-column w5 pv2 z-5">
-              <div>
-                <div class="pointer br3 ma1 black hover-bg-purple pv2 ph2 flex flex-row items-center">
-                  <span>⇥</span>
-                  <span class="mh2">Log In</span>
+        <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100">
+          <div class="pv0 flex h-100 items-center">
+            <input id="user-menu-toggle" type="checkbox" class="dn">
+            <label for="user-menu-toggle" class="mv0 pv0 pointer link avatar grow w2 h2 dib br-pill ba bw1 b--border"></label>
+            <!-- <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4">
+              <div class="mt2 ph2 absolute top-3 right-0 bg-white black br3 shadow flex flex-column w5 pv2 z-5">
+                <div>
+                  <div class="pointer br3 ma1 black hover-bg-purple pv2 ph2 flex flex-row items-center">
+                    <span>⇥</span>
+                    <span class="mh2">Log In</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="modal-bg z-4 fixed top-0 left-0 w-100 h-100 bg-black-40 mt0 pointer"></div>
-          </div> -->
+              <div class="modal-bg z-4 fixed top-0 left-0 w-100 h-100 bg-black-40 mt0 pointer"></div>
+            </div> -->
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
-  <main class="w-100 h-100 flex flex-column items-center justify-center">
-    <div class="mv1">
+    </nav>
+    <main class="w-100 h-100 flex flex-column items-center justify-center mb4">
       <div id="tabs" class="" style="width: 55rem; height: 38rem;">
+        <div value="levels" class="hidden br1">
+          <div class="bg-dark br3 mv4" style="padding: 2rem; box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2);">
+            <div class="flex items-center justify-between mb1">
+              <h1 class="mv0">Levels</h1>
+              <div>
+                <a 
+                  class="button pv1 ph3 br3 pointer bg-purple link ph4 pv2 mb3 white">Create</a>
+              </div>
+            </div>
 
-        <div value="edit" class="ba bw1 br1 b--white h-100 flex flex-column justify-start items-start">
+            <table class="table lh-copy f4 is-striped w-100 mt4 mb1">
+              <thead>
+                <tr class="tl">
+                  <th>Title</th>
+                  <th class="w4">Style</th>
+                  <th class="w4">Difficulty</th>
+                  <th class="w4">Clear Rate</th>
+                  <th>Tags</th>
+                  <th class="w4">Created On</th>
+                  <th class="w1"> 
+                    <emoji>⭐️</emoji>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <router-link to="/levels/unix-101"> <span>Unix 101</span></router-link>
+                  </td>
+                  <td>Quest </td>
+                  <td>Easy</td>
+                  <td>80%</td>
+                  <td>Unix</td>
+                  <td>01-06-19</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td> 
+                    <router-link to="/levels/unix-201">Unix 201</router-link>
+                  </td>
+                  <td>Quest</td>
+                  <td>Normal</td>
+                  <td>60%</td>
+                  <td>Unix</td>
+                  <td>01-06-19</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td> <span>Unix 301</span></td>
+                  <td>Quest</td>
+                  <td>Normal</td>
+                  <td>60%</td>
+                  <td>Unix</td>
+                  <td>01-06-19</td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div value="edit" class="hidden mv4 ba bw1 br1 b--white h-100 flex flex-column justify-start items-start">
           <header class="tl w-100 pa1 bb bw05 bg-white black">
             <select id="file_menu">
               <option value="file">-- File --</option>
@@ -108,32 +158,29 @@
               <input id="text_input" type="text" class="mh1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
             </div>
           </div> 
-        </div>
 
-        <div value="play" class="ba bw1 br1 bg-black" style="height: 38rem;">
+          <div class="mv1 flex justify-between items-center w-100">
+            <div id="music_player">
+              <button id="mute_button" class="mv1">🔇 Music is muted</button>
+              <audio 
+                preload autoplay loop hidden muted
+                id="audio_player"
+                class="ma2"
+                src="https://www.kernel.quest/music/village.wav">
+                <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
+                <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
+              </audio>
+            </div>
+          </div>
+        </div>
+        <div value="play" class="hidden mv4 ba bw1 br1 bg-black" style="height: 38rem;">
           <div id="terminal-container" class="container ba bw1 b--white">
             <div id="terminal" autofocus tabindex="0"></div>
           </div>
         </div>
       </div>
-
-      <div class="mv1 flex justify-between items-center w-100">
-        <div id="music_player">
-          <button id="mute_button" class="mv1">🔇 Music is muted</button>
-          <audio 
-            preload autoplay loop hidden muted
-            id="audio_player"
-            class="ma2"
-            src="https://www.kernel.quest/music/village.wav">
-            <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
-            <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">
-          </audio>
-        </div>
-      </div>
-    </div>
-
     </main>
-    <footer id="footer" class="w-100 flex justify-center bg-black-30 ph3">
+    <footer id="footer" class="w-100 flex justify-center bg-black-30 ph3 mt5">
       <div class="container pv4 w-100 tc f7 white-30">
 
         <p>
