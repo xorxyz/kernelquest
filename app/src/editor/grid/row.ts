@@ -1,6 +1,6 @@
 import EventEmitter from "events";
-import { Tree } from "../../../game/engine/things";
-import { Room } from "../../../game/engine/world";
+import { Tree } from "../../../../game/engine/things";
+import { Room } from "../../../../game/engine/world";
 import { Cell, CellExport } from "./cell";
 
 export type RowExport = {
@@ -9,16 +9,14 @@ export type RowExport = {
 }
 
 export class Row extends EventEmitter {
-  width: number
   y: number
   cells: Array<Cell>
   el: HTMLElement
   room: Room
 
-  constructor (width: number, y: number, room: Room) {
+  constructor (y: number, room: Room) {
     super();
 
-    this.width = width;
     this.y = y;
     this.el = document.createElement('div');
     this.el.className = 'flex';
@@ -27,7 +25,7 @@ export class Row extends EventEmitter {
   }
 
   reset () {
-    this.cells = Array(this.width).fill(0).map((_, x) => {
+    this.cells = Array(16).fill(0).map((_, x) => {
       const cell = new Cell(x, this.y);
 
       cell.on('cell:click', e => {
@@ -59,7 +57,7 @@ export class Row extends EventEmitter {
   }
 
   static fromJSON (obj: RowExport, room: Room) {
-    const row = new Row(obj.cells.length, obj.y, room);
+    const row = new Row(obj.y, room);
 
     row.cells = row.cells.map((_, i) => {
       return Cell.fromJSON(obj.cells[i]);

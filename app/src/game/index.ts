@@ -1,5 +1,4 @@
 import { Terminal } from "xterm";
-import * as AttachAddon from "xterm-addon-attach";
 import * as FitAddon from "xterm-addon-fit";
 import { Engine } from "../../../game/engine";
 import { Hero, Wizard } from "../../../game/engine/agents";

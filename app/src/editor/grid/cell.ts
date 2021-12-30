@@ -1,8 +1,8 @@
 import EventEmitter from "events"
-import { Tree } from "../../../game/engine/things"
-import { Room } from "../../../game/engine/world"
-import { Vector } from "../../../lib/math"
-import { Styles } from "../constants"
+import { Tree } from "../../../../game/engine/things"
+import { Room } from "../../../../game/engine/world"
+import { Vector } from "../../../../lib/math"
+import { Styles } from "../../constants"
 
 export type CellExport = {
   x: number

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": false,
     "outDir": "build",
-    "target":"es2018",
+    "target": "es2018",
+    "jsx": "preserve",
     "module": "ES2020",
     "moduleResolution": "node",
     "lib": [
@@ -30,10 +31,11 @@
 		]
   },
 	"include": [
-    "src"
+    "./src/**/*.ts",
+    "./src/**/*.vue",
   ],
 	"exclude": [
     "build",
     "node_modules"
-	]
+	],
 }
