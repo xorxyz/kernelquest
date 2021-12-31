@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mr1">
     <select @change="onSelect">
       <option value="file">-- File --</option>
       <option value="new_file">New File</option>
@@ -17,13 +17,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { debug } from '../../../lib/logging';
-import { Grid } from './grid';
+import { Room } from '../../../game/engine/world';
 
 export default defineComponent({
   props: {
-    grid: {
+    room: {
       required: true,
-      type: Grid 
+      type: Room
     }
   },
   data () {
@@ -88,7 +88,7 @@ export default defineComponent({
     saveAs () {
       this.reset();
       debug('in save_as');
-      const text = JSON.stringify(this.$props.grid.toJSON());
+      const text = JSON.stringify(this.$props.room.toJSON());
       const blob = new Blob([text], {
         type: 'application/json'
       });

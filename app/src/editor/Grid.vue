@@ -1,7 +1,9 @@
 <template>
-  <div id="grid" autofocus tabindex="0" class="bl bt b--gray f3 pointer mv2 bg-black">
-    <div :key="r.y" :v-for="r in rows">
-      {{r.y}}
+  <div id="grid" autofocus tabindex="0" class="bl b--gray f3 pointer mv2 bg-black">
+    <div class="flex" v-for="row in rows">
+      <div class="flex w2 h2 items-center justify-center" v-for="cell in row">
+        {{ cell.glyph }}
+      </div>
     </div>
   </div>
 </template>
@@ -9,8 +11,6 @@
 <script lang="ts">
 import { defineComponent } from "vue"
 import { Room } from "../../../game/engine/world";
-import { GridExport } from "./grid";
-import { Row } from "./grid/row";
 
 export default defineComponent({
   props: {
@@ -21,26 +21,23 @@ export default defineComponent({
   },
   data: () => {
     return {
-      rows: [] as Array<Row>
+      rows: new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((_, x) => {
+        return { x, y, glyph: '..' }
+      }))
     }
   },
   methods: {
     reset () {
-      this.rows = Array(10).fill(0).map((_, y) => {
-        const row = new Row(y, this.room);
-
-        return row;
-      });
     },
-    load (obj: GridExport) {
-      this.rows = obj.rows.map(row => Row.fromJSON(row, this.$props.room));
+    load (obj) {
+      // this.rows = obj.rows.map(row => Row.fromJSON(row, this.$props.room));
     },
-    toJSON (): GridExport {
-      return {
-        rows: this.rows.map(row => {
-          return row.toJSON();
-        })
-      }
+    toJSON () {
+      // return {
+      //   rows: this.rows.map(row => {
+      //     return row.toJSON();
+      //   })
+      // }
     }
   }
 })

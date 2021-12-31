@@ -1,20 +1,27 @@
 <template>
   <nav class="bg-darkest w-100 flex h3 justify-center mb0 pb2">
     <div class="container h-100 flex items-center justify-between">
-      <a href="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
+      <router-link to="/" class="link pv0 mr3 grow router-link-exact-active router-link-active">
         <span class="icon f2">🏰</span>
-      </a>
+      </router-link>
       <div class="flex justify-between w-100">
         <div id="tab_buttons" class="h-100 w5 flex pv0 mh5 f6">
-          <button id="levels_tab_button" value="levels" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+          <router-link to="/scoreboard" active-class="is-selected"
+            class="tab link grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+            Score
+          </router-link>
+          <router-link to="/levels"  active-class="is-selected"
+            class="tab link grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
             Levels
-          </button>
-          <button id="editor_tab_button" value="edit" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+          </router-link>
+          <router-link to="/editor"  active-class="is-selected"
+            class="tab link grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
             Editor
-          </button>
-          <button id="game_tab_button" value="play" class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
+          </router-link>
+          <!-- <router-link to="/game" 
+            class="tab grow mr3 w3 mr4 ph1 pv1 b--none button-reset bg-darkest white pointer">
             Game
-          </button>
+          </router-link> -->
         </div>
         <div class="flex mh3">
           <div class="mr3 flex items-center justify-center">
@@ -45,3 +52,15 @@
     </div>
   </nav>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  data () {
+    return {
+      
+    }
+  }  
+})
+</script>

@@ -1,8 +1,6 @@
 import Clock from '../../lib/clock';
 import { World } from './world';
 import { CLOCK_MS_DELAY } from '../constants';
-import { Vector } from '../../lib/math';
-import { Book, Flag, Tree } from './things';
 import { debug } from '../../lib/logging';
 
 export interface EngineOptions {

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "isolatedModules": false,
+    "resolveJsonModule": true,
     "noEmit": false,
     "outDir": "build",
     "target": "es2018",
@@ -27,11 +28,13 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization":false,
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "./src/typings"
 		]
   },
 	"include": [
     "./src/**/*.ts",
+    "./src/**/*.json",
     "./src/**/*.vue",
   ],
 	"exclude": [
