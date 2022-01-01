@@ -1,7 +1,8 @@
-import Clock from '../../lib/clock';
+import Clock from 'xor4-lib/clock';
+import { debug } from 'xor4-lib/logging';
 import { World } from './world';
 import { CLOCK_MS_DELAY } from '../constants';
-import { debug } from '../../lib/logging';
+import { Agent } from './agents';
 
 export interface EngineOptions {
   world?: World
@@ -9,9 +10,9 @@ export interface EngineOptions {
 }
 
 export class Engine {
-  cycle: number = 0
-  world: World
-  readonly clock: Clock
+  cycle: number = 0;
+  world: World;
+  readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
@@ -25,14 +26,16 @@ export class Engine {
     this.cycle++;
 
     this.world.rooms.forEach((room) => {
-      room.cells.forEach(cell => {
-        cell.update(this.cycle);
+      room.cells.forEach((cell) => {
+        cell.update();
         cell.owner = null;
       });
 
-      room.agents.forEach((agent) => {
+      room.agents.forEach((agent: Agent) => {
+        if (!agent.room) return;
+
         const action = agent.takeTurn(this.cycle);
-    
+
         if (action && action.authorize(agent)) {
           action.perform(room, agent);
         } else {
@@ -45,16 +48,16 @@ export class Engine {
         if (cell) {
           cell.owner = agent;
         }
-      })
+      });
     });
   }
 
-  start() { 
+  start() {
     this.clock.start();
-    debug('started engine.') 
+    debug('started engine.');
   }
-  pause() { 
-    this.clock.pause(); 
-    debug('paused engine.')
+  pause() {
+    this.clock.pause();
+    debug('paused engine.');
   }
 }

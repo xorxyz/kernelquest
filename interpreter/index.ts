@@ -1,16 +1,16 @@
-/* 
+/*
  * xor's interpreted language
- * manipulate typescript objects with js's reflection capabilities 
+ * manipulate typescript objects with js's reflection capabilities
  */
 
-import { Stack } from "../lib/stack";
+import { Stack } from 'xor4-lib/stack';
 import { Compiler } from './compiler';
-import { Factor, Term } from "./types";
+import { Factor, Term } from './types';
 
 export class Interpretation {
-  private level = 0
-  private stacks: Array<any>
-  private term: Term
+  private level = 0;
+  private stacks: Array<any>;
+  private term: Term;
 
   constructor(term: Term) {
     this.term = term;
@@ -40,10 +40,10 @@ export class Interpreter {
   stack: Stack<Factor> = new Stack();
   compiler = new Compiler();
 
-  interpret (line: string): Interpretation {  
+  interpret(line: string): Interpretation {
     const term = this.compiler.compile(line);
     console.log('line:', line, 'term:', term);
-    
+
     const interpretation = new Interpretation(term);
 
     interpretation.run(this.stack);

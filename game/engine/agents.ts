@@ -1,15 +1,16 @@
-import { getRandomDirection, Points, Vector } from '../../lib/math';
-import { Stack } from '../../lib/stack';
-import { Queue } from '../../lib/queue';
+import { getRandomDirection, Points, Vector } from 'xor4-lib/math';
+import { Stack } from 'xor4-lib/stack';
+import { Queue } from 'xor4-lib/queue';
+import { debug } from 'xor4-lib/logging';
+import { Colors, esc } from 'xor4-lib/esc';
+import { Compiler } from 'xor4-interpreter/compiler';
+import { Interpretation } from 'xor4-interpreter';
+import { Factor } from 'xor4-interpreter/types';
 import { Equipment, Item } from './things';
-import { Action, MoveAction, RotateAction, StepAction } from './actions';
+import { Action, MoveAction } from './actions';
 import { Cell, Room } from './world';
-import { debug } from '../../lib/logging';
-import { Compiler } from '../../interpreter/compiler';
-import { Colors, esc } from '../../lib/esc';
-import { Interpretation } from '../../interpreter';
-import { Factor } from '../../interpreter/types';
-import { RuntimeError } from '../../_deprecated/files/language';
+
+export abstract class RuntimeError extends Error {}
 
 export class HP extends Points {}
 export class SP extends Points {}
@@ -23,23 +24,23 @@ export abstract class AgentType {
 }
 
 export class Agent {
-  cycle: number = 0
-  name: string = ''
-  type: AgentType
-  room: Room
-  cell: Cell
-  position: Vector = new Vector(0, 0)
-  direction: Vector = new Vector(1, 0)
-  velocity: Vector = new Vector(0, 0)
-  hp = new HP()
-  sp = new SP()
-  mp = new MP()
-  gp = new GP()
-  holding: Item | null = null
-  private queue: Queue<Action> = new Queue()
-  private stack: Stack<Factor> = new Stack()
-  private compiler: Compiler = new Compiler()
-  private inventory: Array<Item | Equipment> = []
+  cycle: number = 0;
+  name: string = '';
+  type: AgentType;
+  room: Room;
+  cell: Cell;
+  position: Vector = new Vector(0, 0);
+  direction: Vector = new Vector(1, 0);
+  velocity: Vector = new Vector(0, 0);
+  hp = new HP();
+  sp = new SP();
+  mp = new MP();
+  gp = new GP();
+  holding: Item | null = null;
+  private queue: Queue<Action> = new Queue();
+  private stack: Stack<Factor> = new Stack();
+  private compiler: Compiler = new Compiler();
+  private inventory: Array<Item | Equipment> = [];
 
   constructor(type: AgentType) {
     this.type = type;
@@ -49,7 +50,7 @@ export class Agent {
     });
   }
 
-  get isAlive() { 
+  get isAlive() {
     return this.hp.value > 0;
   }
 
@@ -57,12 +58,12 @@ export class Agent {
     return this.type.appearance;
   }
 
-  looksAt () {
+  looksAt() {
     return this.position.clone().add(this.direction);
   }
 
-  enter (room: Room) {
-    this.room = room
+  enter(room: Room) {
+    this.room = room;
   }
 
   give(item: Item|Equipment) {
@@ -98,41 +99,41 @@ export class Agent {
 }
 
 export class Cherub extends AgentType {
-  appearance = '👼'
-  name = 'cherub'
-  capabilities = []
+  appearance = '👼';
+  name = 'cherub';
+  capabilities = [];
 }
 export class Fairy extends AgentType {
-  appearance = '🧚'
-  name = 'fairy'
-  capabilities = []
+  appearance = '🧚';
+  name = 'fairy';
+  capabilities = [];
 }
 export class Elf extends AgentType {
-  appearance = '🧝'
-  name = 'elf'
-  capabilities = []
+  appearance = '🧝';
+  name = 'elf';
+  capabilities = [];
 }
 export class Wizard extends AgentType {
-  appearance = '🧙'
-  name = 'wizard'
-  capabilities = []
+  appearance = '🧙';
+  name = 'wizard';
+  capabilities = [];
 }
 
 export class CursorAgentType extends AgentType {
-  appearance = esc(Colors.Bg.White) + esc(Colors.Fg.Black) + 'AA'
-  name = 'cursor'
-  capabilities = []
+  appearance = `${esc(Colors.Bg.White) + esc(Colors.Fg.Black)}AA`;
+  name = 'cursor';
+  capabilities = [];
 }
 
 export class Hero extends Agent {
-  type: Cherub | Fairy | Elf | Wizard
-  experience: number = 0
+  type: Cherub | Fairy | Elf | Wizard = new Cherub();
+  experience: number = 0;
   get level() { return 1; }
 }
 
 export class Cursor extends Agent {
-  type: CursorAgentType
-  cursor: null
+  type: CursorAgentType = new CursorAgentType();
+  cursor: null;
 }
 
 export abstract class NPC extends AgentType {}
@@ -140,9 +141,8 @@ export abstract class Friend extends AgentType {}
 export abstract class Critter extends AgentType {}
 export abstract class Foe extends AgentType {}
 
-
 export class Generator extends Agent {
-  n: number
+  n: number;
 }
 
 abstract class Capability {
@@ -150,8 +150,8 @@ abstract class Capability {
 }
 
 export class RandomWalkCapability extends Capability {
-  delayMs: number
-  timer: NodeJS.Timeout
+  delayMs: number;
+  timer;
 
   constructor(delayMs: number = 1000) {
     super();
@@ -171,7 +171,7 @@ export class RandomWalkCapability extends Capability {
 }
 
 export class Sheep extends Critter {
-  appearance = '🐑'
-  name = 'sheep'
-  capabilities = [new RandomWalkCapability()]
+  appearance = '🐑';
+  name = 'sheep';
+  capabilities = [new RandomWalkCapability()];
 }

@@ -1,13 +1,6 @@
 <template>
-  <div class="bg-dark br3 mv4 pa4" style="box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2);">
-    <div class="flex items-center justify-between mb1">
-      <div></div>
-      <div>
-        <a class="button pv1 ph3 br3 pointer bg-purple link ph4 pv2 mb3 white">Create</a>
-      </div>
-    </div>
-
-    <table class="table lh-copy f4 is-striped w-100 mt4 mb1">
+  <div class="card">
+    <table class="table lh-copy f4 is-striped w-100 mv1">
       <thead>
         <tr class="tl">
           <th>Title</th>

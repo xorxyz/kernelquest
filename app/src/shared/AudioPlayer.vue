@@ -1,13 +1,13 @@
 <template>
-  <div class="mv1 flex justify-between items-center w-100">
+  <div class="flex justify-between items-center w-100">
     <div id="music_player">
-      <button id="mute_button" class="mv1" @click="togglePause">
+      <button id="mute_button" class="" @click="togglePause">
         {{ label }}
       </button>
       <audio 
         preload="auto" autoplay loop hidden muted
         id="audio_player"
-        class="ma2"
+        class="hidden"
         src="https://www.kernel.quest/music/village.wav">
         <source src="https://www.kernel.quest/music/dungeon.wav" type="audio/wav">
         <source src="https://www.kernel.quest/music/village.wav" type="audio/wav">

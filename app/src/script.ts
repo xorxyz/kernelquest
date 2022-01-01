@@ -1,9 +1,9 @@
 import * as VueRouter from 'vue-router';
 import * as vue from "vue";
 import App from "./App.vue";
-import Scoreboard from "./scoreboard/Scoreboard.vue";
-import Levels from "./listing/Levels.vue";
-import Summary from "./listing/Summary.vue";
+import Score from "./score/Score.vue";
+import Levels from "./levels/Levels.vue";
+import SingleLevel from "./levels/SingleLevel.vue";
 import Editor from "./editor/Editor.vue";
 import Game from "./game/Game.vue";
 import { Engine } from "../../game/engine";
@@ -13,9 +13,9 @@ const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
   routes: [
     { path: '/', redirect: '/scoreboard' },
-    { path: '/scoreboard', component: Scoreboard },
+    { path: '/scoreboard', component: Score },
     { path: '/levels', component: Levels },
-    { path: '/levels/:levelId', component: Summary },
+    { path: '/levels/:levelId', component: SingleLevel },
     { path: '/editor', component: Editor },
     { path: '/game', component: Game },
   ],

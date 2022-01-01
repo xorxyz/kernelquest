@@ -1,10 +1,10 @@
-const Xs = [0,1,0,-1];
-const Ys = [-1,0,1,0];
+export const Xs = [0, 1, 0, -1];
+export const Ys = [-1, 0, 1, 0];
 
 /** 2d vector (xy) */
 export class Vector {
-  x: number
-  y: number
+  x: number;
+  y: number;
 
   constructor(x: number = 0, y: number = 0) {
     this.x = x;
@@ -16,7 +16,7 @@ export class Vector {
     return new Vector(obj.x, obj.y);
   }
 
-  isZero () {
+  isZero() {
     return this.x === 0 && this.y === 0;
   }
 
@@ -107,15 +107,15 @@ export class Vector {
     );
   }
 
-  absolute () {
+  absolute() {
     this.x = Math.sign(this.x);
     this.y = Math.sign(this.y);
     return this;
   }
 
-  invert () {
-    this.x = this.x * -1;
-    this.y = this.y * -1;
+  invert() {
+    this.x *= -1;
+    this.y *= -1;
     return this;
   }
 }
@@ -131,8 +131,8 @@ export class RandomVector extends Vector {
 }
 
 export class Rectangle {
-  position: Vector
-  size: Vector
+  position: Vector;
+  size: Vector;
 
   constructor(position: Vector, size: Vector) {
     this.position = position;
@@ -198,7 +198,7 @@ export function isNumeric(str: string) {
   return !isNaN(str as any) && !isNaN(parseFloat(str));
 }
 
-export type TakeN<T> = (a: Array<T>) => Array<Array<T>>
+export type TakeN<T> = (arr: Array<T>) => Array<Array<T>>
 
 /** [ 1, 2, 3, 4 ] -> [[ 1, 2 ],[ 3, 4 ]] */
 export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
@@ -213,8 +213,8 @@ export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
 }, [[]]);
 
 export abstract class Points {
-  value: number = 0
-  cap: number = 10
+  value: number = 10;
+  cap: number = 10;
 
   increase(amount: number) {
     this.value = Math.min(this.value + amount, this.cap);

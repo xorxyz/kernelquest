@@ -4,10 +4,10 @@
 import { EventEmitter } from 'events';
 
 export default class Clock extends EventEmitter {
-  private stepMsDelay: number
-  private tick: number = 0
-  private edge: Boolean = false
-  private timeoutRef: NodeJS.Timeout
+  private stepMsDelay: number;
+  private tick: number = 0;
+  private edge: Boolean = false;
+  private timeoutRef;
 
   constructor(msDelay: number) {
     super();

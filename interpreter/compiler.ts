@@ -1,21 +1,21 @@
-import { Scanner, Token, TokenType } from "./lexer";
-import { Factor, Term } from "./types";
-import literals, { LiteralNumber, LiteralString, Quotation } from "./literals";
-import operators from "./operators";
-import combinators from "./combinators";
-import { debug } from "../app/src/utils";
+import { debug } from 'xor4-lib/utils';
+import { Scanner, Token, TokenType } from './lexer';
+import { Factor, Term } from './types';
+import literals, { LiteralNumber, LiteralString, Quotation } from './literals';
+import operators from './operators';
+import combinators from './combinators';
 
 export type Dictionary = Record<string, Factor>
 
 export class Compiler {
-  private scanner = new Scanner()
-  tokens: Array<Token>
+  private scanner = new Scanner();
+  tokens: Array<Token>;
   dict: Dictionary = {
     ...literals,
     ...operators,
-    ...combinators
-  }
-  level = 0
+    ...combinators,
+  };
+  level = 0;
 
   compile(code: string): Term {
     debug('compiling: ', code);
@@ -31,12 +31,12 @@ export class Compiler {
     return term;
   }
 
-  parseToken (term: Array<Factor>, token: Token): Term {
+  parseToken(term: Array<Factor>, token: Token): Term {
     if (!token.lexeme) return term;
 
     let factor: Factor | undefined;
-    let previous = term[term.length - 1];
-  
+    const previous = term[term.length - 1];
+
     debug('parsing token: ', token);
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
@@ -51,10 +51,10 @@ export class Compiler {
       }
     }
 
-    console.log('factor?', factor)
+    console.log('factor?', factor);
 
     switch (token.type) {
-      case TokenType.STRING: 
+      case TokenType.STRING:
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation');
           previous.add(new LiteralString(token.lexeme));
@@ -63,7 +63,7 @@ export class Compiler {
           factor = new LiteralString(token.literal as unknown as string);
         }
         break;
-      case TokenType.NUMBER: 
+      case TokenType.NUMBER:
         if (this.level > 0 && previous instanceof Quotation) {
           debug('adding token to quotation', token);
           previous.add(new LiteralNumber(Number(token.lexeme)));
@@ -96,7 +96,7 @@ export class Compiler {
     }
 
     if (factor) term.push(factor);
-    
+
     debug('now at level:', this.level);
 
     return term;

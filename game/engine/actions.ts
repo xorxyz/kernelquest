@@ -1,8 +1,8 @@
-import { Vector } from '../../lib/math';
+import { Vector } from 'xor4-lib/math';
 import { TTY } from '../ui/tty';
-import { Agent, AgentType, Critter, NPC } from './agents';
+import { Agent, AgentType } from './agents';
 import { bounds, Keys } from '../constants';
-import { Equipment, Item, Thing } from './things';
+import { Item, Thing } from './things';
 import { Room } from './world';
 
 export abstract class ActionResult {}
@@ -11,9 +11,9 @@ export class ActionFailure extends ActionResult {}
 
 export abstract class Action {
   abstract cost: number
-  private context: Room | null = null
-  private subject: Agent | null = null
-  private object: Agent | Thing | null = null
+  private context: Room | null = null;
+  private subject: Agent | null = null;
+  private object: Agent | Thing | null = null;
   abstract perform(context: Room, subject: Agent): ActionResult
 
   authorize(agent: Agent) {
@@ -23,16 +23,16 @@ export abstract class Action {
 }
 
 export class NoAction extends Action {
-  cost: 0
+  cost: 0;
   perform() {
     return new ActionSuccess();
   }
 }
 
 export class SwitchModeAction extends Action {
-  cost: 0
-  terminal: TTY
-  constructor (terminal: TTY) {
+  cost: 0;
+  terminal: TTY;
+  constructor(terminal: TTY) {
     super();
     this.terminal = terminal;
   }
@@ -43,9 +43,9 @@ export class SwitchModeAction extends Action {
 }
 
 export class MoveAction extends Action {
-  cost: 5
-  direction: Vector
-  constructor (direction: Vector) {
+  cost: 5;
+  direction: Vector;
+  constructor(direction: Vector) {
     super();
     this.direction = direction;
   }
@@ -61,18 +61,18 @@ export class MoveAction extends Action {
 }
 
 class Ring<T> {
-  values: Array<T>
-  constructor (arr: Array<T>) {
-    this.values = arr
+  values: Array<T>;
+  constructor(arr: Array<T>) {
+    this.values = arr;
   }
-  next (value: T) {
+  next(value: T) {
     const index = this.values.findIndex((x) => x === value);
     console.log('index', index);
-    if (index == -1) throw new Error('invalid value');
+    if (index === -1) throw new Error('invalid value');
     const y = this.values[index + 1];
     return y === undefined
-      ? this.values[0] 
-      : y
+      ? this.values[0]
+      : y;
   }
 }
 
@@ -83,24 +83,24 @@ const directionRing = new Ring([
   new Vector(0, -1),
 ]);
 
-function rotateDirection (v: Vector): boolean {
+function rotateDirection(v: Vector): boolean {
   try {
-    console.log('direction', v)
+    console.log('direction', v);
     const index = directionRing.values.findIndex((x: Vector) => x.equals(v));
-    console.log('index', index)
-    const next = directionRing.values[index === directionRing.values.length - 1 ? 0 : index + 1]
-    console.log('next', next)
+    console.log('index', index);
+    const next = directionRing.values[index === directionRing.values.length - 1 ? 0 : index + 1];
+    console.log('next', next);
     v.setXY(next.x, next.y);
-    return true
+    return true;
   } catch (err) {
-    console.log('error!', err)
+    console.log('error!', err);
     return false;
   }
 }
 
 export class RotateAction extends Action {
-  cost: 0
-  authorize() { return true }
+  cost: 0;
+  authorize() { return true; }
   perform(ctx, agent: Agent) {
     const result = rotateDirection(agent.direction)
       ? new ActionSuccess()
@@ -113,8 +113,8 @@ export class RotateAction extends Action {
 }
 
 export class StepAction extends Action {
-  cost: 0
-  authorize() { return true }
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
     if (agent.velocity.opposes(agent.direction) ||
         agent.velocity.isZero()) {
@@ -127,8 +127,8 @@ export class StepAction extends Action {
 }
 
 export class BackStepAction extends Action {
-  cost: 0
-  authorize() { return true }
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
     if (agent.velocity.opposes(agent.direction) ||
         agent.velocity.isZero()) {
@@ -140,10 +140,9 @@ export class BackStepAction extends Action {
   }
 }
 
-
 export class GetAction extends Action {
-  cost: 0
-  authorize() { return true }
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
     const cell = ctx.cellAt(agent.looksAt());
     console.log('cell', cell);
@@ -161,8 +160,8 @@ export class GetAction extends Action {
 }
 
 export class PutAction extends Action {
-  cost: 0
-  authorize() { return true }
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
     const cell = ctx.cellAt(agent.looksAt());
     if (!cell.items.peek()) {
@@ -175,11 +174,10 @@ export class PutAction extends Action {
   }
 }
 
-
 export class SpawnAction extends Action {
-  cost: 0
-  type: AgentType
-  constructor (type: AgentType) {
+  cost: 0;
+  type: AgentType;
+  constructor(type: AgentType) {
     super();
     this.type = type;
   }
@@ -197,17 +195,17 @@ export class SpawnAction extends Action {
 export abstract class TerminalAction extends Action {}
 
 export class MoveCursorAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  direction: Vector
-  constructor (terminal: TTY, direction: Vector) {
+  cost: 0;
+  terminal: TTY;
+  direction: Vector;
+  constructor(terminal: TTY, direction: Vector) {
     super();
     this.terminal = terminal;
     this.direction = direction;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
-    const withinBounds = true
+    const withinBounds = true;
     if (withinBounds) {
       this.terminal.cursorPosition.add(this.direction);
     }
@@ -215,19 +213,18 @@ export class MoveCursorAction extends TerminalAction {
   }
 }
 
-
 export class MoveCursorToAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  destination: Vector
-  constructor (terminal: TTY, destination: Vector) {
+  cost: 0;
+  terminal: TTY;
+  destination: Vector;
+  constructor(terminal: TTY, destination: Vector) {
     super();
     this.terminal = terminal;
     this.destination = destination;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
-    const withinBounds = true
+    const withinBounds = true;
     if (withinBounds) {
       this.terminal.cursorPosition.copy(this.destination);
     }
@@ -236,16 +233,16 @@ export class MoveCursorToAction extends TerminalAction {
 }
 
 export class SelectCellAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  constructor (terminal: TTY) {
+  cost: 0;
+  terminal: TTY;
+  constructor(terminal: TTY) {
     super();
     this.terminal = terminal;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
     this.terminal.switchModes();
-    const expr = this.terminal.cursorPosition.x + ' ' + this.terminal.cursorPosition.y + ' xy';
+    const expr = `${this.terminal.cursorPosition.x} ${this.terminal.cursorPosition.y} xy`;
     this.terminal.lineEditor.line = expr;
     console.log('line', expr);
     console.log(this.terminal.lineEditor);

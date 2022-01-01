@@ -1,5 +1,5 @@
 <template>
-  <div class="bt bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 bg-black">
+  <div class="bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 bg-black-80 br2">
     <div id="messages" 
       class="h-100 flex flex-column w-100 white overflow-y-scroll" 
       style="height: 12rem;">
@@ -13,7 +13,7 @@
         type="text" 
         ref="input"
         @change="onChange"
-        class="mh1 pa1 w-100 bg-black white bw0 b--solid monospace"/>
+        class="ma1 pa1 w-100 bg-black-10 br2 white bw0 b--solid monospace"/>
     </div>
   </div> 
 </template>

@@ -1,56 +1,84 @@
 <template>
-<div class="bw1 br1 b--white h-100 flex flex-column justify-start items-start">
-  <div class="bg-dark br3 mv4 flex flex-column justify-start items-start br3 shadow ph4 pv3" style="box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2);">
-    <header class="flex tl w-100 pa1 bb bw05 ph2 pv2">
-      <FileMenu :room="$engine.world.rooms[0]"/>
-      <select id="run_menu" class="mh1">
-        <option value="run">-- Run --</option>
-        <option value="play_level">▶️ Play level</option>
-      </select>
-    </header>
+  <div class="">
+    <div class="card">
+      <div class="flex tl w-100 mb1 bw05 br2">
+        <FileMenu :room="$engine.world.rooms[0]"/>
+        <select id="run_menu" class="">
+          <option value="run">-- Run --</option>
+          <option value="play_level">▶️ Play level</option>
+        </select>
+      </div>
 
-    <div class="flex flex-column ba">
-      <div class="flex w-100 bg-black">
-        <div class="flex br h-100 flex-column">
-          <div class="ma1 flex">
-            <button class="mr1 ph2 bl bt br flex items-center pointer f6">🖐️Move</button>
-            <button class="mr1 ph2 bl bt br flex items-center pointer f6 bg-gray white">🖌️Paint</button>
-            <button class="mr1 ph2 bl bt br flex items-center pointer f6">✂️Select</button>
+      <div class="flex flex-column mv1">
+        <div id="top-half" class="flex w-100 mv1">
+          <div class="bg-black-80 mr1 pa1 br2">
+            <!--  -->
+            <div id="tools" class="flex pa1 pb2">
+              <button class="mr1 ph2 bl bt br flex items-center pointer f6">🖐️Move</button>
+              <button class="mr1 ph2 bl bt br flex items-center pointer f6 bg-gray white">🖌️Paint</button>
+              <button class="mr1 ph2 bl bt br flex items-center pointer f6">✂️Select</button>
+            </div>
+            <!--  -->
+            <div id="palette" tabindex="1" class="white pointer h-100">
+              <div class="flex flex-wrap">
+                <div v-for="emoji in StandardGlyphs"
+                  :key="emoji" 
+                  :class="{ 'bg-blue black': selected === emoji }"
+                  class="f5 emoji"
+                  @click="select(emoji)">
+                  {{ emoji }}
+                </div>
+              </div>
+            </div>
           </div>
-          <Palette/>
+          <div class="flex w-100 ml1 br2">
+            <!--  -->
+            <div id="grid" autofocus tabindex="0" class="f3 pointer bg-black-80 br2">
+              <div class="flex" v-for="row in rows">
+                <div class="flex w2 h2 items-center justify-center" v-for="cell in row">
+                  {{ cell.glyph }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="flex w-100">
-          <Grid :room="$engine.world.rooms[0]"/>
+        <div id="bottom-half" class="mv1">
+          <GameTerminal/>
         </div>
       </div>
-      <GameTerminal/>
+
+      <AudioPlayer/>
     </div>
-
-    <AudioPlayer/>
-
-  </div>
-</div>
+    </div>
 </template>
 
 <script lang="ts">
-import Grid from './Grid.vue';
-import Palette from './Palette.vue';
+import { defineComponent } from 'vue';
+import { StandardGlyphs } from "../constants";
+import AudioPlayer from '../shared/AudioPlayer.vue';
 import FileMenu from './FileMenu.vue';
 import GameTerminal from './GameTerminal.vue';
-import AudioPlayer from '../shared/AudioPlayer.vue';
 
-export default {
+export default defineComponent({
   components: {
-    Grid,
-    Palette,
     FileMenu,
     GameTerminal,
     AudioPlayer
   },
+  methods: {
+    select (selected) {
+      this.selected = selected;
+    }
+  },
   data() {
     return {
-      levelId: 'wip'
+      StandardGlyphs,
+      levelId: 'wip',
+      selected: '##',
+      rows: new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((_, x) => {
+        return { x, y, glyph: '..' }
+      }))
     };
   },
-};
+});
 </script>
