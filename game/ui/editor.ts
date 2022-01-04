@@ -1,10 +1,12 @@
-import { Vector } from '../../lib/math';
+import { Vector } from 'xor4-lib/math';
 import { Keys } from '../constants';
 import { LINE_LENGTH } from './components';
 
+declare const Buffer;
+
 export class Editor {
-  line: string = ''
-  readonly cursor: Vector = new Vector()
+  line: string = '';
+  readonly cursor: Vector = new Vector();
 
   get value() {
     return this.line;
@@ -21,7 +23,7 @@ export class Editor {
 
     if (this.line.length === LINE_LENGTH - 6) return false;
 
-    console.log('inserting str', str)
+    console.log('inserting str', str);
 
     const bytes = Buffer.from(str, 'hex');
     const chars = this.line.split('');
@@ -30,7 +32,7 @@ export class Editor {
     this.line = [...chars.slice(0, x), bytes, ...chars.slice(x)].join('');
     this.cursor.x++;
 
-    console.log('editr line: "' + this.line + '"');
+    console.log(`editr line: "${this.line}"`);
 
     return true;
   }

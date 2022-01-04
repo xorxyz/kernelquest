@@ -2,10 +2,9 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import { esc, Cursor, Style, Colors } from '../../lib/esc';
-import { TakeN, takeN, Vector } from '../../lib/math';
-import { Agent } from '../engine/agents';
-import { Cell } from '../engine/world';
+import { esc, Cursor, Style, Colors } from 'xor4-lib/esc';
+import { TakeN, takeN, Vector } from 'xor4-lib/math';
+import { Cell } from '../engine/cell';
 import { TTY } from './tty';
 
 const { Fg, Bg } = Colors;
@@ -17,38 +16,38 @@ export const N_OF_LINES = 7;
 export const CELL_WIDTH = 2;
 
 export abstract class UiComponent {
-  abstract render(terminal: TTY): Array<string>
-
-  position: Vector
-  style: string = ''
+  public position: Vector;
+  public style: string = '';
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
   }
 
+  abstract render(terminal: TTY): Array<string>
+
   compile(terminal: TTY): string {
     const { x, y } = this.position;
 
-    return this.style + this.render(terminal)
+    return esc(this.style) + this.render(terminal)
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
 }
 
-const title = 'kernel.quest';
+const title = 'xor4';
 
 export class Navbar extends UiComponent {
-  style = esc(Style.Invert)
-  render({ player }) {
+  style = esc(Style.Invert);
+  render() {
     return [(
-      title.padEnd(SCREEN_WIDTH/2 - 1, ' ') + 
-      String(player.cycle).padStart(SCREEN_WIDTH/2 - 1, ' ')
+      title.padEnd(SCREEN_WIDTH / 2 - 1, ' ') +
+      String('').padStart(SCREEN_WIDTH / 2 - 1, ' ')
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
 
 export class Axis extends UiComponent {
-  style = esc(Style.Dim)
+  style = esc(Style.Dim);
   render() {
     const x = '  0 1 2 3 4 5 6 7 8 9 A B C D E F';
     const y = x.trim().split(' ');
@@ -63,27 +62,27 @@ export class Axis extends UiComponent {
 export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
-  render({ player }) {
-    return (player as Agent).room.render();
+  render({ room }: TTY) {
+    return room.render();
   }
 }
 
-const nothing = n => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style.Reset)}`;
+const nothing = (n) => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style.Reset)}`;
 
 export class Sidebar extends UiComponent {
-  render({ player }) {
+  render({ player }: TTY) {
     return [
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(player.type.appearance + ' ' + player.type.name).padEnd(11)} │`,
-      `│ hand: ${((player.holding?.appearance + player.holding?.name)||nothing(11)).padEnd(11)} │`,
+      `│ path: ${(`${player.type.appearance} ${player.type.name}`).padEnd(11)} │`,
+      `│ hand: ${((player.holds?.label) || nothing(11)).padEnd(11)} │`,
       '│                   │',
-      '│ mind:             │',
-      `│ 0: ${nothing(10)}     │`,
-      `│ 1: ${nothing(10)}     │`,
-      `│ 2: ${nothing(10)}     │`,
-      `│ 3: ${nothing(10)}     │`,
-      `│ 4: ${nothing(10)}     │`,
+      '│                   │',
+      '│                   │',
+      '│                   │',
+      '│                   │',
+      '│                   │',
+      '│                   │',
       '│                   │',
       '└───────────────────┘',
     ];
@@ -91,8 +90,8 @@ export class Sidebar extends UiComponent {
 }
 
 export class Box extends UiComponent {
-  width: number
-  private lines: Array<string> = []
+  width: number;
+  private lines: Array<string> = [];
 
   constructor(w, x, y, lines: Array<string>) {
     super(x, y);
@@ -116,7 +115,7 @@ const Points = (bg, n) => {
 
   return (
     esc(Style.in(Fg.Black, bg, str.slice(0, n))) +
-    esc(Style.in(Fg.White, Bg.Black, str.slice(n))) + 
+    esc(Style.in(Fg.White, Bg.Black, str.slice(n))) +
     esc(Style.Reset)
   );
 };
@@ -168,7 +167,7 @@ export class Input extends UiComponent {
 const dummyRoom: Array<Array<any>> = [];
 
 export class Speech extends UiComponent {
-  render({ player }) {
+  render() {
     return dummyRoom
       .map(([agent, message]) => [
         esc(Style.Invert),

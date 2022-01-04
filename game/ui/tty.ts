@@ -1,23 +1,25 @@
-import { Cursor, esc } from '../../lib/esc';
-import { Vector } from '../../lib/math';
+import { Cursor, esc } from 'xor4-lib/esc';
+import { Vector } from 'xor4-lib/math';
 import { CLOCK_MS_DELAY, Keys, Signals } from '../constants';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
-import { 
-  Action, 
-  BackStepAction, 
-  GetAction, 
-  MoveCursorAction, 
-  MoveCursorToAction, 
-  PutAction, 
-  RotateAction, 
-  SelectCellAction, 
-  StepAction, 
-  SwitchModeAction, 
-  TerminalAction
+import {
+  Action,
+  BackStepAction,
+  GetAction,
+  MoveCursorAction,
+  MoveCursorToAction,
+  PutAction,
+  RotateAction,
+  SelectCellAction,
+  StepAction,
+  SwitchModeAction,
+  TerminalAction,
 } from '../engine/actions';
 import { Hero } from '../engine/agents';
+import { Engine } from '../engine';
+import { Room } from '../engine/room';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -28,44 +30,44 @@ export interface IState {
   stdout: Array<string>
 }
 
-const host = process.env.HOST || 'localhost:3000';
-
 export interface IConnection {
-  write: (str: string) => void
-  player: Hero
+  write: (str: string) => void,
+  player: Hero,
+  room: Room
 }
 
 export class TTY {
-  id: number
-  connection: IConnection
-  cursorPosition: Vector = new Vector()
-  state: IState
-  lineEditor: Editor = new Editor()
-  view: MainView
-  stdout: Array<string>
+  public id: number;
+  public player: Hero;
+  public room: Room;
+  public connection: IConnection;
+  public cursorPosition: Vector = new Vector();
+  public state: IState;
+  public lineEditor: Editor = new Editor();
+  public view: MainView;
+  public stdout: Array<string>;
+  public waiting = false;
+  public engine: Engine;
 
-  waiting = false
-
-  private timer: NodeJS.Timeout
-
-  get player() {
-    return this.connection.player;
-  }
+  private timer;
+  private dummyRoom = new Room(0, 0);
 
   constructor(connection: IConnection) {
     this.connection = connection;
-    this.view = new MainView()
+    this.player = connection.player;
+    this.room = connection.room;
+    this.view = new MainView();
     this.state = {
       termMode: true,
       prompt: '$ ',
       line: '',
       stdout: [
-        `xor/tcp (${host})`,
         '',
-        'login: guest',
-        'password:',
         '',
-        'Last login: 2038-01-01',
+        '',
+        '',
+        '',
+        '',
         '',
       ],
     };
@@ -78,12 +80,11 @@ export class TTY {
     this.render();
   }
 
-  disconnect () {
-    console.log('TODO')
+  disconnect() {
+    clearInterval(this.timer);
   }
 
   switchModes() {
-    // return // disable for now
     this.state.termMode = !this.state.termMode;
     this.drawCursor();
   }
@@ -91,11 +92,12 @@ export class TTY {
   handleInput(str: string) {
     if (this.waiting) return;
 
-    console.log('input str was:', str)
+    console.log('input str was:', str);
 
     if (str === Signals.SIGINT) {
-      console.log('received sigint!')
-      return this.disconnect();
+      console.log('received sigint!');
+      this.disconnect();
+      return;
     }
 
     if (this.state.termMode) {
@@ -104,9 +106,9 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.player.room, this.player)
+        action.perform(this.dummyRoom, this.connection.player);
       } else if (action) {
-        this.player.schedule(action);
+        this.connection.player.schedule(action);
       }
     }
 
@@ -118,23 +120,27 @@ export class TTY {
       console.log('enter', this.lineEditor.value, '.');
       if (this.lineEditor.value) {
         const expr = this.lineEditor.value.trim();
-        console.log('got line value', expr)
+        console.log('got line value', expr);
 
         this.state.stdout.push(this.state.prompt + expr);
         this.state.line = '';
         this.lineEditor.reset();
         this.waiting = true;
 
-        this.player.exec(expr);
+        this.connection.player.mind.exec(expr);
+
+        this.state.stdout.push(
+          `[${this.connection.player.mind.stack.map((t) => t.lexeme).join(' ')}]`,
+        );
 
         const action = this.getActionForWord(expr);
 
-        console.log(action)
+        console.log(action);
 
         if (action instanceof TerminalAction) {
-          action.perform(this.player.room, this.player)
+          action.perform(this.dummyRoom, this.connection.player);
         } else if (action) {
-          this.player.schedule(action);
+          this.connection.player.schedule(action);
         }
 
         this.waiting = false;
@@ -149,23 +155,23 @@ export class TTY {
     this.render();
   }
 
-  getActionForWord(str: string): Action | null {
+  getActionForWord(str: string): Action | null {
     let action: Action | null = null;
     switch (str) {
       case 'rotate':
-        action = new RotateAction()
+        action = new RotateAction();
         break;
       case 'step':
-        action = new StepAction()
+        action = new StepAction();
         break;
       case 'backstep':
-        action = new BackStepAction()
+        action = new BackStepAction();
         break;
       case 'get':
-        action = new GetAction()
+        action = new GetAction();
         break;
       case 'put':
-        action = new PutAction()
+        action = new PutAction();
         break;
       default:
         break;

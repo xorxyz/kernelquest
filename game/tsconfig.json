@@ -1,36 +1,7 @@
 {
-  "compilerOptions": {
-    "noEmit": true,
-    "outDir": "build",
-    "target":"ES2018",
-    "module": "commonjs",
-    "lib": [
-			"es2018"
-		],
-    "declaration": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": false,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "experimentalDecorators": true,
-    "strictPropertyInitialization":false,
-    "typeRoots": [
-      "./node_modules/@types"
-		]
-  },
+  "extends": "../tsconfig.json",
 	"include": [
-		"**/*.ts", 
-    "../_deprecated/files/language.ts"
-  ],
-	"exclude": [
-    "node_modules",
-    "var"
-	]
+		"engine/**/*.ts",
+		"ui/**/*.ts",
+  ]
 }

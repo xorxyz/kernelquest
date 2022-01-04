@@ -1,20 +1,18 @@
-import { Vector } from '../../lib/math';
+import { DirectionRing, Vector } from 'xor4-lib/math';
 import { TTY } from '../ui/tty';
-import { Agent, AgentType, Critter, NPC } from './agents';
-import { bounds, Keys } from '../constants';
-import { Equipment, Item, Thing } from './things';
-import { Room } from './world';
+import { Agent, AgentType } from './agents';
+import { Keys } from '../constants';
+import { Thing } from './things';
+import { Room } from './room';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}
 export class ActionFailure extends ActionResult {}
 
 export abstract class Action {
+  abstract name: string
   abstract cost: number
-  private context: Room | null = null
-  private subject: Agent | null = null
-  private object: Agent | Thing | null = null
-  abstract perform(context: Room, subject: Agent): ActionResult
+  abstract perform(context: Room, subject: Agent, object?: Agent | Thing): ActionResult
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
@@ -23,16 +21,18 @@ export abstract class Action {
 }
 
 export class NoAction extends Action {
-  cost: 0
+  name = 'noop';
+  cost: 0;
   perform() {
     return new ActionSuccess();
   }
 }
 
 export class SwitchModeAction extends Action {
-  cost: 0
-  terminal: TTY
-  constructor (terminal: TTY) {
+  name = 'switch-mode';
+  cost: 0;
+  terminal: TTY;
+  constructor(terminal: TTY) {
     super();
     this.terminal = terminal;
   }
@@ -42,83 +42,42 @@ export class SwitchModeAction extends Action {
   }
 }
 
-export class MoveAction extends Action {
-  cost: 5
-  direction: Vector
-  constructor (direction: Vector) {
-    super();
-    this.direction = direction;
-  }
-  perform(ctx, agent: Agent) {
-    if (agent.velocity.opposes(this.direction) ||
-        agent.velocity.isZero()) {
-      agent.velocity.add(this.direction);
+export class RotateAction extends Action {
+  name = 'rotate';
+  cost: 0;
+  authorize() { return true; }
+  perform(ctx: Room, agent: Agent) {
+    if (this.rotateDirection(agent.body.direction)) {
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
     return new ActionFailure();
   }
-}
 
-class Ring<T> {
-  values: Array<T>
-  constructor (arr: Array<T>) {
-    this.values = arr
-  }
-  next (value: T) {
-    const index = this.values.findIndex((x) => x === value);
-    console.log('index', index);
-    if (index == -1) throw new Error('invalid value');
-    const y = this.values[index + 1];
-    return y === undefined
-      ? this.values[0] 
-      : y
-  }
-}
-
-const directionRing = new Ring([
-  new Vector(1, 0),
-  new Vector(0, 1),
-  new Vector(-1, 0),
-  new Vector(0, -1),
-]);
-
-function rotateDirection (v: Vector): boolean {
-  try {
-    console.log('direction', v)
-    const index = directionRing.values.findIndex((x: Vector) => x.equals(v));
-    console.log('index', index)
-    const next = directionRing.values[index === directionRing.values.length - 1 ? 0 : index + 1]
-    console.log('next', next)
-    v.setXY(next.x, next.y);
-    return true
-  } catch (err) {
-    console.log('error!', err)
-    return false;
-  }
-}
-
-export class RotateAction extends Action {
-  cost: 0
-  authorize() { return true }
-  perform(ctx, agent: Agent) {
-    const result = rotateDirection(agent.direction)
-      ? new ActionSuccess()
-      : new ActionFailure();
-
-    console.log(result);
-
-    return result;
+  rotateDirection(v: Vector): boolean {
+    try {
+      const index = DirectionRing.values.findIndex((x: Vector) => x.equals(v));
+      const next = DirectionRing.values[index === DirectionRing.values.length - 1 ? 0 : index + 1];
+      v.setXY(next.x, next.y);
+      return true;
+    } catch (err) {
+      console.log('error!', err);
+      return false;
+    }
   }
 }
 
 export class StepAction extends Action {
-  cost: 0
-  authorize() { return true }
-  perform(ctx: Room, agent: Agent) {
-    if (agent.velocity.opposes(agent.direction) ||
-        agent.velocity.isZero()) {
-      agent.velocity.add(agent.direction);
+  name = 'step';
+  cost: 0;
+  authorize() { return true; }
+  perform(ctx: Room, agent) {
+    if (agent.body.velocity.opposes(agent.body.direction) ||
+        agent.body.velocity.isZero()) {
+      agent.body.velocity.add(agent.body.direction);
+
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
@@ -127,12 +86,14 @@ export class StepAction extends Action {
 }
 
 export class BackStepAction extends Action {
-  cost: 0
-  authorize() { return true }
+  name = 'backstep';
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    if (agent.velocity.opposes(agent.direction) ||
-        agent.velocity.isZero()) {
-      agent.velocity.add(agent.direction.clone().invert());
+    if (agent.body.velocity.opposes(agent.body.direction) ||
+        agent.body.velocity.isZero()) {
+      agent.body.velocity.add(agent.body.direction.clone().invert());
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
@@ -140,19 +101,12 @@ export class BackStepAction extends Action {
   }
 }
 
-
 export class GetAction extends Action {
-  cost: 0
-  authorize() { return true }
+  name = 'get';
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    const cell = ctx.cellAt(agent.looksAt());
-    console.log('cell', cell);
-    if (cell.items.peek()) {
-      const item = cell.items.pop();
-      console.log('item', item);
-      if (item instanceof Item) {
-        agent.holding = item;
-      }
+    if (agent.get()) {
       return new ActionSuccess();
     }
 
@@ -161,13 +115,12 @@ export class GetAction extends Action {
 }
 
 export class PutAction extends Action {
-  cost: 0
-  authorize() { return true }
+  name = 'put';
+  cost: 0;
+  authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    const cell = ctx.cellAt(agent.looksAt());
-    if (!cell.items.peek()) {
-      cell.items.push(agent.holding);
-      agent.holding = null;
+    const targetCell = ctx.cellAt(agent.body.isLookingAt);
+    if (!targetCell.isBlocked && agent.drop()) {
       return new ActionSuccess();
     }
 
@@ -175,18 +128,19 @@ export class PutAction extends Action {
   }
 }
 
-
 export class SpawnAction extends Action {
-  cost: 0
-  type: AgentType
-  constructor (type: AgentType) {
+  name = 'spawn';
+  cost: 0;
+  type: AgentType;
+  constructor(type: AgentType) {
     super();
     this.type = type;
   }
+
   perform(ctx: Room, agent: Agent) {
     const spawned = new Agent(this.type);
-    spawned.position.copy(agent.position).add(agent.direction);
-    if (!bounds.contains(spawned.position)) {
+    spawned.body.position.copy(agent.body.position).add(agent.body.direction);
+    if (!Room.bounds.contains(spawned.body.position)) {
       return new ActionFailure();
     }
     ctx.add(spawned);
@@ -197,17 +151,18 @@ export class SpawnAction extends Action {
 export abstract class TerminalAction extends Action {}
 
 export class MoveCursorAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  direction: Vector
-  constructor (terminal: TTY, direction: Vector) {
+  name = 'move-cursor';
+  cost: 0;
+  terminal: TTY;
+  direction: Vector;
+  constructor(terminal: TTY, direction: Vector) {
     super();
     this.terminal = terminal;
     this.direction = direction;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
-    const withinBounds = true
+    const withinBounds = true;
     if (withinBounds) {
       this.terminal.cursorPosition.add(this.direction);
     }
@@ -215,19 +170,19 @@ export class MoveCursorAction extends TerminalAction {
   }
 }
 
-
 export class MoveCursorToAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  destination: Vector
-  constructor (terminal: TTY, destination: Vector) {
+  name = 'move-cursor-to';
+  cost: 0;
+  terminal: TTY;
+  destination: Vector;
+  constructor(terminal: TTY, destination: Vector) {
     super();
     this.terminal = terminal;
     this.destination = destination;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
-    const withinBounds = true
+    const withinBounds = true;
     if (withinBounds) {
       this.terminal.cursorPosition.copy(this.destination);
     }
@@ -236,16 +191,17 @@ export class MoveCursorToAction extends TerminalAction {
 }
 
 export class SelectCellAction extends TerminalAction {
-  cost: 0
-  terminal: TTY
-  constructor (terminal: TTY) {
+  name = 'select-cell';
+  cost: 0;
+  terminal: TTY;
+  constructor(terminal: TTY) {
     super();
     this.terminal = terminal;
   }
-  authorize() { return true }
+  authorize() { return true; }
   perform() {
     this.terminal.switchModes();
-    const expr = this.terminal.cursorPosition.x + ' ' + this.terminal.cursorPosition.y + ' xy';
+    const expr = `${this.terminal.cursorPosition.x} ${this.terminal.cursorPosition.y} xy`;
     this.terminal.lineEditor.line = expr;
     console.log('line', expr);
     console.log(this.terminal.lineEditor);

@@ -45,11 +45,11 @@ body {
 }
 
 .tab {
-  border-bottom: 0.25rem solid transparent;
+  border-bottom: 0.3rem solid transparent;
 }
 
 .tab.is-selected {
-  border-bottom: 0.25rem solid #6464D8;
+  border-bottom: 0.3rem solid #6464D8;
 }
 
 .purple {
@@ -92,6 +92,11 @@ img.emoji {
   vertical-align: -0.1em;
 }
 
+.emoji.is-large {
+  height: 2.25em;
+  width: 2.25em;
+}
+
 #tab_buttons button.is-active {
   background-color: #555;
   color: #aaa;
@@ -100,6 +105,9 @@ img.emoji {
 .button {
   box-shadow: 0px 7px 0px 0px rgba(0,0,0,0.3);
   display: inline-block;
+  background-color: #6464D8;
+  border-radius: .25rem;
+  color: white;
 }
 
 .button:hover {
@@ -115,3 +123,11 @@ img.emoji {
     box-shadow: 0px 4px 0px 0px rgba(0,0,0,0.3);
   }
 }
+
+.card {
+  box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2);
+  padding: 1rem 2.5rem;
+  background-color: #38344E;
+  border-radius: .25rem;
+}
+

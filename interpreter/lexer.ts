@@ -34,10 +34,10 @@ const keywords = {
 };
 
 export class Token {
-  type: TokenType
-  lexeme: string
-  literal?: object
-  line: number
+  type: TokenType;
+  lexeme: string;
+  literal?: object;
+  line: number;
 
   constructor(type: TokenType, lexeme: string, literal: any, line: number) {
     this.type = type;
@@ -62,8 +62,8 @@ export class Token {
 }
 
 export class Scanner {
-  source: string
-  tokens: Array<Token> = []
+  source: string;
+  tokens: Array<Token> = [];
   start = 0;
   current = 0;
   line = 1;
@@ -149,7 +149,8 @@ export class Scanner {
   }
 
   private scanToken() {
-    let char = this.next();
+    const char = this.next();
+    let nextChar: string;
 
     switch (char) {
       case ' ':
@@ -164,7 +165,7 @@ export class Scanner {
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, char); break;
       case TokenType.MINUS:
-        const nextChar = this.peek();
+        nextChar = this.peek();
         // negative number
         if (isDigit(nextChar)) {
           this.number(true);
@@ -176,11 +177,11 @@ export class Scanner {
         }
         break;
       case TokenType.SLASH: this.addToken(TokenType.SLASH, char); break;
-      case TokenType.LEFT_BRACKET: 
+      case TokenType.LEFT_BRACKET:
         this.addToken(TokenType.LEFT_BRACKET, char);
         break;
-      case TokenType.RIGHT_BRACKET: 
-        this.addToken(TokenType.RIGHT_BRACKET, char); 
+      case TokenType.RIGHT_BRACKET:
+        this.addToken(TokenType.RIGHT_BRACKET, char);
         break;
       case TokenType.SEMICOLON: this.addToken(TokenType.SEMICOLON, char); break;
       case '=':
@@ -189,8 +190,6 @@ export class Scanner {
         } else {
           throw new Error('single \'=\' is illegal');
         }
-        break;
-      case ' ':
         break;
       default: {
         if (isDigit(char)) {

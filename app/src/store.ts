@@ -1,5 +1,0 @@
-export class Store {
-  state: {
-
-  }
-}
