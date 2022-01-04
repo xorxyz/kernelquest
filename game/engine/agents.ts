@@ -1,11 +1,10 @@
 import { Points, Vector } from 'xor4-lib/math';
 import { Stack } from 'xor4-lib/stack';
 import { Queue } from 'xor4-lib/queue';
-import { debug } from 'xor4-lib/logging';
 import { Colors, esc } from 'xor4-lib/esc';
 import { Compiler } from 'xor4-interpreter/compiler';
 import { Interpretation } from 'xor4-interpreter';
-import { Factor } from 'xor4-interpreter/types';
+import { Factor, Term } from 'xor4-interpreter/types';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
@@ -24,23 +23,20 @@ export abstract class AgentType {
 }
 
 export class Mind {
-  private stack: Stack<Factor> = new Stack();
+  public stack: Stack<Factor> = new Stack();
   private compiler: Compiler = new Compiler();
 
   exec(code: string) {
-    const term = this.compiler.compile(code);
-    const execution = new Interpretation(term);
-
     try {
-      const result = execution.run(this.stack);
-      debug(result);
+      const term = this.compiler.compile(code);
+      const interpretation = new Interpretation(term);
+
+      interpretation.run(this.stack);
     } catch (err) {
       if (!(err instanceof RuntimeError)) {
         console.error('Unhandled error:', err);
       }
     }
-
-    return execution;
   }
 }
 
@@ -68,15 +64,15 @@ export class Agent {
 
   private cell: Cell | null = null;
   private holding: Thing | null = null;
-  private queue: Queue<Action> = new Queue();
+  private queue: Queue<Action> = new Queue<Action>();
 
   constructor(type: AgentType) {
     this.type = type;
     this.body = new Body();
     this.mind = new Mind();
 
-    type.capabilities.forEach((cap) => {
-      cap.bootstrap(this.queue);
+    type.capabilities.forEach((capability) => {
+      capability.bootstrap(this.queue);
     });
   }
 

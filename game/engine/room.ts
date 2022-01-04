@@ -1,4 +1,5 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
+import { debug } from 'xor4-lib/logging';
 import { Agent } from './agents';
 import { Cell, Port } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
@@ -43,6 +44,7 @@ export class Room {
 
       if (action && action.authorize(agent)) {
         action.perform(this, agent);
+        debug('agent of type', agent.type.name, 'performed:', action.name);
       } else {
         agent.sp.increase(1);
       }
@@ -52,10 +54,14 @@ export class Room {
       if (moved) {
         const cell = this.cellAt(agent.body.position.clone().add(agent.body.direction));
         if (!cell) return;
-        console.log(cell.position);
         agent.handleCell(cell);
       }
     });
+  }
+
+  clear() {
+    this.cells.forEach((cell) => cell.clear());
+    this.agents.clear();
   }
 
   load(cells: Array<Cell>) {

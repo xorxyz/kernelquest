@@ -49,6 +49,11 @@ export class Cell {
   update() {
   }
 
+  clear() {
+    this.slot = null;
+    this.glyph = new Glyph();
+  }
+
   leave(): Agent | null {
     if (!this.slot || this.slot instanceof Thing) return null;
     const agent = this.slot;

@@ -10,6 +10,7 @@ export class ActionSuccess extends ActionResult {}
 export class ActionFailure extends ActionResult {}
 
 export abstract class Action {
+  abstract name: string
   abstract cost: number
   abstract perform(context: Room, subject: Agent, object?: Agent | Thing): ActionResult
 
@@ -20,6 +21,7 @@ export abstract class Action {
 }
 
 export class NoAction extends Action {
+  name = 'noop';
   cost: 0;
   perform() {
     return new ActionSuccess();
@@ -27,6 +29,7 @@ export class NoAction extends Action {
 }
 
 export class SwitchModeAction extends Action {
+  name = 'switch-mode';
   cost: 0;
   terminal: TTY;
   constructor(terminal: TTY) {
@@ -39,32 +42,17 @@ export class SwitchModeAction extends Action {
   }
 }
 
-export class MoveAction extends Action {
-  cost: 5;
-  direction: Vector;
-  constructor(direction: Vector) {
-    super();
-    this.direction = direction;
-  }
-  perform(ctx, { body }) {
-    if (body.velocity.opposes(this.direction) || body.velocity.isZero()) {
-      body.velocity.add(this.direction);
+export class RotateAction extends Action {
+  name = 'rotate';
+  cost: 0;
+  authorize() { return true; }
+  perform(ctx: Room, agent: Agent) {
+    if (this.rotateDirection(agent.body.direction)) {
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
     return new ActionFailure();
-  }
-}
-
-export class RotateAction extends Action {
-  cost: 0;
-  authorize() { return true; }
-  perform(ctx, agent: Agent) {
-    const result = this.rotateDirection(agent.body.direction)
-      ? new ActionSuccess()
-      : new ActionFailure();
-
-    return result;
   }
 
   rotateDirection(v: Vector): boolean {
@@ -81,12 +69,15 @@ export class RotateAction extends Action {
 }
 
 export class StepAction extends Action {
+  name = 'step';
   cost: 0;
   authorize() { return true; }
-  perform(ctx: Room, { body }) {
-    if (body.velocity.opposes(body.direction) ||
-        body.velocity.isZero()) {
-      body.velocity.add(body.direction);
+  perform(ctx: Room, agent) {
+    if (agent.body.velocity.opposes(agent.body.direction) ||
+        agent.body.velocity.isZero()) {
+      agent.body.velocity.add(agent.body.direction);
+
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
@@ -95,12 +86,14 @@ export class StepAction extends Action {
 }
 
 export class BackStepAction extends Action {
+  name = 'backstep';
   cost: 0;
   authorize() { return true; }
-  perform(ctx: Room, { body }) {
-    if (body.velocity.opposes(body.direction) ||
-        body.velocity.isZero()) {
-      body.velocity.add(body.direction.clone().invert());
+  perform(ctx: Room, agent: Agent) {
+    if (agent.body.velocity.opposes(agent.body.direction) ||
+        agent.body.velocity.isZero()) {
+      agent.body.velocity.add(agent.body.direction.clone().invert());
+      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
 
@@ -109,6 +102,7 @@ export class BackStepAction extends Action {
 }
 
 export class GetAction extends Action {
+  name = 'get';
   cost: 0;
   authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
@@ -121,6 +115,7 @@ export class GetAction extends Action {
 }
 
 export class PutAction extends Action {
+  name = 'put';
   cost: 0;
   authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
@@ -134,6 +129,7 @@ export class PutAction extends Action {
 }
 
 export class SpawnAction extends Action {
+  name = 'spawn';
   cost: 0;
   type: AgentType;
   constructor(type: AgentType) {
@@ -155,6 +151,7 @@ export class SpawnAction extends Action {
 export abstract class TerminalAction extends Action {}
 
 export class MoveCursorAction extends TerminalAction {
+  name = 'move-cursor';
   cost: 0;
   terminal: TTY;
   direction: Vector;
@@ -174,6 +171,7 @@ export class MoveCursorAction extends TerminalAction {
 }
 
 export class MoveCursorToAction extends TerminalAction {
+  name = 'move-cursor-to';
   cost: 0;
   terminal: TTY;
   destination: Vector;
@@ -193,6 +191,7 @@ export class MoveCursorToAction extends TerminalAction {
 }
 
 export class SelectCellAction extends TerminalAction {
+  name = 'select-cell';
   cost: 0;
   terminal: TTY;
   constructor(terminal: TTY) {

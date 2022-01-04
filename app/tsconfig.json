@@ -1,11 +1,12 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "isolatedModules": true,
     "typeRoots": [
       "src/typings"
     ]
   },
 	"include": [
-		"src/**/*.ts",
+		"src/**/*.ts"
   ]
 }

@@ -1,5 +1,4 @@
 export const CLOCK_MS_DELAY = 60;
-
 export const ROOM_WIDTH = 16;
 export const ROOM_HEIGHT = 10;
 export const MAX_X = ROOM_WIDTH - 1;

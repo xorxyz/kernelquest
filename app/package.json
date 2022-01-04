@@ -8,7 +8,7 @@
     "check:watch": "tsc --noEmit --watch",
     "client": "parcel -p 8080 src/index.html --https --no-cache",
     "start": "npm run client & npm run check:watch && fg",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/index.html ../game/*.ts"
   },
   "author": "kareniel",
   "license": "MIT",

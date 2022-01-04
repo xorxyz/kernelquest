@@ -21,4 +21,8 @@ export class World {
   find(agent: Agent): Room | null {
     return this.rooms.find((room) => room.has(agent)) || null;
   }
+
+  clear() {
+    this.rooms.forEach((room) => room.clear());
+  }
 }

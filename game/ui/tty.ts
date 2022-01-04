@@ -81,7 +81,7 @@ export class TTY {
   }
 
   disconnect() {
-    console.log('TODO');
+    clearInterval(this.timer);
   }
 
   switchModes() {
@@ -128,6 +128,10 @@ export class TTY {
         this.waiting = true;
 
         this.connection.player.mind.exec(expr);
+
+        this.state.stdout.push(
+          `[${this.connection.player.mind.stack.map((t) => t.lexeme).join(' ')}]`,
+        );
 
         const action = this.getActionForWord(expr);
 

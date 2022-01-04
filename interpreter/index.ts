@@ -26,8 +26,7 @@ export class Interpretation {
 
   run(stack: Stack<Factor>) {
     this.stacks = [stack];
-    console.log(this.term);
-    this.term.map((factor: Factor) => {
+    this.term.forEach((factor: Factor) => {
       factor.validate(this.stack);
       factor.execute(this.stack);
     });
