@@ -4,6 +4,7 @@
 import { EventEmitter } from 'events';
 
 export default class Clock extends EventEmitter {
+  paused: boolean = true;
   private stepMsDelay: number;
   private tick: number = 0;
   private edge: Boolean = false;
@@ -30,6 +31,8 @@ export default class Clock extends EventEmitter {
   }
 
   start() {
+    this.emit('start');
+    this.paused = false;
     this.timeoutRef = setInterval(() => {
       this.step();
 
@@ -40,6 +43,8 @@ export default class Clock extends EventEmitter {
   }
 
   pause() {
+    this.emit('pause');
+    this.paused = true;
     clearInterval(this.timeoutRef);
   }
 }

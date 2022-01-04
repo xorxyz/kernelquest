@@ -1,19 +1,23 @@
 <template>
   <div class="">
     <div id="terminal-container" class="container">
-      <div ref="terminal" autofocus tabindex="0"></div>
-      <button @click="$engine.start">play</button>
-      <button @click="$engine.pause">pause</button>
+      <button v-show="paused" @click="play">play</button>
+      <button v-show="!paused" @click="pause">pause</button>
+
+      paused: {{ paused }}
       <button @click="restart">restart</button>
+      <div ref="terminal" autofocus tabindex="0"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from "vue";
+import { Room } from "xor4-game/engine/room";
+  import { Sheep, Wizard } from "xor4-game/lib/agents";
   import { Terminal } from "xterm";
   import * as FitAddon from "xterm-addon-fit";
-  import { Agent, Hero, Sheep, Wizard } from "../../../game/engine/agents";
+  import { Agent, Hero } from "../../../game/engine/agents";
   import { Book, Flag, Tree } from "../../../game/engine/things";
   import { World } from "../../../game/engine/world";
   import { TTY } from "../../../game/ui/tty";
@@ -38,6 +42,9 @@
     fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace'
   });
 
+  let timer
+  let tty: TTY
+
   export default defineComponent({
     mounted () {
       console.log('game mounted')
@@ -53,51 +60,41 @@
 
       this.$engine.world = new World();
       
-      const room = this.$engine.world.rooms[0];
+      const room = this.$engine.world.rooms[0] as Room;
   
-      player.room = room;
-      room.agents.add(player);
-        
-      const tty = new TTY({
-        player: player,
+      room.add(player);
+
+      tty = new TTY({
+        room,
+        player,
         write: (str) => xterm.write(str)
       });
+
+      const sheep = new Agent(new Sheep());
+      const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
+
+      room.add(sheep, new Vector(6, 9));
+
+      trees.forEach(([x,y]) => room.cellAt(Vector.from({ x, y })).put(new Tree()));
+      room.cellAt(Vector.from({ x: 4, y: 0 })).put(new Book());
+      const flag = new Flag();
+      const flagCell = room.cellAt(Vector.from({ x: 14, y: 8 }));
+      flagCell.put(flag);
     },
-    data(): { xterm: Terminal } {
+    data() {
       return {
-        xterm: xterm
+        xterm: xterm,
+        paused: true
       }
     },
     methods: {
-      restart () {
-        this.$engine.world = new World();
-
-        const sheep = new Agent(new Sheep());
-        const room = this.$engine.world.rooms[0];
-
-        sheep.room = room;
-
-        room.agents.add(sheep);
-
-        const trees = [
-          [5,0],
-          [1,1],
-          [3,1],
-          [4,1],
-          [0,2],
-          [1,4],
-        ];
-      
-        trees.forEach(([x,y]) => {
-          room.cellAt(Vector.from({ x, y }))
-              .items.push(new Tree());
-        });
-      
-        room.cellAt(Vector.from({ x: 4, y: 0 }))
-          .items.push(new Book());
-      
-        room.cellAt(Vector.from({ x: 14, y: 8 }))
-          .items.push(new Flag());
+      play () {
+        this.$engine.start();
+        this.paused = false;
+      },
+      pause () {
+        this.$engine.pause();
+        this.paused = true;
       }
     }
   });

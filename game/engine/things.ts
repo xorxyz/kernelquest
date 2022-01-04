@@ -1,6 +1,6 @@
 import { Colors, Style } from 'xor4-lib/esc';
 import { Vector, Points } from 'xor4-lib/math';
-import { Room } from './world';
+import { Room } from './room';
 
 export class Durability extends Points {}
 export class Uses extends Points {}
@@ -15,6 +15,14 @@ export abstract class Thing {
   velocity: Vector = new Vector();
   durability: Durability = new Durability();
   appearance: string;
+
+  get label() {
+    return `${this.appearance} ${this.name}`;
+  }
+
+  render() {
+    return this.appearance;
+  }
 }
 
 export abstract class Item extends Thing {}

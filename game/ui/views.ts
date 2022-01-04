@@ -1,5 +1,4 @@
-import { esc, Screen, Style } from '../../lib/esc';
-import { CLOCK_MS_DELAY } from '../constants';
+import { esc, Screen, Style } from 'xor4-lib/esc';
 import { TTY } from './tty';
 import {
   UiComponent,
@@ -13,20 +12,20 @@ import {
   Speech,
 } from './components';
 
-const CLEAR_RATE = CLOCK_MS_DELAY;
+// const CLEAR_RATE = CLOCK_MS_DELAY;
 
 export abstract class View {
-  components: Record<string, UiComponent>
+  components: Record<string, UiComponent>;
 
   compile(terminal: TTY): string {
     const lines = Object.values(this.components).map((component) =>
       component.compile(terminal) + esc(Style.Reset));
 
-    const clear = terminal.connection.player.cycle % CLEAR_RATE === 0
-      ? esc(Screen.Clear)
-      : '';
+    // const clear = terminal.connection.player.cycle % CLEAR_RATE === 0
+    //   ? esc(Screen.Clear)
+    //   : '';
 
-    return clear + lines.join('');
+    return esc(Screen.Clear) + lines.join('');
   }
 }
 
@@ -51,5 +50,5 @@ components.room = room;
 components.speech = speech;
 
 export class MainView extends View {
-  components: Record<string, UiComponent> = components
+  components: Record<string, UiComponent> = components;
 }

@@ -231,3 +231,26 @@ export function getRandom(from: number, to: number) {
 
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+export class Ring<T> {
+  values: Array<T>;
+  constructor(arr: Array<T>) {
+    this.values = arr;
+  }
+  next(value: T) {
+    const index = this.values.findIndex((x) => x === value);
+    console.log('index', index);
+    if (index === -1) throw new Error('invalid value');
+    const y = this.values[index + 1];
+    return y === undefined
+      ? this.values[0]
+      : y;
+  }
+}
+
+export const DirectionRing = new Ring([
+  new Vector(1, 0),
+  new Vector(0, 1),
+  new Vector(-1, 0),
+  new Vector(0, -1),
+]);

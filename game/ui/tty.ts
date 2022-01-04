@@ -18,6 +18,8 @@ import {
   TerminalAction,
 } from '../engine/actions';
 import { Hero } from '../engine/agents';
+import { Engine } from '../engine';
+import { Room } from '../engine/room';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -29,29 +31,31 @@ export interface IState {
 }
 
 export interface IConnection {
-  write: (str: string) => void
-  player: Hero
+  write: (str: string) => void,
+  player: Hero,
+  room: Room
 }
 
 export class TTY {
-  id: number;
-  connection: IConnection;
-  cursorPosition: Vector = new Vector();
-  state: IState;
-  lineEditor: Editor = new Editor();
-  view: MainView;
-  stdout: Array<string>;
-
-  waiting = false;
+  public id: number;
+  public player: Hero;
+  public room: Room;
+  public connection: IConnection;
+  public cursorPosition: Vector = new Vector();
+  public state: IState;
+  public lineEditor: Editor = new Editor();
+  public view: MainView;
+  public stdout: Array<string>;
+  public waiting = false;
+  public engine: Engine;
 
   private timer;
-
-  get player() {
-    return this.connection.player;
-  }
+  private dummyRoom = new Room(0, 0);
 
   constructor(connection: IConnection) {
     this.connection = connection;
+    this.player = connection.player;
+    this.room = connection.room;
     this.view = new MainView();
     this.state = {
       termMode: true,
@@ -102,9 +106,9 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.player.room, this.player);
+        action.perform(this.dummyRoom, this.connection.player);
       } else if (action) {
-        this.player.schedule(action);
+        this.connection.player.schedule(action);
       }
     }
 
@@ -123,16 +127,16 @@ export class TTY {
         this.lineEditor.reset();
         this.waiting = true;
 
-        this.player.exec(expr);
+        this.connection.player.mind.exec(expr);
 
         const action = this.getActionForWord(expr);
 
         console.log(action);
 
         if (action instanceof TerminalAction) {
-          action.perform(this.player.room, this.player);
+          action.perform(this.dummyRoom, this.connection.player);
         } else if (action) {
-          this.player.schedule(action);
+          this.connection.player.schedule(action);
         }
 
         this.waiting = false;
@@ -147,7 +151,7 @@ export class TTY {
     this.render();
   }
 
-  getActionForWord(str: string): Action | null {
+  getActionForWord(str: string): Action | null {
     let action: Action | null = null;
     switch (str) {
       case 'rotate':
