@@ -2,35 +2,31 @@
   <nav class="bg-darkest w-100 flex h3 justify-center items-center mb0 pb2">
     <div class="container h-100 flex items-center justify-between ">
       <router-link to="/" class="link pv0 mr3 grow flex items-center h-100">
-        <span class="icon f2">🏰</span>
+        <Emoji class="icon f2">🏰</Emoji>
       </router-link>
       <div class="flex justify-between items-center w-100 h-100 pt1">
         <div class="h-100 flex items-center mh4 f6">
-          <!-- <router-link to="/scoreboard" active-class="is-selected"
-            class="tab link grow mh2 ph2 pv1 white pointer">
-            👑 Score
-          </router-link> -->
           <router-link to="/levels"  active-class="is-selected"
-            class="tab link grow mh2 ph2 pv1 white pointer">
-            🚩 Levels
+            class="tab link grow mh2 ph2 pv2 white pointer">
+            <Emoji class="f5">🚩</Emoji> Levels
           </router-link>
           <router-link to="/editor"  active-class="is-selected"
-            class="tab link grow mh2 ph2 pv1 white pointer">
-            🗺️ Editor
+            class="tab link grow mh2 ph2 pv2 white pointer">
+            <Emoji class="f5">🗺️</Emoji> Editor
           </router-link>
           <router-link to="/game"  active-class="is-selected"
-            class="tab link grow mh2 ph2 pv1 white pointer">
-            🧙 Game
+            class="tab link grow mh2 ph2 pv2 white pointer">
+            <Emoji class="f5">🧙</Emoji> Game
           </router-link>
         </div>
       </div>
       <div class="flex items-center ">
         <div class="flex mh3">
           <div class=" flex w3  items-center justify-center">
-            👑 0
+            <Emoji>👑</Emoji> <span class="mh2">0</span>
           </div>
           <div class=" flex w3  items-center justify-center">
-            💀 0
+            <Emoji>💀</Emoji> <span class="mh2">0</span>
           </div>
         </div>
         <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100 ">

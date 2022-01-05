@@ -162,8 +162,7 @@ export class MoveCursorAction extends TerminalAction {
   }
   authorize() { return true; }
   perform() {
-    const withinBounds = true;
-    if (withinBounds) {
+    if (Room.bounds.contains(this.terminal.cursorPosition.clone().add(this.direction))) {
       this.terminal.cursorPosition.add(this.direction);
     }
     return new ActionSuccess();
@@ -201,10 +200,8 @@ export class SelectCellAction extends TerminalAction {
   authorize() { return true; }
   perform() {
     this.terminal.switchModes();
-    const expr = `${this.terminal.cursorPosition.x} ${this.terminal.cursorPosition.y} xy`;
+    const expr = `${this.terminal.cursorPosition.x} ${this.terminal.cursorPosition.y} ref`;
     this.terminal.lineEditor.line = expr;
-    console.log('line', expr);
-    console.log(this.terminal.lineEditor);
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);
     this.terminal.switchModes();

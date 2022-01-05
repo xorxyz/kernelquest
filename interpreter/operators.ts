@@ -1,25 +1,29 @@
-import { Stack } from "../lib/stack";
-import { Factor, Literal } from "./types";
-import { LiteralNumber, LiteralString } from "./literals";
+import { Stack } from 'xor4-lib/stack';
+import { debug } from 'xor4-lib/utils';
+import { Factor, Literal } from './types';
+import { LiteralNumber, LiteralString } from './literals';
+
+export type ExecuteFn = (stack: Stack<Factor>) => void
 
 export class Operator extends Factor {
-  signature: Array<string>
-  execute: (stack: Stack<Factor>) => void
-  aliases: Array<string>
+  signature: Array<string>;
+  execute: (stack: Stack<Factor>) => void;
+  aliases: Array<string>;
 
-  constructor (aliases: Array<string>, signature: Array<string>, execute: (stack: Stack<Factor>) => void) {
+  constructor(aliases: Array<string>, signature: Array<string>, execute: ExecuteFn) {
     super(aliases[0]);
     this.signature = signature;
     this.execute = execute;
     this.aliases = aliases;
   }
 
-  validate (stack: Stack<Factor>) {
+  validate(stack: Stack<Factor>) {
     if (!this.signature.length) return;
- 
+
     if (this.signature.length > stack.length) {
+      debug(this.signature.length, stack.length);
       throw new Error(
-        `missing operand(s), expected [${this.signature.join(' ')}]`
+        `missing operand(s), expected [${this.signature.join(' ')}]`,
       );
     }
 
@@ -32,15 +36,15 @@ export class Operator extends Factor {
       }
       if (type !== 'any' && arg.type !== type) {
         throw new Error(
-          `signature doesn't match stack type. 
-          expected: '${type}' got: '${arg.type}' at arg ${i}`
+          'signature doesn\'t match stack type. \n' +
+          `expected: '${type}' got: '${arg.type}' at arg ${i}`,
         );
       }
     });
   }
 
   toString() {
-    return this.lexeme
+    return this.lexeme;
   }
 }
 
@@ -76,14 +80,14 @@ export const division = new Operator(['/', 'quotient'], ['number', 'number'], (s
   stack.push(new LiteralNumber(result));
 });
 
-export const dup = new Operator(['dup'], ['any'], stack => {
+export const dup = new Operator(['dup'], ['any'], (stack) => {
   const a = stack.pop();
 
   stack.push(a);
   stack.push(a);
 });
 
-export const swap = new Operator(['swap'], ['any', 'any'], stack => {
+export const swap = new Operator(['swap'], ['any', 'any'], (stack) => {
   const a = stack.pop();
   const b = stack.pop();
 
@@ -91,24 +95,24 @@ export const swap = new Operator(['swap'], ['any', 'any'], stack => {
   stack.push(b);
 });
 
-export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], stack => {
+export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], (stack) => {
   stack.pop();
 });
 
-export const cat = new Operator(['cat'], ['string', 'string'], stack => {
+export const cat = new Operator(['cat'], ['string', 'string'], (stack) => {
   const a = stack.pop() as LiteralString;
   const b = stack.pop() as LiteralString;
 
   stack.push(new LiteralString(a.value + b.value));
 });
 
-export const clear = new Operator(['clear'], [], stack => {
+export const clear = new Operator(['clear'], [], (stack) => {
   stack.popN(stack.length);
 });
 
-export const typeOf = new Operator(['typeof'], ['any'], stack => {
+export const typeOf = new Operator(['typeof'], ['any'], (stack) => {
   const a = stack.pop();
-  
+
   if (a) {
     stack.push(new LiteralString(a.type));
   }
@@ -118,11 +122,11 @@ const operators = {};
 
 [
   sum, difference, product, division,
-  dup, swap, drop, cat, clear, typeOf
-].forEach(operator => {
-  operator.aliases.forEach(alias => {
+  dup, swap, drop, cat, clear, typeOf,
+].forEach((operator) => {
+  operator.aliases.forEach((alias) => {
     operators[alias] = operator;
-  })
-})
+  });
+});
 
 export default operators;

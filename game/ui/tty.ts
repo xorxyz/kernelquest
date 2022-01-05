@@ -106,13 +106,19 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.dummyRoom, this.connection.player);
+        action.perform(this.dummyRoom, this.player);
       } else if (action) {
-        this.connection.player.schedule(action);
+        this.player.schedule(action);
       }
     }
 
     this.render();
+  }
+
+  write(message: string) {
+    message.match(/(.{1,50})/g)?.forEach((str) => {
+      this.state.stdout.push(str.trim());
+    });
   }
 
   async handleTerminalInput(str: string) {
@@ -122,26 +128,31 @@ export class TTY {
         const expr = this.lineEditor.value.trim();
         console.log('got line value', expr);
 
-        this.state.stdout.push(this.state.prompt + expr);
+        this.write(this.state.prompt + expr);
         this.state.line = '';
         this.lineEditor.reset();
         this.waiting = true;
 
-        this.connection.player.mind.exec(expr);
+        try {
+          this.player.mind.interpret(expr);
 
-        this.state.stdout.push(
-          `[${this.connection.player.mind.stack.map((t) => t.lexeme).join(' ')}]`,
-        );
+          const action = this.getActionForWord(expr);
 
-        const action = this.getActionForWord(expr);
-
-        console.log(action);
-
-        if (action instanceof TerminalAction) {
-          action.perform(this.dummyRoom, this.connection.player);
-        } else if (action) {
-          this.connection.player.schedule(action);
+          if (action instanceof TerminalAction) {
+            action.perform(this.dummyRoom, this.player);
+          } else if (action) {
+            this.player.schedule(action);
+          }
+        } catch (err) {
+          console.error(err);
+          if (err instanceof Error) {
+            this.write(`${err.message}`);
+          }
         }
+
+        const term = this.player.mind.stack.map((factor) => factor.toString()).join(' ');
+
+        this.write(`[${term}]`);
 
         this.waiting = false;
         this.render();
