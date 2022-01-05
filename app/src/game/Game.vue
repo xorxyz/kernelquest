@@ -1,13 +1,13 @@
 <template>
   <div class="">
-    <div id="terminal-container" class="container">
-      <div class="flex mv2">
+    <div id="terminal-container" class="container flex flex-column items-center">
+      <div ref="terminal" autofocus tabindex="0" class="mv1 ba"></div>
+
+      <div class="flex mv2 w-100 justify-center">
         <span class="button link pv1 ph2 pointer mh1" v-show="paused" @click="play">▶️ Play</span>
         <span class="button link pv1 ph2 pointer mh1" v-show="!paused" @click="pause">⏸️ Pause</span>
         <span class="button link pv1 ph2 pointer mh1" @click="reset">↩️ Reset</span>
       </div>
-
-      <div ref="terminal" autofocus tabindex="0" class="mv1"></div>
     </div>
   </div>
 </template>
