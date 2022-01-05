@@ -127,21 +127,26 @@ export class TTY {
         this.lineEditor.reset();
         this.waiting = true;
 
-        this.connection.player.mind.exec(expr);
+        try {
+          this.connection.player.mind.interpret(expr);
+
+          const action = this.getActionForWord(expr);
+
+          if (action instanceof TerminalAction) {
+            action.perform(this.dummyRoom, this.connection.player);
+          } else if (action) {
+            this.connection.player.schedule(action);
+          }
+        } catch (err) {
+          console.error(err);
+          if (err instanceof Error) {
+            this.state.stdout.push(`${err.message}`);
+          }
+        }
 
         this.state.stdout.push(
           `[${this.connection.player.mind.stack.map((t) => t.lexeme).join(' ')}]`,
         );
-
-        const action = this.getActionForWord(expr);
-
-        console.log(action);
-
-        if (action instanceof TerminalAction) {
-          action.perform(this.dummyRoom, this.connection.player);
-        } else if (action) {
-          this.connection.player.schedule(action);
-        }
 
         this.waiting = false;
         this.render();

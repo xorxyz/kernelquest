@@ -1,10 +1,9 @@
 import { Points, Vector } from 'xor4-lib/math';
-import { Stack } from 'xor4-lib/stack';
 import { Queue } from 'xor4-lib/queue';
 import { Colors, esc } from 'xor4-lib/esc';
-import { Compiler } from 'xor4-interpreter/compiler';
-import { Interpretation } from 'xor4-interpreter';
-import { Factor, Term } from 'xor4-interpreter/types';
+import { Interpreter } from 'xor4-interpreter';
+import { Stack } from 'xor4-lib/stack';
+import { Factor } from 'xor4-interpreter/types';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
@@ -24,19 +23,14 @@ export abstract class AgentType {
 
 export class Mind {
   public stack: Stack<Factor> = new Stack();
-  private compiler: Compiler = new Compiler();
+  private interpreter: Interpreter;
 
-  exec(code: string) {
-    try {
-      const term = this.compiler.compile(code);
-      const interpretation = new Interpretation(term);
+  constructor() {
+    this.interpreter = new Interpreter(this.stack);
+  }
 
-      interpretation.run(this.stack);
-    } catch (err) {
-      if (!(err instanceof RuntimeError)) {
-        console.error('Unhandled error:', err);
-      }
-    }
+  interpret(code: string) {
+    return this.interpreter.interpret(code);
   }
 }
 

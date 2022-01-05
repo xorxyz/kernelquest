@@ -8,47 +8,38 @@ import { Compiler } from './compiler';
 import { Factor, Term } from './types';
 
 export class Interpretation {
-  private level = 0;
-  private stacks: Array<any>;
+  public stack: Stack<Factor>;
   private term: Term;
 
   constructor(term: Term) {
     this.term = term;
   }
 
-  get stack(): Stack<Factor> {
-    return this.stacks[this.level];
-  }
-
-  set stack(s) {
-    this.stacks[this.level] = s;
-  }
-
   run(stack: Stack<Factor>) {
-    this.stacks = [stack];
-    this.term.forEach((factor: Factor) => {
-      factor.validate(this.stack);
-      factor.execute(this.stack);
-    });
+    this.stack = stack;
+
+    for (let i = 0; i < this.term.length; i++) {
+      const factor = this.term[i];
+      factor.validate(stack);
+      factor.execute(stack);
+    }
 
     return this;
   }
 }
 
 export class Interpreter {
-  stack: Stack<Factor> = new Stack();
-  compiler = new Compiler();
+  private stack: Stack<Factor>;
+  private compiler = new Compiler();
+
+  constructor(stack?: Stack<Factor>) {
+    this.stack = stack || new Stack();
+  }
 
   interpret(line: string): Interpretation {
     const term = this.compiler.compile(line);
-    console.log('line:', line, 'term:', term);
-
     const interpretation = new Interpretation(term);
 
-    interpretation.run(this.stack);
-
-    console.log('interpretation:', interpretation);
-
-    return interpretation;
+    return interpretation.run(this.stack);
   }
 }

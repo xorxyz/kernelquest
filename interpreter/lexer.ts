@@ -1,10 +1,11 @@
-const AlphaNumeric = new RegExp('^[a-zA-Z0-9]*$');
-const Alpha = new RegExp('^[a-zA-Z]*$');
-const Digit = new RegExp('^[0-9]*$');
+const AlphaNumeric = /^[a-zA-Z0-9]*$/;
+const Alpha = /^[a-zA-Z]*$/;
+const Digit = /^[0-9]*$/;
 const isAlphaNumeric = (str: string) => str.match(AlphaNumeric);
 const isAlpha = (str: string) => str.match(Alpha);
 const isDigit = (str: string) => str.match(Digit);
 
+// eslint-disable-next-line no-shadow
 export enum TokenType {
   LEFT_BRACKET = '[',
   RIGHT_BRACKET = ']',

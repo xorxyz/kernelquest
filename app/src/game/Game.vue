@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue";
+  import { defineComponent, markRaw } from "vue";
   import { Engine } from "xor4-game/engine";
   import { Room } from "xor4-game/engine/room";
   import { Sheep, Wizard } from "xor4-game/lib/agents";
@@ -25,6 +25,10 @@
   import { TTY } from "../../../game/ui/tty";
   import { Vector } from "../../../lib/math";
   import { Unicode14Addon } from "../../vendor/unicode14";
+
+  const engine = markRaw(new Engine({
+    world: new World(),
+  }))
 
   export default defineComponent({
     created () {      
@@ -42,12 +46,9 @@
 
       this.reset();
     },
-    data(): { tty: TTY | undefined, engine: Engine, xterm: Terminal, paused: boolean } {
+    data(): { tty: TTY | undefined, xterm: Terminal, paused: boolean } {
       return {
         tty: undefined,
-        engine: new Engine({
-          world: new World(),
-        }),
         xterm: new Terminal({
           theme: {
             background: '#000000',
@@ -69,41 +70,43 @@
     },
     methods: {
       play () {
-        this.engine.start();
+        engine.start();
         this.paused = false;
       },
       pause () {
-        this.engine.pause();
+        engine.pause();
         this.paused = true;
       },
       reset () {
-        const player = new Hero(new Wizard());
-        const room = this.engine.world.rooms[0] as Room;
-        const sheep = new Agent(new Sheep());
+        const player = markRaw(new Hero(new Wizard()));
+        const room = engine.world.rooms[0] as Room;
+        // const sheep = new Agent(new Sheep());
         const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
-        const flag = new Flag();
+        const flag = markRaw(new Flag());
 
-        this.engine.world.clear();
+        engine.world.clear();
 
         room.add(player);
-        room.add(sheep, new Vector(6, 9));
+        // room.add(sheep, new Vector(6, 9));
 
-        trees.forEach(([x,y]) => room.cellAt(Vector.from({ x, y })).put(new Tree()));
-        room.cellAt(Vector.from({ x: 4, y: 0 })).put(new Book());
+        trees.forEach(([x,y]) => room.cellAt(Vector.from({ x, y })).put(markRaw(new Tree())));
+        room.cellAt(Vector.from({ x: 4, y: 0 })).put(markRaw(new Book()));
         room.cellAt(Vector.from({ x: 14, y: 8 })).put(flag);
 
         this.tty?.disconnect();
 
-        this.tty = new TTY({
+        this.tty = markRaw(new TTY({
           room,
           player,
           write: (str) => this.xterm.write(str)
-        });
+        }));
 
         (this.xterm as Terminal).onKey(({ key }) => {
           if (this.paused) return;
           this.tty.handleInput(Buffer.from(key).toString('hex'));
         });
+
+        this.play();
       },
     }
   });

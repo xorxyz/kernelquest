@@ -75,7 +75,7 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], (stack) =
   const interpretation = new Interpretation(program.value);
   const results = new Quotation();
 
-  list.value.map((factor) => {
+  list.value.forEach((factor) => {
     stack.push(factor);
     interpretation.run(stack);
     const result = stack.pop();
@@ -87,7 +87,7 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], (stack) =
   stack.push(results);
 });
 
-// [C] [B] [A] -> B || A
+// [C] [B] [A] -> B || A
 export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], (stack) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
@@ -110,8 +110,7 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
 export const ref = new Operator(['ref'], ['number', 'number'], (stack) => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
-  const ref = new LiteralRef(x.value, y.value);
-  stack.push(ref);
+  stack.push(new LiteralRef(x.value, y.value));
 });
 
 export const struct = new Operator(['struct'], ['ref', 'number', 'number'], (stack) => {
@@ -119,15 +118,13 @@ export const struct = new Operator(['struct'], ['ref', 'number', 'number'], (sta
   stack.pop() as LiteralNumber;
   const c = stack.pop() as LiteralRef;
 
-  const ref = new LiteralRef(c.vector.x, c.vector.y);
-  stack.push(ref);
+  stack.push(new LiteralRef(c.vector.x, c.vector.y));
 });
 
 export const route = new Operator(['route'], ['ref', 'ref'], (stack) => {
   stack.pop() as LiteralRef;
   const b = stack.pop() as LiteralRef;
-  const ref = new LiteralRef(b.vector.x, b.vector.y);
-  stack.push(ref);
+  stack.push(new LiteralRef(b.vector.x, b.vector.y));
 });
 
 const combinators = {};
