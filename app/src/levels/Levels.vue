@@ -9,8 +9,8 @@
           <th class="w4">Clear Rate</th>
           <th>Tags</th>
           <th class="w4">Created On</th>
-          <th class="w1"> 
-            <span>⭐️</span>
+          <th class="w2"> 
+            <Emoji>⭐️</Emoji>
           </th>
         </tr>
       </thead>
@@ -24,7 +24,7 @@
           <td>80%</td>
           <td>Unix</td>
           <td>01-06-19</td>
-          <td>1</td>
+          <td class="tc">1</td>
         </tr>
       </tbody>
     </table>

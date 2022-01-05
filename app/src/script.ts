@@ -6,11 +6,12 @@ import Levels from './levels/Levels.vue';
 import SingleLevel from './levels/SingleLevel.vue';
 import Editor from './editor/Editor.vue';
 import Game from './game/Game.vue';
+import Emoji from './shared/Emoji.vue';
 
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
   routes: [
-    { path: '/', redirect: '/scoreboard' },
+    { path: '/', redirect: '/levels' },
     { path: '/scoreboard', component: Score },
     { path: '/levels', component: Levels },
     { path: '/levels/:levelId', component: SingleLevel },
@@ -21,5 +22,6 @@ const router = VueRouter.createRouter({
 
 const app = vue.createApp(App);
 
+app.component('Emoji', Emoji);
 app.use(router);
 app.mount('#app');

@@ -1,5 +1,8 @@
 <template>
-  <span v-html="html"></span>
+  <span>
+    <slot v-if="false"></slot>
+    <span v-html="html"></span>
+  </span>
 </template>
 
 <script lang="ts">
@@ -12,10 +15,8 @@ export default defineComponent({
     }
   },
   mounted () {
-    if (!this.$slots.default && !this.$slots.default[0]) return
-
-    var vnode = this.$slots.default[0]
-    var text = vnode.text || ''
+    var vnode = this.$slots.default()
+    var text = vnode.map(v => v.children).join(' ');
 
     this.html = global.twemoji.parse(text)
   }
