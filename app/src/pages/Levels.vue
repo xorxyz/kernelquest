@@ -17,7 +17,9 @@
       <tbody>
         <tr v-for="level in levels" :key="level.id">
           <td>
-            <router-link to="/levels/unix-101" class="white"> <span>Unix 101</span></router-link>
+            <router-link :to="`/levels/${level.id}`" class="white">
+              <span>{{ level.title }}</span>
+            </router-link>
           </td>
           <td>Quest </td>
           <td>Easy</td>
@@ -35,7 +37,7 @@
   export default {
     data() {
       return {
-        levels: [{ id: 'unix-101' }],
+        levels: [{ id: 'hello-world', title: 'Hello world' }],
       };
     },
   };

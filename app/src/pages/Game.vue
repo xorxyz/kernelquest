@@ -19,11 +19,11 @@
   import { Sheep, Wizard } from "xor4-game/lib/agents";
   import { Terminal } from "xterm";
   import * as FitAddon from "xterm-addon-fit";
-  import { Agent, Hero } from "../../../game/engine/agents";
-  import { Book, Flag, Tree } from "../../../game/engine/things";
-  import { World } from "../../../game/engine/world";
-  import { TTY } from "../../../game/ui/tty";
-  import { Vector } from "../../../lib/math";
+  import { Agent, Hero } from "xor4-game/engine/agents";
+  import { Book, Flag, Tree } from "xor4-game/engine/things";
+  import { World } from "xor4-game/engine/world";
+  import { TTY } from "xor4-game/ui/tty";
+  import { Vector } from "xor4-lib/math";
   import { Unicode14Addon } from "../../vendor/unicode14";
 
   const engine = markRaw(new Engine({

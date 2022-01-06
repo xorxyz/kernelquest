@@ -8,7 +8,7 @@ export type Memory = Array<Thing>
 export type DataStack = Stack<Thing>
 
 export class World {
-  readonly rooms: Array<Room>;
+  public rooms: Array<Room>;
 
   constructor() {
     this.rooms = new Array(ROOM_WIDTH * ROOM_HEIGHT).fill(0).map((_, i) => {

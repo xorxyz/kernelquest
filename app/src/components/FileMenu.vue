@@ -16,14 +16,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { debug } from '../../../lib/logging';
-import { Room } from '../../../game/engine/world';
+import { debug } from 'xor4-lib/logging';
 
 export default defineComponent({
   props: {
-    room: {
-      required: true,
-      type: Room
+    engine: {
+      required: true
     }
   },
   data () {

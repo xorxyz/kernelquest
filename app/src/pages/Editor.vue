@@ -2,7 +2,7 @@
   <div class="">
     <div class="card">
       <div class="flex tl w-100 mb1 bw05 br2">
-        <FileMenu :room="engine.world.rooms[0]"/>
+        <FileMenu :engine="engine"/>
         <select id="run_menu" class="" @change="selectRunMenuItem">
           <option value="run">-- Run --</option>
           <option value="play_level">▶️ Play level</option>
@@ -53,13 +53,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { Engine } from 'xor4-game/engine';
 import { World } from 'xor4-game/engine/world';
 import { StandardGlyphs } from "../constants";
-import AudioPlayer from '../shared/AudioPlayer.vue';
-import FileMenu from './FileMenu.vue';
-import GameTerminal from './GameTerminal.vue';
+import AudioPlayer from '../components/AudioPlayer.vue';
+import FileMenu from '../components/FileMenu.vue';
+import GameTerminal from '../components/GameTerminal.vue';
 
 export default defineComponent({
   components: {
@@ -87,10 +87,10 @@ export default defineComponent({
   data() {
     return {
       StandardGlyphs,
-      engine: new Engine({
+      engine: markRaw(new Engine({
         world: new World(),
-      }),
-      levelId: 'wip',
+      })),
+      levelId: 'hello-world',
       selected: '##',
       rows: new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((_, x) => {
         return { x, y, glyph: '..' }

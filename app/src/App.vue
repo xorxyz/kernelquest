@@ -19,7 +19,7 @@
 
 <script lang="ts">
   import { defineComponent } from '@vue/runtime-core';
-  import Navbar from './layout/Navbar.vue';
+  import Navbar from './components/Navbar.vue';
   import { version } from '../package.json';
 
   export default defineComponent({
