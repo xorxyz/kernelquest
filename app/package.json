@@ -1,6 +1,6 @@
 {
   "name": "xor4-app",
-  "version": "4.12.0",
+  "version": "4.13.0",
   "description": "",
   "scripts": {
     "server": "ts-node websocket-proxy",

@@ -94,6 +94,10 @@ export class Cell {
     return this.glyph.value;
   }
 
+  look() {
+    return this.slot;
+  }
+
   write(chars: string) {
     this.glyph = new Glyph(chars);
   }

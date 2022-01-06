@@ -38,6 +38,7 @@ export class Body {
   public position: Vector = new Vector(0, 0);
   public direction: Vector = new Vector(1, 0);
   public velocity: Vector = new Vector(0, 0);
+  public cursorPosition: Vector = new Vector(0, 0);
 
   get isLookingAt() {
     return this.position.clone().add(this.direction);
@@ -58,6 +59,7 @@ export class Agent {
 
   private cell: Cell | null = null;
   private holding: Thing | null = null;
+  private seeing: Thing | Agent | null = null;
   private queue: Queue<Action> = new Queue<Action>();
 
   constructor(type: AgentType) {
@@ -70,6 +72,10 @@ export class Agent {
     });
   }
 
+  get label() {
+    return `${this.type.appearance} ${this.type.name}`;
+  }
+
   get isAlive() {
     return this.hp.value > 0;
   }
@@ -78,12 +84,21 @@ export class Agent {
     return this.holding;
   }
 
+  get sees() {
+    return this.seeing;
+  }
+
   hasHandle(cell: Cell) {
     return this.cell === cell;
   }
 
   handleCell(cell: Cell | null) {
     this.cell = cell;
+  }
+
+  lookAt(thing: Thing | Agent | null) {
+    this.seeing = thing;
+    return true;
   }
 
   get(): boolean {

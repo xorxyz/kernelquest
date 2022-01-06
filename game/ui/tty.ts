@@ -41,7 +41,6 @@ export class TTY {
   public player: Hero;
   public room: Room;
   public connection: IConnection;
-  public cursorPosition: Vector = new Vector();
   public state: IState;
   public lineEditor: Editor = new Editor();
   public view: MainView;
@@ -50,7 +49,6 @@ export class TTY {
   public engine: Engine;
 
   private timer;
-  private dummyRoom = new Room(0, 0);
 
   constructor(connection: IConnection) {
     this.connection = connection;
@@ -61,15 +59,7 @@ export class TTY {
       termMode: true,
       prompt: '$ ',
       line: '',
-      stdout: [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      ],
+      stdout: ['', '', '', '', '', '', ''],
     };
 
     this.timer = setInterval(
@@ -92,8 +82,6 @@ export class TTY {
   handleInput(str: string) {
     if (this.waiting) return;
 
-    console.log('input str was:', str);
-
     if (str === Signals.SIGINT) {
       console.log('received sigint!');
       this.disconnect();
@@ -106,7 +94,7 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.dummyRoom, this.player);
+        action.perform(this.room, this.player);
       } else if (action) {
         this.player.schedule(action);
       }
@@ -139,7 +127,7 @@ export class TTY {
           const action = this.getActionForWord(expr);
 
           if (action instanceof TerminalAction) {
-            action.perform(this.dummyRoom, this.player);
+            action.perform(this.room, this.player);
           } else if (action) {
             this.player.schedule(action);
           }
@@ -205,16 +193,16 @@ export class TTY {
         action = new SwitchModeAction(this);
         break;
       case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 0));
+        action = new MoveCursorToAction(this, new Vector(this.player.body.cursorPosition.x, 0));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(15, this.player.body.cursorPosition.y));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 9));
+        action = new MoveCursorToAction(this, new Vector(this.player.body.cursorPosition.x, 9));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(0, this.player.body.cursorPosition.y));
         break;
       case (Keys.ARROW_UP):
         action = new MoveCursorAction(this, new Vector(0, -1));
@@ -270,8 +258,8 @@ export class TTY {
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.cursorPosition.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.cursorPosition.y,
+        this.view.components.room.position.x + (this.player.body.cursorPosition.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.player.body.cursorPosition.y,
       ));
 
     this.connection.write(cursorUpdate);

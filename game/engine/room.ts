@@ -18,6 +18,7 @@ export class Room {
   private cellsByXY: Record<string, Cell> = {};
 
   constructor(x: number, y: number) {
+    debug('constructing a room');
     this.position = new Vector(x, y);
     this.rows = new Array(ROOM_HEIGHT).fill(0).map(() => []);
 

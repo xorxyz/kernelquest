@@ -161,9 +161,12 @@ export class MoveCursorAction extends TerminalAction {
     this.direction = direction;
   }
   authorize() { return true; }
-  perform() {
-    if (Room.bounds.contains(this.terminal.cursorPosition.clone().add(this.direction))) {
-      this.terminal.cursorPosition.add(this.direction);
+  perform(ctx: Room, agent: Agent) {
+    if (Room.bounds.contains(agent.body.cursorPosition.clone().add(this.direction))) {
+      agent.body.cursorPosition.add(this.direction);
+      const thing = ctx.cellAt(agent.body.cursorPosition).look();
+      console.log(ctx.cellAt(agent.body.cursorPosition), agent.body.cursorPosition, thing, ctx);
+      agent.lookAt(thing);
     }
     return new ActionSuccess();
   }
@@ -180,10 +183,10 @@ export class MoveCursorToAction extends TerminalAction {
     this.destination = destination;
   }
   authorize() { return true; }
-  perform() {
+  perform(ctx, agent: Agent) {
     const withinBounds = true;
     if (withinBounds) {
-      this.terminal.cursorPosition.copy(this.destination);
+      agent.body.cursorPosition.copy(this.destination);
     }
     return new ActionSuccess();
   }
@@ -198,9 +201,9 @@ export class SelectCellAction extends TerminalAction {
     this.terminal = terminal;
   }
   authorize() { return true; }
-  perform() {
+  perform(ctx, agent: Agent) {
     this.terminal.switchModes();
-    const expr = `${this.terminal.cursorPosition.x} ${this.terminal.cursorPosition.y} ref`;
+    const expr = `${agent.body.cursorPosition.x} ${agent.body.cursorPosition.y} ref`;
     this.terminal.lineEditor.line = expr;
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);
