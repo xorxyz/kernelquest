@@ -16,7 +16,7 @@
   import { defineComponent, markRaw } from "vue";
   import { Engine } from "xor4-game/engine";
   import { Room } from "xor4-game/engine/room";
-  import { Sheep, Wizard } from "xor4-game/lib/agents";
+  import { Bug, Wizard } from "xor4-game/lib/agents";
   import { Terminal } from "xterm";
   import * as FitAddon from "xterm-addon-fit";
   import { Agent, Hero } from "xor4-game/engine/agents";
@@ -80,14 +80,14 @@
       reset () {
         const player = markRaw(new Hero(new Wizard()));
         const room = engine.world.rooms[0] as Room;
-        // const sheep = new Agent(new Sheep());
+        const bug = new Agent(new Bug());
         const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
         const flag = markRaw(new Flag());
 
         engine.world.clear();
 
-        room.add(player);
-        // room.add(sheep, new Vector(6, 9));
+        room.add(player, new Vector(4, 4));
+        room.add(bug, new Vector(5, 4));
 
         trees.forEach(([x,y]) => room.cellAt(Vector.from({ x, y })).put(markRaw(new Tree())));
         room.cellAt(Vector.from({ x: 4, y: 0 })).put(markRaw(new Book()));

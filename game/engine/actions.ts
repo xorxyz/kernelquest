@@ -1,4 +1,4 @@
-import { DirectionRing, Vector } from 'xor4-lib/math';
+import { Vector } from 'xor4-lib/math';
 import { TTY } from '../ui/tty';
 import { Agent, AgentType } from './agents';
 import { Keys } from '../constants';
@@ -47,24 +47,11 @@ export class RotateAction extends Action {
   cost: 0;
   authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    if (this.rotateDirection(agent.body.direction)) {
-      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
-      return new ActionSuccess();
-    }
-
-    return new ActionFailure();
-  }
-
-  rotateDirection(v: Vector): boolean {
-    try {
-      const index = DirectionRing.values.findIndex((x: Vector) => x.equals(v));
-      const next = DirectionRing.values[index === DirectionRing.values.length - 1 ? 0 : index + 1];
-      v.setXY(next.x, next.y);
-      return true;
-    } catch (err) {
-      console.log('error!', err);
-      return false;
-    }
+    agent.body.direction.rotate();
+    const cell = ctx.cellAt(agent.body.isLookingAt);
+    console.log('cell', cell);
+    if (cell) agent.handleCell(cell);
+    return new ActionSuccess();
   }
 }
 
@@ -72,11 +59,14 @@ export class StepAction extends Action {
   name = 'step';
   cost: 0;
   authorize() { return true; }
-  perform(ctx: Room, agent) {
-    if (agent.body.velocity.opposes(agent.body.direction) ||
-        agent.body.velocity.isZero()) {
-      agent.body.velocity.add(agent.body.direction);
+  perform(ctx: Room, agent: Agent) {
+    const target = ctx.cellAt(agent.body.isLookingAt);
 
+    if (Room.bounds.contains(target.position) && !target.isBlocked) {
+      const previous = ctx.cellAt(agent.body.position);
+      previous.leave();
+      target.enter(agent);
+      agent.body.position.add(agent.body.direction.vector);
       agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
@@ -90,9 +80,14 @@ export class BackStepAction extends Action {
   cost: 0;
   authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    if (agent.body.velocity.opposes(agent.body.direction) ||
-        agent.body.velocity.isZero()) {
-      agent.body.velocity.add(agent.body.direction.clone().invert());
+    const behind = agent.body.position.clone().sub(agent.body.direction.vector);
+    const target = ctx.cellAt(behind);
+
+    if (Room.bounds.contains(target.position) && !target.isBlocked) {
+      const previous = ctx.cellAt(agent.body.position);
+      previous.leave();
+      target.enter(agent);
+      agent.body.position.sub(agent.body.direction.vector);
       agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
       return new ActionSuccess();
     }
@@ -139,7 +134,7 @@ export class SpawnAction extends Action {
 
   perform(ctx: Room, agent: Agent) {
     const spawned = new Agent(this.type);
-    spawned.body.position.copy(agent.body.position).add(agent.body.direction);
+    spawned.body.position.copy(agent.body.position).add(agent.body.isLookingAt);
     if (!Room.bounds.contains(spawned.body.position)) {
       return new ActionFailure();
     }

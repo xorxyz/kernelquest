@@ -36,6 +36,7 @@ export class Compiler {
 
     const previous = term[term.length - 1];
     let factor: Factor | undefined;
+    console.log(this.dict);
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
       factor = this.dict[token.lexeme];

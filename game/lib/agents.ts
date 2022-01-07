@@ -26,3 +26,9 @@ export class Sheep extends AgentType {
   appearance = '🐑';
   capabilities = [new RandomWalkCapability()];
 }
+
+export class Bug extends AgentType {
+  name = 'bug';
+  appearance = '🐛';
+  capabilities = [];
+}

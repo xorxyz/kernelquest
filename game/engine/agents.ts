@@ -1,4 +1,4 @@
-import { Points, Vector } from 'xor4-lib/math';
+import { Direction, Points, Vector } from 'xor4-lib/math';
 import { Queue } from 'xor4-lib/queue';
 import { Colors, esc } from 'xor4-lib/esc';
 import { Interpreter } from 'xor4-interpreter';
@@ -36,12 +36,12 @@ export class Mind {
 
 export class Body {
   public position: Vector = new Vector(0, 0);
-  public direction: Vector = new Vector(1, 0);
+  public direction: Direction = new Direction(Direction.South);
   public velocity: Vector = new Vector(0, 0);
   public cursorPosition: Vector = new Vector(0, 0);
 
   get isLookingAt() {
-    return this.position.clone().add(this.direction);
+    return this.position.clone().add(this.direction.vector);
   }
 }
 
@@ -140,21 +140,6 @@ export class CursorAgentType extends AgentType {
 export class Hero extends Agent {
   experience: number = 0;
   get level() { return 1; }
-}
-
-export class Cursor extends Agent {
-  type: CursorAgentType = new CursorAgentType();
-  cursor: null;
-}
-
-export abstract class NPC extends AgentType {}
-
-export abstract class Friend extends AgentType {}
-
-export abstract class Foe extends AgentType {}
-
-export class Generator extends Agent {
-  n: number;
 }
 
 export abstract class Capability {

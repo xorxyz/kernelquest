@@ -96,6 +96,7 @@ export class Vector {
     return this;
   }
 
+  /* returns true if both vectors have matching x and y values */
   equals(v: Vector) {
     return this.x === v.x && this.y === v.y;
   }
@@ -233,24 +234,73 @@ export function getRandom(from: number, to: number) {
 }
 
 export class Ring<T> {
-  values: Array<T>;
+  private current: T;
+  private values: Array<T>;
   constructor(arr: Array<T>) {
     this.values = arr;
+    // eslint-disable-next-line prefer-destructuring
+    this.current = arr[0];
   }
-  next(value: T) {
-    const index = this.values.findIndex((x) => x === value);
-    console.log('index', index);
-    if (index === -1) throw new Error('invalid value');
+  get value() {
+    return this.current;
+  }
+  next() {
+    const index = this.values.findIndex((x) => x === this.current);
     const y = this.values[index + 1];
-    return y === undefined
+    this.current = y === undefined
       ? this.values[0]
       : y;
+
+    return this.current;
   }
 }
 
-export const DirectionRing = new Ring([
-  new Vector(1, 0),
-  new Vector(0, 1),
-  new Vector(-1, 0),
-  new Vector(0, -1),
-]);
+export const NorthVector = new Vector(0, -1);
+export const EastVector = new Vector(1, 0);
+export const SouthVector = new Vector(0, 1);
+export const WestVector = new Vector(-1, 0);
+
+// eslint-disable-next-line no-shadow
+export enum DirectionName {
+  'north' = 'north',
+  'east' = 'east',
+  'south' = 'south',
+  'west' = 'west'
+}
+
+export const Directions: Record<DirectionName, Vector> = {
+  [DirectionName.north]: NorthVector,
+  [DirectionName.east]: EastVector,
+  [DirectionName.south]: SouthVector,
+  [DirectionName.west]: WestVector,
+};
+
+export class Direction {
+  private ring = new Ring([NorthVector, EastVector, SouthVector, WestVector]); è;
+
+  static North = DirectionName.north;
+  static East = DirectionName.east;
+  static South = DirectionName.south;
+  static West = DirectionName.west;
+
+  constructor(d: DirectionName) {
+    const v = Directions[d];
+    while (!this.ring.value.equals(v)) {
+      this.ring.next();
+    }
+  }
+
+  get vector() {
+    return this.ring.value;
+  }
+
+  get label() {
+    const direction = Object.entries(Directions).find(([_, value]) => value.equals(this.vector));
+    if (!direction) throw new Error('Direction ended up with invalid value');
+    return direction[0];
+  }
+
+  rotate() {
+    this.ring.next();
+  }
+}

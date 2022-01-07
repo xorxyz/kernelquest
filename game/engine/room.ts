@@ -49,14 +49,6 @@ export class Room {
       } else {
         agent.sp.increase(1);
       }
-
-      const moved = this.move(agent);
-
-      if (moved) {
-        const cell = this.cellAt(agent.body.position.clone().add(agent.body.direction));
-        if (!cell) return;
-        agent.handleCell(cell);
-      }
     });
   }
 
@@ -92,25 +84,6 @@ export class Room {
     return this.cells.find((cell) => cell.has(agent)) || null;
   }
 
-  move(agent: Agent): boolean {
-    if (agent.body.velocity.isZero()) return false;
-    const currentCell = this.cellAt(agent.body.position);
-
-    agent.body.position.add(agent.body.velocity);
-    if (this.collides(agent.body.position)) {
-      agent.body.position.sub(agent.body.velocity);
-      return false;
-    }
-
-    const nextCell = this.cellAt(agent.body.position);
-
-    agent.body.velocity.sub(agent.body.velocity);
-    nextCell.enter(agent);
-    if (currentCell) currentCell.leave();
-
-    return true;
-  }
-
   remove(agent: Agent): Room {
     const cell = this.cells.find((c) => c.has(agent));
     if (cell) cell.leave();
@@ -139,7 +112,7 @@ export class Room {
     return agents !== undefined;
   }
 
-  private collides(position: Vector) {
+  collides(position: Vector) {
     return !Room.bounds.contains(position) || this.cellAt(position).isBlocked;
   }
 }
