@@ -27,14 +27,17 @@
   import { TTY } from "xor4-game/ui/tty";
   import { Vector } from "xor4-lib/math";
   import { Unicode14Addon } from "../../vendor/unicode14";
-import { DAMAGED } from "xor4-game/engine/events";
+import { HIT, STEP, ROTATE, GET, PUT } from "xor4-game/engine/events";
 
   const engine = markRaw(new Engine({
     world: new World(),
   }));
 
-  const url = new URL('~/public/hit.wav', import.meta.url);
-  var snd = new Audio(url);
+  var hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
+  var step = new Audio(new URL('~/public/step.wav', import.meta.url));
+  var rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url));
+  var get = new Audio(new URL('~/public/get.wav', import.meta.url));
+  var put = new Audio(new URL('~/public/put.wav', import.meta.url));
 
   export default defineComponent({
     created () {      
@@ -94,8 +97,25 @@ import { DAMAGED } from "xor4-game/engine/events";
 
         engine.world.clear();
 
-        room.on(DAMAGED, e => {
-          snd.play();
+        room.on(HIT, e => hit.play())
+        room.on(STEP, e => {
+          step.fastSeek(0);
+          step.play();
+        })
+
+        room.on(ROTATE, e => {
+          rotate.fastSeek(0);
+          rotate.play();
+        })
+
+        room.on(GET, e => {
+          get.fastSeek(0);
+          get.play();
+        })
+
+        room.on(PUT, e => {
+          put.fastSeek(0);
+          put.play();
         })
 
         room.add(player, new Vector(4, 4));

@@ -4,7 +4,7 @@ import { Agent, AgentType } from './agents';
 import { Keys } from '../constants';
 import { Thing } from './things';
 import { Room } from './room';
-import { DAMAGED } from './events';
+import { HIT, STEP, ROTATE, GET, PUT } from './events';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}
@@ -51,19 +51,20 @@ export class RotateAction extends Action {
     agent.body.direction.rotate();
     const cell = ctx.cellAt(agent.body.isLookingAt);
     if (cell) agent.cell = cell;
+    ctx.emit(ROTATE);
     return new ActionSuccess();
   }
 }
 
 export class StepAction extends Action {
   name = 'step';
-  cost = 2;
+  cost = 1;
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
 
     if (target && target.containsFoe) {
       agent.hp.decrease(1);
-      ctx.emit(DAMAGED);
+      ctx.emit(HIT);
     }
 
     if (target && !target.isBlocked) {
@@ -72,6 +73,7 @@ export class StepAction extends Action {
       target.enter(agent);
       agent.body.position.add(agent.body.direction.vector);
       agent.cell = ctx.cellAt(agent.body.isLookingAt);
+      ctx.emit(STEP);
       return new ActionSuccess();
     }
 
@@ -81,7 +83,7 @@ export class StepAction extends Action {
 
 export class BackStepAction extends Action {
   name = 'backstep';
-  cost = 2;
+  cost = 1;
   perform(ctx: Room, agent: Agent) {
     const behind = agent.body.position.clone().sub(agent.body.direction.vector);
     const target = ctx.cellAt(behind);
@@ -104,6 +106,7 @@ export class GetAction extends Action {
   cost = 1;
   perform(ctx: Room, agent: Agent) {
     if (agent.get()) {
+      ctx.emit(GET);
       return new ActionSuccess();
     }
 
@@ -117,6 +120,7 @@ export class PutAction extends Action {
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
+      ctx.emit(PUT);
       return new ActionSuccess();
     }
 
