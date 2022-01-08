@@ -99,7 +99,7 @@ export class BackStepAction extends Action {
 
 export class GetAction extends Action {
   name = 'get';
-  cost: 0;
+  cost = 1;
   perform(ctx: Room, agent: Agent) {
     if (agent.get()) {
       return new ActionSuccess();
@@ -111,7 +111,7 @@ export class GetAction extends Action {
 
 export class PutAction extends Action {
   name = 'put';
-  cost = 0;
+  cost = 1;
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
