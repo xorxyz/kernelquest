@@ -57,7 +57,7 @@ export class Agent {
   public cell: Cell | null = null;
   public hand: Thing | null = null;
   public eyes: Thing | Agent | null = null;
-  private queue: Queue<Action> = new Queue<Action>();
+  public queue: Queue<Action> = new Queue<Action>();
 
   constructor(type: AgentType) {
     this.type = type;
@@ -100,7 +100,8 @@ export class Agent {
     this.queue.add(action);
   }
 
-  takeTurn(): Action | null {
+  takeTurn(tick: number): Action | null {
+    this.type.capabilities.forEach((capability) => capability.run(this, tick));
     const action = this.queue.next();
 
     return action;
@@ -122,4 +123,5 @@ export abstract class Foe extends AgentType {}
 
 export abstract class Capability {
   abstract bootstrap (queue: Queue<Action>): void
+  abstract run (agent: Agent, tick: number): void
 }

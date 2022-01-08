@@ -2,14 +2,13 @@ import { Rectangle, Vector } from 'xor4-lib/math';
 import { debug } from 'xor4-lib/logging';
 import { EventEmitter } from 'events';
 import { Agent } from './agents';
-import { Cell, Port } from './cell';
+import { Cell } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
 export class Room extends EventEmitter {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
-  public ports: Array<Port> = [];
   public position: Vector;
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
@@ -29,7 +28,7 @@ export class Room extends EventEmitter {
 
   update(tick: number) {
     this.agents.forEach((agent: Agent) => {
-      const action = agent.takeTurn();
+      const action = agent.takeTurn(tick);
 
       if (action && action.authorize(agent)) {
         action.perform(this, agent);

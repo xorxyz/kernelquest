@@ -1,4 +1,5 @@
 import { Vector } from 'xor4-lib/math';
+import { forN } from 'xor4-lib/utils';
 import { TTY } from '../ui/tty';
 import { Agent, AgentType } from './agents';
 import { Keys } from '../constants';
@@ -47,8 +48,13 @@ export class SwitchModeAction extends Action {
 export class RotateAction extends Action {
   name = 'rotate';
   cost = 0;
+  n: number;
+  constructor(n: 0 | 1 | 2 | 3 = 1) {
+    super();
+    this.n = n;
+  }
   perform(ctx: Room, agent: Agent) {
-    agent.body.direction.rotate();
+    forN(this.n, () => agent.body.direction.rotate());
     const cell = ctx.cellAt(agent.body.isLookingAt);
     if (cell) agent.cell = cell;
     ctx.emit(ROTATE);
