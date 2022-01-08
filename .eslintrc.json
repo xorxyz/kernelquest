@@ -49,6 +49,7 @@
     "operator-linebreak": "off",
     "object-curly-newline": ["error", {
       "ImportDeclaration": { "multiline": true, "minProperties": 9}
-    }]
+    }],
+    "no-param-reassign": "off"
   }
 }

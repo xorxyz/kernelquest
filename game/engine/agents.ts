@@ -47,19 +47,16 @@ export class Body {
 
 export class Agent {
   public name: string = 'anon';
-
   public type: AgentType;
   public body: Body;
   public mind: Mind;
-
   public hp = new HP();
   public sp = new SP();
   public mp = new MP();
   public gp = new GP();
-
-  private cell: Cell | null = null;
-  private holding: Thing | null = null;
-  private seeing: Thing | Agent | null = null;
+  public cell: Cell | null = null;
+  public hand: Thing | null = null;
+  public eyes: Thing | Agent | null = null;
   private queue: Queue<Action> = new Queue<Action>();
 
   constructor(type: AgentType) {
@@ -80,38 +77,17 @@ export class Agent {
     return this.hp.value > 0;
   }
 
-  get holds() {
-    return this.holding;
-  }
-
-  get sees() {
-    return this.seeing;
-  }
-
-  hasHandle(cell: Cell) {
-    return this.cell === cell;
-  }
-
-  handleCell(cell: Cell | null) {
-    this.cell = cell;
-  }
-
-  lookAt(thing: Thing | Agent | null) {
-    this.seeing = thing;
-    return true;
-  }
-
   get(): boolean {
-    if (this.holding || !this.cell) return false;
-    this.holding = this.cell.take();
+    if (this.hand || !this.cell) return false;
+    this.hand = this.cell.take();
     return true;
   }
 
   drop(): boolean {
-    if (!this.holding || !this.cell || this.cell.isBlocked) return false;
+    if (!this.hand || !this.cell || this.cell.isBlocked) return false;
 
-    this.cell.put(this.holding);
-    this.holding = null;
+    this.cell.put(this.hand);
+    this.hand = null;
 
     return true;
   }

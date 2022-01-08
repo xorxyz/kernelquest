@@ -84,6 +84,8 @@
         const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
         const flag = markRaw(new Flag());
 
+        flag.write('flag{hello-world}')
+
         engine.world.clear();
 
         room.add(player, new Vector(4, 4));

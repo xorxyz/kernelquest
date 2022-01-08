@@ -8,38 +8,24 @@ const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
 export class Room {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
-
   public ports: Array<Port> = [];
   public position: Vector;
-
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
-  private rows: Array<Array<Cell>>;
-  private cellsByXY: Record<string, Cell> = {};
+  private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
 
   constructor(x: number, y: number) {
-    debug('constructing a room');
     this.position = new Vector(x, y);
-    this.rows = new Array(ROOM_HEIGHT).fill(0).map(() => []);
-
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / ROOM_WIDTH);
       const cellX = i - (ROOM_WIDTH * cellY);
 
       return new Cell(cellX, cellY);
     });
-
-    this.cells.forEach((cell) => {
-      this.rows[cell.position.y].push(cell);
-      this.cellsByXY[cell.name] = cell;
-    });
+    this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
   }
 
   update(tick: number) {
-    this.cells.forEach((cell) => {
-      cell.update();
-    });
-
     this.agents.forEach((agent: Agent) => {
       const action = agent.takeTurn();
 
@@ -75,7 +61,7 @@ export class Room {
     cell.enter(agent);
     this.agents.add(agent);
 
-    agent.handleCell(this.cellAt(agent.body.isLookingAt));
+    agent.cell = this.cellAt(agent.body.isLookingAt);
 
     return true;
   }
@@ -106,9 +92,7 @@ export class Room {
     return this.cells[index];
   }
 
-  cellIsHeld(cell: Cell): boolean {
-    const agents = Array.from(this.agents).find((agent) => agent.hasHandle(cell));
-
-    return agents !== undefined;
+  findAgentsWithCell(cell: Cell): Array<Agent> {
+    return Array.from(this.agents).filter((agent) => agent.cell === cell);
   }
 }

@@ -49,7 +49,7 @@ export class RotateAction extends Action {
   perform(ctx: Room, agent: Agent) {
     agent.body.direction.rotate();
     const cell = ctx.cellAt(agent.body.isLookingAt);
-    if (cell) agent.handleCell(cell);
+    if (cell) agent.cell = cell;
     return new ActionSuccess();
   }
 }
@@ -69,7 +69,7 @@ export class StepAction extends Action {
       previous?.leave();
       target.enter(agent);
       agent.body.position.add(agent.body.direction.vector);
-      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
+      agent.cell = ctx.cellAt(agent.body.isLookingAt);
       return new ActionSuccess();
     }
 
@@ -89,7 +89,7 @@ export class BackStepAction extends Action {
       previous?.leave();
       target?.enter(agent);
       agent.body.position.sub(agent.body.direction.vector);
-      agent.handleCell(ctx.cellAt(agent.body.isLookingAt));
+      agent.cell = ctx.cellAt(agent.body.isLookingAt);
       return new ActionSuccess();
     }
 
@@ -115,6 +115,21 @@ export class PutAction extends Action {
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
+      return new ActionSuccess();
+    }
+
+    return new ActionFailure();
+  }
+}
+
+export class ReadAction extends Action {
+  name = 'read';
+  cost = 10;
+  perform(ctx: Room, agent: Agent) {
+    if (agent.hand) {
+      const value = agent.hand.read();
+      console.log(value);
+
       return new ActionSuccess();
     }
 
@@ -158,8 +173,8 @@ export class MoveCursorAction extends TerminalAction {
   perform(ctx: Room, agent: Agent) {
     if (Room.bounds.contains(agent.body.cursorPosition.clone().add(this.direction))) {
       agent.body.cursorPosition.add(this.direction);
-      const thing = ctx.cellAt(agent.body.cursorPosition)?.look();
-      if (thing) agent.lookAt(thing);
+      const thing = ctx.cellAt(agent.body.cursorPosition)?.look() || null;
+      agent.eyes = thing;
     }
     return new ActionSuccess();
   }

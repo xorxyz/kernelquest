@@ -111,10 +111,8 @@ export class TTY {
 
   async handleTerminalInput(str: string) {
     if (str === Keys.ENTER) {
-      console.log('enter', this.lineEditor.value, '.');
       if (this.lineEditor.value) {
         const expr = this.lineEditor.value.trim();
-        console.log('got line value', expr);
 
         this.write(this.state.prompt + expr);
         this.state.line = '';

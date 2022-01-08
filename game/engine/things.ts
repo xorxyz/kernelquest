@@ -11,13 +11,22 @@ export interface Destination {
 
 export abstract class Thing {
   abstract name: string
-  position: Vector = new Vector();
-  velocity: Vector = new Vector();
-  durability: Durability = new Durability();
-  appearance: string;
+  public position: Vector = new Vector();
+  public velocity: Vector = new Vector();
+  public durability: Durability = new Durability();
+  public appearance: string;
+  private value: string;
 
   get label() {
     return `${this.appearance} ${this.name}`;
+  }
+
+  read() {
+    return this.value;
+  }
+
+  write(value: string) {
+    this.value = value;
   }
 
   render() {
