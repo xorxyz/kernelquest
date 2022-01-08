@@ -142,6 +142,8 @@ export class Hero extends Agent {
   get level() { return 1; }
 }
 
+export abstract class Foe extends AgentType {}
+
 export abstract class Capability {
   abstract bootstrap (queue: Queue<Action>): void
 }

@@ -3,8 +3,8 @@ export class Stack<T> extends Array {
     this.length = 0;
   }
 
-  pop (): T | undefined {
-    return super.pop()
+  pop(): T | undefined {
+    return super.pop();
   }
 
   /** pop multiple values */

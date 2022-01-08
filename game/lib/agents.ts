@@ -1,4 +1,4 @@
-import { AgentType } from '../engine/agents';
+import { AgentType, Foe } from '../engine/agents';
 import { RandomWalkCapability } from './capabilities';
 
 export class Cherub extends AgentType {
@@ -27,7 +27,7 @@ export class Sheep extends AgentType {
   capabilities = [new RandomWalkCapability()];
 }
 
-export class Bug extends AgentType {
+export class Bug extends Foe {
   name = 'bug';
   appearance = '🐛';
   capabilities = [];

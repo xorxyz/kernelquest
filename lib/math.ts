@@ -202,7 +202,7 @@ export function isNumeric(str: string) {
 export type TakeN<T> = (arr: Array<T>) => Array<Array<T>>
 
 /** [ 1, 2, 3, 4 ] -> [[ 1, 2 ],[ 3, 4 ]] */
-export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
+export const takeN = (n: number) => (a) => a.reduce((arr, x, i1) => {
   const i2 = i1 % n;
   if (i2 === 0) {
     arr.push([]);

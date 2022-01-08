@@ -35,7 +35,7 @@ export class Room {
     });
   }
 
-  update() {
+  update(tick: number) {
     this.cells.forEach((cell) => {
       cell.update();
     });
@@ -46,9 +46,9 @@ export class Room {
       if (action && action.authorize(agent)) {
         action.perform(this, agent);
         debug('agent of type', agent.type.name, 'performed:', action.name);
-      } else {
-        agent.sp.increase(1);
       }
+
+      if (tick % 10 === 1) agent.sp.increase(1);
     });
   }
 
@@ -65,35 +65,34 @@ export class Room {
     return this.cells.some((cell) => cell.has(agent));
   }
 
-  add(agent: Agent, position?: Vector): Room {
-    if (position) {
-      agent.body.position.copy(position);
-    }
+  add(agent: Agent, position?: Vector) {
+    if (position) agent.body.position.copy(position);
 
-    const cell = this.cellAt(position || agent.body.position);
+    const cell = this.cellAt(agent.body.position);
+
+    if (!cell) return false;
 
     cell.enter(agent);
     this.agents.add(agent);
 
     agent.handleCell(this.cellAt(agent.body.isLookingAt));
 
-    return this;
+    return true;
   }
 
   find(agent: Agent): Cell | null {
     return this.cells.find((cell) => cell.has(agent)) || null;
   }
 
-  remove(agent: Agent): Room {
+  remove(agent: Agent) {
     const cell = this.cells.find((c) => c.has(agent));
-    if (cell) cell.leave();
-    else {
-      console.log('cant find cell with agent');
+    if (cell) {
+      cell.leave();
     }
 
     this.agents.delete(agent);
 
-    return this;
+    return true;
   }
 
   render(): Array<string> {
@@ -101,7 +100,8 @@ export class Room {
     return arr;
   }
 
-  cellAt(position: Vector): Cell {
+  cellAt(position: Vector): Cell | null {
+    if (!Room.bounds.contains(position)) return null;
     const index = position.y * ROOM_WIDTH + position.x;
     return this.cells[index];
   }
@@ -110,9 +110,5 @@ export class Room {
     const agents = Array.from(this.agents).find((agent) => agent.hasHandle(cell));
 
     return agents !== undefined;
-  }
-
-  collides(position: Vector) {
-    return !Room.bounds.contains(position) || this.cellAt(position).isBlocked;
   }
 }

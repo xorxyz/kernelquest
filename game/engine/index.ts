@@ -24,7 +24,7 @@ export class Engine {
   update() {
     this.cycle++;
 
-    this.world.rooms.forEach((room) => room.update());
+    this.world.rooms.forEach((room) => room.update(this.cycle));
   }
 
   start() {

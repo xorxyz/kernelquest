@@ -1,6 +1,6 @@
 import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
-import { Agent } from './agents';
+import { Agent, Foe } from './agents';
 import { Room } from './room';
 import { Thing } from './things';
 import { EMPTY_CELL_CHARS } from '../constants';
@@ -44,6 +44,10 @@ export class Cell {
 
   public get isBlocked() {
     return this.slot !== null;
+  }
+
+  public get containsFoe() {
+    return this.slot instanceof Agent && this.slot.type instanceof Foe;
   }
 
   update() {
