@@ -4,6 +4,7 @@ import { Agent, AgentType } from './agents';
 import { Keys } from '../constants';
 import { Thing } from './things';
 import { Room } from './room';
+import { DAMAGED } from './events';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}
@@ -62,6 +63,7 @@ export class StepAction extends Action {
 
     if (target && target.containsFoe) {
       agent.hp.decrease(1);
+      ctx.emit(DAMAGED);
     }
 
     if (target && !target.isBlocked) {

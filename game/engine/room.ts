@@ -1,12 +1,13 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
 import { debug } from 'xor4-lib/logging';
+import { EventEmitter } from 'events';
 import { Agent } from './agents';
 import { Cell, Port } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
-export class Room {
+export class Room extends EventEmitter {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
   public ports: Array<Port> = [];
   public position: Vector;
@@ -15,6 +16,7 @@ export class Room {
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
 
   constructor(x: number, y: number) {
+    super();
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / ROOM_WIDTH);
@@ -34,7 +36,7 @@ export class Room {
         debug('agent of type', agent.type.name, 'performed:', action.name);
       }
 
-      if (tick % 10 === 1) agent.sp.increase(1);
+      if (tick % 10 === 0) agent.sp.increase(1);
     });
   }
 

@@ -7,6 +7,8 @@
         <span class="button link pv1 ph2 pointer mh1" v-show="paused" @click="play">▶️ Play</span>
         <span class="button link pv1 ph2 pointer mh1" v-show="!paused" @click="pause">⏸️ Pause</span>
         <span class="button link pv1 ph2 pointer mh1" @click="reset">↩️ Reset</span>
+        <span class="button link pv1 ph2 pointer mh1" @click="bloop">Bloop</span>
+        
       </div>
     </div>
   </div>
@@ -25,10 +27,14 @@
   import { TTY } from "xor4-game/ui/tty";
   import { Vector } from "xor4-lib/math";
   import { Unicode14Addon } from "../../vendor/unicode14";
+import { DAMAGED } from "xor4-game/engine/events";
 
   const engine = markRaw(new Engine({
     world: new World(),
-  }))
+  }));
+
+  const url = new URL('~/public/hit.wav', import.meta.url);
+  var snd = new Audio(url);
 
   export default defineComponent({
     created () {      
@@ -88,6 +94,10 @@
 
         engine.world.clear();
 
+        room.on(DAMAGED, e => {
+          snd.play();
+        })
+
         room.add(player, new Vector(4, 4));
         room.add(bug, new Vector(5, 4));
 
@@ -110,6 +120,9 @@
 
         this.play();
       },
+      bloop () {
+        snd.play();
+      }
     }
   });
 </script>
