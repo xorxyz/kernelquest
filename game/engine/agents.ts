@@ -58,6 +58,7 @@ export class Agent {
   public hand: Thing | null = null;
   public eyes: Thing | Agent | null = null;
   public queue: Queue<Action> = new Queue<Action>();
+  public isHit: boolean = false;
 
   constructor(type: AgentType) {
     this.type = type;
@@ -65,7 +66,7 @@ export class Agent {
     this.mind = new Mind();
 
     type.capabilities.forEach((capability) => {
-      capability.bootstrap(this.queue);
+      capability.bootstrap(this);
     });
   }
 
@@ -93,6 +94,7 @@ export class Agent {
   }
 
   render() {
+    if (!this.isAlive) return '💀';
     return this.type.appearance;
   }
 
@@ -122,6 +124,6 @@ export class Hero extends Agent {
 export abstract class Foe extends AgentType {}
 
 export abstract class Capability {
-  abstract bootstrap (queue: Queue<Action>): void
+  abstract bootstrap (agent: Agent): void
   abstract run (agent: Agent, tick: number): void
 }

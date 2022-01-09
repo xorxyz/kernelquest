@@ -2,8 +2,10 @@ import { Rectangle, Vector } from 'xor4-lib/math';
 import { debug } from 'xor4-lib/logging';
 import { EventEmitter } from 'events';
 import { Agent } from './agents';
-import { Cell } from './cell';
+import { Cell, Glyph } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
+import { ActionFailure, ActionSuccess } from './actions';
+import { FAIL } from './events';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
@@ -28,11 +30,15 @@ export class Room extends EventEmitter {
 
   update(tick: number) {
     this.agents.forEach((agent: Agent) => {
+      if (!agent.isAlive) return;
+
       const action = agent.takeTurn(tick);
 
       if (action && action.authorize(agent)) {
-        action.perform(this, agent);
-        debug('agent of type', agent.type.name, 'performed:', action.name);
+        const result = action.perform(this, agent);
+        if (result instanceof ActionSuccess) {
+          debug('agent of type', agent.type.name, 'performed:', action.name);
+        }
       }
 
       if (tick % 10 === 0) agent.sp.increase(1);
@@ -45,11 +51,13 @@ export class Room extends EventEmitter {
   }
 
   load(cells: Array<Cell>) {
-    this.cells.forEach((cell, i) => cell.write(cells[i].read()));
+    this.cells.forEach((cell, i) => {
+      cell.glyph = new Glyph(cells[i].glyph.value);
+    });
   }
 
   has(agent: Agent): boolean {
-    return this.cells.some((cell) => cell.has(agent));
+    return this.cells.some((cell) => cell.slot === agent);
   }
 
   add(agent: Agent, position?: Vector) {
@@ -59,7 +67,7 @@ export class Room extends EventEmitter {
 
     if (!cell) return false;
 
-    cell.enter(agent);
+    cell.slot = agent;
     this.agents.add(agent);
 
     agent.cell = this.cellAt(agent.body.isLookingAt);
@@ -68,13 +76,13 @@ export class Room extends EventEmitter {
   }
 
   find(agent: Agent): Cell | null {
-    return this.cells.find((cell) => cell.has(agent)) || null;
+    return this.cells.find((cell) => cell.slot === agent) || null;
   }
 
   remove(agent: Agent) {
-    const cell = this.cells.find((c) => c.has(agent));
+    const cell = this.cells.find((c) => c.slot === agent);
     if (cell) {
-      cell.leave();
+      cell.slot = null;
     }
 
     this.agents.delete(agent);

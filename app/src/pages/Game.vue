@@ -26,17 +26,17 @@ import { World } from "xor4-game/engine/world";
 import { TTY } from "xor4-game/ui/tty";
 import { Vector } from "xor4-lib/math";
 import { Unicode14Addon } from "../../vendor/unicode14";
-import { HIT, STEP, ROTATE, GET, PUT } from "xor4-game/engine/events";
+import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from "xor4-game/engine/events";
 
-const engine = markRaw(new Engine({
-  world: new World(),
-}));  
+let engine
 
 var hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
 var step = new Audio(new URL('~/public/step.wav', import.meta.url));
 var rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url));
 var get = new Audio(new URL('~/public/get.wav', import.meta.url));
 var put = new Audio(new URL('~/public/put.wav', import.meta.url));
+var fail = new Audio(new URL('~/public/fail.wav', import.meta.url));
+var die = new Audio(new URL('~/public/die.wav', import.meta.url));
 
 export default defineComponent({
   created () {      
@@ -51,6 +51,11 @@ export default defineComponent({
     console.log('game mounted')
     this.xterm.open(this.$refs.terminal as HTMLDivElement);
     this.xterm.focus();
+
+    (this.xterm as Terminal).onKey(({ key }) => {
+      if (this.paused) return;
+      this.input(key);
+    });
 
     this.reset();
   },
@@ -85,9 +90,16 @@ export default defineComponent({
       engine.pause();
       this.paused = true;
     },
+    input (key) {
+      this.tty.handleInput(Buffer.from(key).toString('hex'));
+    },
     reset () {
+      engine = markRaw(new Engine({
+        world: new World(),
+      }));  
+
+      const room = engine.world.rooms[0];
       const player = markRaw(new Hero(new Wizard()));
-      const room = engine.world.rooms[0] as Room;
       const bug = new Agent(new Bug());
       const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
       const flag = markRaw(new Flag());
@@ -117,6 +129,16 @@ export default defineComponent({
         put.play();
       })
 
+      room.on(FAIL, e => {
+        fail.fastSeek(0);
+        fail.play();
+      })
+
+      room.on(DIE, e => {
+        die.fastSeek(0);
+        die.play();
+      })
+
       room.add(player, new Vector(4, 4));
       room.add(bug, new Vector(5, 4));
 
@@ -131,11 +153,6 @@ export default defineComponent({
         player,
         write: (str) => this.xterm.write(str)
       }));
-
-      (this.xterm as Terminal).onKey(({ key }) => {
-        if (this.paused) return;
-        this.tty.handleInput(Buffer.from(key).toString('hex'));
-      });
 
       this.play();
     }

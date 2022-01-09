@@ -30,16 +30,11 @@ export interface IPorts {
 
 export class Cell {
   public position: Vector;
-
-  private glyph: Glyph = new Glyph();
-  private slot: Agent | Thing | null = null;
+  public glyph: Glyph = new Glyph();
+  public slot: Agent | Thing | null = null;
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
-  }
-
-  public get name() {
-    return String(this.position.x) + String(this.position.y);
   }
 
   public get isBlocked() {
@@ -50,29 +45,12 @@ export class Cell {
     return this.slot instanceof Agent && this.slot.type instanceof Foe;
   }
 
-  update() {
-  }
+  update() {}
 
+  /* Empty the cell's slot. */
   clear() {
     this.slot = null;
     this.glyph = new Glyph();
-  }
-
-  leave(): Agent | null {
-    if (!this.slot || this.slot instanceof Thing) return null;
-    const agent = this.slot;
-
-    this.slot = null;
-
-    return agent;
-  }
-
-  enter(agent: Agent): boolean {
-    if (this.isBlocked) return false;
-
-    this.slot = agent;
-
-    return true;
   }
 
   /* Take the thing that's in the cell's slot. */
@@ -94,24 +72,8 @@ export class Cell {
     return true;
   }
 
-  read() {
-    return this.glyph.value;
-  }
-
-  look() {
-    return this.slot;
-  }
-
-  write(chars: string) {
-    this.glyph = new Glyph(chars);
-  }
-
-  has(thing: Agent | Thing) {
-    return this.slot === thing;
-  }
-
   render(ctx: Room) {
-    const glyph = this.slot?.render() || this.read();
+    const glyph = this.slot?.render() || this.glyph.value;
     const style = ctx.findAgentsWithCell(this).length
       ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
       : esc(Colors.Bg.Black) + esc(Colors.Fg.White);

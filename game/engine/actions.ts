@@ -5,7 +5,7 @@ import { Agent, AgentType } from './agents';
 import { Keys } from '../constants';
 import { Thing } from './things';
 import { Room } from './room';
-import { HIT, STEP, ROTATE, GET, PUT } from './events';
+import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from './events';
 
 export abstract class ActionResult {}
 export class ActionSuccess extends ActionResult {}
@@ -70,18 +70,25 @@ export class StepAction extends Action {
 
     if (target && target.containsFoe) {
       agent.hp.decrease(1);
-      ctx.emit(HIT);
+      if (agent.hp.value === 0) {
+        ctx.emit(DIE);
+      } else {
+        ctx.emit(HIT);
+      }
+      return new ActionFailure();
     }
 
     if (target && !target.isBlocked) {
       const previous = ctx.cellAt(agent.body.position);
-      previous?.leave();
-      target.enter(agent);
+      if (previous) previous.slot = null;
+      target.slot = agent;
       agent.body.position.add(agent.body.direction.vector);
       agent.cell = ctx.cellAt(agent.body.isLookingAt);
       ctx.emit(STEP);
       return new ActionSuccess();
     }
+
+    ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -94,14 +101,25 @@ export class BackStepAction extends Action {
     const behind = agent.body.position.clone().sub(agent.body.direction.vector);
     const target = ctx.cellAt(behind);
 
+    if (target && target.containsFoe) {
+      if (agent.hp.value === 0) {
+        ctx.emit(DIE);
+      } else {
+        ctx.emit(HIT);
+      }
+      return new ActionFailure();
+    }
+
     if (target && !target.isBlocked) {
       const previous = ctx.cellAt(agent.body.position);
-      previous?.leave();
-      target?.enter(agent);
+      if (previous) previous.slot = null;
+      target.slot = agent;
       agent.body.position.sub(agent.body.direction.vector);
       agent.cell = ctx.cellAt(agent.body.isLookingAt);
       return new ActionSuccess();
     }
+
+    ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -111,10 +129,22 @@ export class GetAction extends Action {
   name = 'get';
   cost = 1;
   perform(ctx: Room, agent: Agent) {
-    if (agent.get()) {
+    if (agent.hand) return new ActionFailure();
+
+    if (agent.cell && agent.cell.containsFoe) {
+      agent.hp.decrease(1);
+      ctx.emit(HIT);
+      return new ActionFailure();
+    }
+
+    agent.get();
+
+    if (agent.hand) {
       ctx.emit(GET);
       return new ActionSuccess();
     }
+
+    ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -130,6 +160,8 @@ export class PutAction extends Action {
       return new ActionSuccess();
     }
 
+    ctx.emit(FAIL);
+
     return new ActionFailure();
   }
 }
@@ -144,6 +176,8 @@ export class ReadAction extends Action {
 
       return new ActionSuccess();
     }
+
+    ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -185,7 +219,7 @@ export class MoveCursorAction extends TerminalAction {
   perform(ctx: Room, agent: Agent) {
     if (Room.bounds.contains(agent.body.cursorPosition.clone().add(this.direction))) {
       agent.body.cursorPosition.add(this.direction);
-      const thing = ctx.cellAt(agent.body.cursorPosition)?.look() || null;
+      const thing = ctx.cellAt(agent.body.cursorPosition)?.slot || null;
       agent.eyes = thing;
     }
     return new ActionSuccess();
