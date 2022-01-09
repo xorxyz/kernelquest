@@ -5,7 +5,8 @@
         {{ label }}
       </button>
       <audio 
-        preload="auto" autoplay loop hidden muted
+        preload="auto" autoplay loop hidden :muted="muted"
+        volume="0.3"
         id="audio_player"
         class="hidden"
         src="https://www.kernel.quest/music/village.wav">

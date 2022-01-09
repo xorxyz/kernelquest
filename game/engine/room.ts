@@ -32,9 +32,13 @@ export class Room extends EventEmitter {
     this.agents.forEach((agent: Agent) => {
       if (!agent.isAlive) return;
 
+      if (tick % 10 === 0) agent.sp.increase(1);
+
       const action = agent.takeTurn(tick);
 
-      if (action && action.authorize(agent)) {
+      if (!action) return;
+
+      if (action.authorize(agent)) {
         const result = action.perform(this, agent);
         if (result instanceof ActionFailure) {
           this.emit('action-failure', { agent, result });
@@ -42,9 +46,10 @@ export class Room extends EventEmitter {
         if (result instanceof ActionSuccess) {
           debug('agent of type', agent.type.name, 'performed:', action.name);
         }
+      } else {
+        this.emit(FAIL, { agent });
+        this.emit('action-failure', { agent, result: new ActionFailure('Not enough stamina.') });
       }
-
-      if (tick % 10 === 0) agent.sp.increase(1);
     });
   }
 

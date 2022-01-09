@@ -2,7 +2,7 @@ import { Vector } from 'xor4-lib/math';
 import { forN } from 'xor4-lib/utils';
 import { TTY } from '../ui/tty';
 import { Agent, AgentType, Foe, Hero } from './agents';
-import { Keys } from '../constants';
+import { CursorModeHelpText, Keys } from '../constants';
 import { Thing } from './things';
 import { Room } from './room';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from './events';
@@ -297,6 +297,21 @@ export class SelectCellAction extends TerminalAction {
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);
     this.terminal.switchModes();
+    return new ActionSuccess();
+  }
+}
+
+export class PrintCursorModeHelpAction extends TerminalAction {
+  name = 'print-cursor-mode-help';
+  cost = 0;
+  terminal: TTY;
+  constructor(terminal: TTY) {
+    super();
+    this.terminal = terminal;
+  }
+  authorize() { return true; }
+  perform() {
+    this.terminal.write(`${CursorModeHelpText.join('\n')}\n`);
     return new ActionSuccess();
   }
 }

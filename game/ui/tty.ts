@@ -1,6 +1,6 @@
 import { Cursor, esc } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
-import { CLOCK_MS_DELAY, Keys, Signals } from '../constants';
+import { CLOCK_MS_DELAY, CursorModeHelpText, Keys, Signals } from '../constants';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
@@ -10,6 +10,7 @@ import {
   GetAction,
   MoveCursorAction,
   MoveCursorToAction,
+  PrintCursorModeHelpAction,
   PutAction,
   RotateAction,
   SelectCellAction,
@@ -59,7 +60,7 @@ export class TTY {
       termMode: true,
       prompt: '$ ',
       line: '',
-      stdout: ['', '', '', '', '', '', ''],
+      stdout: CursorModeHelpText,
     };
 
     this.timer = setInterval(
@@ -222,6 +223,9 @@ export class TTY {
         break;
       case (Keys.LOWER_B):
         action = new BackStepAction();
+        break;
+      case (Keys.LOWER_H):
+        action = new PrintCursorModeHelpAction(this);
         break;
       case (Keys.LOWER_P):
         action = new PutAction();

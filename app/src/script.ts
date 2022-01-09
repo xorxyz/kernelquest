@@ -7,6 +7,7 @@ import SingleLevel from './pages/SingleLevel.vue';
 import Editor from './pages/Editor.vue';
 import Game from './pages/Game.vue';
 import Emoji from './components/Emoji.vue';
+import AudioPlayer from './components/AudioPlayer.vue';
 
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
@@ -23,5 +24,6 @@ const router = VueRouter.createRouter({
 const app = vue.createApp(App);
 
 app.component('Emoji', Emoji);
+app.component('AudioPlayer', AudioPlayer);
 app.use(router);
 app.mount('#app');

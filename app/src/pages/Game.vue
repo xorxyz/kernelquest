@@ -9,6 +9,10 @@
         <span class="button link pv1 ph2 pointer mh1" @click="reset">↩️ Reset</span>
         
       </div>
+
+      <div>
+        <AudioPlayer></AudioPlayer>
+      </div>
     </div>
   </div>
 </template>
@@ -16,7 +20,6 @@
 <script lang="ts">
 import { defineComponent, markRaw } from "vue";
 import { Engine } from "xor4-game/engine";
-import { Room } from "xor4-game/engine/room";
 import { Bug, Sheep, Wizard } from "xor4-game/lib/agents";
 import { Terminal } from "xterm";
 import * as FitAddon from "xterm-addon-fit";
@@ -109,14 +112,14 @@ export default defineComponent({
       engine.world.clear();
 
       room.on(HIT, e => hit.play())
-      room.on(STEP, ({ agent }) => {
-        if (agent !== player) return;
+      room.on(STEP, (e) => {
+        if (e?.agent !== player) return;
         step.fastSeek(0);
         step.play();
       })
 
-      room.on(ROTATE, ({ agent }) => {
-        if (agent !== player) return;
+      room.on(ROTATE, (e) => {
+        if (e?.agent !== player) return;
         rotate.fastSeek(0);
         rotate.play();
       })
@@ -131,8 +134,8 @@ export default defineComponent({
         put.play();
       })
 
-      room.on(FAIL, ({ agent }) => {
-        if (agent !== player) return;
+      room.on(FAIL, (e) => {
+        if (e?.agent !== player) return;
         fail.fastSeek(0);
         fail.play();
       })
