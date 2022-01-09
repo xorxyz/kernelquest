@@ -1,13 +1,18 @@
 import { Vector } from 'xor4-lib/math';
 import { forN } from 'xor4-lib/utils';
 import { TTY } from '../ui/tty';
-import { Agent, AgentType } from './agents';
+import { Agent, AgentType, Foe, Hero } from './agents';
 import { Keys } from '../constants';
 import { Thing } from './things';
 import { Room } from './room';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from './events';
 
-export abstract class ActionResult {}
+export abstract class ActionResult {
+  public message: string;
+  constructor(message: string = '') {
+    this.message = message;
+  }
+}
 export class ActionSuccess extends ActionResult {}
 export class ActionFailure extends ActionResult {}
 
@@ -57,7 +62,7 @@ export class RotateAction extends Action {
     forN(this.n, () => agent.body.direction.rotate());
     const cell = ctx.cellAt(agent.body.isLookingAt);
     if (cell) agent.cell = cell;
-    ctx.emit(ROTATE);
+    ctx.emit(ROTATE, { agent });
     return new ActionSuccess();
   }
 }
@@ -68,7 +73,7 @@ export class StepAction extends Action {
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
 
-    if (target && target.containsFoe) {
+    if (target?.containsFoe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
         ctx.emit(DIE);
@@ -78,17 +83,27 @@ export class StepAction extends Action {
       return new ActionFailure();
     }
 
+    if (agent.type instanceof Foe && target?.slot instanceof Hero) {
+      target.slot.hp.decrease(1);
+      if (target.slot.hp.value === 0) {
+        ctx.emit(DIE);
+      } else {
+        ctx.emit(HIT);
+      }
+      return new ActionSuccess();
+    }
+
     if (target && !target.isBlocked) {
       const previous = ctx.cellAt(agent.body.position);
       if (previous) previous.slot = null;
       target.slot = agent;
       agent.body.position.add(agent.body.direction.vector);
       agent.cell = ctx.cellAt(agent.body.isLookingAt);
-      ctx.emit(STEP);
+      ctx.emit(STEP, { agent });
       return new ActionSuccess();
     }
 
-    ctx.emit(FAIL);
+    ctx.emit(FAIL, { agent });
 
     return new ActionFailure();
   }
@@ -129,7 +144,21 @@ export class GetAction extends Action {
   name = 'get';
   cost = 1;
   perform(ctx: Room, agent: Agent) {
-    if (agent.hand) return new ActionFailure();
+    if (!agent.cell || !agent.cell.slot) {
+      ctx.emit(FAIL);
+      return new ActionFailure('There\'s nothing here.');
+    }
+
+    if (agent.hand) {
+      ctx.emit(FAIL);
+      return new ActionFailure('You hands are full.');
+    }
+
+    if (agent.cell.slot instanceof Agent ||
+       (agent.cell.slot instanceof Thing && agent.cell.slot.isStatic)) {
+      ctx.emit(FAIL);
+      return new ActionFailure('You can\'t get this.');
+    }
 
     if (agent.cell && agent.cell.containsFoe) {
       agent.hp.decrease(1);
@@ -154,6 +183,12 @@ export class PutAction extends Action {
   name = 'put';
   cost = 1;
   perform(ctx: Room, agent: Agent) {
+    if (!agent.hand) {
+      ctx.emit(FAIL);
+
+      return new ActionFailure('You are not holding anything.');
+    }
+
     const target = ctx.cellAt(agent.body.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
       ctx.emit(PUT);
@@ -162,7 +197,7 @@ export class PutAction extends Action {
 
     ctx.emit(FAIL);
 
-    return new ActionFailure();
+    return new ActionFailure('There\'s already something here.');
   }
 }
 

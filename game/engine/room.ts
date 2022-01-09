@@ -36,6 +36,9 @@ export class Room extends EventEmitter {
 
       if (action && action.authorize(agent)) {
         const result = action.perform(this, agent);
+        if (result instanceof ActionFailure) {
+          this.emit('action-failure', { agent, result });
+        }
         if (result instanceof ActionSuccess) {
           debug('agent of type', agent.type.name, 'performed:', action.name);
         }

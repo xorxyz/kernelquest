@@ -30,5 +30,5 @@ export class Sheep extends AgentType {
 export class Bug extends Foe {
   name = 'bug';
   appearance = '🐛';
-  capabilities = [];
+  capabilities = [new RandomWalkCapability()];
 }

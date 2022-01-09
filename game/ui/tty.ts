@@ -67,6 +67,12 @@ export class TTY {
       REFRESH_RATE,
     );
 
+    this.room.on('action-failure', ({ agent, result }) => {
+      if (agent === this.player) {
+        this.write(result.message);
+      }
+    });
+
     this.render();
   }
 

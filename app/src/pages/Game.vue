@@ -21,7 +21,7 @@ import { Bug, Sheep, Wizard } from "xor4-game/lib/agents";
 import { Terminal } from "xterm";
 import * as FitAddon from "xterm-addon-fit";
 import { Agent, Hero } from "xor4-game/engine/agents";
-import { Book, Flag, Tree } from "xor4-game/engine/things";
+import { Book, Flag, Tree } from "xor4-game/lib/things";
 import { World } from "xor4-game/engine/world";
 import { TTY } from "xor4-game/ui/tty";
 import { Vector } from "xor4-lib/math";
@@ -109,12 +109,14 @@ export default defineComponent({
       engine.world.clear();
 
       room.on(HIT, e => hit.play())
-      room.on(STEP, e => {
+      room.on(STEP, ({ agent }) => {
+        if (agent !== player) return;
         step.fastSeek(0);
         step.play();
       })
 
-      room.on(ROTATE, e => {
+      room.on(ROTATE, ({ agent }) => {
+        if (agent !== player) return;
         rotate.fastSeek(0);
         rotate.play();
       })
@@ -129,7 +131,8 @@ export default defineComponent({
         put.play();
       })
 
-      room.on(FAIL, e => {
+      room.on(FAIL, ({ agent }) => {
+        if (agent !== player) return;
         fail.fastSeek(0);
         fail.play();
       })
