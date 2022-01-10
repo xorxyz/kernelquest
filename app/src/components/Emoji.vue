@@ -1,7 +1,7 @@
 <template>
   <span>
-    <slot v-if="false"></slot>
-    <span v-html="html"></span>
+    <slot v-if="false" />
+    <span v-html="html" />
   </span>
 </template>
 
@@ -9,16 +9,16 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  data () {
+  data() {
     return {
-      html: ''
-    }
+      html: '',
+    };
   },
-  mounted () {
-    var vnode = this.$slots.default()
-    var text = vnode.map(v => v.children).join(' ');
+  mounted() {
+    const vnode = this.$slots.default();
+    const text = vnode.map((v) => v.children).join(' ');
 
-    this.html = global.twemoji.parse(text)
-  }
-})
+    this.html = global.twemoji.parse(text);
+  },
+});
 </script>

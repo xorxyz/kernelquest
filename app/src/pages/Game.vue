@@ -1,40 +1,53 @@
 <template>
-  <div class="">
-    <div id="terminal-container" class="container flex flex-column items-center">
-      <div ref="terminal" autofocus tabindex="0" class="mv1 ba"></div>
+  <div>
+    <div
+      id="terminal-container"
+      class="container flex flex-column items-center">
+      <div
+        ref="terminal"
+        autofocus
+        tabindex="0"
+        class="mv1 ba" />
 
       <div class="flex mv2 w-100 justify-center">
-        <span class="button link pv1 ph2 pointer mh1" v-show="paused" @click="play">▶️ Play</span>
-        <span class="button link pv1 ph2 pointer mh1" v-show="!paused" @click="pause">⏸️ Pause</span>
-        <span class="button link pv1 ph2 pointer mh1" @click="reset">↩️ Reset</span>
-        <span class="button link pv1 ph2 pointer mh1"><AudioPlayer ref="audio"></AudioPlayer></span>
+        <span
+          class="button link pv1 ph2 pointer mh1"
+          v-show="paused"
+          @click="play">▶️ Play</span>
+        <span
+          class="button link pv1 ph2 pointer mh1"
+          v-show="!paused"
+          @click="pause">⏸️ Pause</span>
+        <span
+          class="button link pv1 ph2 pointer mh1"
+          @click="reset">↩️ Reset</span>
+        <span class="button link pv1 ph2 pointer mh1"><AudioPlayer ref="audio" /></span>
       </div>
-
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from "vue";
-import { Engine } from "xor4-game/engine";
-import { Terminal } from "xterm";
-import * as FitAddon from "xterm-addon-fit";
-import { TTY } from "xor4-game/ui/tty";
-import { Unicode14Addon } from "../../vendor/unicode14";
-import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from "xor4-game/engine/events";
+import { defineComponent, markRaw } from 'vue';
+import { Engine } from 'xor4-game/engine';
+import { Terminal } from 'xterm';
+import * as FitAddon from 'xterm-addon-fit';
+import { TTY } from 'xor4-game/ui/tty';
+import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game/engine/events';
+import { Unicode14Addon } from '../../vendor/unicode14';
 
-var hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
-var step = new Audio(new URL('~/public/step.wav', import.meta.url));
-var rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url));
-var get = new Audio(new URL('~/public/get.wav', import.meta.url));
-var put = new Audio(new URL('~/public/put.wav', import.meta.url));
-var fail = new Audio(new URL('~/public/fail.wav', import.meta.url));
-var die = new Audio(new URL('~/public/die.wav', import.meta.url));
+const hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
+const step = new Audio(new URL('~/public/step.wav', import.meta.url));
+const rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url));
+const get = new Audio(new URL('~/public/get.wav', import.meta.url));
+const put = new Audio(new URL('~/public/put.wav', import.meta.url));
+const fail = new Audio(new URL('~/public/fail.wav', import.meta.url));
+const die = new Audio(new URL('~/public/die.wav', import.meta.url));
 
 const engine = markRaw(new Engine({}));
 
 export default defineComponent({
-  created () {      
+  created() {
     const fitAddon = new FitAddon.FitAddon();
     const unicode14Addon = new Unicode14Addon();
 
@@ -42,8 +55,8 @@ export default defineComponent({
     this.xterm.loadAddon(unicode14Addon);
     this.xterm.unicode.activeVersion = '14';
   },
-  mounted () {
-    console.log('game mounted')
+  mounted() {
+    console.log('game mounted');
     this.xterm.open(this.$refs.terminal as HTMLDivElement);
     this.xterm.focus();
 
@@ -51,46 +64,46 @@ export default defineComponent({
       if (this.paused) return;
       this.input(key);
     });
-    
+
     const room = engine.world.rooms[0];
     const player = engine.world.rooms[0].findPlayers()[0];
 
-    console.log(player)
+    console.log(player);
 
-    room.on(HIT, e => hit.play())
+    room.on(HIT, (e) => hit.play());
     room.on(STEP, (e) => {
       if (e?.agent !== player) return;
       step.fastSeek(0);
       step.play();
-    })
+    });
 
     room.on(ROTATE, (e) => {
       if (e?.agent !== player) return;
       rotate.fastSeek(0);
       rotate.play();
-    })
+    });
 
-    room.on(GET, e => {
+    room.on(GET, (e) => {
       get.fastSeek(0);
       get.play();
-    })
+    });
 
-    room.on(PUT, e => {
+    room.on(PUT, (e) => {
       put.fastSeek(0);
       put.play();
-    })
+    });
 
     room.on(FAIL, (e) => {
       if (e?.agent !== player) return;
       fail.fastSeek(0);
       fail.play();
-    })
+    });
 
-    room.on(DIE, e => {
+    room.on(DIE, (e) => {
       this.$refs.audio.pause();
       die.fastSeek(0);
       die.play();
-    })
+    });
 
     room.on('reset', () => {
       this.$refs.audio.reset();
@@ -101,7 +114,7 @@ export default defineComponent({
     this.tty = markRaw(new TTY({
       room,
       player,
-      write: (str) => this.xterm.write(str)
+      write: (str) => this.xterm.write(str),
     }));
 
     this.play();
@@ -115,7 +128,7 @@ export default defineComponent({
           black: '#000000',
           green: '#0CFF24',
           red: '#F92672',
-          blue: '#66D9EF'
+          blue: '#66D9EF',
         },
         cols: 72,
         rows: 25,
@@ -123,29 +136,29 @@ export default defineComponent({
         cursorBlink: true,
         cursorWidth: 12,
         customGlyphs: true,
-        fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace'
+        fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
       }),
-      paused: true
-    }
+      paused: true,
+    };
   },
   methods: {
-    play () {
+    play() {
       engine.start();
       this.$refs.audio.play();
       this.paused = false;
     },
-    pause () {
+    pause() {
       engine.pause();
       this.$refs.audio.pause();
       this.paused = true;
     },
-    input (key) {
-      this.tty.handleInput(Buffer.from(key).toString('hex'));
+    input(key) {
+      this.tty?.handleInput(Buffer.from(key).toString('hex'));
     },
-    reset () {
+    reset() {
       engine.world.rooms[0].reset();
       this.$refs.audio.reset();
-    
+
       const room = engine.world.rooms[0];
       const player = engine.world.rooms[0].findPlayers()[0];
 
@@ -154,9 +167,9 @@ export default defineComponent({
       this.tty = markRaw(new TTY({
         room,
         player,
-        write: (str) => this.xterm.write(str)
+        write: (str) => this.xterm.write(str),
       }));
-    }
-  }
+    },
+  },
 });
 </script>

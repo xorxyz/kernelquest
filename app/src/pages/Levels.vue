@@ -9,15 +9,19 @@
           <th class="w4">Clear Rate</th>
           <th>Tags</th>
           <th class="w4">Created On</th>
-          <th class="w2"> 
+          <th class="w2">
             <Emoji>⭐️</Emoji>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="level in levels" :key="level.id">
+        <tr
+          v-for="level in levels"
+          :key="level.id">
           <td>
-            <router-link :to="`/levels/${level.id}`" class="white">
+            <router-link
+              :to="`/levels/${level.id}`"
+              class="white">
               <span>{{ level.title }}</span>
             </router-link>
           </td>
@@ -34,12 +38,13 @@
 </template>
 
 <script lang="ts">
-  export default {
-    data() {
-      return {
-        levels: [{ id: 'hello-world', title: 'Hello world' }],
-      };
-    },
-  };
-</script>
+import { defineComponent } from 'vue';
 
+export default defineComponent({
+  data() {
+    return {
+      levels: [{ id: 'hello-world', title: 'Hello world' }],
+    };
+  },
+});
+</script>
