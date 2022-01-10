@@ -97,8 +97,6 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
   test.run(stack);
   const tested = stack.pop();
 
-  console.log('tested value:', tested?.value);
-
   const term = tested && tested.value
     ? b.value
     : a.value;

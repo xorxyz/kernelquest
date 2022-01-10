@@ -74,7 +74,7 @@ export class Cell {
 
   render(ctx: Room) {
     const glyph = this.slot?.render() || this.glyph.value;
-    const style = ctx.findAgentsWithCell(this).length
+    const style = ctx.findAgentsWithCell(this).filter((a) => a.isAlive).length
       ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
       : esc(Colors.Bg.Black) + esc(Colors.Fg.White);
 

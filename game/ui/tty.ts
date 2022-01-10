@@ -95,6 +95,11 @@ export class TTY {
       return;
     }
 
+    if (str === Keys.ENTER && this.player.hp.value <= 0) {
+      this.room.reset();
+      return;
+    }
+
     if (this.state.termMode) {
       this.handleTerminalInput(str);
     } else {
@@ -116,7 +121,7 @@ export class TTY {
     });
   }
 
-  async handleTerminalInput(str: string) {
+  handleTerminalInput(str: string): void {
     if (str === Keys.ENTER) {
       if (this.lineEditor.value) {
         const expr = this.lineEditor.value.trim();
@@ -257,6 +262,7 @@ export class TTY {
   }
 
   drawCursor() {
+    if (!this.player.isAlive) return;
     if (!this.connection) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 

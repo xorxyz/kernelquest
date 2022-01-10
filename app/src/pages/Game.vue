@@ -7,7 +7,7 @@
         <span class="button link pv1 ph2 pointer mh1" v-show="paused" @click="play">▶️ Play</span>
         <span class="button link pv1 ph2 pointer mh1" v-show="!paused" @click="pause">⏸️ Pause</span>
         <span class="button link pv1 ph2 pointer mh1" @click="reset">↩️ Reset</span>
-        <span class="button link pv1 ph2 pointer mh1"><AudioPlayer></AudioPlayer></span>
+        <span class="button link pv1 ph2 pointer mh1"><AudioPlayer ref="audio"></AudioPlayer></span>
       </div>
 
     </div>
@@ -17,18 +17,11 @@
 <script lang="ts">
 import { defineComponent, markRaw } from "vue";
 import { Engine } from "xor4-game/engine";
-import { Bug, Sheep, Wizard } from "xor4-game/lib/agents";
 import { Terminal } from "xterm";
 import * as FitAddon from "xterm-addon-fit";
-import { Agent, Hero } from "xor4-game/engine/agents";
-import { Book, Flag, Tree } from "xor4-game/lib/things";
-import { World } from "xor4-game/engine/world";
 import { TTY } from "xor4-game/ui/tty";
-import { Vector } from "xor4-lib/math";
 import { Unicode14Addon } from "../../vendor/unicode14";
 import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from "xor4-game/engine/events";
-
-let engine
 
 var hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
 var step = new Audio(new URL('~/public/step.wav', import.meta.url));
@@ -37,6 +30,8 @@ var get = new Audio(new URL('~/public/get.wav', import.meta.url));
 var put = new Audio(new URL('~/public/put.wav', import.meta.url));
 var fail = new Audio(new URL('~/public/fail.wav', import.meta.url));
 var die = new Audio(new URL('~/public/die.wav', import.meta.url));
+
+const engine = markRaw(new Engine({}));
 
 export default defineComponent({
   created () {      
@@ -56,8 +51,60 @@ export default defineComponent({
       if (this.paused) return;
       this.input(key);
     });
+    
+    const room = engine.world.rooms[0];
+    const player = engine.world.rooms[0].findPlayers()[0];
 
-    this.reset();
+    console.log(player)
+
+    room.on(HIT, e => hit.play())
+    room.on(STEP, (e) => {
+      if (e?.agent !== player) return;
+      step.fastSeek(0);
+      step.play();
+    })
+
+    room.on(ROTATE, (e) => {
+      if (e?.agent !== player) return;
+      rotate.fastSeek(0);
+      rotate.play();
+    })
+
+    room.on(GET, e => {
+      get.fastSeek(0);
+      get.play();
+    })
+
+    room.on(PUT, e => {
+      put.fastSeek(0);
+      put.play();
+    })
+
+    room.on(FAIL, (e) => {
+      if (e?.agent !== player) return;
+      fail.fastSeek(0);
+      fail.play();
+    })
+
+    room.on(DIE, e => {
+      this.$refs.audio.pause();
+      die.fastSeek(0);
+      die.play();
+    })
+
+    room.on('reset', () => {
+      this.$refs.audio.reset();
+    });
+
+    this.tty?.disconnect();
+
+    this.tty = markRaw(new TTY({
+      room,
+      player,
+      write: (str) => this.xterm.write(str)
+    }));
+
+    this.play();
   },
   data(): { tty: TTY | undefined, xterm: Terminal, paused: boolean } {
     return {
@@ -84,70 +131,23 @@ export default defineComponent({
   methods: {
     play () {
       engine.start();
+      this.$refs.audio.play();
       this.paused = false;
     },
     pause () {
       engine.pause();
+      this.$refs.audio.pause();
       this.paused = true;
     },
     input (key) {
       this.tty.handleInput(Buffer.from(key).toString('hex'));
     },
     reset () {
-      engine = markRaw(new Engine({
-        world: new World(),
-      }));  
-
+      engine.world.rooms[0].reset();
+      this.$refs.audio.reset();
+    
       const room = engine.world.rooms[0];
-      const player = markRaw(new Hero(new Wizard()));
-      const bug = new Agent(new Bug());
-      const trees = [[5,0], [1,1], [3,1], [4,1], [0,2], [1,4]];
-      const flag = markRaw(new Flag());
-
-      flag.write('flag{hello-world}')
-
-      engine.world.clear();
-
-      room.on(HIT, e => hit.play())
-      room.on(STEP, (e) => {
-        if (e?.agent !== player) return;
-        step.fastSeek(0);
-        step.play();
-      })
-
-      room.on(ROTATE, (e) => {
-        if (e?.agent !== player) return;
-        rotate.fastSeek(0);
-        rotate.play();
-      })
-
-      room.on(GET, e => {
-        get.fastSeek(0);
-        get.play();
-      })
-
-      room.on(PUT, e => {
-        put.fastSeek(0);
-        put.play();
-      })
-
-      room.on(FAIL, (e) => {
-        if (e?.agent !== player) return;
-        fail.fastSeek(0);
-        fail.play();
-      })
-
-      room.on(DIE, e => {
-        die.fastSeek(0);
-        die.play();
-      })
-
-      room.add(player, new Vector(4, 4));
-      room.add(bug, new Vector(5, 4));
-
-      trees.forEach(([x,y]) => room.cellAt(Vector.from({ x, y })).put(markRaw(new Tree())));
-      room.cellAt(Vector.from({ x: 4, y: 0 })).put(markRaw(new Book()));
-      room.cellAt(Vector.from({ x: 14, y: 8 })).put(flag);
+      const player = engine.world.rooms[0].findPlayers()[0];
 
       this.tty?.disconnect();
 
@@ -156,8 +156,6 @@ export default defineComponent({
         player,
         write: (str) => this.xterm.write(str)
       }));
-
-      this.play();
     }
   }
 });

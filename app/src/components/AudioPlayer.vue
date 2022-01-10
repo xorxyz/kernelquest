@@ -2,6 +2,7 @@
   <div id="music_player"  @click="togglePause">
     {{ label }}
     <audio 
+      ref="audio"
       preload="auto" autoplay loop hidden :muted="muted"
       volume="0.3"
       id="audio_player"
@@ -30,6 +31,16 @@ export default defineComponent({
     togglePause () {
       this.$data.label = this.$data.muted ? NOT_MUTED : MUTED
       this.$data.muted = !this.$data.muted;
+    },
+    reset() {
+      this.$refs.audio.fastSeek(0);
+      this.$refs.audio.play();
+    },
+    play() {
+      this.$refs.audio.play();
+    },
+    pause() {
+      this.$refs.audio.pause();
     }
   }
 })

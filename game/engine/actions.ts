@@ -84,6 +84,7 @@ export class StepAction extends Action {
     }
 
     if (agent.type instanceof Foe && target?.slot instanceof Hero) {
+      if (target.slot.hp.value === 0) return new ActionFailure();
       target.slot.hp.decrease(1);
       if (target.slot.hp.value === 0) {
         ctx.emit(DIE);

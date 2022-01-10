@@ -10,13 +10,14 @@ export type DataStack = Stack<Thing>
 export class World {
   public rooms: Array<Room>;
 
-  constructor() {
+  constructor(rooms: Array<Room>) {
     // this.rooms = new Array(ROOM_WIDTH * ROOM_HEIGHT).fill(0).map((_, i) => {
     //   const y = Math.floor(i / ROOM_WIDTH);
     //   const x = y * ROOM_WIDTH + (ROOM_WIDTH - 1);
     //   return new Room(x, y);
     // });
-    this.rooms = [new Room(0, 0)];
+
+    this.rooms = [...rooms];
   }
 
   find(agent: Agent): Room | null {

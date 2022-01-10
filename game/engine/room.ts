@@ -1,7 +1,6 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
-import { debug } from 'xor4-lib/logging';
 import { EventEmitter } from 'events';
-import { Agent } from './agents';
+import { Agent, Hero } from './agents';
 import { Cell, Glyph } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { ActionFailure, ActionSuccess } from './actions';
@@ -15,8 +14,8 @@ export class Room extends EventEmitter {
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
-
-  constructor(x: number, y: number) {
+  private setupFn?: (this: Room) => void;
+  constructor(x: number, y: number, setupFn?: (this: Room) => void) {
     super();
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
@@ -26,6 +25,11 @@ export class Room extends EventEmitter {
       return new Cell(cellX, cellY);
     });
     this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
+
+    if (setupFn) {
+      this.setupFn = setupFn;
+      this.setupFn();
+    }
   }
 
   update(tick: number) {
@@ -44,7 +48,7 @@ export class Room extends EventEmitter {
           this.emit('action-failure', { agent, result });
         }
         if (result instanceof ActionSuccess) {
-          debug('agent of type', agent.type.name, 'performed:', action.name);
+          this.emit('action-success', { agent, result });
         }
       } else {
         this.emit(FAIL, { agent });
@@ -87,6 +91,11 @@ export class Room extends EventEmitter {
     return this.cells.find((cell) => cell.slot === agent) || null;
   }
 
+  findPlayers(): Array<Hero> {
+    console.log(this.agents);
+    return Array.from(this.agents).filter((agent) => agent instanceof Hero) as Array<Hero>;
+  }
+
   remove(agent: Agent) {
     const cell = this.cells.find((c) => c.slot === agent);
     if (cell) {
@@ -111,5 +120,11 @@ export class Room extends EventEmitter {
 
   findAgentsWithCell(cell: Cell): Array<Agent> {
     return Array.from(this.agents).filter((agent) => agent.cell === cell);
+  }
+
+  reset() {
+    this.emit('reset');
+    this.clear();
+    if (this.setupFn) this.setupFn();
   }
 }
