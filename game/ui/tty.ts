@@ -40,7 +40,7 @@ export interface IConnection {
 export class TTY {
   public id: number;
   public player: Hero;
-  public room: Room;
+  readonly room: Room;
   public connection: IConnection;
   public state: IState;
   public lineEditor: Editor = new Editor();
@@ -74,7 +74,7 @@ export class TTY {
       }
     });
 
-    this.render();
+    this.render(this.player.tick);
   }
 
   disconnect() {
@@ -112,7 +112,7 @@ export class TTY {
       }
     }
 
-    this.render();
+    this.render(this.player.tick);
   }
 
   write(message: string) {
@@ -153,7 +153,7 @@ export class TTY {
         this.write(`[${term}]`);
 
         this.waiting = false;
-        this.render();
+        this.render(this.player.tick);
       } else {
         this.switchModes();
       }
@@ -161,7 +161,7 @@ export class TTY {
       this.state.line = this.lineEditor.value.replace('\n', '');
     }
 
-    this.render();
+    this.render(this.player.tick);
   }
 
   getActionForWord(str: string): Action | null {
@@ -251,10 +251,10 @@ export class TTY {
     return action;
   }
 
-  render() {
+  render(tick: number) {
     if (!this.connection) return;
 
-    const output = this.view.compile(this);
+    const output = this.view.compile(this, tick);
 
     this.connection.write(output);
 

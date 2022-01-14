@@ -6,6 +6,10 @@ export class Vector {
   x: number;
   y: number;
 
+  get label() {
+    return `${this.x} ${this.y}`;
+  }
+
   constructor(x: number = 0, y: number = 0) {
     this.x = x;
     this.y = y;

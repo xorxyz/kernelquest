@@ -23,12 +23,12 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  abstract render(terminal: TTY): Array<string>
+  abstract render(terminal: TTY, tick: number): Array<string>
 
-  compile(terminal: TTY): string {
+  compile(terminal: TTY, tick: number): string {
     const { x, y } = this.position;
 
-    return esc(this.style) + this.render(terminal)
+    return esc(this.style) + this.render(terminal, tick)
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
@@ -62,8 +62,8 @@ export class Axis extends UiComponent {
 export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
-  render({ room }: TTY) {
-    return room.render();
+  render({ player, room }: TTY, tick: number) {
+    return room.render(tick, player?.sees());
   }
 }
 
@@ -77,6 +77,7 @@ export class Sidebar extends UiComponent {
       `│ path: ${(`${player.type.appearance} ${player.type.name}`).padEnd(11)} │`,
       `│ hand: ${((player.hand?.label) || nothing(11)).padEnd(11)} │`,
       `│ eyes: ${((player.eyes?.label) || nothing(11)).padEnd(11)} │`,
+      `│ feet: ${((player.body.position.label.padEnd(11)))} │`,
       '│                   │',
       '│                   │',
       '│                   │',

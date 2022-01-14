@@ -15,6 +15,7 @@ export class Room extends EventEmitter {
   private agents: Set<Agent> = new Set();
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Room) => void;
+
   constructor(x: number, y: number, setupFn?: (this: Room) => void) {
     super();
     this.position = new Vector(x, y);
@@ -35,25 +36,39 @@ export class Room extends EventEmitter {
   update(tick: number) {
     this.agents.forEach((agent: Agent) => {
       if (!agent.isAlive) return;
-
-      if (tick % 10 === 0) agent.sp.increase(1);
-
       const action = agent.takeTurn(tick);
 
-      if (!action) return;
-
-      if (action.authorize(agent)) {
-        const result = action.perform(this, agent);
-        if (result instanceof ActionFailure) {
-          this.emit('action-failure', { agent, result });
+      if (action) {
+        const authorized = action?.authorize(agent);
+        if (authorized) {
+          const result = action?.perform(this, agent);
+          if (result instanceof ActionFailure) {
+            this.emit('action-failure', { agent, result });
+          }
+          if (result instanceof ActionSuccess) {
+            this.emit('action-success', { agent, result });
+          }
+        } else {
+          this.emit(FAIL, { agent });
+          this.emit('action-failure', { agent, result: new ActionFailure('Not enough stamina.') });
         }
-        if (result instanceof ActionSuccess) {
-          this.emit('action-success', { agent, result });
-        }
-      } else {
-        this.emit(FAIL, { agent });
-        this.emit('action-failure', { agent, result: new ActionFailure('Not enough stamina.') });
       }
+
+      if (tick % 10 === 0) agent.sp.increase(1);
+      if (agent.body.velocity.isZero()) return;
+
+      const next = agent.body.position.clone().add(agent.body.velocity);
+      const target = this.cellAt(next);
+
+      if (target && !target.isBlocked) {
+        const previous = this.cellAt(agent.body.position);
+        if (previous) previous.slot = null;
+        target.slot = agent;
+        agent.body.position.add(agent.body.velocity);
+        agent.cell = this.cellAt(agent.body.isLookingAt);
+      }
+
+      agent.body.velocity.setXY(0, 0);
     });
   }
 
@@ -92,7 +107,6 @@ export class Room extends EventEmitter {
   }
 
   findPlayers(): Array<Hero> {
-    console.log(this.agents);
     return Array.from(this.agents).filter((agent) => agent instanceof Hero) as Array<Hero>;
   }
 
@@ -107,9 +121,12 @@ export class Room extends EventEmitter {
     return true;
   }
 
-  render(): Array<string> {
-    const arr = this.rows.map((row) => row.map((cell) => cell.render(this)).join(''));
-    return arr;
+  render(tick: number, rect?: Rectangle): Array<string> {
+    return this.rows.map((row) => row
+      .map(((cell) => (rect && rect.contains(cell.position)
+        ? cell.render(this, tick)
+        : '  ')))
+      .join(''));
   }
 
   cellAt(position: Vector): Cell | null {

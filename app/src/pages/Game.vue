@@ -68,8 +68,6 @@ export default defineComponent({
     const room = engine.world.rooms[0];
     const player = engine.world.rooms[0].findPlayers()[0];
 
-    console.log(player);
-
     room.on(HIT, (e) => hit.play());
     room.on(STEP, (e) => {
       if (e?.agent !== player) return;

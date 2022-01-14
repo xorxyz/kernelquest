@@ -8,6 +8,8 @@ import { EMPTY_CELL_CHARS } from '../constants';
 export class Glyph {
   private chars: string;
 
+  static Empty = '..';
+
   get value() {
     return this.chars;
   }
@@ -41,7 +43,7 @@ export class Cell {
     return this.slot !== null;
   }
 
-  public get containsFoe() {
+  containsFoe(): boolean {
     return this.slot instanceof Agent && this.slot.type instanceof Foe;
   }
 
@@ -72,7 +74,7 @@ export class Cell {
     return true;
   }
 
-  render(ctx: Room) {
+  render(ctx: Room, tick: number) {
     const glyph = this.slot?.render() || this.glyph.value;
     const style = ctx.findAgentsWithCell(this).filter((a) => a.isAlive).length
       ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)

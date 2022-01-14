@@ -73,25 +73,28 @@ export class StepAction extends Action {
   perform(ctx: Room, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
 
-    if (target?.containsFoe) {
+    if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
         ctx.emit(DIE);
       } else {
+        agent.body.velocity.sub(agent.body.direction.vector);
         ctx.emit(HIT);
       }
       return new ActionFailure();
     }
 
     if (agent.type instanceof Foe && target?.slot instanceof Hero) {
-      if (target.slot.hp.value === 0) return new ActionFailure();
-      target.slot.hp.decrease(1);
-      if (target.slot.hp.value === 0) {
-        ctx.emit(DIE);
-      } else {
-        ctx.emit(HIT);
+      if (target.slot.isAlive) {
+        target.slot.hp.decrease(1);
+        if (target.slot.hp.value === 0) {
+          ctx.emit(DIE);
+        } else {
+          target.slot.body.velocity.add(agent.body.direction.vector);
+          ctx.emit(HIT);
+        }
+        return new ActionSuccess();
       }
-      return new ActionSuccess();
     }
 
     if (target && !target.isBlocked) {
@@ -161,7 +164,7 @@ export class GetAction extends Action {
       return new ActionFailure('You can\'t get this.');
     }
 
-    if (agent.cell && agent.cell.containsFoe) {
+    if (agent.cell && agent.cell.containsFoe()) {
       agent.hp.decrease(1);
       ctx.emit(HIT);
       return new ActionFailure();
@@ -253,7 +256,7 @@ export class MoveCursorAction extends TerminalAction {
   }
   authorize() { return true; }
   perform(ctx: Room, agent: Agent) {
-    if (Room.bounds.contains(agent.body.cursorPosition.clone().add(this.direction))) {
+    if (agent.sees().contains(agent.body.cursorPosition.clone().add(this.direction))) {
       agent.body.cursorPosition.add(this.direction);
       const thing = ctx.cellAt(agent.body.cursorPosition)?.slot || null;
       agent.eyes = thing;

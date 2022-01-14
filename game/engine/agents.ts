@@ -1,4 +1,4 @@
-import { Direction, Points, Vector } from 'xor4-lib/math';
+import { Direction, EastVector, NorthVector, Points, Rectangle, SouthVector, Vector, WestVector } from 'xor4-lib/math';
 import { Queue } from 'xor4-lib/queue';
 import { Interpreter } from 'xor4-interpreter';
 import { Stack } from 'xor4-lib/stack';
@@ -61,6 +61,8 @@ export class Agent {
   public mp = new MP();
   public gp = new GP();
   public queue: Queue<Action> = new Queue<Action>();
+  public flashing: boolean = true;
+  public tick: number = 0;
 
   constructor(type: AgentType) {
     this.type = type;
@@ -96,7 +98,7 @@ export class Agent {
   }
 
   render() {
-    if (!this.isAlive) return '☠️';
+    if (!this.isAlive) return '☠️ ';
     return this.type.appearance;
   }
 
@@ -105,10 +107,42 @@ export class Agent {
   }
 
   takeTurn(tick: number): Action | null {
+    this.tick = tick;
     this.type.capabilities.forEach((capability) => capability.run(this, tick));
     const action = this.queue.next();
 
     return action;
+  }
+
+  sees() {
+    // eslint-disable-next-line prefer-const
+    let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
+
+    // if (this.isAlive) {
+    //   if (this.body.direction.vector.equals(NorthVector)) {
+    //     y1 = 0;
+    //     y2 = this.body.position.y + 1;
+    //   }
+
+    //   if (this.body.direction.vector.equals(EastVector)) {
+    //     x1 = this.body.position.x;
+    //     x2 = 16;
+    //   }
+
+    //   if (this.body.direction.vector.equals(SouthVector)) {
+    //     y1 = this.body.position.y;
+    //     y2 = 10;
+    //   }
+
+    //   if (this.body.direction.vector.equals(WestVector)) {
+    //     x1 = 0;
+    //     x2 = this.body.position.x + 1;
+    //   }
+    // }
+
+    const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
+
+    return rect;
   }
 }
 
@@ -119,7 +153,18 @@ export class Hero extends Agent {
 
 export abstract class Foe extends AgentType {}
 
+export class Observation {
+  subject: Agent;
+  action: Action;
+  object?: Agent | Thing;
+  constructor(subject: Agent, action: Action, object?: Agent | Thing) {
+    this.subject = subject;
+    this.action = action;
+    this.object = object;
+  }
+}
+
 export abstract class Capability {
   abstract bootstrap (agent: Agent): void
-  abstract run (agent: Agent, tick: number): void
+  abstract run (agent: Agent, tick: number, events?: Array<Observation>): void
 }

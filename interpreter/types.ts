@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import { Stack } from 'xor4-lib/stack';
 
+// https://en.wikipedia.org/wiki/Term_logic#Term
+
 export abstract class Factor {
   type: string;
   lexeme: string;

@@ -11,21 +11,22 @@ import {
   Input,
   Speech,
 } from './components';
+import { CLOCK_MS_DELAY } from '../constants';
 
-// const CLEAR_RATE = CLOCK_MS_DELAY;
+const CLEAR_RATE = CLOCK_MS_DELAY;
 
 export abstract class View {
   components: Record<string, UiComponent>;
 
-  compile(terminal: TTY): string {
+  compile(terminal: TTY, tick: number): string {
     const lines = Object.values(this.components).map((component) =>
-      component.compile(terminal) + esc(Style.Reset));
+      component.compile(terminal, tick) + esc(Style.Reset));
 
-    // const clear = terminal.connection.player.cycle % CLEAR_RATE === 0
-    //   ? esc(Screen.Clear)
-    //   : '';
+    const clear = terminal.connection.player.tick % CLEAR_RATE === 0
+      ? esc(Screen.Clear)
+      : '';
 
-    return esc(Screen.Clear) + lines.join('');
+    return clear + lines.join('');
   }
 }
 
