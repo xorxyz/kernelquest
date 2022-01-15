@@ -57,7 +57,7 @@ export class TTY {
     this.room = connection.room;
     this.view = new MainView();
     this.state = {
-      termMode: true,
+      termMode: false,
       prompt: '$ ',
       line: '',
       stdout: CursorModeHelpText,

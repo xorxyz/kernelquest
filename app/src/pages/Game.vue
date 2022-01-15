@@ -114,8 +114,6 @@ export default defineComponent({
       player,
       write: (str) => this.xterm.write(str),
     }));
-
-    this.play();
   },
   data(): { tty: TTY | undefined, xterm: Terminal, paused: boolean } {
     return {
@@ -144,6 +142,7 @@ export default defineComponent({
       engine.start();
       this.$refs.audio.play();
       this.paused = false;
+      this.$refs.terminal.focus();
     },
     pause() {
       engine.pause();

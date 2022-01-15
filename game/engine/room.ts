@@ -5,6 +5,7 @@ import { Cell, Glyph } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { ActionFailure, ActionSuccess } from './actions';
 import { FAIL } from './events';
+import { Door, Structure, Wall } from './structures';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
@@ -13,8 +14,10 @@ export class Room extends EventEmitter {
   public position: Vector;
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
+  private structures: Set<Structure> = new Set();
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Room) => void;
+  private doors: Set<Door> = new Set();
 
   constructor(x: number, y: number, setupFn?: (this: Room) => void) {
     super();
@@ -123,7 +126,7 @@ export class Room extends EventEmitter {
 
   render(tick: number, rect?: Rectangle): Array<string> {
     return this.rows.map((row) => row
-      .map(((cell) => (rect && rect.contains(cell.position)
+      .map(((cell) => (rect && rect.contains(cell.position) && !this.structuresContain(cell.position)
         ? cell.render(this, tick)
         : '  ')))
       .join(''));
@@ -143,5 +146,20 @@ export class Room extends EventEmitter {
     this.emit('reset');
     this.clear();
     if (this.setupFn) this.setupFn();
+  }
+
+  build(structure: Structure, doors: Array<Door>) {
+    doors.forEach((door) => this.doors.add(door));
+    this.structures.add(structure);
+    this.cells.forEach((cell) => {
+      if (structure.outerRect.contains(cell.position) &&
+         !structure.innerRect.contains(cell.position)) {
+        cell.slot = new Wall();
+      }
+    });
+  }
+
+  structuresContain(vector: Vector) {
+    return Array.from(this.structures).some((structure) => structure.innerRect.contains(vector));
   }
 }

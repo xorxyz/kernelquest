@@ -6,20 +6,19 @@
     <audio
       ref="audio"
       preload="auto"
-      autoplay
       loop
       hidden
       :muted="muted"
-      volume="0.3"
+      volume="0.10"
       id="audio_player"
       class="hidden"
-      src="https://www.kernel.quest/music/village.wav">
+      src="https://www.kernel.quest/music/dungeon.wav">
       <source
         src="https://www.kernel.quest/music/dungeon.wav"
         type="audio/wav">
-      <source
+      <!-- <source
         src="https://www.kernel.quest/music/village.wav"
-        type="audio/wav">
+        type="audio/wav"> -->
     </audio>
   </div>
 </template>
@@ -33,8 +32,8 @@ const NOT_MUTED = '🔊 Unmuted';
 export default defineComponent({
   data() {
     return {
-      muted: true,
-      label: MUTED,
+      muted: false,
+      label: NOT_MUTED,
     };
   },
   methods: {
@@ -44,7 +43,7 @@ export default defineComponent({
     },
     reset() {
       this.$refs.audio.fastSeek(0);
-      this.$refs.audio.play();
+      this.$refs.audio.pause();
     },
     play() {
       this.$refs.audio.play();
