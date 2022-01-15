@@ -20,7 +20,7 @@ import {
 } from '../engine/actions';
 import { Hero } from '../engine/agents';
 import { Engine } from '../engine';
-import { Room } from '../engine/room';
+import { Place } from '../engine/places';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -34,13 +34,13 @@ export interface IState {
 export interface IConnection {
   write: (str: string) => void,
   player: Hero,
-  room: Room
+  place: Place
 }
 
 export class TTY {
   public id: number;
   public player: Hero;
-  readonly room: Room;
+  readonly place: Place;
   public connection: IConnection;
   public state: IState;
   public lineEditor: Editor = new Editor();
@@ -54,7 +54,7 @@ export class TTY {
   constructor(connection: IConnection) {
     this.connection = connection;
     this.player = connection.player;
-    this.room = connection.room;
+    this.place = connection.place;
     this.view = new MainView();
     this.state = {
       termMode: false,
@@ -68,7 +68,7 @@ export class TTY {
       REFRESH_RATE,
     );
 
-    this.room.on('action-failure', ({ agent, result }) => {
+    this.place.on('action-failure', ({ agent, result }) => {
       if (agent === this.player) {
         this.write(result.message);
       }
@@ -96,7 +96,7 @@ export class TTY {
     }
 
     if (str === Keys.ENTER && this.player.hp.value <= 0) {
-      this.room.reset();
+      this.place.reset();
       return;
     }
 
@@ -106,7 +106,7 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.room, this.player);
+        action.perform(this.place, this.player);
       } else if (action) {
         this.player.schedule(action);
       }
@@ -137,7 +137,7 @@ export class TTY {
           const action = this.getActionForWord(expr);
 
           if (action instanceof TerminalAction) {
-            action.perform(this.room, this.player);
+            action.perform(this.place, this.player);
           } else if (action) {
             this.player.schedule(action);
           }

@@ -1,4 +1,4 @@
-import { Direction, EastVector, NorthVector, Points, Rectangle, SouthVector, Vector, WestVector } from 'xor4-lib/math';
+import { Direction, Points, Rectangle, Vector } from 'xor4-lib/math';
 import { Queue } from 'xor4-lib/queue';
 import { Interpreter } from 'xor4-interpreter';
 import { Stack } from 'xor4-lib/stack';
@@ -9,6 +9,22 @@ import { Cell } from './cell';
 import { World } from './world';
 
 export abstract class RuntimeError extends Error {}
+
+/**
+ states:
+
+  halt (pause ai brain)
+  listen (direction, wait for a message to interpret)
+  sleep (duration)
+  random (speed)
+  patrol (row or column)
+  find (thing or agent)
+  walk (towards route tree root or leaves)
+  follow (agent)
+  visit (agent's last known position)
+  return (bring the flag home and return the value in hand)
+
+*/
 
 export class HP extends Points {}
 export class SP extends Points {}

@@ -62,8 +62,8 @@ export class Axis extends UiComponent {
 export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
-  render({ player, room }: TTY, tick: number) {
-    return room.render(tick, player?.sees());
+  render({ player, place }: TTY, tick: number) {
+    return place.render(tick, player?.sees());
   }
 }
 

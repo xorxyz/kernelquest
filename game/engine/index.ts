@@ -26,7 +26,7 @@ export class Engine extends EventEmitter {
   update() {
     this.cycle++;
 
-    this.world.rooms.forEach((room) => room.update(this.cycle));
+    this.world.places.forEach((place) => place.update(this.cycle));
   }
 
   start() {

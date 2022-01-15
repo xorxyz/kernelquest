@@ -4,7 +4,7 @@ import { TTY } from '../ui/tty';
 import { Agent, AgentType, Foe, Hero } from './agents';
 import { CursorModeHelpText, Keys } from '../constants';
 import { Thing } from './things';
-import { Room } from './room';
+import { Place } from './places';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from './events';
 
 export abstract class ActionResult {
@@ -19,12 +19,17 @@ export class ActionFailure extends ActionResult {}
 export abstract class Action {
   abstract readonly name: string
   abstract readonly cost: number
-  abstract perform(context: Room, subject: Agent, object?: Agent | Thing): ActionResult
+  abstract perform(context: Place, subject: Agent, object?: Agent | Thing): ActionResult
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
     agent.sp.decrease(this.cost);
     return true;
+  }
+
+  tryPerforming(ctx: Place, subject: Agent, object?: Agent | Thing) {
+    if (!this.authorize) return new ActionFailure('Not enough stamina.');
+    return this.perform(ctx, subject, object);
   }
 }
 
@@ -58,7 +63,7 @@ export class RotateAction extends Action {
     super();
     this.n = n;
   }
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     forN(this.n, () => agent.body.direction.rotate());
     const cell = ctx.cellAt(agent.body.isLookingAt);
     if (cell) agent.cell = cell;
@@ -70,7 +75,7 @@ export class RotateAction extends Action {
 export class StepAction extends Action {
   name = 'step';
   cost = 1;
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     const target = ctx.cellAt(agent.body.isLookingAt);
 
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
@@ -116,7 +121,7 @@ export class StepAction extends Action {
 export class BackStepAction extends Action {
   name = 'backstep';
   cost = 1;
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     const behind = agent.body.position.clone().sub(agent.body.direction.vector);
     const target = ctx.cellAt(behind);
 
@@ -147,7 +152,7 @@ export class BackStepAction extends Action {
 export class GetAction extends Action {
   name = 'get';
   cost = 1;
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     if (!agent.cell || !agent.cell.slot) {
       ctx.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
@@ -186,7 +191,7 @@ export class GetAction extends Action {
 export class PutAction extends Action {
   name = 'put';
   cost = 1;
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     if (!agent.hand) {
       ctx.emit(FAIL);
 
@@ -208,7 +213,7 @@ export class PutAction extends Action {
 export class ReadAction extends Action {
   name = 'read';
   cost = 10;
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     if (agent.hand) {
       const value = agent.hand.read();
       console.log(value);
@@ -231,10 +236,10 @@ export class SpawnAction extends Action {
     this.type = type;
   }
 
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     const spawned = new Agent(this.type);
     spawned.body.position.copy(agent.body.position).add(agent.body.isLookingAt);
-    if (!Room.bounds.contains(spawned.body.position)) {
+    if (!Place.bounds.contains(spawned.body.position)) {
       return new ActionFailure();
     }
     ctx.add(spawned);
@@ -255,7 +260,7 @@ export class MoveCursorAction extends TerminalAction {
     this.direction = direction;
   }
   authorize() { return true; }
-  perform(ctx: Room, agent: Agent) {
+  perform(ctx: Place, agent: Agent) {
     if (agent.sees().contains(agent.body.cursorPosition.clone().add(this.direction))) {
       agent.body.cursorPosition.add(this.direction);
       const thing = ctx.cellAt(agent.body.cursorPosition)?.slot || null;

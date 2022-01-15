@@ -65,52 +65,52 @@ export default defineComponent({
       this.input(key);
     });
 
-    const room = engine.world.rooms[0];
-    const player = engine.world.rooms[0].findPlayers()[0];
+    const place = engine.world.places[0];
+    const player = engine.world.places[0].findPlayers()[0];
 
-    room.on(HIT, (e) => hit.play());
-    room.on(STEP, (e) => {
+    place.on(HIT, (e) => hit.play());
+    place.on(STEP, (e) => {
       if (e?.agent !== player) return;
       step.fastSeek(0);
       step.play();
     });
 
-    room.on(ROTATE, (e) => {
+    place.on(ROTATE, (e) => {
       if (e?.agent !== player) return;
       rotate.fastSeek(0);
       rotate.play();
     });
 
-    room.on(GET, (e) => {
+    place.on(GET, (e) => {
       get.fastSeek(0);
       get.play();
     });
 
-    room.on(PUT, (e) => {
+    place.on(PUT, (e) => {
       put.fastSeek(0);
       put.play();
     });
 
-    room.on(FAIL, (e) => {
+    place.on(FAIL, (e) => {
       if (e?.agent !== player) return;
       fail.fastSeek(0);
       fail.play();
     });
 
-    room.on(DIE, (e) => {
+    place.on(DIE, (e) => {
       this.$refs.audio.pause();
       die.fastSeek(0);
       die.play();
     });
 
-    room.on('reset', () => {
+    place.on('reset', () => {
       this.$refs.audio.reset();
     });
 
     this.tty?.disconnect();
 
     this.tty = markRaw(new TTY({
-      room,
+      place,
       player,
       write: (str) => this.xterm.write(str),
     }));
@@ -125,6 +125,8 @@ export default defineComponent({
           green: '#0CFF24',
           red: '#F92672',
           blue: '#66D9EF',
+          white: '#BBBBB',
+          brightWhite: '#FFFFFF',
         },
         cols: 72,
         rows: 25,
@@ -153,16 +155,16 @@ export default defineComponent({
       this.tty?.handleInput(Buffer.from(key).toString('hex'));
     },
     reset() {
-      engine.world.rooms[0].reset();
+      engine.world.places[0].reset();
       this.$refs.audio.reset();
 
-      const room = engine.world.rooms[0];
-      const player = engine.world.rooms[0].findPlayers()[0];
+      const place = engine.world.places[0];
+      const player = engine.world.places[0].findPlayers()[0];
 
       this.tty?.disconnect();
 
       this.tty = markRaw(new TTY({
-        room,
+        place,
         player,
         write: (str) => this.xterm.write(str),
       }));

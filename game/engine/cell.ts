@@ -1,7 +1,7 @@
 import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
 import { Agent, Foe } from './agents';
-import { Room } from './room';
+import { Place } from './places';
 import { Thing } from './things';
 import { EMPTY_CELL_CHARS } from '../constants';
 
@@ -74,7 +74,7 @@ export class Cell {
     return true;
   }
 
-  render(ctx: Room, tick: number) {
+  render(ctx: Place, tick: number) {
     const glyph = this.slot?.render() || this.glyph.value;
     const style = ctx.findAgentsWithCell(this).filter((a) => a.isAlive).length
       ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)

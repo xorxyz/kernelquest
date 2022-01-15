@@ -1,10 +1,10 @@
 import { Vector, Points } from 'xor4-lib/math';
-import { Room } from './room';
+import { Place } from './places';
 
 export class Durability extends Points {}
 export class Uses extends Points {}
 export interface Destination {
-  room: Room
+  place: Place
   position: Vector
 }
 
