@@ -38,10 +38,10 @@ const title = 'xor4';
 
 export class Navbar extends UiComponent {
   style = esc(Style.Invert);
-  render() {
+  render({ player }) {
     return [(
       title.padEnd(SCREEN_WIDTH / 2 - 1, ' ') +
-      String('').padStart(SCREEN_WIDTH / 2 - 1, ' ')
+      String(player.tick).padStart(SCREEN_WIDTH / 2 - 1, ' ')
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
@@ -77,8 +77,7 @@ export class Sidebar extends UiComponent {
       `│ path: ${(`${player.type.appearance} ${player.type.name}`).padEnd(11)} │`,
       `│ hand: ${((player.hand?.label) || nothing(11)).padEnd(11)} │`,
       `│ eyes: ${((player.eyes?.label) || nothing(11)).padEnd(11)} │`,
-      `│ feet: ${((player.body.position.label.padEnd(11)))} │`,
-      '│                   │',
+      `│ feet: ${(((`[${player.body.position.label} ref]`).padEnd(11)))} │`,
       '│                   │',
       '│                   │',
       '│                   │',

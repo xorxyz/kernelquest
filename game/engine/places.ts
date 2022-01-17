@@ -55,7 +55,21 @@ export class Place extends EventEmitter {
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Place) => void;
 
-  constructor(x: number, y: number, outerRectangle: Rectangle, setupFn?: (this: Place) => void) {
+  get size() { return this.outerRectangle.size; }
+
+  getEast(): Vector {
+    return this.position.clone()
+      .addX(this.size.x - 1)
+      .addY(Math.floor(this.size.y / 2));
+  }
+
+  getSouth(): Vector {
+    return this.position.clone()
+      .addX(Math.floor(this.size.x / 2))
+      .addY(this.size.y - 1);
+  }
+
+  constructor(x: number, y: number, w: number, h: number, setupFn?: (this: Place) => void) {
     super();
 
     this.position = new Vector(x, y);
@@ -68,10 +82,10 @@ export class Place extends EventEmitter {
 
     this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
 
-    this.outerRectangle = outerRectangle;
+    this.outerRectangle = new Rectangle(this.position, new Vector(w, h));
     this.innerRectangle = new Rectangle(
-      outerRectangle.position.clone().addX(1).addY(1),
-      outerRectangle.size.clone().subX(2).subY(2),
+      this.outerRectangle.position.clone().addX(1).addY(1),
+      this.outerRectangle.size.clone().subX(2).subY(2),
     );
 
     if (setupFn) {

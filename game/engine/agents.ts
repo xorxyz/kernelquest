@@ -1,12 +1,12 @@
-import { Direction, Points, Rectangle, Vector } from 'xor4-lib/math';
+import { Direction, EastVector, NorthVector, Points, Rectangle, SouthVector, Vector, WestVector } from 'xor4-lib/math';
 import { Queue } from 'xor4-lib/queue';
 import { Interpreter } from 'xor4-interpreter';
 import { Stack } from 'xor4-lib/stack';
 import { Factor } from 'xor4-interpreter/types';
+import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
-import { World } from './world';
 
 export abstract class RuntimeError extends Error {}
 
@@ -35,21 +35,16 @@ export abstract class AgentType {
   abstract name: string
   public appearance: string = '@@';
   public capabilities: Array<Capability> = [];
+  readonly weight: number = 5;
+  readonly style: string = '';
 }
 
 export class Mind {
   public stack: Stack<Factor> = new Stack();
-  private interpreter: Interpreter;
-  private world: World;
+  public interpreter: Interpreter;
 
   constructor() {
     this.interpreter = new Interpreter(this.stack);
-    this.world = new World([]);
-  }
-
-  interpret(code: string) {
-    const interpretation = this.interpreter.interpret(code);
-    return interpretation;
   }
 }
 
@@ -79,6 +74,7 @@ export class Agent {
   public queue: Queue<Action> = new Queue<Action>();
   public flashing: boolean = true;
   public tick: number = 0;
+  public isWaitingUntil: null | number = null;
 
   constructor(type: AgentType) {
     this.type = type;
@@ -99,8 +95,8 @@ export class Agent {
   }
 
   get(): boolean {
-    if (this.hand || !this.cell) return false;
-    this.hand = this.cell.take();
+    if (this.hand || !this.cell || this.cell instanceof Agent) return false;
+    this.hand = this.cell.take() as Thing | null;
     return true;
   }
 
@@ -115,7 +111,9 @@ export class Agent {
 
   render() {
     if (!this.isAlive) return '☠️ ';
-    return this.type.appearance;
+    return this.type.style
+      ? this.type.style + this.type.appearance + esc(Style.Reset)
+      : this.type.appearance;
   }
 
   schedule(action: Action) {
@@ -125,36 +123,52 @@ export class Agent {
   takeTurn(tick: number): Action | null {
     this.tick = tick;
     this.type.capabilities.forEach((capability) => capability.run(this, tick));
+
+    if (this.isWaitingUntil) {
+      if (this.tick >= this.isWaitingUntil) {
+        this.isWaitingUntil = null;
+      } else {
+        return null;
+      }
+    }
+
     const action = this.queue.next();
 
     return action;
   }
 
-  sees() {
+  isFacing(vector: Vector) {
     // eslint-disable-next-line prefer-const
     let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
 
-    // if (this.isAlive) {
-    //   if (this.body.direction.vector.equals(NorthVector)) {
-    //     y1 = 0;
-    //     y2 = this.body.position.y + 1;
-    //   }
+    if (this.body.direction.vector.equals(NorthVector)) {
+      y1 = 0;
+      y2 = this.body.position.y + 1;
+    }
 
-    //   if (this.body.direction.vector.equals(EastVector)) {
-    //     x1 = this.body.position.x;
-    //     x2 = 16;
-    //   }
+    if (this.body.direction.vector.equals(EastVector)) {
+      x1 = this.body.position.x;
+      x2 = 16;
+    }
 
-    //   if (this.body.direction.vector.equals(SouthVector)) {
-    //     y1 = this.body.position.y;
-    //     y2 = 10;
-    //   }
+    if (this.body.direction.vector.equals(SouthVector)) {
+      y1 = this.body.position.y;
+      y2 = 10;
+    }
 
-    //   if (this.body.direction.vector.equals(WestVector)) {
-    //     x1 = 0;
-    //     x2 = this.body.position.x + 1;
-    //   }
-    // }
+    if (this.body.direction.vector.equals(WestVector)) {
+      x1 = 0;
+      x2 = this.body.position.x + 1;
+    }
+
+    const rectangle = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
+
+    return rectangle.contains(vector);
+  }
+
+  sees() {
+    // eslint-disable-next-line prefer-const
+    let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
 
     const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
 
@@ -167,7 +181,17 @@ export class Hero extends Agent {
   get level() { return 1; }
 }
 
-export abstract class Foe extends AgentType {}
+export abstract class HeroType extends AgentType {
+  style = esc(Colors.Bg.Purple);
+}
+
+export abstract class Friend extends AgentType {
+  style = esc(Colors.Bg.Yellow);
+}
+
+export abstract class Foe extends AgentType {
+  style = esc(Colors.Bg.Red);
+}
 
 export class Observation {
   subject: Agent;

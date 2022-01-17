@@ -5,8 +5,7 @@ import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
 import {
-  Action,
-  BackStepAction,
+  EvalAction,
   GetAction,
   MoveCursorAction,
   MoveCursorToAction,
@@ -17,10 +16,11 @@ import {
   StepAction,
   SwitchModeAction,
   TerminalAction,
-} from '../engine/actions';
+} from '../lib/actions';
 import { Hero } from '../engine/agents';
 import { Engine } from '../engine';
 import { Place } from '../engine/places';
+import { Action } from '../engine/actions';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -67,6 +67,12 @@ export class TTY {
       this.render.bind(this),
       REFRESH_RATE,
     );
+
+    this.place.on('action-success', ({ agent, result }) => {
+      if (agent === this.player) {
+        this.write(result.message);
+      }
+    });
 
     this.place.on('action-failure', ({ agent, result }) => {
       if (agent === this.player) {
@@ -124,35 +130,14 @@ export class TTY {
   handleTerminalInput(str: string): void {
     if (str === Keys.ENTER) {
       if (this.lineEditor.value) {
-        const expr = this.lineEditor.value.trim();
+        const text = this.lineEditor.value.trim();
 
-        this.write(this.state.prompt + expr);
+        this.write(this.state.prompt + text);
+
+        this.player.queue.add(new EvalAction(text));
         this.state.line = '';
         this.lineEditor.reset();
-        this.waiting = true;
 
-        try {
-          this.player.mind.interpret(expr);
-
-          const action = this.getActionForWord(expr);
-
-          if (action instanceof TerminalAction) {
-            action.perform(this.place, this.player);
-          } else if (action) {
-            this.player.schedule(action);
-          }
-        } catch (err) {
-          console.error(err);
-          if (err instanceof Error) {
-            this.write(`${err.message}`);
-          }
-        }
-
-        const term = this.player.mind.stack.map((factor) => factor.toString()).join(' ');
-
-        this.write(`[${term}]`);
-
-        this.waiting = false;
         this.render(this.player.tick);
       } else {
         this.switchModes();
@@ -162,31 +147,6 @@ export class TTY {
     }
 
     this.render(this.player.tick);
-  }
-
-  getActionForWord(str: string): Action | null {
-    let action: Action | null = null;
-    switch (str) {
-      case 'rotate':
-        action = new RotateAction();
-        break;
-      case 'step':
-        action = new StepAction();
-        break;
-      case 'backstep':
-        action = new BackStepAction();
-        break;
-      case 'get':
-        action = new GetAction();
-        break;
-      case 'put':
-        action = new PutAction();
-        break;
-      default:
-        break;
-    }
-
-    return action;
   }
 
   getActionForKey(str: string): Action | null {
@@ -225,9 +185,6 @@ export class TTY {
         break;
       case (Keys.ARROW_LEFT):
         action = new MoveCursorAction(this, new Vector(-1, 0));
-        break;
-      case (Keys.LOWER_B):
-        action = new BackStepAction();
         break;
       case (Keys.LOWER_H):
         action = new PrintCursorModeHelpAction(this);

@@ -1,4 +1,4 @@
-import { Colors, Style } from 'xor4-lib/esc';
+import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Thing } from '../engine/things';
 
 export class Wall extends Thing {
@@ -15,8 +15,9 @@ export class Tree extends Thing {
 
 export class Grass extends Thing {
   name = 'grass';
-  appearance = Style.in(Colors.Bg.Black, Colors.Fg.Green, '##');
+  appearance = `${esc(Colors.Fg.Green)},,${esc(Style.Reset)}`;
   isStatic = true;
+  blocking = false;
 }
 
 export class Flag extends Thing {

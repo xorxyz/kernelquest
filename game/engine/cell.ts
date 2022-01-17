@@ -34,13 +34,17 @@ export class Cell {
   public position: Vector;
   public glyph: Glyph = new Glyph();
   public slot: Agent | Thing | null = null;
+  public buffer: Agent | Thing | null = null;
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
   }
 
   public get isBlocked() {
-    return this.slot !== null;
+    return (
+      this.slot instanceof Agent ||
+      (this.slot instanceof Thing && this.slot.blocking)
+    );
   }
 
   containsFoe(): boolean {
@@ -56,18 +60,27 @@ export class Cell {
   }
 
   /* Take the thing that's in the cell's slot. */
-  take(): Thing | null {
-    if (!this.slot || this.slot instanceof Agent) return null;
+  take(): Agent | Thing | null {
+    if (!this.slot) return null;
+
     const thing = this.slot;
 
-    this.slot = null;
+    if (this.buffer) {
+      this.slot = this.buffer;
+      this.buffer = null;
+    } else {
+      this.slot = null;
+    }
 
     return thing;
   }
 
   /* Put a thing in the cell's slot. */
-  put(thing: Thing): boolean {
-    if (this.slot) return false;
+  put(thing: Agent | Thing): boolean {
+    if (this.slot && this.buffer) return false;
+    if (this.slot) {
+      this.buffer = this.slot;
+    }
 
     this.slot = thing;
 
@@ -76,7 +89,7 @@ export class Cell {
 
   render(ctx: Place, tick: number) {
     const glyph = this.slot?.render() || this.glyph.value;
-    const style = ctx.findAgentsWithCell(this).filter((a) => a.isAlive).length
+    const style = ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length
       ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
       : esc(Colors.Bg.Black) + esc(Colors.Fg.White);
 

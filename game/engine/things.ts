@@ -16,6 +16,7 @@ export abstract class Thing {
   public appearance: string;
   public isStatic: boolean = false;
   private value: string;
+  public blocking: boolean = true;
 
   get label() {
     return `${this.appearance} ${this.name}`;
