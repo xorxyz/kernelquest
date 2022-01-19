@@ -13,6 +13,7 @@ export class Wall extends Thing {
   name = 'wall';
   appearance = '##';
   isStatic = true;
+
   render(): string {
     return (
       esc(Colors.Bg.Gray) + esc(Colors.Fg.Black) +
@@ -28,10 +29,9 @@ export class Door extends Thing {
   readonly isStatic = true;
   private place: Place;
 
-  constructor(place: Place, position: Vector) {
+  constructor(place: Place) {
     super();
     this.place = place;
-    this.position.copy(position);
   }
 
   access(): Place {
@@ -45,12 +45,16 @@ export class Door extends Thing {
 
 export class Place extends EventEmitter {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
+
   readonly position: Vector;
+
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
+
   private innerRectangle: Rectangle;
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
+  private things: Set<Thing> = new Set();
   private places: Set<Place> = new Set();
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Place) => void;
@@ -151,17 +155,30 @@ export class Place extends EventEmitter {
     return this.cells.some((cell) => cell.slot === agent);
   }
 
-  add(agent: Agent, position?: Vector) {
-    if (position) agent.body.position.copy(position);
+  put(entity: Agent | Thing, position?: Vector) {
+    if (entity instanceof Agent) {
+      if (position) entity.body.position.copy(position);
 
-    const cell = this.cellAt(agent.body.position);
+      const cell = this.cellAt(entity.body.position);
 
-    if (!cell) return false;
+      if (!cell) return false;
 
-    cell.slot = agent;
-    this.agents.add(agent);
+      cell.slot = entity;
+      this.agents.add(entity);
 
-    agent.cell = this.cellAt(agent.body.isLookingAt);
+      entity.cell = this.cellAt(entity.body.isLookingAt);
+    }
+
+    if (entity instanceof Thing) {
+      if (position) entity.position.copy(position);
+
+      const cell = this.cellAt(entity.position);
+
+      if (!cell) return false;
+
+      cell.slot = entity;
+      this.things.add(entity);
+    }
 
     return true;
   }
@@ -174,13 +191,20 @@ export class Place extends EventEmitter {
     return Array.from(this.agents).filter((agent) => agent instanceof Hero) as Array<Hero>;
   }
 
-  remove(agent: Agent) {
-    const cell = this.cells.find((c) => c.slot === agent);
-    if (cell) {
-      cell.slot = null;
+  remove(entity: Agent | Thing) {
+    const cell = this.cells.find((c) => c.slot === entity);
+
+    if (!cell) { return false; }
+
+    if (cell.slot instanceof Agent) {
+      this.agents.delete(cell.slot);
     }
 
-    this.agents.delete(agent);
+    if (cell.slot instanceof Thing) {
+      this.things.delete(cell.slot);
+    }
+
+    cell.slot = null;
 
     return true;
   }
@@ -217,6 +241,7 @@ export class Place extends EventEmitter {
         cell.slot = doors.find((door) => door.position.equals(cell.position)) || new Wall();
       }
     });
+    console.log(this.places);
   }
 
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }

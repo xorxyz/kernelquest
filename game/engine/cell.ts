@@ -43,7 +43,7 @@ export class Cell {
   public get isBlocked() {
     return (
       this.slot instanceof Agent ||
-      (this.slot instanceof Thing && this.slot.blocking)
+      (this.slot instanceof Thing && this.slot.isBlocking)
     );
   }
 

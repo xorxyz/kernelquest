@@ -1,22 +1,28 @@
+import { esc, Style } from 'xor4-lib/esc';
 import { Vector, Points } from 'xor4-lib/math';
 import { Place } from './places';
 
 export class Durability extends Points {}
+
 export class Uses extends Points {}
+
 export interface Destination {
   place: Place
   position: Vector
 }
 
-export abstract class Thing {
-  abstract name: string
+export class Thing {
+  readonly name: string;
+  readonly appearance: string;
+  readonly style: string = '';
+  readonly isStatic: boolean = false;
+  readonly isBlocking: boolean = true;
+
   public position: Vector = new Vector();
   public velocity: Vector = new Vector();
   public durability: Durability = new Durability();
-  public appearance: string;
-  public isStatic: boolean = false;
-  private value: string;
-  public blocking: boolean = true;
+
+  private value: string = '';
 
   get label() {
     return `${this.appearance} ${this.name}`;
@@ -31,9 +37,8 @@ export abstract class Thing {
   }
 
   render() {
-    return this.appearance;
+    return this.style
+      ? this.style + this.appearance + esc(Style.Reset)
+      : this.appearance;
   }
 }
-
-export abstract class Item extends Thing {}
-export abstract class Equipment extends Thing {}

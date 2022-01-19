@@ -177,7 +177,7 @@ export class SpawnAction extends Action {
     if (!Place.bounds.contains(spawned.body.position)) {
       return new ActionFailure();
     }
-    ctx.add(spawned);
+    ctx.put(spawned);
     return new ActionSuccess();
   }
 }
