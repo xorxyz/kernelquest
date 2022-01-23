@@ -1,13 +1,14 @@
 import { Stack } from 'xor4-lib/stack';
+import { Queue } from 'xor4-lib/queue';
 import { debug } from 'xor4-lib/utils';
 import { Factor, Literal } from './types';
 import { LiteralNumber, LiteralString } from './literals';
 
-export type ExecuteFn = (stack: Stack<Factor>) => void
+export type ExecuteFn = (stack: Stack<Factor>, queue?: Queue<any>) => void
 
 export class Operator extends Factor {
   signature: Array<string>;
-  execute: (stack: Stack<Factor>) => void;
+  execute: ExecuteFn;
   aliases: Array<string>;
 
   constructor(aliases: Array<string>, signature: Array<string>, execute: ExecuteFn) {

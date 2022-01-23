@@ -1,5 +1,6 @@
 import { Colors, esc, Style } from 'xor4-lib/esc';
-import { Vector } from 'xor4-lib/math';
+import { DirectionName, Directions, EastVector, NorthVector, SouthVector, Vector, WestVector } from 'xor4-lib/math';
+import { EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
 import { Agent, Foe } from './agents';
 import { Place } from './places';
 import { Thing } from './things';
@@ -94,5 +95,23 @@ export class Cell {
       : esc(Colors.Bg.Black) + esc(Colors.Fg.White);
 
     return style + glyph + esc(Style.Reset);
+  }
+
+  isAdjacentTo(cell: Cell) {
+    return (
+      cell.position.clone().add(NorthVector).equals(this.position) ||
+      cell.position.clone().add(EastVector).equals(this.position) ||
+      cell.position.clone().add(SouthVector).equals(this.position) ||
+      cell.position.clone().add(WestVector).equals(this.position)
+    );
+  }
+
+  relativeHeading(cell: Cell): Vector | null {
+    if (!this.isAdjacentTo(cell)) return null;
+
+    const diff = this.position.clone().sub(cell.position);
+    const direction = [NORTH, EAST, SOUTH, WEST].find((vector) => vector.equals(diff));
+
+    return direction || null;
   }
 }

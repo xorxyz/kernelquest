@@ -1,12 +1,16 @@
-import { Direction, EastVector, NorthVector, Points, Rectangle, SouthVector, Vector, WestVector } from 'xor4-lib/math';
+import { Points, Rectangle, Vector } from 'xor4-lib/math';
+import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
 import { Queue } from 'xor4-lib/queue';
 import { Interpreter } from 'xor4-interpreter';
 import { Stack } from 'xor4-lib/stack';
 import { Factor } from 'xor4-interpreter/types';
 import { Colors, esc, Style } from 'xor4-lib/esc';
+import { Compiler } from 'xor4-interpreter/compiler';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
+import { PathfindingAction } from '../lib/actions';
+import { goto } from '../lib/words';
 
 export abstract class RuntimeError extends Error {}
 
@@ -39,23 +43,30 @@ export abstract class AgentType {
   readonly style: string = '';
 }
 
+export class Goal {}
+
 export class Mind {
   public stack: Stack<Factor> = new Stack();
   public interpreter: Interpreter;
+  public goals: Array<Goal> = [];
 
   constructor() {
-    this.interpreter = new Interpreter(this.stack);
+    const compiler = new Compiler({
+      goto,
+    });
+
+    this.interpreter = new Interpreter(compiler, this.stack);
   }
 }
 
 export class Body {
   public position: Vector = new Vector(0, 0);
-  public direction: Direction = new Direction(Direction.South);
+  public direction: Direction = new Direction(SOUTH);
   public velocity: Vector = new Vector(0, 0);
   public cursorPosition: Vector = new Vector(0, 0);
 
   get isLookingAt() {
-    return this.position.clone().add(this.direction.vector);
+    return this.position.clone().add(this.direction.value);
   }
 }
 
@@ -75,6 +86,9 @@ export class Agent {
   public flashing: boolean = true;
   public tick: number = 0;
   public isWaitingUntil: null | number = null;
+  public dict = {
+    pathfinding: PathfindingAction,
+  };
 
   constructor(type: AgentType) {
     this.type = type;
@@ -141,22 +155,22 @@ export class Agent {
     // eslint-disable-next-line prefer-const
     let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
 
-    if (this.body.direction.vector.equals(NorthVector)) {
+    if (this.body.direction.value.equals(NORTH)) {
       y1 = 0;
       y2 = this.body.position.y + 1;
     }
 
-    if (this.body.direction.vector.equals(EastVector)) {
+    if (this.body.direction.value.equals(EAST)) {
       x1 = this.body.position.x;
       x2 = 16;
     }
 
-    if (this.body.direction.vector.equals(SouthVector)) {
+    if (this.body.direction.value.equals(SOUTH)) {
       y1 = this.body.position.y;
       y2 = 10;
     }
 
-    if (this.body.direction.vector.equals(WestVector)) {
+    if (this.body.direction.value.equals(WEST)) {
       x1 = 0;
       x2 = this.body.position.x + 1;
     }

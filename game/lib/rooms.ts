@@ -48,8 +48,8 @@ export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
   create.grass.call(this, [[15, 4], [11, 0], [5, 9], [3, 2]]);
 
   const entities: Array<[string, Array<any>]> = [
-    ['bug', [5, 4]],
-    ['sheep', [15, 5]],
+    // ['bug', [5, 4]],
+    // ['sheep', [15, 5]],
     ['house', [9, 2, 5, 4]],
     ['house', [2, 6, 3, 3]],
     ['flag', [14, 8]],

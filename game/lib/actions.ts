@@ -1,11 +1,15 @@
 import { Vector } from 'xor4-lib/math';
+import { Queue } from 'xor4-lib/queue';
+import { Direction } from 'xor4-lib/directions';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
 import { Place } from '../engine/places';
 import { TTY } from '../ui/tty';
-import { Agent, AgentType, Foe, Hero } from '../engine/agents';
+import { Agent, AgentType, Foe, Goal, Hero } from '../engine/agents';
 import { CursorModeHelpText, Keys } from '../constants';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
 import { Thing } from '../engine/things';
+import { Cell, Glyph } from '../engine/cell';
+import { Footsteps } from './things';
 
 /*
  * Actions in the World
@@ -26,7 +30,7 @@ export class WaitAction extends Action {
       return new ActionSuccess(`Waiting an additional ${this.duration} ticks.`);
     }
     agent.isWaitingUntil = agent.tick + this.duration;
-    return new ActionSuccess(`Waiting for ${this.duration} ticks.`);
+    return new ActionSuccess('');
   }
 }
 
@@ -52,7 +56,7 @@ export class StepAction extends Action {
       if (agent.hp.value === 0) {
         ctx.emit(DIE);
       } else {
-        agent.body.velocity.sub(agent.body.direction.vector);
+        agent.body.velocity.sub(agent.body.direction.value);
         ctx.emit(HIT);
       }
       return new ActionFailure();
@@ -64,7 +68,7 @@ export class StepAction extends Action {
         if (target.slot.hp.value === 0) {
           ctx.emit(DIE);
         } else {
-          target.slot.body.velocity.add(agent.body.direction.vector);
+          target.slot.body.velocity.add(agent.body.direction.value);
           ctx.emit(HIT);
         }
         return new ActionSuccess();
@@ -74,7 +78,7 @@ export class StepAction extends Action {
     if (target && !target.isBlocked) {
       ctx.cellAt(agent.body.position)?.take();
       target.put(agent);
-      agent.body.position.add(agent.body.direction.vector);
+      agent.body.position.add(agent.body.direction.value);
       agent.cell = ctx.cellAt(agent.body.isLookingAt);
       ctx.emit(STEP, { agent });
       return new ActionSuccess();
@@ -187,22 +191,116 @@ export class SpawnAction extends Action {
  * =========
 */
 
-export class EvalAction extends Action {
-  name = 'eval';
+class PriorityQueue {
+  items: Map<Cell, number> = new Map();
+  put(cell: Cell, priority: number) {
+    this.items.set(cell, priority);
+  }
+  get() {
+    const sorted = Array.from(this.items.entries()).sort((a, b) => a[1] - b[1]);
+    const cell = sorted[0][0];
+
+    this.items.delete(cell);
+
+    return cell;
+  }
+  empty() {
+    return this.items.size === 0;
+  }
+}
+
+export class PathfindingAction extends Action {
+  name = 'pathfinding';
   cost = 1;
-  text: string;
-  constructor(text: string) {
+  destination: Vector;
+  constructor(destination: Vector) {
     super();
-    this.text = text;
+    this.destination = destination;
   }
   perform(ctx: Place, agent: Agent) {
-    const [err] = agent.mind.interpreter.interpret(this.text);
+    const goal = new Goal();
+    agent.mind.goals.push(goal);
 
-    if (err) { return new ActionFailure(err.message); }
+    const actions = this.pathfind(ctx, agent);
 
-    const term = agent.mind.stack.map((factor) => factor.toString()).join(' ');
+    actions.forEach((action) => agent.queue.add(action));
 
-    return new ActionSuccess(`[${term}]`);
+    return new ActionSuccess('Found a path to the destination cell.');
+  }
+
+  heuristic(a: Cell, b: Cell) {
+    return Math.abs(a.position.x - b.position.x) + Math.abs(a.position.y - b.position.y);
+  }
+
+  reconstructPath(cameFrom: Map<Cell, Cell>, start: Cell, end: Cell) {
+    const cells: Array<Cell> = [];
+
+    let next = end;
+
+    while (next !== start) {
+      cells.push(next);
+      next = cameFrom.get(next) as Cell;
+    }
+
+    cells.push(start);
+
+    return cells.reverse();
+  }
+
+  pathfind(ctx: Place, agent: Agent): Array<Action> {
+    const start = ctx.cellAt(agent.body.position) as Cell;
+    const end = ctx.cellAt(this.destination) as Cell;
+    const frontier = new PriorityQueue();
+    const cameFrom: Map<Cell, Cell> = new Map();
+    const costSoFar: Map<Cell, number> = new Map();
+    const direction = agent.body.direction.clone();
+
+    frontier.put(start, 0);
+    costSoFar.set(start, 0);
+
+    while (!frontier.empty()) {
+      const current = frontier.get() as Cell;
+
+      if (current.position.equals(this.destination)) break;
+
+      const neighbours = ctx.getCellNeighbours(current, direction);
+
+      neighbours.forEach((neighbour, i) => {
+        if (!neighbour || neighbour.isBlocked) return;
+        const newCost = costSoFar.get(current) as number + i;
+        if (!costSoFar.has(neighbour) || newCost < (costSoFar.get(neighbour) as number)) {
+          costSoFar.set(neighbour, newCost);
+          const priority = newCost + this.heuristic(neighbour, end);
+          frontier.put(neighbour, priority);
+          cameFrom.set(neighbour, current);
+        }
+      });
+    }
+
+    const path = this.reconstructPath(cameFrom, start, end);
+    const actions = this.buildPathActions(ctx, agent, path);
+
+    return actions;
+  }
+
+  buildPathActions(ctx: Place, agent: Agent, path: Array<Cell>): Array<Action> {
+    const direction = agent.body.direction.clone();
+    const actions: Array<Action> = [];
+
+    path.reduce((current, next) => {
+      while (!(current.position.clone().add(direction.value).equals(next.position))) {
+        actions.push(new RotateAction());
+        actions.push(new WaitAction(1));
+        direction.rotate();
+      }
+
+      actions.push(new StepAction());
+      actions.push(new WaitAction(4));
+
+      return next;
+    });
+
+    return actions;
   }
 }
 
@@ -287,7 +385,7 @@ export class SelectCellAction extends TerminalAction {
   authorize() { return true; }
   perform(ctx, agent: Agent) {
     this.terminal.switchModes();
-    const expr = `${agent.body.cursorPosition.x} ${agent.body.cursorPosition.y} ref`;
+    const expr = `${agent.body.cursorPosition.x} ${agent.body.cursorPosition.y} goto`;
     this.terminal.lineEditor.line = expr;
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);
@@ -308,5 +406,26 @@ export class PrintCursorModeHelpAction extends TerminalAction {
   perform() {
     this.terminal.write(`${CursorModeHelpText.join('\n')}\n`);
     return new ActionSuccess();
+  }
+}
+
+export class EvalAction extends Action {
+  name = 'eval';
+  cost = 1;
+  text: string;
+  constructor(text: string) {
+    super();
+    this.text = text;
+  }
+  perform(ctx: Place, agent: Agent) {
+    const [err, interpretation] = agent.mind.interpreter.interpret(this.text, agent.queue);
+
+    if (err) {
+      return new ActionFailure(err.message);
+    }
+
+    const term = interpretation?.stack.map((factor) => factor.toString()).join(' ');
+
+    return new ActionSuccess(`[${term}]`);
   }
 }

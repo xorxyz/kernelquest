@@ -15,6 +15,14 @@ export class Tree extends Thing {
   isStatic = true;
 }
 
+export class Footsteps extends Thing {
+  name = 'footsteps';
+  appearance = '👣';
+  style = esc(Colors.Bg.Blue);
+  isStatic = true;
+  isBlocking = false;
+}
+
 export class Grass extends Thing {
   name = 'grass';
   appearance = ',,';

@@ -114,6 +114,9 @@ export default defineComponent({
       player,
       write: (str) => this.xterm.write(str),
     }));
+
+    this.play();
+    this.$refs.audio.pause();
   },
   data(): { tty: TTY | undefined, xterm: Terminal, paused: boolean } {
     return {

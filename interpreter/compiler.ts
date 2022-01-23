@@ -19,6 +19,13 @@ export class Compiler {
   };
   level = 0;
 
+  constructor(dict?: Dictionary) {
+    this.dict = {
+      ...this.dict,
+      ...dict,
+    };
+  }
+
   compile(code: string): Term {
     debug('compiling: ', code);
     const tokens = this.scanner.scan(code);
@@ -38,7 +45,6 @@ export class Compiler {
 
     const previous = term[term.length - 1];
     let factor: Factor | undefined;
-    console.log(this.dict);
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
       factor = this.dict[token.lexeme];

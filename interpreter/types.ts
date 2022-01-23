@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
@@ -12,13 +13,13 @@ export abstract class Factor {
   }
 
   abstract validate(stack: Stack<Factor>)
-  abstract execute(stack: Stack<Factor>)
+  abstract execute(stack: Stack<Factor>, queue?: Queue<any>)
   abstract toString (): string
   _validate(stack: Stack<Factor>) {
     this.validate(stack);
   }
-  _execute(stack: Stack<Factor>) {
-    this.execute(stack);
+  _execute(stack: Stack<Factor>, queue?: Queue<any>) {
+    this.execute(stack, queue);
   }
 }
 

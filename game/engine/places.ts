@@ -1,6 +1,7 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
 import { EventEmitter } from 'events';
 import { Colors, esc, Style } from 'xor4-lib/esc';
+import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
 import { Agent, Hero } from './agents';
 import { Cell, Glyph } from './cell';
 import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
@@ -224,6 +225,15 @@ export class Place extends EventEmitter {
     return this.cells[index];
   }
 
+  getCellNeighbours(cell: Cell, direction: Direction): Array<Cell | null> {
+    return [
+      this.cellAt(cell.position.clone().add(direction.value)),
+      this.cellAt(cell.position.clone().add(direction.rotate().value)),
+      this.cellAt(cell.position.clone().add(direction.rotate().value)),
+      this.cellAt(cell.position.clone().add(direction.rotate().value)),
+    ];
+  }
+
   findAgentsWithCell(cell: Cell): Array<Agent> {
     return Array.from(this.agents).filter((agent) => agent.cell === cell);
   }
@@ -241,7 +251,6 @@ export class Place extends EventEmitter {
         cell.slot = doors.find((door) => door.position.equals(cell.position)) || new Wall();
       }
     });
-    console.log(this.places);
   }
 
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }

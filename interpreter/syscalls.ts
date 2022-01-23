@@ -1,6 +1,6 @@
-import { Operator } from './operators';
+import { Combinator } from './combinators';
 
-export class SystemCall extends Operator {}
+export class SystemCall extends Combinator {}
 
 export const read = new SystemCall(['read'], [], () => {});
 export const write = new SystemCall(['write'], [], () => {});
