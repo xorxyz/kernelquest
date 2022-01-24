@@ -43,7 +43,7 @@ export class Direction {
     return this;
   }
 
-  rotateUntil(direction: North | East | South | West) {
+  rotateUntil(direction: North | East | South | West | Vector) {
     while (!this.ring.value.equals(direction)) {
       this.rotate();
     }

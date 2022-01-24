@@ -1,6 +1,6 @@
 import { Vector } from 'xor4-lib/math';
-import { Queue } from 'xor4-lib/queue';
 import { Direction } from 'xor4-lib/directions';
+import { debug } from 'xor4-lib/logging';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
 import { Place } from '../engine/places';
 import { TTY } from '../ui/tty';
@@ -8,8 +8,7 @@ import { Agent, AgentType, Foe, Goal, Hero } from '../engine/agents';
 import { CursorModeHelpText, Keys } from '../constants';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
 import { Thing } from '../engine/things';
-import { Cell, Glyph } from '../engine/cell';
-import { Footsteps } from './things';
+import { Cell } from '../engine/cell';
 
 /*
  * Actions in the World
@@ -41,6 +40,22 @@ export class RotateAction extends Action {
     agent.body.direction.rotate();
     agent.cell = ctx.cellAt(agent.body.isLookingAt);
     ctx.emit(ROTATE, { agent });
+    return new ActionSuccess();
+  }
+}
+
+export class SetHeadingAction extends Action {
+  name = 'face';
+  cost = 0;
+  direction: Direction;
+  constructor(direction: Direction) {
+    super();
+    this.direction = direction;
+  }
+  perform(ctx: Place, agent: Agent) {
+    agent.body.direction.rotateUntil(this.direction.value);
+    ctx.emit(ROTATE, { agent });
+    agent.cell = ctx.cellAt(agent.body.position.clone().add(agent.body.direction.value));
     return new ActionSuccess();
   }
 }
@@ -191,20 +206,25 @@ export class SpawnAction extends Action {
  * =========
 */
 
-class PriorityQueue {
-  items: Map<Cell, number> = new Map();
-  put(cell: Cell, priority: number) {
-    this.items.set(cell, priority);
+class PriorityQueue<T> {
+  items: Map<T, number> = new Map();
+
+  /* adds an item in the queue */
+  put(item: T, priority: number) {
+    this.items.set(item, priority);
   }
+
+  /* returns lowest priority item */
   get() {
     const sorted = Array.from(this.items.entries()).sort((a, b) => a[1] - b[1]);
-    const cell = sorted[0][0];
+    const item = sorted[0][0];
 
-    this.items.delete(cell);
+    this.items.delete(item);
 
-    return cell;
+    return item;
   }
-  empty() {
+
+  isEmpty() {
     return this.items.size === 0;
   }
 }
@@ -221,7 +241,17 @@ export class PathfindingAction extends Action {
     const goal = new Goal();
     agent.mind.goals.push(goal);
 
-    const actions = this.pathfind(ctx, agent);
+    if (agent.body.position.equals(this.destination)) {
+      return new ActionFailure('Already here.');
+    }
+
+    const path = this.pathfind(ctx, agent);
+
+    if (!path.length) {
+      return new ActionFailure('Could not find a path.');
+    }
+
+    const actions = this.buildPathActions(ctx, agent, path.reverse());
 
     actions.forEach((action) => agent.queue.add(action));
 
@@ -232,70 +262,111 @@ export class PathfindingAction extends Action {
     return Math.abs(a.position.x - b.position.x) + Math.abs(a.position.y - b.position.y);
   }
 
-  reconstructPath(cameFrom: Map<Cell, Cell>, start: Cell, end: Cell) {
-    const cells: Array<Cell> = [];
-
-    let next = end;
-
-    while (next !== start) {
-      cells.push(next);
-      next = cameFrom.get(next) as Cell;
-    }
-
-    cells.push(start);
-
-    return cells.reverse();
+  getKey(map: Map<Cell, Cell>, val: Cell) {
+    const kv = [...map].find(([_, value]) => val === value);
+    return kv ? kv[0] : null;
   }
 
-  pathfind(ctx: Place, agent: Agent): Array<Action> {
-    const start = ctx.cellAt(agent.body.position) as Cell;
-    const end = ctx.cellAt(this.destination) as Cell;
-    const frontier = new PriorityQueue();
+  pathfind(ctx: Place, agent: Agent) {
+    const start = ctx.cellAt(agent.body.position);
+    const end = ctx.cellAt(this.destination);
+
+    if (!start || !end) {
+      debug('no start or no end cell', start, end);
+      return [];
+    }
+
+    const queue = new PriorityQueue<Cell>();
     const cameFrom: Map<Cell, Cell> = new Map();
     const costSoFar: Map<Cell, number> = new Map();
     const direction = agent.body.direction.clone();
+    const visited = new Set<Cell>();
 
-    frontier.put(start, 0);
+    let reached = false;
+
+    queue.put(start, 0);
     costSoFar.set(start, 0);
 
-    while (!frontier.empty()) {
-      const current = frontier.get() as Cell;
+    while (!queue.isEmpty()) {
+      const current = queue.get();
+      const cost = costSoFar.get(current) || Infinity;
 
-      if (current.position.equals(this.destination)) break;
+      if (current.position.equals(this.destination)) {
+        reached = true;
+        break;
+      }
 
-      const neighbours = ctx.getCellNeighbours(current, direction);
+      const neighbours = ctx.getCellNeighbours(current, direction)
+        .filter((x) => x && !visited.has(x));
 
-      neighbours.forEach((neighbour, i) => {
-        if (!neighbour || neighbour.isBlocked) return;
-        const newCost = costSoFar.get(current) as number + i;
-        if (!costSoFar.has(neighbour) || newCost < (costSoFar.get(neighbour) as number)) {
-          costSoFar.set(neighbour, newCost);
-          const priority = newCost + this.heuristic(neighbour, end);
-          frontier.put(neighbour, priority);
-          cameFrom.set(neighbour, current);
+      neighbours.forEach((candidate, i) => {
+        if (!candidate || candidate.isBlocked) return;
+        const oldCost = costSoFar.get(candidate) || Infinity;
+        // eslint-disable-next-line prefer-const
+        let newCost = cost + i;
+        const thatDirection = candidate.position.clone().sub(current.position);
+        // if neighbour's neighbour cant reach current, cost++
+        const next = ctx.cellAt(candidate.position.clone().add(thatDirection));
+        if (!next || next.isBlocked) {
+          newCost++;
+        }
+
+        if (!costSoFar.has(candidate) || newCost < oldCost) {
+          costSoFar.set(candidate, newCost);
+          const priority = newCost + this.heuristic(candidate, end);
+          queue.put(candidate, priority);
+          cameFrom.set(candidate, current);
+          visited.add(candidate);
         }
       });
     }
 
-    const path = this.reconstructPath(cameFrom, start, end);
-    const actions = this.buildPathActions(ctx, agent, path);
+    return this.reconstructPath(cameFrom, start, end, reached);
+  }
 
-    return actions;
+  reconstructPath(cameFrom: Map<Cell, Cell>, start: Cell, end: Cell, reached: boolean) {
+    debug('reconstructPath()');
+    if (!reached) return [];
+
+    const cells: Array<Cell> = [];
+
+    let next: Cell | undefined = end;
+
+    while (next && next !== start) {
+      cells.push(next);
+      next = cameFrom.get(next);
+      if (cells.length > 30) {
+        debug('cells', cells.map((c) => c.position.label));
+        debug('start', start);
+        debug('end:', end);
+        debug('cameFrom', cameFrom);
+        debug('reached', reached);
+        break;
+      }
+    }
+
+    cells.push(start);
+
+    return cells;
   }
 
   buildPathActions(ctx: Place, agent: Agent, path: Array<Cell>): Array<Action> {
-    const direction = agent.body.direction.clone();
+    debug('buildPathActions()');
     const actions: Array<Action> = [];
+    const previousDirection = agent.body.direction.value.clone();
 
     path.reduce((current, next) => {
-      while (!(current.position.clone().add(direction.value).equals(next.position))) {
-        actions.push(new RotateAction());
-        actions.push(new WaitAction(1));
-        direction.rotate();
+      const direction = next.position.clone().sub(current.position);
+
+      if (!direction.equals(previousDirection)) {
+        actions.push(new SetHeadingAction(new Direction(direction)));
+        actions.push(new WaitAction(2));
       }
 
+      previousDirection.copy(direction);
+
       actions.push(new StepAction());
-      actions.push(new WaitAction(4));
+      actions.push(new WaitAction(2));
 
       return next;
     });
@@ -319,7 +390,7 @@ export class PatrolAction extends Action {
 
 export abstract class TerminalAction extends Action {}
 
-export class SwitchModeAction extends Action {
+export class SwitchModeAction extends TerminalAction {
   name = 'switch-mode';
   cost = 0;
   terminal: TTY;

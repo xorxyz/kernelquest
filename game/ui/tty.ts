@@ -89,6 +89,7 @@ export class TTY {
 
   switchModes() {
     this.state.termMode = !this.state.termMode;
+    this.player.halted = this.state.termMode;
     this.drawCursor();
   }
 

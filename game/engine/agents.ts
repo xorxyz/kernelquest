@@ -9,7 +9,7 @@ import { Compiler } from 'xor4-interpreter/compiler';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
-import { PathfindingAction } from '../lib/actions';
+import { PathfindingAction, TerminalAction } from '../lib/actions';
 import { goto } from '../lib/words';
 
 export abstract class RuntimeError extends Error {}
@@ -86,6 +86,7 @@ export class Agent {
   public flashing: boolean = true;
   public tick: number = 0;
   public isWaitingUntil: null | number = null;
+  public halted: boolean = false;
   public dict = {
     pathfinding: PathfindingAction,
   };
@@ -131,7 +132,11 @@ export class Agent {
   }
 
   schedule(action: Action) {
-    this.queue.add(action);
+    if (action instanceof TerminalAction) {
+      this.queue.items.unshift(action);
+    } else {
+      this.queue.add(action);
+    }
   }
 
   takeTurn(tick: number): Action | null {
@@ -144,6 +149,10 @@ export class Agent {
       } else {
         return null;
       }
+    }
+
+    if (this.halted && !(this.queue.peek() instanceof TerminalAction)) {
+      return null;
     }
 
     const action = this.queue.next();

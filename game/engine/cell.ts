@@ -1,5 +1,5 @@
 import { Colors, esc, Style } from 'xor4-lib/esc';
-import { DirectionName, Directions, EastVector, NorthVector, SouthVector, Vector, WestVector } from 'xor4-lib/math';
+import { Vector } from 'xor4-lib/math';
 import { EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
 import { Agent, Foe } from './agents';
 import { Place } from './places';
@@ -99,10 +99,10 @@ export class Cell {
 
   isAdjacentTo(cell: Cell) {
     return (
-      cell.position.clone().add(NorthVector).equals(this.position) ||
-      cell.position.clone().add(EastVector).equals(this.position) ||
-      cell.position.clone().add(SouthVector).equals(this.position) ||
-      cell.position.clone().add(WestVector).equals(this.position)
+      cell.position.clone().add(NORTH).equals(this.position) ||
+      cell.position.clone().add(EAST).equals(this.position) ||
+      cell.position.clone().add(SOUTH).equals(this.position) ||
+      cell.position.clone().add(WEST).equals(this.position)
     );
   }
 
