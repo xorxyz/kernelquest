@@ -13,6 +13,7 @@ export interface EngineOptions {
 export class Engine extends EventEmitter {
   cycle: number = 0;
   world: World;
+  elapsed: number = 0;
   readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {

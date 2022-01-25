@@ -5,10 +5,10 @@ pages=$(find pages -type f | sed 's/pages\///g;s/.html//' | grep -v index)
 wikis=$(find wiki -type f | sed 's/wiki\///g;s/.html//' | grep -v index)
 posts=$(find posts -type f)
 
-interpreter="../game/dist/interpreter.js"
-interpreter_dir=$(dirname "$interpreter")
+# interpreter="../../game/dist/interpreter.js"
+# interpreter_dir=$(dirname "$interpreter")
 
-test -e "$interpreter" || (printf "'%s' not found\n" "$interpreter" && exit 1)
+# test -e "$interpreter" || (printf "'%s' not found\n" "$interpreter" && exit 1)
 
 print_page() (
   dir="components"
@@ -19,7 +19,7 @@ print_page() (
 
 cp -r assets/ public/ && \
 cp -r js/*    public/ && \
-cp -r "$interpreter_dir"/* public/
+# cp -r "$interpreter_dir"/* public/
 
 for name in $pages; do
   print_page "| $name | " "pages/$name.html" > "public/$name.html"

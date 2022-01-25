@@ -9,7 +9,7 @@ import { Compiler } from 'xor4-interpreter/compiler';
 import { Thing } from './things';
 import { Action } from './actions';
 import { Cell } from './cell';
-import { PathfindingAction, TerminalAction } from '../lib/actions';
+import { MoveCursorAction, PathfindingAction, TerminalAction } from '../lib/actions';
 import { goto } from '../lib/words';
 
 export abstract class RuntimeError extends Error {}

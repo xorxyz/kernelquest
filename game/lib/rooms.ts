@@ -1,6 +1,7 @@
 import { Vector } from 'xor4-lib/math';
 import { Hero, Agent } from '../engine/agents';
-import { Door, Place } from '../engine/places';
+import { Place } from '../engine/places';
+import { Door } from '../engine/things';
 import { Wizard, Bug, Sheep } from './agents';
 import { Book, Flag, Gold, Grass, Tree } from './things';
 
@@ -50,11 +51,11 @@ export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
   const entities: Array<[string, Array<any>]> = [
     // ['bug', [5, 4]],
     // ['sheep', [15, 5]],
-    ['house', [9, 2, 5, 4]],
-    ['house', [2, 6, 3, 3]],
-    ['flag', [14, 8]],
-    ['book', [4, 0]],
-    ['gold', [11, 8]],
+    // ['house', [9, 2, 5, 4]],
+    // ['house', [2, 6, 3, 3]],
+    // ['flag', [14, 8]],
+    // ['book', [4, 0]],
+    // ['gold', [11, 8]],
   ];
 
   entities.forEach(([entity, args]) => create[entity].call(this, ...args));

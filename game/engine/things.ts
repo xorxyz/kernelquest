@@ -1,4 +1,4 @@
-import { esc, Style } from 'xor4-lib/esc';
+import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Vector, Points } from 'xor4-lib/math';
 import { Place } from './places';
 
@@ -40,5 +40,39 @@ export class Thing {
     return this.style
       ? this.style + this.appearance + esc(Style.Reset)
       : this.appearance;
+  }
+}
+
+export class Wall extends Thing {
+  name = 'wall';
+  appearance = '##';
+  isStatic = true;
+
+  render(): string {
+    return (
+      esc(Colors.Bg.Gray) + esc(Colors.Fg.Black) +
+      this.appearance +
+      esc(Style.Reset)
+    );
+  }
+}
+
+export class Door extends Thing {
+  public name = 'door';
+  public appearance = '++';
+  readonly isStatic = true;
+  private place: Place;
+
+  constructor(place: Place) {
+    super();
+    this.place = place;
+  }
+
+  access(): Place {
+    return this.place;
+  }
+
+  render(): string {
+    return esc(Colors.Bg.White) + esc(Colors.Fg.Black) + this.appearance + esc(Style.Reset);
   }
 }

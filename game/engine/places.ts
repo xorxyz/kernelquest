@@ -1,53 +1,26 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
 import { EventEmitter } from 'events';
 import { Colors, esc, Style } from 'xor4-lib/esc';
-import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
+import { Direction } from 'xor4-lib/directions';
 import { Agent, Hero } from './agents';
 import { Cell, Glyph } from './cell';
-import { ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
+import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { ActionFailure, ActionSuccess } from './actions';
-import { Thing } from './things';
+import { Door, Thing } from './things';
+import { Flag, Wall } from '../lib/things';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
-
-export class Wall extends Thing {
-  name = 'wall';
-  appearance = '##';
-  isStatic = true;
-
-  render(): string {
-    return (
-      esc(Colors.Bg.Gray) + esc(Colors.Fg.Black) +
-      this.appearance +
-      esc(Style.Reset)
-    );
-  }
-}
-
-export class Door extends Thing {
-  public name = 'door';
-  public appearance = '++';
-  readonly isStatic = true;
-  private place: Place;
-
-  constructor(place: Place) {
-    super();
-    this.place = place;
-  }
-
-  access(): Place {
-    return this.place;
-  }
-
-  render(): string {
-    return esc(Colors.Bg.White) + esc(Colors.Fg.Black) + this.appearance + esc(Style.Reset);
-  }
-}
 
 export class Place extends EventEmitter {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
 
   readonly position: Vector;
+  readonly timeLimit: number = 700;
+
+  public tick: number = 0;
+  public seconds: number = 0;
+  public flags: Set<Flag> = new Set();
+  public capturedFlags: Set<Flag> = new Set();
 
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
@@ -59,6 +32,10 @@ export class Place extends EventEmitter {
   private places: Set<Place> = new Set();
   private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Place) => void;
+
+  get secondsLeft() {
+    return this.timeLimit - this.seconds;
+  }
 
   get size() { return this.outerRectangle.size; }
 
@@ -76,6 +53,8 @@ export class Place extends EventEmitter {
 
   constructor(x: number, y: number, w: number, h: number, setupFn?: (this: Place) => void) {
     super();
+
+    this.flags.add(new Flag());
 
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
@@ -100,6 +79,7 @@ export class Place extends EventEmitter {
   }
 
   update(tick: number) {
+    this.seconds = Math.trunc((tick * CLOCK_MS_DELAY) / 1000);
     this.agents.forEach((agent: Agent) => {
       if (!agent.isAlive) return;
 

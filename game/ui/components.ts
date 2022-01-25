@@ -34,14 +34,11 @@ export abstract class UiComponent {
   }
 }
 
-const title = 'xor4';
-
 export class Navbar extends UiComponent {
   style = esc(Style.Invert);
-  render({ player }) {
+  render(tty: TTY) {
     return [(
-      title.padEnd(SCREEN_WIDTH / 2 - 1, ' ') +
-      String(player.tick).padStart(SCREEN_WIDTH / 2 - 1, ' ')
+      `🏰 Kernel Quest                                         🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
