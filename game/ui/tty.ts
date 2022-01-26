@@ -17,7 +17,7 @@ import {
   SwitchModeAction,
   TerminalAction,
 } from '../lib/actions';
-import { Hero } from '../engine/agents';
+import { Agent } from '../engine/agents';
 import { Engine } from '../engine';
 import { Place } from '../engine/places';
 import { Action } from '../engine/actions';
@@ -33,13 +33,13 @@ export interface IState {
 
 export interface IConnection {
   write: (str: string) => void,
-  player: Hero,
+  player: Agent,
   place: Place
 }
 
 export class TTY {
   public id: number;
-  public player: Hero;
+  public player: Agent;
   readonly place: Place;
   public connection: IConnection;
   public state: IState;
@@ -164,16 +164,16 @@ export class TTY {
         action = new SwitchModeAction(this);
         break;
       case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.player.body.cursorPosition.x, 0));
+        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 0));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.player.body.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(15, this.player.cursorPosition.y));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.player.body.cursorPosition.x, 9));
+        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 9));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.player.body.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(0, this.player.cursorPosition.y));
         break;
       case (Keys.ARROW_UP):
         action = new MoveCursorAction(this, new Vector(0, -1));
@@ -230,8 +230,8 @@ export class TTY {
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.player.body.cursorPosition.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.player.body.cursorPosition.y,
+        this.view.components.room.position.x + (this.player.cursorPosition.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.player.cursorPosition.y,
       ));
 
     this.connection.write(cursorUpdate);

@@ -13,11 +13,11 @@ export class RandomWalkCapability extends Capability {
     if (n) {
       forN(n, () => {
         agent.queue.add(new RotateAction());
-        agent.queue.add(new WaitAction(agent.type.weight * 2));
+        agent.queue.add(new WaitAction(agent.weight * 2));
       });
     }
 
     agent.queue.add(new StepAction());
-    agent.queue.add(new WaitAction(agent.type.weight * 2));
+    agent.queue.add(new WaitAction(agent.weight * 2));
   }
 }

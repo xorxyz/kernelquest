@@ -7,7 +7,7 @@ import { Cell, Glyph } from './cell';
 import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { ActionFailure, ActionSuccess } from './actions';
 import { Door, Thing } from './things';
-import { Flag, Wall } from '../lib/things';
+import { Crown, Flag, Wall } from '../lib/things';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
@@ -19,8 +19,12 @@ export class Place extends EventEmitter {
 
   public tick: number = 0;
   public seconds: number = 0;
+
   public flags: Set<Flag> = new Set();
   public capturedFlags: Set<Flag> = new Set();
+
+  public crowns: Set<Crown> = new Set();
+  public capturedCrowns: Set<Crown> = new Set();
 
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
@@ -53,8 +57,6 @@ export class Place extends EventEmitter {
 
   constructor(x: number, y: number, w: number, h: number, setupFn?: (this: Place) => void) {
     super();
-
-    this.flags.add(new Flag());
 
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
@@ -105,20 +107,20 @@ export class Place extends EventEmitter {
   }
 
   private applyVelocity(agent: Agent) {
-    if (agent.body.velocity.isZero()) return;
+    if (agent.velocity.isZero()) return;
 
-    const next = agent.body.position.clone().add(agent.body.velocity);
+    const next = agent.position.clone().add(agent.velocity);
     const target = this.cellAt(next);
 
     if (target && !target.isBlocked) {
-      const previous = this.cellAt(agent.body.position);
+      const previous = this.cellAt(agent.position);
       if (previous) previous.slot = null;
       target.slot = agent;
-      agent.body.position.add(agent.body.velocity);
-      agent.cell = this.cellAt(agent.body.isLookingAt);
+      agent.position.add(agent.velocity);
+      agent.facing.cell = this.cellAt(agent.isLookingAt);
     }
 
-    agent.body.velocity.setXY(0, 0);
+    agent.velocity.setXY(0, 0);
   }
 
   clear() {
@@ -137,27 +139,21 @@ export class Place extends EventEmitter {
   }
 
   put(entity: Agent | Thing, position?: Vector) {
+    if (position) entity.position.copy(position);
+
+    const cell = this.cellAt(entity.position);
+
+    if (!cell) return false;
+
+    cell.slot = entity;
+
     if (entity instanceof Agent) {
-      if (position) entity.body.position.copy(position);
-
-      const cell = this.cellAt(entity.body.position);
-
-      if (!cell) return false;
-
-      cell.slot = entity;
       this.agents.add(entity);
 
-      entity.cell = this.cellAt(entity.body.isLookingAt);
+      entity.facing.cell = this.cellAt(entity.isLookingAt);
     }
 
     if (entity instanceof Thing) {
-      if (position) entity.position.copy(position);
-
-      const cell = this.cellAt(entity.position);
-
-      if (!cell) return false;
-
-      cell.slot = entity;
       this.things.add(entity);
     }
 
@@ -168,8 +164,8 @@ export class Place extends EventEmitter {
     return this.cells.find((cell) => cell.slot === agent) || null;
   }
 
-  findPlayers(): Array<Hero> {
-    return Array.from(this.agents).filter((agent) => agent instanceof Hero) as Array<Hero>;
+  findPlayers(): Array<Agent> {
+    return Array.from(this.agents).filter((agent) => agent.type instanceof Hero);
   }
 
   remove(entity: Agent | Thing) {
@@ -215,7 +211,7 @@ export class Place extends EventEmitter {
   }
 
   findAgentsWithCell(cell: Cell): Array<Agent> {
-    return Array.from(this.agents).filter((agent) => agent.cell === cell);
+    return Array.from(this.agents).filter((agent) => agent.facing.cell === cell);
   }
 
   reset() {
@@ -224,11 +220,12 @@ export class Place extends EventEmitter {
     if (this.setupFn) this.setupFn();
   }
 
-  build(house: Place, doors: Array<Door>) {
+  build(house: Place, doors: Array<Thing>) {
     this.places.add(house);
     this.cells.forEach((cell) => {
       if (!house.contains(cell.position) && house.outerRectangle.contains(cell.position)) {
-        cell.slot = doors.find((door) => door.position.equals(cell.position)) || new Wall();
+        cell.slot = doors.find((door) => door.position.equals(cell.position)) ||
+          new Thing(new Wall());
       }
     });
   }

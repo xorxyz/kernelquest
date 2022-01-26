@@ -11,15 +11,3 @@ sites:
     name: Twitch
     src: /images/social/twitch.svg
     url: https://twitch.tv/xorxyz
-  -
-    name: Youtube
-    src: /images/social/youtube.svg
-    url: https://youtube.com/xorxyz
-  -
-    name: Github
-    src: /images/social/github.svg
-    url: https://github.com/xorxyz
-  -
-    name: RSS
-    src: /images/social/feed.svg
-    url: https://www.xor.xyz/rss

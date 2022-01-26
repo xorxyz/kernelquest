@@ -2,7 +2,7 @@ import Clock from 'xor4-lib/clock';
 import { debug } from 'xor4-lib/logging';
 import { EventEmitter } from 'events';
 import { World } from './world';
-import { demoRoom } from '../lib/rooms';
+import { demoRoom } from '../lib/places';
 import { CLOCK_MS_DELAY } from '../constants';
 
 export interface EngineOptions {

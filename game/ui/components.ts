@@ -38,7 +38,7 @@ export class Navbar extends UiComponent {
   style = esc(Style.Invert);
   render(tty: TTY) {
     return [(
-      `🏰 Kernel Quest                                         🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
+      `🏰 Kernel Quest                                  👑 ${tty.place.capturedCrowns.size}/${tty.place.crowns.size}  🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
@@ -71,10 +71,10 @@ export class Sidebar extends UiComponent {
     return [
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(`${player.type.appearance} ${player.type.name}`).padEnd(11)} │`,
+      `│ path: ${(`${player.glyph?.value} ${player.name}`).padEnd(11)} │`,
       `│ hand: ${((player.hand?.label) || nothing(11)).padEnd(11)} │`,
       `│ eyes: ${((player.eyes?.label) || nothing(11)).padEnd(11)} │`,
-      `│ feet: ${(((`[${player.body.position.label} ref]`).padEnd(11)))} │`,
+      `│ feet: ${(((`[${player.position.label} ref]`).padEnd(11)))} │`,
       '│                   │',
       '│                   │',
       '│                   │',
@@ -151,7 +151,7 @@ export class Output extends UiComponent {
 }
 
 export class Input extends UiComponent {
-  render({ state }) {
+  render({ state }: TTY) {
     const { line, prompt } = state;
 
     return [

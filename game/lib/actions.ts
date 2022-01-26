@@ -4,11 +4,12 @@ import { debug } from 'xor4-lib/logging';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
 import { Place } from '../engine/places';
 import { TTY } from '../ui/tty';
-import { Agent, AgentType, Foe, Goal, Hero } from '../engine/agents';
+import { Agent, AgentType, Foe, Hero } from '../engine/agents';
 import { CursorModeHelpText, Keys } from '../constants';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
-import { Thing } from '../engine/things';
-import { Cell } from '../engine/cell';
+import { Goal, Thing } from '../engine/things';
+import { Cell, Glyph } from '../engine/cell';
+import { Crown, Flag } from './things';
 
 /*
  * Actions in the World
@@ -37,8 +38,8 @@ export class RotateAction extends Action {
   name = 'rotate';
   cost = 0;
   perform(ctx: Place, agent: Agent) {
-    agent.body.direction.rotate();
-    agent.cell = ctx.cellAt(agent.body.isLookingAt);
+    agent.facing.direction.rotate();
+    agent.facing.cell = ctx.cellAt(agent.isLookingAt);
     ctx.emit(ROTATE, { agent });
     return new ActionSuccess();
   }
@@ -53,9 +54,9 @@ export class SetHeadingAction extends Action {
     this.direction = direction;
   }
   perform(ctx: Place, agent: Agent) {
-    agent.body.direction.rotateUntil(this.direction.value);
+    agent.facing.direction.rotateUntil(this.direction.value);
     ctx.emit(ROTATE, { agent });
-    agent.cell = ctx.cellAt(agent.body.position.clone().add(agent.body.direction.value));
+    agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
     return new ActionSuccess();
   }
 }
@@ -64,26 +65,29 @@ export class StepAction extends Action {
   name = 'step';
   cost = 1;
   perform(ctx: Place, agent: Agent) {
-    const target = ctx.cellAt(agent.body.isLookingAt);
+    const target = ctx.cellAt(agent.isLookingAt);
 
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
         ctx.emit(DIE);
       } else {
-        agent.body.velocity.sub(agent.body.direction.value);
+        agent.velocity.sub(agent.facing.direction.value);
         ctx.emit(HIT);
       }
       return new ActionFailure();
     }
 
-    if (agent.type instanceof Foe && target?.slot instanceof Hero) {
+    if (agent.type instanceof Foe &&
+      target?.slot instanceof Agent &&
+      target.slot.type instanceof Hero) {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
           ctx.emit(DIE);
+          target.slot.glyph = new Glyph('☠️ ');
         } else {
-          target.slot.body.velocity.add(agent.body.direction.value);
+          target.slot.velocity.add(agent.facing.direction.value);
           ctx.emit(HIT);
         }
         return new ActionSuccess();
@@ -91,10 +95,10 @@ export class StepAction extends Action {
     }
 
     if (target && !target.isBlocked) {
-      ctx.cellAt(agent.body.position)?.take();
+      ctx.cellAt(agent.position)?.take();
       target.put(agent);
-      agent.body.position.add(agent.body.direction.value);
-      agent.cell = ctx.cellAt(agent.body.isLookingAt);
+      agent.position.add(agent.facing.direction.value);
+      agent.facing.cell = ctx.cellAt(agent.isLookingAt);
       ctx.emit(STEP, { agent });
       return new ActionSuccess();
     }
@@ -107,7 +111,7 @@ export class GetAction extends Action {
   name = 'get';
   cost = 1;
   perform(ctx: Place, agent: Agent) {
-    if (!agent.cell || !agent.cell.slot) {
+    if (!agent.facing.cell || !agent.facing.cell.slot) {
       ctx.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
     }
@@ -117,23 +121,38 @@ export class GetAction extends Action {
       return new ActionFailure('You hands are full.');
     }
 
-    if (agent.cell.slot instanceof Agent ||
-       (agent.cell.slot instanceof Thing && agent.cell.slot.isStatic)) {
+    if (agent.facing.cell.slot instanceof Agent ||
+       (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.isStatic)) {
       ctx.emit(FAIL);
       return new ActionFailure('You can\'t get this.');
     }
 
-    if (agent.cell && agent.cell.containsFoe()) {
+    if (agent.facing.cell && agent.facing.cell.containsFoe()) {
       agent.hp.decrease(1);
       ctx.emit(HIT);
       return new ActionFailure();
     }
 
-    agent.get();
+    const thing = agent.get();
 
-    if (agent.hand) {
+    if (thing) {
       ctx.emit(GET);
-      return new ActionSuccess(`You get the ${(agent.hand as Thing).name}.`);
+
+      if (thing instanceof Thing) {
+        thing.owner = agent;
+
+        if (thing.type instanceof Crown) {
+          ctx.capturedCrowns.add(thing);
+          ctx.emit('crown');
+        }
+
+        if (thing.type instanceof Flag) {
+          ctx.capturedFlags.add(thing);
+          ctx.emit('flag');
+        }
+      }
+
+      return new ActionSuccess(`You get the ${thing.name}.`);
     }
 
     ctx.emit(FAIL);
@@ -152,7 +171,7 @@ export class PutAction extends Action {
       return new ActionFailure('You are not holding anything.');
     }
 
-    const target = ctx.cellAt(agent.body.isLookingAt);
+    const target = ctx.cellAt(agent.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
       ctx.emit(PUT);
       return new ActionSuccess(`You put down the ${(target.slot as Thing).name}.`);
@@ -169,7 +188,7 @@ export class ReadAction extends Action {
   cost = 10;
   perform(ctx: Place, agent: Agent) {
     if (agent.hand) {
-      const value = agent.hand.read();
+      const { value } = agent.hand;
       console.log(value);
 
       return new ActionSuccess();
@@ -192,8 +211,8 @@ export class SpawnAction extends Action {
 
   perform(ctx: Place, agent: Agent) {
     const spawned = new Agent(this.type);
-    spawned.body.position.copy(agent.body.position).add(agent.body.isLookingAt);
-    if (!Place.bounds.contains(spawned.body.position)) {
+    spawned.position.copy(agent.position).add(agent.isLookingAt);
+    if (!Place.bounds.contains(spawned.position)) {
       return new ActionFailure();
     }
     ctx.put(spawned);
@@ -241,7 +260,7 @@ export class PathfindingAction extends Action {
     const goal = new Goal();
     agent.mind.goals.push(goal);
 
-    if (agent.body.position.equals(this.destination)) {
+    if (agent.position.equals(this.destination)) {
       return new ActionFailure('Already here.');
     }
 
@@ -263,12 +282,13 @@ export class PathfindingAction extends Action {
   }
 
   getKey(map: Map<Cell, Cell>, val: Cell) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const kv = [...map].find(([_, value]) => val === value);
     return kv ? kv[0] : null;
   }
 
   pathfind(ctx: Place, agent: Agent) {
-    const start = ctx.cellAt(agent.body.position);
+    const start = ctx.cellAt(agent.position);
     const end = ctx.cellAt(this.destination);
 
     if (!start || !end) {
@@ -279,7 +299,7 @@ export class PathfindingAction extends Action {
     const queue = new PriorityQueue<Cell>();
     const cameFrom: Map<Cell, Cell> = new Map();
     const costSoFar: Map<Cell, number> = new Map();
-    const direction = agent.body.direction.clone();
+    const direction = agent.facing.direction.clone();
     const visited = new Set<Cell>();
 
     let reached = false;
@@ -353,7 +373,7 @@ export class PathfindingAction extends Action {
   buildPathActions(ctx: Place, agent: Agent, path: Array<Cell>): Array<Action> {
     debug('buildPathActions()');
     const actions: Array<Action> = [];
-    const previousDirection = agent.body.direction.value.clone();
+    const previousDirection = agent.facing.direction.value.clone();
 
     path.reduce((current, next) => {
       const direction = next.position.clone().sub(current.position);
@@ -416,9 +436,9 @@ export class MoveCursorAction extends TerminalAction {
   }
   authorize() { return true; }
   perform(ctx: Place, agent: Agent) {
-    if (agent.sees().contains(agent.body.cursorPosition.clone().add(this.direction))) {
-      agent.body.cursorPosition.add(this.direction);
-      const thing = ctx.cellAt(agent.body.cursorPosition)?.slot || null;
+    if (agent.sees().contains(agent.cursorPosition.clone().add(this.direction))) {
+      agent.cursorPosition.add(this.direction);
+      const thing = ctx.cellAt(agent.cursorPosition)?.slot || null;
       agent.eyes = thing;
     }
     return new ActionSuccess();
@@ -439,7 +459,7 @@ export class MoveCursorToAction extends TerminalAction {
   perform(ctx, agent: Agent) {
     const withinBounds = true;
     if (withinBounds) {
-      agent.body.cursorPosition.copy(this.destination);
+      agent.cursorPosition.copy(this.destination);
     }
     return new ActionSuccess();
   }
@@ -456,7 +476,7 @@ export class SelectCellAction extends TerminalAction {
   authorize() { return true; }
   perform(ctx, agent: Agent) {
     this.terminal.switchModes();
-    const expr = `${agent.body.cursorPosition.x} ${agent.body.cursorPosition.y} goto`;
+    const expr = `${agent.cursorPosition.x} ${agent.cursorPosition.y} goto`;
     this.terminal.lineEditor.line = expr;
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);

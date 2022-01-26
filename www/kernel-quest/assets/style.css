@@ -88,9 +88,9 @@ footer {
 
 .list { padding-left: 0; }
 .list li { display: inline; }
-.list li:not(:first-child):before {
+/* .list li:not(:first-child):before {
   content: ', '
-}
+} */
 
 .bulletless {
   list-style: none;

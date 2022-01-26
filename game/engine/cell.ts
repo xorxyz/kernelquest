@@ -1,6 +1,6 @@
-import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
 import { EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
+import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Agent, Foe } from './agents';
 import { Place } from './places';
 import { Thing } from './things';
@@ -89,12 +89,11 @@ export class Cell {
   }
 
   render(ctx: Place, tick: number) {
-    const glyph = this.slot?.render() || this.glyph.value;
-    const style = ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length
-      ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
-      : esc(Colors.Bg.Black) + esc(Colors.Fg.White);
-
-    return style + glyph + esc(Style.Reset);
+    if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
+      return esc(Colors.Bg.Blue) +
+      esc(Colors.Fg.Black) + (this.slot?.glyph.value || this.glyph.value) + esc(Style.Reset);
+    }
+    return this.slot?.render() || this.glyph.value;
   }
 
   isAdjacentTo(cell: Cell) {

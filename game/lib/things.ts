@@ -1,50 +1,45 @@
 import { Colors, esc } from 'xor4-lib/esc';
-import { Thing } from '../engine/things';
+import { Glyph } from '../engine/cell';
+import { EntityType } from '../engine/things';
 
-export class Wall extends Thing {
+export class Wall extends EntityType {
   name = 'wall';
-  appearance = '##';
+  glyph = new Glyph('##');
   style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
   isStatic = true;
 }
 
-export class Tree extends Thing {
+export class Tree extends EntityType {
   name = 'tree';
-  appearance = '🌲';
+  glyph = new Glyph('🌲');
   style = esc(Colors.Bg.Green);
   isStatic = true;
 }
 
-export class Footsteps extends Thing {
-  name = 'footsteps';
-  appearance = '👣';
-  style = esc(Colors.Bg.Blue);
-  isStatic = true;
-  isBlocking = false;
-}
-
-export class Grass extends Thing {
+export class Grass extends EntityType {
   name = 'grass';
-  appearance = ',,';
+  glyph = new Glyph(',,');
   style = esc(Colors.Fg.Green);
   isStatic = true;
   isBlocking = false;
 }
 
-export class Flag extends Thing {
+export class Flag extends EntityType {
   name = 'flag';
-  appearance = '🚩';
-  style = esc(Colors.Bg.Yellow);
+  glyph = new Glyph('🚩');
 }
 
-export class Book extends Thing {
+export class Crown extends EntityType {
+  name = 'crown';
+  glyph = new Glyph('👑');
+}
+
+export class Book extends EntityType {
   name = 'book';
-  appearance = '📕';
-  style = esc(Colors.Bg.Yellow);
+  glyph = new Glyph('📕');
 }
 
-export class Gold extends Thing {
+export class Gold extends EntityType {
   name = 'gold';
-  appearance = '💰';
-  style = esc(Colors.Bg.Yellow);
+  glyph = new Glyph('💰');
 }
