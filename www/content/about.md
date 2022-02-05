@@ -6,5 +6,3 @@ category: Game
 tags:
   - Game
 ---
-
-`xor` is a computer security MUD.
