@@ -3,9 +3,9 @@ import { Agent } from '../engine/agents';
 import { Place } from '../engine/places';
 import { Door, Thing } from '../engine/things';
 import { Wizard, Bug, Sheep } from './agents';
-import { Book, Crown, Flag, Gold, Grass, Tree } from './things';
+import { Book, Crown, Flag, Gold, Grass, Tree, Water } from './things';
 
-const create: Record<string, (this: Place, ...any) => any> = {
+export const create: Record<string, (this: Place, ...any) => any> = {
   flag(x, y) {
     const flag = new Thing(new Flag());
     this.flags.add(flag);
@@ -47,6 +47,10 @@ const create: Record<string, (this: Place, ...any) => any> = {
     return coordinates.forEach(([x, y]) =>
       this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Grass())));
   },
+  water(coordinates: Array<[number, number]>) {
+    return coordinates.forEach(([x, y]) =>
+      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Water())));
+  },
 };
 
 export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
@@ -54,12 +58,13 @@ export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
 
   create.trees.call(this, [[5, 0], [1, 1], [3, 1], [4, 1], [0, 2], [1, 4]]);
   create.grass.call(this, [[15, 4], [11, 0], [5, 9], [3, 2]]);
+  create.water.call(this, [[15, 0], [15, 1], [14, 2], [15, 2]]);
 
   const entities: Array<[string, Array<any>]> = [
     // ['bug', [5, 4]],
     // ['sheep', [15, 5]],
     // ['house', [9, 2, 5, 4]],
-    // ['house', [2, 6, 3, 3]],
+    ['house', [2, 6, 3, 3]],
     ['flag', [14, 8]],
     // ['book', [4, 0]],
     // ['gold', [11, 8]],

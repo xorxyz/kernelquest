@@ -1,6 +1,7 @@
 import { Vector } from 'xor4-lib/math';
 import { Direction } from 'xor4-lib/directions';
 import { debug } from 'xor4-lib/logging';
+import { Quotation } from 'xor4-interpreter/literals';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
 import { Place } from '../engine/places';
 import { TTY } from '../ui/tty';
@@ -10,6 +11,7 @@ import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
 import { Goal, Thing } from '../engine/things';
 import { Cell, Glyph } from '../engine/cell';
 import { Crown, Flag } from './things';
+import { create } from './places';
 
 /*
  * Actions in the World
@@ -122,7 +124,7 @@ export class GetAction extends Action {
     }
 
     if (agent.facing.cell.slot instanceof Agent ||
-       (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.isStatic)) {
+       (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
       ctx.emit(FAIL);
       return new ActionFailure('You can\'t get this.');
     }
@@ -403,6 +405,24 @@ export class PatrolAction extends Action {
   }
 }
 
+export class CreateAction extends Action {
+  name = 'new';
+  cost = 0;
+  program: Quotation;
+  args: Quotation;
+  constructor(program: Quotation, args: Quotation) {
+    super();
+    this.program = program;
+    this.args = args;
+  }
+  perform(ctx: Place, agent: Agent) {
+    const name = this.program.value[1].lexeme;
+    const createFn = create[name];
+    if (!createFn) return new ActionFailure(`Could not create '${name}'`);
+    return new ActionSuccess();
+  }
+}
+
 /*
  * Terminal Actions
  * ====================
@@ -510,6 +530,8 @@ export class EvalAction extends Action {
   }
   perform(ctx: Place, agent: Agent) {
     const [err, interpretation] = agent.mind.interpreter.interpret(this.text, agent.queue);
+
+    debug('eval', err, interpretation);
 
     if (err) {
       return new ActionFailure(err.message);

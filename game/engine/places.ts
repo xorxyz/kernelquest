@@ -7,7 +7,7 @@ import { Cell, Glyph } from './cell';
 import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { ActionFailure, ActionSuccess } from './actions';
 import { Door, Thing } from './things';
-import { Crown, Flag, Wall } from '../lib/things';
+import { Wall } from '../lib/things';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
@@ -20,11 +20,11 @@ export class Place extends EventEmitter {
   public tick: number = 0;
   public seconds: number = 0;
 
-  public flags: Set<Flag> = new Set();
-  public capturedFlags: Set<Flag> = new Set();
+  public flags: Set<Thing> = new Set();
+  public capturedFlags: Set<Thing> = new Set();
 
-  public crowns: Set<Crown> = new Set();
-  public capturedCrowns: Set<Crown> = new Set();
+  public crowns: Set<Thing> = new Set();
+  public capturedCrowns: Set<Thing> = new Set();
 
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
@@ -190,7 +190,7 @@ export class Place extends EventEmitter {
     return this.rows.map((row) => row
       .map(((cell) => (
         rect && rect.contains(cell.position) && !this.childrenContain(cell.position)
-          ? cell.render(this, tick)
+          ? cell.render(this)
           : `${esc(Colors.Bg.Black)}  ${esc(Style.Reset)}`)))
       .join(''));
   }

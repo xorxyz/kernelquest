@@ -44,7 +44,7 @@ export class Cell {
   public get isBlocked() {
     return (
       this.slot instanceof Agent ||
-      (this.slot instanceof Thing && this.slot.isBlocking)
+      (this.slot instanceof Thing && this.slot.type.isBlocking)
     );
   }
 
@@ -88,9 +88,9 @@ export class Cell {
     return true;
   }
 
-  render(ctx: Place, tick: number) {
+  render(ctx: Place) {
     if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
-      return esc(Colors.Bg.Blue) +
+      return esc(Colors.Bg.Cyan) +
       esc(Colors.Fg.Black) + (this.slot?.glyph.value || this.glyph.value) + esc(Style.Reset);
     }
     return this.slot?.render() || this.glyph.value;

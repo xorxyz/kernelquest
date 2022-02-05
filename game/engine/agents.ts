@@ -4,7 +4,7 @@ import { Queue } from 'xor4-lib/queue';
 import { Colors, esc } from 'xor4-lib/esc';
 import { EntityType, Thing } from './things';
 import { Action } from './actions';
-import { Cell, Glyph } from './cell';
+import { Cell } from './cell';
 import { PathfindingAction, TerminalAction } from '../lib/actions';
 import { Mind } from './mind';
 

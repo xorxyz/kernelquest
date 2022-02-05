@@ -9,14 +9,13 @@ export class EntityType {
   public name: string;
   public glyph: Glyph;
   public style?: string;
+  readonly isStatic: boolean = false;
+  readonly isBlocking: boolean = true;
 }
 
 export class Thing {
   readonly name: string;
-  readonly style: string;
   readonly type: EntityType;
-  readonly isStatic: boolean = false;
-  readonly isBlocking: boolean = true;
 
   public owner: Agent | null = null;
   public glyph: Glyph;
@@ -26,14 +25,13 @@ export class Thing {
   public velocity: Vector = new Vector(0, 0);
   public cursorPosition: Vector = new Vector(0, 0);
 
-  constructor(type: EntityType) {
+  constructor(type: EntityType, name: string = '') {
+    this.name = name;
     this.type = type;
     this.glyph = type.glyph;
-    if (type.name) {
+
+    if (!this.name && type.name) {
       this.name = type.name;
-    }
-    if (type.style) {
-      this.style = type.style;
     }
   }
 
@@ -42,14 +40,17 @@ export class Thing {
   }
 
   render() {
-    let style = '';
+    let { style } = this.type;
 
-    if (!this.owner && !this.style) style = esc(Colors.Bg.Yellow);
+    if (!this.owner && !this.type.style) {
+      style = esc(Colors.Bg.Yellow);
+    }
     if (this.type instanceof Hero || this.owner?.type instanceof Hero) {
       style = esc(Colors.Bg.Purple);
     }
-    if (this.owner?.type instanceof Foe) style = esc(Colors.Bg.Red);
-    if (this.style) style = this.style;
+    if (this.owner?.type instanceof Foe) {
+      style = esc(Colors.Bg.Red);
+    }
 
     return style + this.glyph.value + esc(Style.Reset);
   }

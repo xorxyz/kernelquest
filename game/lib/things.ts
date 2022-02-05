@@ -14,6 +14,7 @@ export class Tree extends EntityType {
   glyph = new Glyph('🌲');
   style = esc(Colors.Bg.Green);
   isStatic = true;
+  isBlocking = true;
 }
 
 export class Grass extends EntityType {
@@ -22,6 +23,14 @@ export class Grass extends EntityType {
   style = esc(Colors.Fg.Green);
   isStatic = true;
   isBlocking = false;
+}
+
+export class Water extends EntityType {
+  name = 'water';
+  glyph = new Glyph('~~');
+  style = esc(Colors.Bg.Blue);
+  isStatic = true;
+  isBlocking = true;
 }
 
 export class Flag extends EntityType {

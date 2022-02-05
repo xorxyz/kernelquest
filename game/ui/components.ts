@@ -71,10 +71,10 @@ export class Sidebar extends UiComponent {
     return [
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(`${player.glyph?.value} ${player.name}`).padEnd(11)} │`,
-      `│ hand: ${((player.hand?.label) || nothing(11)).padEnd(11)} │`,
-      `│ eyes: ${((player.eyes?.label) || nothing(11)).padEnd(11)} │`,
-      `│ feet: ${(((`[${player.position.label} ref]`).padEnd(11)))} │`,
+      `│ path: ${(`${player.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
+      `│ hand: ${(player.hand?.label || nothing(11)).padEnd(11)} │`,
+      `│ eyes: ${(player.eyes?.label || nothing(11)).padEnd(11)} │`,
+      `│ feet: ${(`[${player.position.label} ref]`).padEnd(11)} │`,
       '│                   │',
       '│                   │',
       '│                   │',
@@ -119,7 +119,7 @@ const Points = (bg, n) => {
 
 const Hp = (n) => Points(Bg.Red, n);
 const Sp = (n) => Points(Bg.Green, n);
-const Mp = (n) => Points(Bg.Blue, n);
+const Mp = (n) => Points(Bg.Cyan, n);
 
 export class Stats extends UiComponent {
   render({ player: p }: TTY) {
@@ -130,8 +130,8 @@ export class Stats extends UiComponent {
       `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
       `│ health:  ${Hp(p.hp.value)}│`,
-      `│ magic:   ${Mp(p.mp.value)}│`,
       `│ stamina: ${Sp(p.sp.value)}│`,
+      `│ magic:   ${Mp(p.mp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];
