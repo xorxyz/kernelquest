@@ -1,28 +1,36 @@
-import { AgentType } from '../engine/agents';
+import { Hero, Foe, Friend } from '../engine/agents';
+import { Glyph } from '../engine/cell';
 import { RandomWalkCapability } from './capabilities';
 
-export class Cherub extends AgentType {
-  appearance = '👼';
+export class Cherub extends Hero {
   name = 'cherub';
+  glyph = new Glyph('👼');
 }
 
-export class Fairy extends AgentType {
+export class Fairy extends Hero {
   name = 'fairy';
-  appearance = '🧚';
+  glyph = new Glyph('🧚');
 }
 
-export class Elf extends AgentType {
+export class Elf extends Hero {
   name = 'elf';
-  appearance = '🧝';
+  glyph = new Glyph('🧝');
 }
 
-export class Wizard extends AgentType {
+export class Wizard extends Hero {
   name = 'wizard';
-  appearance = '🧙';
+  glyph = new Glyph('🧙');
 }
 
-export class Sheep extends AgentType {
+export class Sheep extends Friend {
   name = 'sheep';
-  appearance = '🐑';
+  glyph = new Glyph('🐑');
+  capabilities = [new RandomWalkCapability()];
+  weight = 10;
+}
+
+export class Bug extends Foe {
+  name = 'bug';
+  glyph = new Glyph('🐛');
   capabilities = [new RandomWalkCapability()];
 }

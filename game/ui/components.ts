@@ -23,25 +23,22 @@ export abstract class UiComponent {
     this.position = new Vector(x, y);
   }
 
-  abstract render(terminal: TTY): Array<string>
+  abstract render(terminal: TTY, tick: number): Array<string>
 
-  compile(terminal: TTY): string {
+  compile(terminal: TTY, tick: number): string {
     const { x, y } = this.position;
 
-    return esc(this.style) + this.render(terminal)
+    return esc(this.style) + this.render(terminal, tick)
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
 }
 
-const title = 'xor4';
-
 export class Navbar extends UiComponent {
   style = esc(Style.Invert);
-  render() {
+  render(tty: TTY) {
     return [(
-      title.padEnd(SCREEN_WIDTH / 2 - 1, ' ') +
-      String('').padStart(SCREEN_WIDTH / 2 - 1, ' ')
+      `🏰 Kernel Quest                                  👑 ${tty.place.capturedCrowns.size}/${tty.place.crowns.size}  🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }
@@ -62,8 +59,8 @@ export class Axis extends UiComponent {
 export const takeCellPair: TakeN<Cell> = takeN(2);
 
 export class RoomMap extends UiComponent {
-  render({ room }: TTY) {
-    return room.render();
+  render({ player, place }: TTY, tick: number) {
+    return place.render(tick, player?.sees());
   }
 }
 
@@ -74,10 +71,10 @@ export class Sidebar extends UiComponent {
     return [
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(`${player.type.appearance} ${player.type.name}`).padEnd(11)} │`,
-      `│ hand: ${((player.holds?.label) || nothing(11)).padEnd(11)} │`,
-      '│                   │',
-      '│                   │',
+      `│ path: ${(`${player.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
+      `│ hand: ${(player.hand?.label || nothing(11)).padEnd(11)} │`,
+      `│ eyes: ${(player.eyes?.label || nothing(11)).padEnd(11)} │`,
+      `│ feet: ${(`[${player.position.label} ref]`).padEnd(11)} │`,
       '│                   │',
       '│                   │',
       '│                   │',
@@ -122,7 +119,7 @@ const Points = (bg, n) => {
 
 const Hp = (n) => Points(Bg.Red, n);
 const Sp = (n) => Points(Bg.Green, n);
-const Mp = (n) => Points(Bg.Blue, n);
+const Mp = (n) => Points(Bg.Cyan, n);
 
 export class Stats extends UiComponent {
   render({ player: p }: TTY) {
@@ -133,8 +130,8 @@ export class Stats extends UiComponent {
       `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
       `│ health:  ${Hp(p.hp.value)}│`,
-      `│ magic:   ${Mp(p.mp.value)}│`,
       `│ stamina: ${Sp(p.sp.value)}│`,
+      `│ magic:   ${Mp(p.mp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];
@@ -154,7 +151,7 @@ export class Output extends UiComponent {
 }
 
 export class Input extends UiComponent {
-  render({ state }) {
+  render({ state }: TTY) {
     const { line, prompt } = state;
 
     return [

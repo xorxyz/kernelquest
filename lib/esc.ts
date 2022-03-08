@@ -6,15 +6,19 @@ export const esc = (str: string) => `${ESC}${str}`;
 export const Colors = {
   Bg: {
     Black: '[40m',
+    Gray: '[0;100m',
     White: '[47m',
     Red: '[41m',
     Green: '[42m',
-    Blue: '[46m'
+    Blue: '[044m',
+    Cyan: '[0;106m',
+    Purple: '[0;105m',
+    Yellow: '[0;103m',
   },
   Fg: {
     Black: '[30m',
     White: '[37m',
-    Green: '[32m'
+    Green: '[32m',
   },
 };
 

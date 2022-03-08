@@ -3,10 +3,13 @@
   "compilerOptions": {
     "isolatedModules": true,
     "typeRoots": [
+      "../node_modules/@types",
+      "node_modules/@types",
       "src/typings"
     ]
   },
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+		"src/**/*.vue"
   ]
 }

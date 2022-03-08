@@ -35,3 +35,5 @@ export function isNumeric(str: string) {
   // eslint-disable-next-line no-restricted-globals
   return !isNaN(str as any) && !isNaN(parseFloat(str));
 }
+
+export const forN = (n: number, fn) => new Array(n).fill(0).forEach(fn);

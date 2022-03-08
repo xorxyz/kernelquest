@@ -3,25 +3,26 @@
  * manipulate typescript objects with js's reflection capabilities
  */
 
+import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
 import { Compiler } from './compiler';
 import { Factor, Term } from './types';
 
 export class Interpretation {
+  public term: Term;
   public stack: Stack<Factor>;
-  private term: Term;
 
   constructor(term: Term) {
     this.term = term;
   }
 
-  run(stack: Stack<Factor>) {
+  async run(stack: Stack<Factor>, queue?: Queue<any>) {
     this.stack = stack;
-
     for (let i = 0; i < this.term.length; i++) {
       const factor = this.term[i];
       factor.validate(stack);
-      factor.execute(stack);
+      // eslint-disable-next-line no-await-in-loop
+      factor.execute(stack, queue);
     }
 
     return this;
@@ -30,16 +31,22 @@ export class Interpretation {
 
 export class Interpreter {
   private stack: Stack<Factor>;
-  private compiler = new Compiler();
+  private compiler: Compiler;
 
-  constructor(stack?: Stack<Factor>) {
+  constructor(compiler: Compiler, stack?: Stack<Factor>) {
+    this.compiler = compiler;
     this.stack = stack || new Stack();
   }
 
-  interpret(line: string): Interpretation {
+  interpret(line: string, queue: Queue<any>): [Error] | [null, Interpretation] {
     const term = this.compiler.compile(line);
     const interpretation = new Interpretation(term);
 
-    return interpretation.run(this.stack);
+    try {
+      interpretation.run(this.stack, queue);
+      return [null, interpretation];
+    } catch (err) {
+      return [err as Error];
+    }
   }
 }

@@ -9,12 +9,7 @@
   },
   "author": "Jonathan Dupré <jonathan@diagonal.sh>",
   "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^17.0.6",
-    "nodemon": "^2.0.6"
-  },
   "dependencies": {
-    "uuid": "^8.3.2",
     "xor4-interpreter": "0.0.0",
     "xor4-lib": "0.0.0"
   }

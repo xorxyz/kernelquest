@@ -1,27 +1,23 @@
 import { getRandom } from 'xor4-lib/math';
-import { Queue } from 'xor4-lib/queue';
-import { Action, RotateAction, StepAction } from '../engine/actions';
-import { Capability } from '../engine/agents';
+import { forN } from 'xor4-lib/utils';
+import { RotateAction, StepAction, WaitAction } from './actions';
+import { Agent, Capability } from '../engine/agents';
 
 export class RandomWalkCapability extends Capability {
-  delayMs: number;
-  timer;
+  bootstrap() {}
 
-  constructor(delayMs: number = 2000) {
-    super();
-    this.delayMs = delayMs;
-  }
+  run(agent: Agent, tick: number) {
+    if (agent.queue.size !== 0 || tick % 10 !== 0) return;
+    const n = getRandom(0, 3) as 0 | 1 | 2 | 3;
 
-  bootstrap(queue: Queue<Action>) {
-    this.timer = setInterval(() => {
-      let n = getRandom(0, 3);
+    if (n) {
+      forN(n, () => {
+        agent.queue.add(new RotateAction());
+        agent.queue.add(new WaitAction(agent.weight * 2));
+      });
+    }
 
-      while (n >= 0) {
-        queue.push(new RotateAction());
-        n--;
-      }
-
-      queue.push(new StepAction());
-    }, this.delayMs);
+    agent.queue.add(new StepAction());
+    agent.queue.add(new WaitAction(agent.weight * 2));
   }
 }

@@ -31,6 +31,7 @@ export const Keys = {
   LOWER_B: '62',
   LOWER_D: '64',
   LOWER_G: '67',
+  LOWER_H: '68',
   LOWER_I: '69',
   LOWER_P: '70',
   LOWER_R: '72',
@@ -41,3 +42,13 @@ export const Keys = {
 export const Signals = {
   SIGINT: '03',
 };
+
+export const CursorModeHelpText = [
+  '<return> toggle between terminal & cursor mode.',
+  '<space>  push a ref to the highlighted cell.',
+  '<h>      print this help text.',
+  '<r>      rotate. change heading clockwise.',
+  '<s>      step forward.',
+  '<g>      get something.',
+  '<p>      put something down.',
+];

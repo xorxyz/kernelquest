@@ -1,59 +1,71 @@
-import { Colors, Style } from 'xor4-lib/esc';
-import { Vector, Points } from 'xor4-lib/math';
-import { Room } from './room';
+import { Colors, esc, Style } from 'xor4-lib/esc';
+import { Vector } from 'xor4-lib/math';
+import { Agent, Foe, Hero } from './agents';
+import { Glyph } from './cell';
 
-export class Durability extends Points {}
-export class Uses extends Points {}
-export interface Destination {
-  room: Room
-  position: Vector
+export class Goal {}
+
+export class EntityType {
+  public name: string;
+  public glyph: Glyph;
+  public style?: string;
+  readonly isStatic: boolean = false;
+  readonly isBlocking: boolean = true;
 }
 
-export abstract class Thing {
-  abstract name: string
-  position: Vector = new Vector();
-  velocity: Vector = new Vector();
-  durability: Durability = new Durability();
-  appearance: string;
+export class Thing {
+  readonly name: string;
+  readonly type: EntityType;
+
+  public owner: Agent | null = null;
+  public glyph: Glyph;
+  public value: string;
+  public weight: number;
+  public position: Vector = new Vector(0, 0);
+  public velocity: Vector = new Vector(0, 0);
+  public cursorPosition: Vector = new Vector(0, 0);
+
+  constructor(type: EntityType, name: string = '') {
+    this.name = name;
+    this.type = type;
+    this.glyph = type.glyph;
+
+    if (!this.name && type.name) {
+      this.name = type.name;
+    }
+  }
 
   get label() {
-    return `${this.appearance} ${this.name}`;
+    return `${this.glyph.value} ${this.name}`;
   }
 
   render() {
-    return this.appearance;
+    let { style } = this.type;
+
+    if (!this.owner && !this.type.style) {
+      style = esc(Colors.Bg.Yellow);
+    }
+    if (this.type instanceof Hero || this.owner?.type instanceof Hero) {
+      style = esc(Colors.Bg.Purple);
+    }
+    if (this.owner?.type instanceof Foe) {
+      style = esc(Colors.Bg.Red);
+    }
+
+    return style + this.glyph.value + esc(Style.Reset);
   }
 }
 
-export abstract class Item extends Thing {}
-export abstract class Equipment extends Thing {}
-
-export class Wall extends Thing {
+export class Wall extends EntityType {
   name = 'wall';
-  appearance = Style.in(Colors.Bg.White, Colors.Fg.Black, '##');
+  glyph = new Glyph('##');
+  isStatic = true;
+  style = esc(Colors.Bg.Gray) + esc(Colors.Fg.Black);
 }
 
-export class Tree extends Thing {
-  name = 'tree';
-  appearance = '🌲';
-}
-
-export class Grass extends Thing {
-  name = 'grass';
-  appearance = Style.in(Colors.Bg.Black, Colors.Fg.Green, '##');
-}
-
-export class Flag extends Thing {
-  name = 'flag';
-  appearance = '🚩';
-}
-
-export class Book extends Thing {
-  name = 'book';
-  appearance = '📕';
-}
-
-export class Gold extends Thing {
-  name = 'gold';
-  appearance = '💰';
+export class Door extends EntityType {
+  name = 'door';
+  glyph = new Glyph('++');
+  isStatic = true;
+  style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
 }

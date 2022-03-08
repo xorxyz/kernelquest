@@ -1,0 +1,13 @@
+sites:
+  -
+    name: Twitter
+    src: /images/social/twitter.svg
+    url: https://twitter.com/xorxyz
+  -
+    name: Discord
+    src: /images/social/discord.svg
+    url: https://discord.gg/kNJqKrkjxQ
+  # -
+  #   name: Twitch
+  #   src: /images/social/twitch.svg
+  #   url: https://twitch.tv/xorxyz

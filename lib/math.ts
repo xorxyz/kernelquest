@@ -6,6 +6,10 @@ export class Vector {
   x: number;
   y: number;
 
+  get label() {
+    return `${this.x} ${this.y}`;
+  }
+
   constructor(x: number = 0, y: number = 0) {
     this.x = x;
     this.y = y;
@@ -96,6 +100,7 @@ export class Vector {
     return this;
   }
 
+  /* returns true if both vectors have matching x and y values */
   equals(v: Vector) {
     return this.x === v.x && this.y === v.y;
   }
@@ -201,7 +206,7 @@ export function isNumeric(str: string) {
 export type TakeN<T> = (arr: Array<T>) => Array<Array<T>>
 
 /** [ 1, 2, 3, 4 ] -> [[ 1, 2 ],[ 3, 4 ]] */
-export const takeN = (n) => (a) => a.reduce((arr, x, i1) => {
+export const takeN = (n: number) => (a) => a.reduce((arr, x, i1) => {
   const i2 = i1 % n;
   if (i2 === 0) {
     arr.push([]);
@@ -233,24 +238,23 @@ export function getRandom(from: number, to: number) {
 }
 
 export class Ring<T> {
-  values: Array<T>;
+  private current: T;
+  private values: Array<T>;
   constructor(arr: Array<T>) {
     this.values = arr;
+    // eslint-disable-next-line prefer-destructuring
+    this.current = arr[0];
   }
-  next(value: T) {
-    const index = this.values.findIndex((x) => x === value);
-    console.log('index', index);
-    if (index === -1) throw new Error('invalid value');
+  get value() {
+    return this.current;
+  }
+  next() {
+    const index = this.values.findIndex((x) => x === this.current);
     const y = this.values[index + 1];
-    return y === undefined
+    this.current = y === undefined
       ? this.values[0]
       : y;
+
+    return this.current;
   }
 }
-
-export const DirectionRing = new Ring([
-  new Vector(1, 0),
-  new Vector(0, 1),
-  new Vector(-1, 0),
-  new Vector(0, -1),
-]);

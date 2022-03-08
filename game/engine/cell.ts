@@ -1,12 +1,15 @@
-import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
-import { Agent } from './agents';
-import { Room } from './room';
+import { EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
+import { Colors, esc, Style } from 'xor4-lib/esc';
+import { Agent, Foe } from './agents';
+import { Place } from './places';
 import { Thing } from './things';
 import { EMPTY_CELL_CHARS } from '../constants';
 
 export class Glyph {
   private chars: string;
+
+  static Empty = '..';
 
   get value() {
     return this.chars;
@@ -30,84 +33,84 @@ export interface IPorts {
 
 export class Cell {
   public position: Vector;
-
-  private glyph: Glyph = new Glyph();
-  private slot: Agent | Thing | null = null;
+  public glyph: Glyph = new Glyph();
+  public slot: Agent | Thing | null = null;
+  public buffer: Agent | Thing | null = null;
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
   }
 
-  public get name() {
-    return String(this.position.x) + String(this.position.y);
-  }
-
   public get isBlocked() {
-    return this.slot !== null;
+    return (
+      this.slot instanceof Agent ||
+      (this.slot instanceof Thing && this.slot.type.isBlocking)
+    );
   }
 
-  update() {
+  containsFoe(): boolean {
+    return this.slot instanceof Agent && this.slot.type instanceof Foe;
   }
 
+  update() {}
+
+  /* Empty the cell's slot. */
   clear() {
     this.slot = null;
     this.glyph = new Glyph();
   }
 
-  leave(): Agent | null {
-    if (!this.slot || this.slot instanceof Thing) return null;
-    const agent = this.slot;
-
-    this.slot = null;
-
-    return agent;
-  }
-
-  enter(agent: Agent): boolean {
-    if (this.isBlocked) return false;
-
-    this.slot = agent;
-
-    return true;
-  }
-
   /* Take the thing that's in the cell's slot. */
-  take(): Thing | null {
-    if (!this.slot || this.slot instanceof Agent) return null;
+  take(): Agent | Thing | null {
+    if (!this.slot) return null;
+
     const thing = this.slot;
 
-    this.slot = null;
+    if (this.buffer) {
+      this.slot = this.buffer;
+      this.buffer = null;
+    } else {
+      this.slot = null;
+    }
 
     return thing;
   }
 
   /* Put a thing in the cell's slot. */
-  put(thing: Thing): boolean {
-    if (this.slot) return false;
+  put(thing: Agent | Thing): boolean {
+    if (this.slot && this.buffer) return false;
+    if (this.slot) {
+      this.buffer = this.slot;
+    }
 
     this.slot = thing;
 
     return true;
   }
 
-  read() {
-    return this.glyph.value;
+  render(ctx: Place) {
+    if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
+      return esc(Colors.Bg.Cyan) +
+      esc(Colors.Fg.Black) + (this.slot?.glyph.value || this.glyph.value) + esc(Style.Reset);
+    }
+    return this.slot?.render() || this.glyph.value;
   }
 
-  write(chars: string) {
-    this.glyph = new Glyph(chars);
+  isAdjacentTo(cell: Cell) {
+    return (
+      cell.position.clone().add(NORTH).equals(this.position) ||
+      cell.position.clone().add(EAST).equals(this.position) ||
+      cell.position.clone().add(SOUTH).equals(this.position) ||
+      cell.position.clone().add(WEST).equals(this.position)
+    );
   }
 
-  has(thing: Agent | Thing) {
-    return this.slot === thing;
-  }
+  relativeHeading(cell: Cell): Vector | null {
+    if (!this.isAdjacentTo(cell)) return null;
 
-  render(ctx: Room) {
-    const glyph = this.slot?.render() || this.read();
-    const style = ctx.cellIsHeld(this)
-      ? esc(Colors.Bg.Blue) + esc(Colors.Fg.Black)
-      : esc(Colors.Bg.Black) + esc(Colors.Fg.White);
+    const diff = this.position.clone().sub(cell.position);
+    const direction = [NORTH, EAST, SOUTH, WEST].find((vector) => vector.equals(diff));
 
-    return style + glyph + esc(Style.Reset);
+    return direction || null;
   }
 }

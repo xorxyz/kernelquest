@@ -1,0 +1,124 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 1rem 10vw;
+}
+
+header, nav, main, article, p, figure, img, h1, h2, h3 {
+  margin-left: 0;
+  max-width: 65ex;
+  text-align: left;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+main {
+  min-height: 80vh;
+}
+
+a { color: blue; }
+header a:visited { color: blue; }
+
+details { 
+  margin: 1ex 0;
+  font-family: monospace;
+}
+
+blockquote {
+  padding-left: 2rem;
+  margin-left: 1rem;
+  border-left: .5ex solid #ccc;
+}
+
+blockquote:before, blockquote:after {
+  content: "\""
+}
+
+input {
+  background-color: #111;
+  border: none;
+  border-radius: 0.125rem;
+  padding: 1ex;
+  color: #fff;
+}
+
+pre {
+  font-family: monospace;
+  background-color: #111;
+  color: #fff;
+  border-radius: 0.125rem;
+  padding: 2ex 2ex;
+  letter-spacing: 0.125ex;
+  line-height: 1.75rem;
+  font-size: 1.25rem;
+}
+
+summary {
+  color: blue;
+}
+
+summary ~ * {
+  margin-top: 1ex;
+}
+
+textarea {
+  width: 35ex;
+  height: 25em;
+}
+
+footer {
+  margin-top: 7.5rem;
+  font-size: 0.75rem;
+}
+
+#output details ~ pre {
+  margin-bottom: 0;
+}
+
+#output pre ~ pre {
+  margin-top: 0;
+  border-radius: 0;
+}
+
+.list { padding-left: 0; }
+.list li { display: inline; }
+/* .list li:not(:first-child):before {
+  content: ', '
+} */
+
+.bulletless {
+  list-style: none;
+  padding-left: 4ex;
+}
+
+.bg-yellow { background-color: rgb(255, 249, 198); }
+.bg-white { background-color: #fff; color: #000; }
+.bg-blue { background-color: blue; color: #fff; }
+.blue { color: blue; }
+.f4 { font-size: 1rem; }
+.mb1 { margin-bottom: 1rem; }
+.hidden { display: none; }
+.flex { display: flex; }
+.monospace { font-family: monospace; }
+.dib { display: inline-block; }
+.w-100 { width: 100% }
+.ma0 { margin: 0 }
+.mt0 { margin-top: 0; }
+.mv0 { margin-top: 0; margin-bottom: 0; }
+.mv1 { margin: 1rem 0; }
+.mv2 { margin: 2rem 0; }
+.pa0 { padding: 0; }
+.pa1 { padding: 1ex; }
+.pa2 { padding: 2ex; }
+.pa05 { padding: 0.5rem; }
+.ph2 { padding: 0 2rem; }
+.tc { text-align: center; }
+.tr { text-align: right; }
+.w65 { width: 65ex; }
+.ba { border: 1px solid black; }

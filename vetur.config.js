@@ -1,5 +1,5 @@
 module.exports = {
   projects: [
-    './packages/app'
-  ]
-}
+    './packages/app',
+  ],
+};

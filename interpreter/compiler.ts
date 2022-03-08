@@ -4,6 +4,7 @@ import { Factor, Term } from './types';
 import literals, { LiteralNumber, LiteralString, Quotation } from './literals';
 import operators from './operators';
 import combinators from './combinators';
+import syscalls from './syscalls';
 
 export type Dictionary = Record<string, Factor>
 
@@ -14,8 +15,16 @@ export class Compiler {
     ...literals,
     ...operators,
     ...combinators,
+    ...syscalls,
   };
   level = 0;
+
+  constructor(dict?: Dictionary) {
+    this.dict = {
+      ...this.dict,
+      ...dict,
+    };
+  }
 
   compile(code: string): Term {
     debug('compiling: ', code);

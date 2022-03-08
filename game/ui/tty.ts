@@ -1,25 +1,26 @@
 import { Cursor, esc } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
-import { CLOCK_MS_DELAY, Keys, Signals } from '../constants';
+import { CLOCK_MS_DELAY, CursorModeHelpText, Keys, Signals } from '../constants';
 import { CELL_WIDTH } from './components';
 import { MainView } from './views';
 import { Editor } from './editor';
 import {
-  Action,
-  BackStepAction,
+  EvalAction,
   GetAction,
   MoveCursorAction,
   MoveCursorToAction,
+  PrintCursorModeHelpAction,
   PutAction,
   RotateAction,
   SelectCellAction,
   StepAction,
   SwitchModeAction,
   TerminalAction,
-} from '../engine/actions';
-import { Hero } from '../engine/agents';
+} from '../lib/actions';
+import { Agent } from '../engine/agents';
 import { Engine } from '../engine';
-import { Room } from '../engine/room';
+import { Place } from '../engine/places';
+import { Action } from '../engine/actions';
 
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
@@ -32,16 +33,15 @@ export interface IState {
 
 export interface IConnection {
   write: (str: string) => void,
-  player: Hero,
-  room: Room
+  player: Agent,
+  place: Place
 }
 
 export class TTY {
   public id: number;
-  public player: Hero;
-  public room: Room;
+  public player: Agent;
+  readonly place: Place;
   public connection: IConnection;
-  public cursorPosition: Vector = new Vector();
   public state: IState;
   public lineEditor: Editor = new Editor();
   public view: MainView;
@@ -50,26 +50,17 @@ export class TTY {
   public engine: Engine;
 
   private timer;
-  private dummyRoom = new Room(0, 0);
 
   constructor(connection: IConnection) {
     this.connection = connection;
     this.player = connection.player;
-    this.room = connection.room;
+    this.place = connection.place;
     this.view = new MainView();
     this.state = {
-      termMode: true,
+      termMode: false,
       prompt: '$ ',
       line: '',
-      stdout: [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      ],
+      stdout: CursorModeHelpText,
     };
 
     this.timer = setInterval(
@@ -77,7 +68,19 @@ export class TTY {
       REFRESH_RATE,
     );
 
-    this.render();
+    this.place.on('action-success', ({ agent, result }) => {
+      if (agent === this.player) {
+        this.write(result.message);
+      }
+    });
+
+    this.place.on('action-failure', ({ agent, result }) => {
+      if (agent === this.player) {
+        this.write(result.message);
+      }
+    });
+
+    this.render(this.player.tick);
   }
 
   disconnect() {
@@ -86,17 +89,21 @@ export class TTY {
 
   switchModes() {
     this.state.termMode = !this.state.termMode;
+    this.player.halted = this.state.termMode;
     this.drawCursor();
   }
 
   handleInput(str: string) {
     if (this.waiting) return;
 
-    console.log('input str was:', str);
-
     if (str === Signals.SIGINT) {
       console.log('received sigint!');
       this.disconnect();
+      return;
+    }
+
+    if (str === Keys.ENTER && this.player.hp.value <= 0) {
+      this.place.reset();
       return;
     }
 
@@ -106,13 +113,13 @@ export class TTY {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.dummyRoom, this.player);
+        action.perform(this.place, this.player);
       } else if (action) {
         this.player.schedule(action);
       }
     }
 
-    this.render();
+    this.render(this.player.tick);
   }
 
   write(message: string) {
@@ -121,41 +128,18 @@ export class TTY {
     });
   }
 
-  async handleTerminalInput(str: string) {
+  handleTerminalInput(str: string): void {
     if (str === Keys.ENTER) {
-      console.log('enter', this.lineEditor.value, '.');
       if (this.lineEditor.value) {
-        const expr = this.lineEditor.value.trim();
-        console.log('got line value', expr);
+        const text = this.lineEditor.value.trim();
 
-        this.write(this.state.prompt + expr);
+        this.write(this.state.prompt + text);
+
+        this.player.queue.add(new EvalAction(text));
         this.state.line = '';
         this.lineEditor.reset();
-        this.waiting = true;
 
-        try {
-          this.player.mind.interpret(expr);
-
-          const action = this.getActionForWord(expr);
-
-          if (action instanceof TerminalAction) {
-            action.perform(this.dummyRoom, this.player);
-          } else if (action) {
-            this.player.schedule(action);
-          }
-        } catch (err) {
-          console.error(err);
-          if (err instanceof Error) {
-            this.write(`${err.message}`);
-          }
-        }
-
-        const term = this.player.mind.stack.map((factor) => factor.toString()).join(' ');
-
-        this.write(`[${term}]`);
-
-        this.waiting = false;
-        this.render();
+        this.render(this.player.tick);
       } else {
         this.switchModes();
       }
@@ -163,32 +147,7 @@ export class TTY {
       this.state.line = this.lineEditor.value.replace('\n', '');
     }
 
-    this.render();
-  }
-
-  getActionForWord(str: string): Action | null {
-    let action: Action | null = null;
-    switch (str) {
-      case 'rotate':
-        action = new RotateAction();
-        break;
-      case 'step':
-        action = new StepAction();
-        break;
-      case 'backstep':
-        action = new BackStepAction();
-        break;
-      case 'get':
-        action = new GetAction();
-        break;
-      case 'put':
-        action = new PutAction();
-        break;
-      default:
-        break;
-    }
-
-    return action;
+    this.render(this.player.tick);
   }
 
   getActionForKey(str: string): Action | null {
@@ -205,16 +164,16 @@ export class TTY {
         action = new SwitchModeAction(this);
         break;
       case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 0));
+        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 0));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(15, this.player.cursorPosition.y));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.cursorPosition.x, 9));
+        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 9));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(0, this.player.cursorPosition.y));
         break;
       case (Keys.ARROW_UP):
         action = new MoveCursorAction(this, new Vector(0, -1));
@@ -228,8 +187,8 @@ export class TTY {
       case (Keys.ARROW_LEFT):
         action = new MoveCursorAction(this, new Vector(-1, 0));
         break;
-      case (Keys.LOWER_B):
-        action = new BackStepAction();
+      case (Keys.LOWER_H):
+        action = new PrintCursorModeHelpAction(this);
         break;
       case (Keys.LOWER_P):
         action = new PutAction();
@@ -250,10 +209,10 @@ export class TTY {
     return action;
   }
 
-  render() {
+  render(tick: number) {
     if (!this.connection) return;
 
-    const output = this.view.compile(this);
+    const output = this.view.compile(this, tick);
 
     this.connection.write(output);
 
@@ -261,6 +220,7 @@ export class TTY {
   }
 
   drawCursor() {
+    if (!this.player.isAlive) return;
     if (!this.connection) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 
@@ -270,8 +230,8 @@ export class TTY {
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.cursorPosition.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.cursorPosition.y,
+        this.view.components.room.position.x + (this.player.cursorPosition.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.player.cursorPosition.y,
       ));
 
     this.connection.write(cursorUpdate);

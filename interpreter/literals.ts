@@ -3,7 +3,6 @@ import { Factor, Literal, Term } from './types';
 
 // () -> Truth
 export class LiteralTruth extends Literal {
-  lexeme: string = '';
   value: Boolean = true;
   type = 'truth';
   constructor(value: Boolean) {
@@ -13,6 +12,8 @@ export class LiteralTruth extends Literal {
 
 const t = new LiteralTruth(true);
 const f = new LiteralTruth(false);
+
+console.log(t, f);
 
 // () -> Number
 export class LiteralNumber extends Literal {
