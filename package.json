@@ -15,6 +15,19 @@
     "xor4-game": "./game",
     "xor4-interpreter": "./interpreter"
   },
+  "scripts": {
+    "build": "parcel build"
+  },
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "app": "dist/index.html",
+  "targets": {
+    "app": {
+      "source": ["app/src/index.html"]
+    },  
+    "game": {
+      "source": ["game/engine/index.ts"]
+    }
+  },
   "dependencies": {
     "ethers": "^5.5.2",
     "events": "^3.3.0",
@@ -30,9 +43,6 @@
     "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.15",
     "typescript": "^4.5.4"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
