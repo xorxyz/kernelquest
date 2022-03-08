@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "parcel build",
-    "postbuild": "cp app/public/_* dist/ && cp -r app/public/.well-known dist/"
+    "postbuild": "cp -r app/public/.well-known dist/"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
