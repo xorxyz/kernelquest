@@ -9,16 +9,16 @@
       <div class="flex justify-between items-center w-100 h-100 pt1">
         <div class="h-100 flex items-center mh4 f6">
           <router-link
-            to="/levels"
-            active-class="is-selected"
-            class="tab link grow mh2 ph2 pv2 white pointer">
-            <Emoji class="f5">🚩</Emoji> Levels
-          </router-link>
-          <router-link
             to="/game"
             active-class="is-selected"
             class="tab link grow mh2 ph2 pv2 white pointer">
             <Emoji class="f5">🧙</Emoji> Game
+          </router-link>
+          <router-link
+            to="/levels"
+            active-class="is-selected"
+            class="tab link grow mh2 ph2 pv2 white pointer">
+            <Emoji class="f5">🚩</Emoji> Levels
           </router-link>
           <router-link
             to="/editor"

@@ -12,7 +12,7 @@ import AudioPlayer from './components/AudioPlayer.vue';
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
   routes: [
-    { path: '/', redirect: '/levels' },
+    { path: '/', redirect: '/game' },
     { path: '/scoreboard', component: Score },
     { path: '/levels', component: Levels },
     { path: '/levels/:levelId', component: SingleLevel },
