@@ -16,16 +16,21 @@
     "xor4-interpreter": "./interpreter"
   },
   "scripts": {
-    "build": "parcel build"
+    "build": "parcel build",
+    "postbuild": "cp app/public/_* dist/ && cp -r app/public/.well-known dist/"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
   "targets": {
     "app": {
-      "source": ["app/src/index.html"]
-    },  
+      "source": [
+        "app/src/index.html"
+      ]
+    },
     "game": {
-      "source": ["game/engine/index.ts"]
+      "source": [
+        "game/engine/index.ts"
+      ]
     }
   },
   "dependencies": {
@@ -34,6 +39,7 @@
     "zksync": "^0.11.6"
   },
   "devDependencies": {
+    "@parcel/transformer-raw": "^2.3.2",
     "@types/events": "^3.0.0",
     "@types/node": "^17.0.6",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
