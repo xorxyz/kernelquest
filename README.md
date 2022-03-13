@@ -4,7 +4,7 @@
 
 This is the main source code repository for [Xor](https://xor.xyz). It contains the JIT compiler, interpreter, standard library, web app, game engine, and documentation.
 
-# Quick Start
+# Getting started
 
 ```
 git clone https://github.com/xorxyz/xor4
@@ -13,9 +13,16 @@ npm install
 npm start
 ```
 
+## Contributing to the project
+
+### Requirements
+
+- [Pre-Commit](https://pre-commit.com/)
+- [Node.js](https://nodejs.org/)
+
 Point your browser to [https://localhost:8080](https://localhost:8080).
 
-# Previous project version
+## Previous project version
 
 Checkout this commit
 
