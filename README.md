@@ -15,6 +15,16 @@ npm start
 
 Point your browser to [https://localhost:8080](https://localhost:8080).
 
+# Previous project version
+
+Checkout this commit
+
+```sh
+$ git checkout c2ee0b7cf553bef956eec07b6cf36db56cd26039
+```
+
+or [check the code online](https://github.com/xorxyz/xor4/tree/c2ee0b7cf553bef956eec07b6cf36db56cd26039/_deprecated)
+
 # Getting Help
 
 The Xor community congregates in a few places:
