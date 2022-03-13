@@ -1,7 +1,7 @@
 import { createServer, Server, Socket } from 'net';
 import { Engine } from 'xor4-game/engine';
 import { TTY } from 'xor4-game/ui/tty';
-import { Hero, Wizard } from 'xor4-game/engine/agents';
+import { Hero } from 'xor4-game/engine/agents';
 import Connection from './connection';
 
 export interface Params { src?: string }

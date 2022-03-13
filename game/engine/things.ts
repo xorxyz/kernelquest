@@ -3,8 +3,6 @@ import { Vector } from 'xor4-lib/math';
 import { Agent, Foe, Hero } from './agents';
 import { Glyph } from './cell';
 
-export class Goal {}
-
 export class EntityType {
   public name: string;
   public glyph: Glyph;

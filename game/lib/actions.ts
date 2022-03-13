@@ -8,7 +8,7 @@ import { TTY } from '../ui/tty';
 import { Agent, AgentType, Foe, Hero } from '../engine/agents';
 import { CursorModeHelpText, Keys } from '../constants';
 import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
-import { Goal, Thing } from '../engine/things';
+import { Thing } from '../engine/things';
 import { Cell, Glyph } from '../engine/cell';
 import { Crown, Flag } from './things';
 import { create } from './places';
@@ -259,9 +259,6 @@ export class PathfindingAction extends Action {
     this.destination = destination;
   }
   perform(ctx: Place, agent: Agent) {
-    const goal = new Goal();
-    agent.mind.goals.push(goal);
-
     if (agent.position.equals(this.destination)) {
       return new ActionFailure('Already here.');
     }

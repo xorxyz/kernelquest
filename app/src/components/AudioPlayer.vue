@@ -32,8 +32,8 @@ const NOT_MUTED = '🔊 Unmuted';
 export default defineComponent({
   data() {
     return {
-      muted: false,
-      label: NOT_MUTED,
+      muted: true,
+      label: MUTED,
     };
   },
   methods: {

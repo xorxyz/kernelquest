@@ -4,10 +4,11 @@
  */
 import { Engine } from 'xor4-game/engine';
 import { World } from 'xor4-game/engine/world';
+import { demoRoom } from 'xor4-game/lib/places';
 import GameServer from './server';
 
 const PORT = process.env.PORT || 3000;
-const world = new World();
+const world = new World([demoRoom]);
 const engine = new Engine({ world });
 const server = new GameServer(engine);
 

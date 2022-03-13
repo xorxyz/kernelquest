@@ -47,7 +47,6 @@ export class TTY {
   public view: MainView;
   public stdout: Array<string>;
   public waiting = false;
-  public engine: Engine;
 
   private timer;
 

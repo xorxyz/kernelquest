@@ -2,12 +2,10 @@
  * - ui boxes: x,y numbering starts at 1.
  * - input fields - edit lines before before evaluating them as expressions
  */
-import { esc, Cursor, Style, Colors } from 'xor4-lib/esc';
+import { esc, Cursor, Style } from 'xor4-lib/esc';
 import { TakeN, takeN, Vector } from 'xor4-lib/math';
 import { Cell } from '../engine/cell';
 import { TTY } from './tty';
-
-const { Fg, Bg } = Colors;
 
 export const SCREEN_WIDTH = 72;
 export const SCREEN_HEIGHT = 25;
@@ -34,57 +32,7 @@ export abstract class UiComponent {
   }
 }
 
-export class Navbar extends UiComponent {
-  style = esc(Style.Invert);
-  render(tty: TTY) {
-    return [(
-      `🏰 Kernel Quest                                  👑 ${tty.place.capturedCrowns.size}/${tty.place.crowns.size}  🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
-    ).padEnd(SCREEN_WIDTH - 1, ' ')];
-  }
-}
-
-export class Axis extends UiComponent {
-  style = esc(Style.Dim);
-  render() {
-    const x = '  0 1 2 3 4 5 6 7 8 9 A B C D E F';
-    const y = x.trim().split(' ');
-
-    return [
-      x,
-      ...y.slice(0, 10),
-    ];
-  }
-}
-
 export const takeCellPair: TakeN<Cell> = takeN(2);
-
-export class RoomMap extends UiComponent {
-  render({ player, place }: TTY, tick: number) {
-    return place.render(tick, player?.sees());
-  }
-}
-
-const nothing = (n) => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style.Reset)}`;
-
-export class Sidebar extends UiComponent {
-  render({ player }: TTY) {
-    return [
-      '┌───────────────────┐',
-      `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(`${player.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
-      `│ hand: ${(player.hand?.label || nothing(11)).padEnd(11)} │`,
-      `│ eyes: ${(player.eyes?.label || nothing(11)).padEnd(11)} │`,
-      `│ feet: ${(`[${player.position.label} ref]`).padEnd(11)} │`,
-      '│                   │',
-      '│                   │',
-      '│                   │',
-      '│                   │',
-      '│                   │',
-      '│                   │',
-      '└───────────────────┘',
-    ];
-  }
-}
 
 export class Box extends UiComponent {
   width: number;
@@ -103,60 +51,6 @@ export class Box extends UiComponent {
       ...this.lines.map((line) =>
         `│ ${line} │`),
       `${'└'.padEnd(this.width, '─')}┘`,
-    ];
-  }
-}
-
-const Points = (bg, n) => {
-  const str = `${String(n).padStart(3, ' ')} / 10 `;
-
-  return (
-    esc(Style.in(Fg.Black, bg, str.slice(0, n))) +
-    esc(Style.in(Fg.White, Bg.Black, str.slice(n))) +
-    esc(Style.Reset)
-  );
-};
-
-const Hp = (n) => Points(Bg.Red, n);
-const Sp = (n) => Points(Bg.Green, n);
-const Mp = (n) => Points(Bg.Cyan, n);
-
-export class Stats extends UiComponent {
-  render({ player: p }: TTY) {
-    return [
-      '┌───────────────────┐',
-      '│ level: 1          │',
-      '│ experience: 0     │',
-      `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
-      '│                   │',
-      `│ health:  ${Hp(p.hp.value)}│`,
-      `│ stamina: ${Sp(p.sp.value)}│`,
-      `│ magic:   ${Mp(p.mp.value)}│`,
-      '│                   │',
-      `${'└'.padEnd(20, '─')}┘`,
-    ];
-  }
-}
-
-export class Output extends UiComponent {
-  render({ state }: TTY) {
-    return [
-      `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
-      ...state.stdout
-        .slice(-N_OF_LINES)
-        .map((line) =>
-          `│ ${(line || '').padEnd(LINE_LENGTH - 4, ' ')} │`),
-    ];
-  }
-}
-
-export class Input extends UiComponent {
-  render({ state }: TTY) {
-    const { line, prompt } = state;
-
-    return [
-      `│ ${(prompt + line).padEnd(LINE_LENGTH - 4, ' ')} │`,
-      `└${'─'.padEnd(LINE_LENGTH - 2, '─')}┘`,
     ];
   }
 }

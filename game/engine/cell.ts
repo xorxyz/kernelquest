@@ -20,17 +20,6 @@ export class Glyph {
   }
 }
 
-export class Port {
-  slot: Thing;
-}
-
-export interface IPorts {
-  north: Cell
-  east: Cell
-  south: Cell
-  west: Cell
-}
-
 export class Cell {
   public position: Vector;
   public glyph: Glyph = new Glyph();

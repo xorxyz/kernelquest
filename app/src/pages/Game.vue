@@ -36,31 +36,45 @@ import { TTY } from 'xor4-game/ui/tty';
 import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game/engine/events';
 import { Unicode14Addon } from '../../vendor/unicode14';
 
-const hit = new Audio(new URL('~/public/hit.wav', import.meta.url));
-const step = new Audio(new URL('~/public/step.wav', import.meta.url));
-const rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url));
-const get = new Audio(new URL('~/public/get.wav', import.meta.url));
-const put = new Audio(new URL('~/public/put.wav', import.meta.url));
-const fail = new Audio(new URL('~/public/fail.wav', import.meta.url));
-const die = new Audio(new URL('~/public/die.wav', import.meta.url));
+const hit = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
+const step = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
+const rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
+const get = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
+const put = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
+const fail = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
+const die = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
 
 const engine = markRaw(new Engine({}));
+const fitAddon = new FitAddon.FitAddon();
+const unicode14Addon = new Unicode14Addon();
+const xterm = new Terminal({
+  theme: {
+    background: '#000000',
+    black: '#000000',
+    green: '#0CFF24',
+    red: '#F92672',
+  },
+  cols: 72,
+  rows: 25,
+  fontSize: 21,
+  cursorBlink: true,
+  cursorWidth: 12,
+  customGlyphs: true,
+  fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
+});
+xterm.loadAddon(fitAddon);
+xterm.loadAddon(unicode14Addon);
+xterm.unicode.activeVersion = '14';
+let started = false;
 
 export default defineComponent({
-  created() {
-    const fitAddon = new FitAddon.FitAddon();
-    const unicode14Addon = new Unicode14Addon();
-
-    this.xterm.loadAddon(fitAddon);
-    this.xterm.loadAddon(unicode14Addon);
-    this.xterm.unicode.activeVersion = '14';
-  },
   mounted() {
     console.log('game mounted');
-    this.xterm.open(this.$refs.terminal as HTMLDivElement);
-    this.xterm.focus();
+    xterm.open(this.$refs.terminal as HTMLDivElement);
+    xterm.focus();
+    if (started) return;
 
-    (this.xterm as Terminal).onKey(({ key }) => {
+    (xterm as Terminal).onKey(({ key }) => {
       if (this.paused) return;
       this.input(key);
     });
@@ -112,37 +126,22 @@ export default defineComponent({
     this.tty = markRaw(new TTY({
       place,
       player,
-      write: (str) => this.xterm.write(str),
+      write: (str) => xterm.write(str),
     }));
 
-    this.play();
-    this.$refs.audio.pause();
+    // this.play();
+
+    started = true;
   },
-  data(): { tty: TTY | undefined, xterm: Terminal, paused: boolean } {
+  data(): { tty: TTY | undefined, paused: boolean } {
     return {
       tty: undefined,
-      xterm: new Terminal({
-        theme: {
-          background: '#000000',
-          black: '#000000',
-          green: '#0CFF24',
-          red: '#F92672',
-        },
-        cols: 72,
-        rows: 25,
-        fontSize: 21,
-        cursorBlink: true,
-        cursorWidth: 12,
-        customGlyphs: true,
-        fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-      }),
       paused: true,
     };
   },
   methods: {
     play() {
       engine.start();
-      this.$refs.audio.play();
       this.paused = false;
       this.$refs.terminal.focus();
     },
@@ -166,7 +165,7 @@ export default defineComponent({
       this.tty = markRaw(new TTY({
         place,
         player,
-        write: (str) => this.xterm.write(str),
+        write: (str) => xterm.write(str),
       }));
     },
   },
