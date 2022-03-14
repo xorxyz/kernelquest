@@ -51,6 +51,10 @@
     "object-curly-newline": ["error", {
       "ImportDeclaration": { "multiline": true, "minProperties": 9}
     }],
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "vue/multi-word-component-names": "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error"
   }
 }

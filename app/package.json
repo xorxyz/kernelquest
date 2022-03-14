@@ -13,6 +13,7 @@
   "author": "kareniel",
   "license": "MIT",
   "dependencies": {
+    "@vue/runtime-core": "^3.2.26",
     "ethers": "^5.5.2",
     "events": "^3.3.0",
     "twemoji": "^13.1.0",

@@ -26,7 +26,7 @@ export class WaitAction extends Action {
     super();
     this.duration = duration;
   }
-  perform(ctx, agent: Agent): ActionResult {
+  perform(_: never, agent: Agent): ActionResult {
     if (agent.isWaitingUntil !== null) {
       agent.isWaitingUntil += this.duration;
       return new ActionSuccess(`Waiting an additional ${this.duration} ticks.`);
@@ -415,7 +415,7 @@ export class CreateAction extends Action {
     this.program = program;
     this.args = args;
   }
-  perform(ctx: Place, agent: Agent) {
+  perform() {
     const name = this.program.value[1].lexeme;
     const createFn = create[name];
     if (!createFn) return new ActionFailure(`Could not create '${name}'`);

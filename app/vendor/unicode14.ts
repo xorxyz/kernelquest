@@ -1,9 +1,12 @@
+/* eslint-disable */
+
 // from https://github.com/fluffos/fluffos/blob/master/src/www/xterm-addon-unicode14.js
-import { 
-  widechar_ambiguous, 
-  widechar_private_use, 
-  widechar_wcwidth, 
-  widechar_widened_in_9 
+
+import {
+  widechar_ambiguous,
+  widechar_private_use,
+  widechar_wcwidth,
+  widechar_widened_in_9,
 } from './widechar_width';
 
 const UnicodeV14 = /** @class */ (function () {
@@ -18,7 +21,7 @@ const UnicodeV14 = /** @class */ (function () {
     if (x === widechar_ambiguous) x = 1;
     if (x < 0) x = 0;
     return x;
-  }
+  };
   return UnicodeV14;
 }());
 
