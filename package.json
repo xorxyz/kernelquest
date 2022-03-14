@@ -16,6 +16,8 @@
     "xor4-interpreter": "./interpreter"
   },
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --ext .js,.ts",
     "build": "parcel build",
     "postbuild": "cp -r app/public/.well-known dist/"
   },
@@ -34,6 +36,7 @@
     }
   },
   "dependencies": {
+    "@vue/runtime-core": "^3.2.26",
     "ethers": "^5.5.2",
     "events": "^3.3.0",
     "zksync": "^0.11.6"

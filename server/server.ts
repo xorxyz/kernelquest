@@ -21,7 +21,7 @@ export default class GameServer {
   }
 
   async onConnection(socket: Socket) {
-    const id = this.i++;
+    this.i++;
     const player = new Hero(new Wizard());
 
     player.name = 'Guest';

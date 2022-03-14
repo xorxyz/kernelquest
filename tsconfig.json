@@ -25,7 +25,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "inlineSourceMap": true,
-    "inlineSources": true,  
+    "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization":false,
     "typeRoots": [
@@ -38,5 +38,5 @@
 	"exclude": [
     "build",
     "node_modules"
-	],
+	]
 }

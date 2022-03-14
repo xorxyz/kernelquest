@@ -4,7 +4,7 @@ export interface INode {
 }
 
 export default class Graph {
-  private nodes: Array<INode> = []
+  private nodes: Array<INode> = [];
 
   get values(): Array<INode> {
     return this.nodes.map((node) => node.value);
