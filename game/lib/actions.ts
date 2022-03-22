@@ -2,12 +2,13 @@ import { Vector } from 'xor4-lib/math';
 import { Direction } from 'xor4-lib/directions';
 import { debug } from 'xor4-lib/logging';
 import { Quotation } from 'xor4-interpreter/literals';
+import { Interpretation } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
 import { Place } from '../engine/places';
 import { TTY } from '../ui/tty';
 import { Agent, AgentType, Foe, Hero } from '../engine/agents';
 import { CursorModeHelpText, Keys } from '../constants';
-import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
+// import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
 import { Thing } from '../engine/things';
 import { Cell, Glyph } from '../engine/cell';
 import { Crown, Flag } from './things';
@@ -42,7 +43,7 @@ export class RotateAction extends Action {
   perform(ctx: Place, agent: Agent) {
     agent.facing.direction.rotate();
     agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-    ctx.emit(ROTATE, { agent });
+    // ctx.emit(ROTATE, { agent });
     return new ActionSuccess();
   }
 }
@@ -57,7 +58,7 @@ export class SetHeadingAction extends Action {
   }
   perform(ctx: Place, agent: Agent) {
     agent.facing.direction.rotateUntil(this.direction.value);
-    ctx.emit(ROTATE, { agent });
+    // ctx.emit(ROTATE, { agent });
     agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
     return new ActionSuccess();
   }
@@ -72,10 +73,10 @@ export class StepAction extends Action {
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
-        ctx.emit(DIE);
+        // ctx.emit(DIE);
       } else {
         agent.velocity.sub(agent.facing.direction.value);
-        ctx.emit(HIT);
+        // ctx.emit(HIT);
       }
       return new ActionFailure();
     }
@@ -86,11 +87,11 @@ export class StepAction extends Action {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
-          ctx.emit(DIE);
+          // ctx.emit(DIE);
           target.slot.glyph = new Glyph('☠️ ');
         } else {
           target.slot.velocity.add(agent.facing.direction.value);
-          ctx.emit(HIT);
+          // ctx.emit(HIT);
         }
         return new ActionSuccess();
       }
@@ -101,7 +102,7 @@ export class StepAction extends Action {
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-      ctx.emit(STEP, { agent });
+      // ctx.emit(STEP, { agent });
       return new ActionSuccess();
     }
 
@@ -114,50 +115,50 @@ export class GetAction extends Action {
   cost = 1;
   perform(ctx: Place, agent: Agent) {
     if (!agent.facing.cell || !agent.facing.cell.slot) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
     }
 
     if (agent.hand) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('You hands are full.');
     }
 
     if (agent.facing.cell.slot instanceof Agent ||
        (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('You can\'t get this.');
     }
 
     if (agent.facing.cell && agent.facing.cell.containsFoe()) {
       agent.hp.decrease(1);
-      ctx.emit(HIT);
+      // ctx.emit(HIT);
       return new ActionFailure();
     }
 
     const thing = agent.get();
 
     if (thing) {
-      ctx.emit(GET);
+      // ctx.emit(GET);
 
       if (thing instanceof Thing) {
         thing.owner = agent;
 
         if (thing.type instanceof Crown) {
           ctx.capturedCrowns.add(thing);
-          ctx.emit('crown');
+          // ctx.emit('crown');
         }
 
         if (thing.type instanceof Flag) {
           ctx.capturedFlags.add(thing);
-          ctx.emit('flag');
+          // ctx.emit('flag');
         }
       }
 
       return new ActionSuccess(`You get the ${thing.name}.`);
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -168,18 +169,18 @@ export class PutAction extends Action {
   cost = 1;
   perform(ctx: Place, agent: Agent) {
     if (!agent.hand) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
 
       return new ActionFailure('You are not holding anything.');
     }
 
     const target = ctx.cellAt(agent.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
-      ctx.emit(PUT);
+      // ctx.emit(PUT);
       return new ActionSuccess(`You put down the ${(target.slot as Thing).name}.`);
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure('There\'s already something here.');
   }
@@ -190,13 +191,12 @@ export class ReadAction extends Action {
   cost = 10;
   perform(ctx: Place, agent: Agent) {
     if (agent.hand) {
-      const { value } = agent.hand;
-      console.log(value);
+      // const { value } = agent.hand;
 
       return new ActionSuccess();
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -271,7 +271,7 @@ export class PathfindingAction extends Action {
 
     const actions = this.buildPathActions(ctx, agent, path.reverse());
 
-    actions.forEach((action) => agent.queue.add(action));
+    actions.forEach((action) => agent.schedule(action));
 
     return new ActionSuccess('Found a path to the destination cell.');
   }
@@ -525,17 +525,16 @@ export class EvalAction extends Action {
     super();
     this.text = text;
   }
+
   perform(ctx: Place, agent: Agent) {
-    const [err, interpretation] = agent.mind.interpreter.interpret(this.text, agent.queue);
+    const result = agent.mind.interpret(this.text);
 
-    debug('eval', err, interpretation);
-
-    if (err) {
-      return new ActionFailure(err.message);
+    if (result instanceof Error) {
+      return new ActionFailure(result.message);
+    } if (result instanceof Interpretation) {
+      const term = result.stack.map((factor) => factor.toString()).join(' ');
+      return new ActionSuccess(`[${term}]`);
     }
-
-    const term = interpretation?.stack.map((factor) => factor.toString()).join(' ');
-
-    return new ActionSuccess(`[${term}]`);
+    return new ActionFailure('Unhandled Exception.');
   }
 }

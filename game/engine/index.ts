@@ -14,6 +14,7 @@ export class Engine extends EventEmitter {
   cycle: number = 0;
   world: World;
   elapsed: number = 0;
+  private callbacks: Array<Function> = [];
   readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {
@@ -24,10 +25,17 @@ export class Engine extends EventEmitter {
     this.clock.on('tick', this.update.bind(this));
   }
 
+  wait(fn: Function) {
+    this.callbacks.push(() => { fn(); });
+  }
+
   update() {
     this.cycle++;
 
     this.world.places.forEach((place) => place.update(this.cycle));
+
+    this.callbacks.forEach((fn) => fn());
+    this.callbacks = [];
   }
 
   start() {

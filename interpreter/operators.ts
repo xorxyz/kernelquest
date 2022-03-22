@@ -1,6 +1,6 @@
 import { Stack } from 'xor4-lib/stack';
 import { Queue } from 'xor4-lib/queue';
-import { debug } from 'xor4-lib/utils';
+import { debug } from 'xor4-lib/logging';
 import { Factor, Literal } from './types';
 import { LiteralNumber, LiteralString } from './literals';
 

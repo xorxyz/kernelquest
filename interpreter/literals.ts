@@ -13,8 +13,6 @@ export class LiteralTruth extends Literal {
 const t = new LiteralTruth(true);
 const f = new LiteralTruth(false);
 
-console.log(t, f);
-
 // () -> Number
 export class LiteralNumber extends Literal {
   type = 'number';
@@ -72,25 +70,9 @@ export class LiteralRef extends LiteralNumber {
   }
 }
 
-// () -> Direction
-export class Direction extends Quotation {
-  type = 'direction';
-  vector: Vector;
-  constructor(lexeme: string, x:number, y:number) {
-    super([new LiteralNumber(x), new LiteralNumber(y)]);
-
-    this.lexeme = lexeme;
-  }
-}
-
-const north = new Direction('north', 0, -1);
-const east = new Direction('east', 1, 0);
-const south = new Direction('south', 0, 1);
-const west = new Direction('west', -1, 0);
-
 const literals = {};
 
-[t, f, north, east, south, west].forEach((literal) => {
+[t, f].forEach((literal) => {
   literals[literal.lexeme] = literal;
 });
 

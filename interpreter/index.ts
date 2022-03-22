@@ -16,13 +16,16 @@ export class Interpretation {
     this.term = term;
   }
 
-  async run(stack: Stack<Factor>, queue?: Queue<any>) {
+  run(stack: Stack<Factor>, queue?: Queue<any>): Interpretation | Error {
     this.stack = stack;
     for (let i = 0; i < this.term.length; i++) {
       const factor = this.term[i];
-      factor.validate(stack);
-      // eslint-disable-next-line no-await-in-loop
-      factor.execute(stack, queue);
+      try {
+        factor.validate(stack);
+        factor.execute(stack, queue);
+      } catch (err) {
+        return err as Error;
+      }
     }
 
     return this;
@@ -38,15 +41,18 @@ export class Interpreter {
     this.stack = stack || new Stack();
   }
 
-  interpret(line: string, queue: Queue<any>): [Error] | [null, Interpretation] {
-    const term = this.compiler.compile(line);
-    const interpretation = new Interpretation(term);
+  interpret(line: string, queue: Queue<any>): Interpretation | Error {
+    let term;
 
     try {
-      interpretation.run(this.stack, queue);
-      return [null, interpretation];
+      term = this.compiler.compile(line);
     } catch (err) {
-      return [err as Error];
+      return err as Error;
     }
+
+    const interpretation = new Interpretation(term);
+    const result = interpretation.run(this.stack, queue);
+
+    return result;
   }
 }

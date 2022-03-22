@@ -1,8 +1,8 @@
-import { debug } from 'xor4-lib/utils';
+import { debug } from 'xor4-lib/logging';
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import literals, { LiteralNumber, LiteralString, Quotation } from './literals';
-import operators from './operators';
+import operators, { Operator } from './operators';
 import combinators from './combinators';
 import syscalls from './syscalls';
 
@@ -24,6 +24,12 @@ export class Compiler {
       ...this.dict,
       ...dict,
     };
+
+    const help = new Operator(['help'], [], () => {
+      throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.`);
+    });
+
+    this.dict.help = help;
   }
 
   compile(code: string): Term {
@@ -32,7 +38,7 @@ export class Compiler {
     debug('got tokens:', tokens);
     const term: Array<Factor> = tokens.reduce(this.parseToken.bind(this), []);
     if (this.level !== 0) {
-      console.log('this.level', this.level);
+      debug('this.level', this.level);
       this.level = 0;
       throw new Error('unbalanced brackets');
     }
@@ -83,19 +89,19 @@ export class Compiler {
           this.level++;
           break;
         case TokenType.RIGHT_BRACKET:
-          console.log('TERM', term);
+          debug('TERM', term);
           this.level--;
           break;
         case TokenType.IDENTIFIER:
           if (!factor) {
-            throw new Error(`'${token.lexeme}' is not a recognized word`);
+            throw new Error(`'${token.lexeme}' is not a recognized word.`);
           }
           break;
         case TokenType.PLUS:
-          console.log('plus case');
+          debug('plus case');
           break;
         default:
-          throw new Error(`unrecognized token type: '${token.type}'`);
+          throw new Error(`unrecognized token type: '${token.type}'.`);
       }
     }
 

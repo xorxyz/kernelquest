@@ -1,6 +1,5 @@
 import { Points, Rectangle, Vector } from 'xor4-lib/math';
 import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
-import { Queue } from 'xor4-lib/queue';
 import { Colors, esc } from 'xor4-lib/esc';
 import { EntityType, Thing } from './things';
 import { Action } from './actions';
@@ -48,7 +47,7 @@ export abstract class Foe extends AgentType {
 
 export abstract class Capability {
   abstract bootstrap (agent: Agent): void
-  abstract run (agent: Agent, tick: number, events?: Array<Observation>): void
+  abstract run (agent: Agent, tick: number): void
 }
 
 export interface IFacing {
@@ -66,7 +65,6 @@ export class Agent extends Thing {
   public sp = new SP();
   public mp = new MP();
   public gp = new GP();
-  public queue: Queue<Action> = new Queue<Action>();
   public flashing: boolean = true;
   public tick: number = 0;
   public isWaitingUntil: null | number = null;
@@ -116,13 +114,14 @@ export class Agent extends Thing {
 
   schedule(action: Action) {
     if (action instanceof TerminalAction) {
-      this.queue.items.unshift(action);
+      this.mind.queue.items.unshift(action);
     } else {
-      this.queue.add(action);
+      this.mind.queue.add(action);
     }
   }
 
   takeTurn(tick: number): Action | null {
+    this.mind.update(tick);
     this.tick = tick;
     this.type.capabilities.forEach((capability) => capability.run(this, tick));
 
@@ -134,11 +133,11 @@ export class Agent extends Thing {
       }
     }
 
-    if (this.halted && !(this.queue.peek() instanceof TerminalAction)) {
+    if (this.halted && !(this.mind.queue.peek() instanceof TerminalAction)) {
       return null;
     }
 
-    const action = this.queue.next();
+    const action = this.mind.queue.next();
 
     return action;
   }
@@ -179,16 +178,5 @@ export class Agent extends Thing {
     const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
 
     return rect;
-  }
-}
-
-export class Observation {
-  subject: Agent;
-  action: Action;
-  object?: Agent | Thing;
-  constructor(subject: Agent, action: Action, object?: Agent | Thing) {
-    this.subject = subject;
-    this.action = action;
-    this.object = object;
   }
 }

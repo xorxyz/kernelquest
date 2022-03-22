@@ -1,17 +1,16 @@
 import { Rectangle, Vector } from 'xor4-lib/math';
-import { EventEmitter } from 'events';
 import { Colors, esc, Style } from 'xor4-lib/esc';
 import { Direction } from 'xor4-lib/directions';
 import { Agent, Hero } from './agents';
 import { Cell, Glyph } from './cell';
 import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
-import { ActionFailure, ActionSuccess } from './actions';
+import { ActionFailure } from './actions';
 import { Door, Thing } from './things';
 import { Wall } from '../lib/things';
 
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
-export class Place extends EventEmitter {
+export class Place {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
 
   readonly position: Vector;
@@ -56,8 +55,6 @@ export class Place extends EventEmitter {
   }
 
   constructor(x: number, y: number, w: number, h: number, setupFn?: (this: Place) => void) {
-    super();
-
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / ROOM_WIDTH);
@@ -94,13 +91,7 @@ export class Place extends EventEmitter {
     const action = agent.takeTurn(tick);
 
     if (action) {
-      const result: ActionFailure | ActionSuccess = action?.tryPerforming(this, agent);
-      if (result instanceof ActionFailure) {
-        this.emit('action-failure', { agent, result });
-      }
-      if (result instanceof ActionSuccess) {
-        this.emit('action-success', { agent, result });
-      }
+      action.tryPerforming(this, agent);
     }
 
     if (tick % 10 === 0) agent.sp.increase(1);
@@ -215,7 +206,7 @@ export class Place extends EventEmitter {
   }
 
   reset() {
-    this.emit('reset');
+    // this.emit('reset');
     this.clear();
     if (this.setupFn) this.setupFn();
   }
