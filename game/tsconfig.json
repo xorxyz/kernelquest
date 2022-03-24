@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig.json",
 	"include": [
-		"engine/**/*.ts",
-		"lib/**/*.ts",
-		"ui/**/*.ts",
+		"src/**/*.ts",
+		"lib/**/*.ts"
   ]
 }

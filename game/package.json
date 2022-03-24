@@ -2,12 +2,13 @@
   "name": "xor4-game",
   "version": "0.0.0",
   "description": "",
+  "main": "engine/index.ts",
   "scripts": {
     "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'",
-    "test": "ts-node tests/*",
+    "test": "tsc --noEmit",
     "build": "sh ./build.sh"
   },
-  "author": "Jonathan Dupré <jonathan@diagonal.sh>",
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
   "license": "MIT",
   "dependencies": {
     "xor4-interpreter": "0.0.0",

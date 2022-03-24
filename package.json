@@ -4,6 +4,7 @@
   "description": "run a broken system manually while defending it against impossible odds",
   "main": "./app/src/script.ts",
   "workspaces": [
+    "cli",
     "lib",
     "interpreter",
     "game",
@@ -12,8 +13,9 @@
   ],
   "alias": {
     "xor4-lib": "./lib",
+    "xor4-interpreter": "./interpreter",
     "xor4-game": "./game",
-    "xor4-interpreter": "./interpreter"
+    "xor4-cli": "./cli"
   },
   "scripts": {
     "lint": "eslint .",

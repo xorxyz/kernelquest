@@ -1,7 +1,6 @@
-import { getRandom } from 'xor4-lib/math';
-import { forN } from 'xor4-lib/utils';
+import { getRandom, forN } from 'xor4-lib/math';
 import { RotateAction, StepAction, WaitAction } from './actions';
-import { Agent, Capability } from '../engine/agents';
+import { Agent, Capability } from '../src/agent';
 
 export class RandomWalkCapability extends Capability {
   bootstrap() {}

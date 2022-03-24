@@ -1,7 +1,7 @@
 import { Vector } from 'xor4-lib/math';
-import { Agent } from '../engine/agents';
-import { Place } from '../engine/places';
-import { Door, Thing } from '../engine/things';
+import { Agent } from '../src/agent';
+import { Place } from '../src/place';
+import { Door, Thing } from '../src/thing';
 import { Wizard, Bug, Sheep } from './agents';
 import { Book, Crown, Flag, Gold, Grass, Tree, Water } from './things';
 

@@ -1,10 +1,11 @@
-import { Hero, Foe, Friend } from '../engine/agents';
-import { Glyph } from '../engine/cell';
+import { Hero, Foe, Friend } from '../src/agent';
+import { Glyph } from '../src/cell';
 import { RandomWalkCapability } from './capabilities';
 
 export class Spirit extends Hero {
   name = 'spirit';
   glyph = new Glyph('👼');
+  weight = 1;
 }
 
 export class Fairy extends Hero {

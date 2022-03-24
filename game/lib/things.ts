@@ -1,13 +1,6 @@
 import { Colors, esc } from 'xor4-lib/esc';
-import { Glyph } from '../engine/cell';
-import { EntityType } from '../engine/things';
-
-export class Wall extends EntityType {
-  name = 'wall';
-  glyph = new Glyph('##');
-  style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
-  isStatic = true;
-}
+import { Glyph } from '../src/cell';
+import { EntityType } from '../src/thing';
 
 export class Tree extends EntityType {
   name = 'tree';

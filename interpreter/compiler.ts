@@ -40,7 +40,7 @@ export class Compiler {
     if (this.level !== 0) {
       debug('this.level', this.level);
       this.level = 0;
-      throw new Error('unbalanced brackets');
+      throw new Error('unbalanced brackets.');
     }
 
     return term;

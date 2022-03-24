@@ -3,14 +3,13 @@ import { Direction } from 'xor4-lib/directions';
 import { debug } from 'xor4-lib/logging';
 import { Quotation } from 'xor4-interpreter/literals';
 import { Interpretation } from 'xor4-interpreter';
-import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
-import { Place } from '../engine/places';
-import { TTY } from '../ui/tty';
-import { Agent, AgentType, Foe, Hero } from '../engine/agents';
+import { Action, ActionFailure, ActionResult, ActionSuccess } from '../src/action';
+import { Place } from '../src/place';
+import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { CursorModeHelpText, Keys } from '../constants';
 // import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
-import { Thing } from '../engine/things';
-import { Cell, Glyph } from '../engine/cell';
+import { Thing } from '../src/thing';
+import { Cell, Glyph } from '../src/cell';
 import { Crown, Flag } from './things';
 import { create } from './places';
 
@@ -32,7 +31,7 @@ export class WaitAction extends Action {
       agent.isWaitingUntil += this.duration;
       return new ActionSuccess(`Waiting an additional ${this.duration} ticks.`);
     }
-    agent.isWaitingUntil = agent.tick + this.duration;
+    agent.isWaitingUntil = agent.mind.tick + this.duration;
     return new ActionSuccess('');
   }
 }
@@ -412,114 +411,20 @@ export class CreateAction extends Action {
     this.program = program;
     this.args = args;
   }
-  perform() {
+  perform(ctx: Place) {
     const name = this.program.value[1].lexeme;
     const createFn = create[name];
+    const created = createFn.call(ctx);
+    console.log('created', created);
+    ctx.put(created);
     if (!createFn) return new ActionFailure(`Could not create '${name}'`);
-    return new ActionSuccess();
-  }
-}
-
-/*
- * Terminal Actions
- * ====================
-*/
-
-export abstract class TerminalAction extends Action {}
-
-export class SwitchModeAction extends TerminalAction {
-  name = 'switch-mode';
-  cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
-  perform() {
-    this.terminal.switchModes();
-    return new ActionSuccess();
-  }
-}
-
-export class MoveCursorAction extends TerminalAction {
-  name = 'move-cursor';
-  cost = 0;
-  terminal: TTY;
-  direction: Vector;
-  constructor(terminal: TTY, direction: Vector) {
-    super();
-    this.terminal = terminal;
-    this.direction = direction;
-  }
-  authorize() { return true; }
-  perform(ctx: Place, agent: Agent) {
-    if (agent.sees().contains(agent.cursorPosition.clone().add(this.direction))) {
-      agent.cursorPosition.add(this.direction);
-      const thing = ctx.cellAt(agent.cursorPosition)?.slot || null;
-      agent.eyes = thing;
-    }
-    return new ActionSuccess();
-  }
-}
-
-export class MoveCursorToAction extends TerminalAction {
-  name = 'move-cursor-to';
-  cost = 0;
-  terminal: TTY;
-  destination: Vector;
-  constructor(terminal: TTY, destination: Vector) {
-    super();
-    this.terminal = terminal;
-    this.destination = destination;
-  }
-  authorize() { return true; }
-  perform(ctx, agent: Agent) {
-    const withinBounds = true;
-    if (withinBounds) {
-      agent.cursorPosition.copy(this.destination);
-    }
-    return new ActionSuccess();
-  }
-}
-
-export class SelectCellAction extends TerminalAction {
-  name = 'select-cell';
-  cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
-  authorize() { return true; }
-  perform(ctx, agent: Agent) {
-    this.terminal.switchModes();
-    const expr = `${agent.cursorPosition.x} ${agent.cursorPosition.y} goto`;
-    this.terminal.lineEditor.line = expr;
-    this.terminal.state.line = expr;
-    this.terminal.handleTerminalInput(Keys.ENTER);
-    this.terminal.switchModes();
-    return new ActionSuccess();
-  }
-}
-
-export class PrintCursorModeHelpAction extends TerminalAction {
-  name = 'print-cursor-mode-help';
-  cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
-  authorize() { return true; }
-  perform() {
-    this.terminal.write(`${CursorModeHelpText.join('\n')}\n`);
     return new ActionSuccess();
   }
 }
 
 export class EvalAction extends Action {
   name = 'eval';
-  cost = 1;
+  cost = 0;
   text: string;
   constructor(text: string) {
     super();
@@ -536,5 +441,101 @@ export class EvalAction extends Action {
       return new ActionSuccess(`[${term}]`);
     }
     return new ActionFailure('Unhandled Exception.');
+  }
+}
+
+export class LookAction extends Action {
+  name = 'look';
+  cost = 0;
+  perform(ctx: Place, agent: Agent) {
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: `${ctx.render(agent.sees()).join('\n')}`,
+    });
+    return new ActionSuccess();
+  }
+}
+
+/*
+ * Terminal Actions
+ * ====================
+*/
+
+export abstract class TerminalAction extends Action {
+  terminal;
+  constructor(terminal) {
+    super();
+    this.terminal = terminal;
+  }
+}
+
+export class SwitchModeAction extends TerminalAction {
+  name = 'switch-mode';
+  cost = 0;
+  perform() {
+    this.terminal.switchModes();
+    return new ActionSuccess();
+  }
+}
+
+export class MoveCursorAction extends TerminalAction {
+  name = 'move-cursor';
+  cost = 0;
+  direction: Vector;
+  constructor(terminal, direction: Vector) {
+    super(terminal);
+    this.direction = direction;
+  }
+  authorize() { return true; }
+  perform(ctx: Place, agent: Agent) {
+    if (agent.sees().contains(agent.cursorPosition.clone().add(this.direction))) {
+      agent.cursorPosition.add(this.direction);
+      const thing = ctx.cellAt(agent.cursorPosition)?.slot || null;
+      agent.eyes = thing;
+    }
+    return new ActionSuccess();
+  }
+}
+
+export class MoveCursorToAction extends TerminalAction {
+  name = 'move-cursor-to';
+  cost = 0;
+  destination: Vector;
+  constructor(terminal, destination: Vector) {
+    super(terminal);
+    this.destination = destination;
+  }
+  authorize() { return true; }
+  perform(ctx, agent: Agent) {
+    const withinBounds = true;
+    if (withinBounds) {
+      agent.cursorPosition.copy(this.destination);
+    }
+    return new ActionSuccess();
+  }
+}
+
+export class SelectCellAction extends TerminalAction {
+  name = 'select-cell';
+  cost = 0;
+  authorize() { return true; }
+  perform(ctx, agent: Agent) {
+    this.terminal.switchModes();
+    const expr = `${agent.cursorPosition.x} ${agent.cursorPosition.y} goto`;
+    this.terminal.lineEditor.line = expr;
+    this.terminal.state.line = expr;
+    this.terminal.handleTerminalInput(Keys.ENTER);
+    this.terminal.switchModes();
+    return new ActionSuccess();
+  }
+}
+
+export class PrintCursorModeHelpAction extends TerminalAction {
+  name = 'print-cursor-mode-help';
+  cost = 0;
+  authorize() { return true; }
+  perform() {
+    this.terminal.write(`${CursorModeHelpText.join('\n')}\n`);
+    return new ActionSuccess();
   }
 }

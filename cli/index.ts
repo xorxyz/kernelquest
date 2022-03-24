@@ -3,17 +3,15 @@
  Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
 import readline from 'readline';
-import { Engine } from 'xor4-game/engine';
-import { Agent } from 'xor4-game/engine/agents';
-import { Place } from 'xor4-game/engine/places';
-import { World } from 'xor4-game/engine/world';
+import { Engine, Agent, Place, World } from 'xor4-game';
 import { EvalAction } from 'xor4-game/lib/actions';
-import { Spirit, Sheep } from 'xor4-game/lib/agents';
+import { Spirit } from 'xor4-game/lib/agents';
+import { Vector } from 'xor4-lib/math';
 
-let lastTick = 0;
+export * from './ui';
 
 (async function main() {
-  const { engine, spirit } = createGameEngine();
+  const { engine, agent } = createGameEngine();
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -25,15 +23,21 @@ let lastTick = 0;
 
   rl.on('line', (line): void => {
     if (!line) { return; }
+    rl.pause();
 
-    spirit.schedule(new EvalAction(line));
+    const now = agent.mind.tick;
 
-    engine.wait(() => {
-      const observations = spirit.mind.memory.filter((o) => o.tick > lastTick);
-      observations.forEach((o) => console.log(`${o.message}`));
-      console.log(`t: ${engine.clock.now}, [ ${spirit.mind.stack} ]`);
-      rl.prompt();
-      lastTick = engine.clock.now;
+    agent.schedule(new EvalAction(line));
+
+    engine.once('end-turn', () => {
+      engine.once('end-turn', () => {
+        const logs = agent.logs.filter((log) => log.tick >= now && log.tick <= agent.mind.tick);
+
+        logs.forEach((log) => console.log(`${log.message}`));
+
+        console.log(`t: ${now}-${agent.mind.tick}, s: [ ${agent.mind.stack} ], m: ${agent.logs.map((l) => l.tick)}`);
+        rl.prompt();
+      });
     });
   });
 
@@ -47,12 +51,11 @@ function createGameEngine() {
   const world = new World([room]);
   const engine = new Engine({ world });
 
-  const spirit = new Agent(new Spirit());
-  const sheep = new Agent(new Sheep());
+  const agent = new Agent(new Spirit());
 
-  [spirit, sheep].forEach((x) => room.put(x));
+  [agent].forEach((x) => room.put(x, new Vector(0, 0)));
 
-  return { engine, room, spirit };
+  return { engine, room, agent };
 }
 
 process.on('uncaughtException', (err) => {
