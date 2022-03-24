@@ -1,5 +1,4 @@
-import { Combinator } from 'xor4-interpreter/combinators';
-import { LiteralNumber, Quotation } from 'xor4-interpreter/literals';
+import { Combinator, LiteralNumber, Quotation } from 'xor4-interpreter';
 import { Vector } from 'xor4-lib/math';
 import { CreateAction, LookAction, PathfindingAction } from './actions';
 

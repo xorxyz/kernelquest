@@ -1,5 +1,5 @@
 import { debug } from 'xor4-lib/logging';
-import { Interpretation } from '.';
+import { Interpretation } from './interpreter';
 import { Factor } from './types';
 import { LiteralNumber, LiteralRef, Quotation } from './literals';
 import { Operator } from './operators';

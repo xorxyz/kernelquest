@@ -1,6 +1,4 @@
-import { Interpretation, Interpreter } from 'xor4-interpreter';
-import { Compiler } from 'xor4-interpreter/compiler';
-import { Factor } from 'xor4-interpreter/types';
+import { Interpretation, Interpreter, Compiler, Factor } from 'xor4-interpreter';
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
 import { Action } from './action';

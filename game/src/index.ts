@@ -7,3 +7,10 @@ export * from './mind';
 export * from './place';
 export * from './thing';
 export * from './world';
+
+export * from '../lib/actions';
+export * from '../lib/agents';
+export * from '../lib/capabilities';
+export * from '../lib/places';
+export * from '../lib/things';
+export * from '../lib/words';

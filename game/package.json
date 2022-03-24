@@ -2,7 +2,7 @@
   "name": "xor4-game",
   "version": "0.0.0",
   "description": "",
-  "main": "engine/index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'",
     "test": "tsc --noEmit",

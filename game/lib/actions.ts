@@ -1,8 +1,7 @@
 import { Vector } from 'xor4-lib/math';
 import { Direction } from 'xor4-lib/directions';
 import { debug } from 'xor4-lib/logging';
-import { Quotation } from 'xor4-interpreter/literals';
-import { Interpretation } from 'xor4-interpreter';
+import { Quotation, Interpretation } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess } from '../src/action';
 import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
