@@ -1,5 +1,6 @@
 import { createServer, Server, Socket } from 'net';
-import { Agent, Engine, Wizard } from 'xor4-game';
+import { Agent, Engine } from 'xor4-game/src';
+import { Wizard } from 'xor4-game/lib';
 import { TTY } from 'xor4-cli';
 import Connection from './connection';
 

@@ -2,10 +2,9 @@ import {
   Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc,
 } from 'xor4-lib';
 import { Body, BodyType, Thing } from './thing';
-import { Action, TerminalAction } from './action';
+import { Action, TerminalAction, Capability } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
-import { Capability } from './capability';
 
 /**
  states:

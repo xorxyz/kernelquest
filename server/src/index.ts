@@ -3,7 +3,7 @@
  * Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
 import { Engine, Place, World } from 'xor4-game';
-import { create } from 'xor4-game/lib/actions';
+import { create } from 'xor4-game/lib/create';
 import GameServer from './server';
 
 export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {

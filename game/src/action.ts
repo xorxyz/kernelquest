@@ -2,6 +2,12 @@ import { Agent } from './agent';
 import { Thing } from './thing';
 import { Place } from './place';
 
+/** @category Capability */
+export abstract class Capability {
+  abstract bootstrap (agent: Agent): void
+  abstract run (agent: Agent, tick: number): void
+}
+
 /** @category Action */
 export abstract class ActionResult {
   public message: string;
@@ -29,13 +35,6 @@ export abstract class Action {
   tryPerforming(ctx: Place, agent: Agent, object?: Agent | Thing): ActionResult {
     if (!this.authorize) return new ActionFailure('Not enough stamina.');
     const result = this.perform(ctx, agent, object);
-
-    if (result instanceof ActionFailure && result.message) {
-      agent.logs.push({
-        tick: agent.mind.tick,
-        message: `${result.message}`,
-      });
-    }
 
     return result;
   }

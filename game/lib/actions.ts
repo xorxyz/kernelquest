@@ -1,61 +1,11 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
-import { Quotation, Interpretation } from 'xor4-interpreter';
+import { Interpretation } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
-import { Thing, Door } from '../src/thing';
+import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-import { Crown, Flag, Book, Gold, Grass, Tree, Water } from './things';
-import { Wizard, Bug, Sheep } from './agents';
-
-/** @category Places */
-export const create: Record<string, (this: Place, ...any) => any> = {
-  flag(x, y) {
-    const flag = new Thing(new Flag());
-    this.flags.add(flag);
-    this.put(flag, new Vector(x, y));
-  },
-  crown(x, y) {
-    const crown = new Thing(new Crown());
-    this.crowns.add(crown);
-    this.put(crown, new Vector(x, y));
-  },
-  book(x, y) {
-    this.put(new Thing(new Book()), new Vector(x, y));
-  },
-  gold(x, y) {
-    this.put(new Thing(new Gold()), new Vector(x, y));
-  },
-  sheep(x, y) {
-    const sheep = new Agent(new Sheep());
-    this.put(sheep, new Vector(x, y));
-  },
-  house(x, y, w, h) {
-    const house = new Place(x, y, w, h);
-    const doors = [1].map(() => new Thing(new Door()));
-    this.build(house, doors);
-  },
-  wizard(x, y) {
-    const hero = new Agent(new Wizard());
-    this.put(hero, new Vector(x, y));
-    return hero;
-  },
-  bug(x, y) {
-    this.put(new Agent(new Bug()), new Vector(x, y));
-  },
-  trees(coordinates: Array<[number, number]>) {
-    return coordinates.forEach(([x, y]) =>
-      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Tree())));
-  },
-  grass(coordinates: Array<[number, number]>) {
-    return coordinates.forEach(([x, y]) =>
-      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Grass())));
-  },
-  water(coordinates: Array<[number, number]>) {
-    return coordinates.forEach(([x, y]) =>
-      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Water())));
-  },
-};
+import { Crown, Flag } from './things';
 
 /*
  * Actions in the World
@@ -456,27 +406,27 @@ export class PatrolAction extends Action {
   }
 }
 
-/** @category Actions */
-export class CreateAction extends Action {
-  name = 'new';
-  cost = 0;
-  program: Quotation;
-  args: Quotation;
-  constructor(program: Quotation, args: Quotation) {
-    super();
-    this.program = program;
-    this.args = args;
-  }
-  perform(ctx: Place) {
-    const name = this.program.value[1].lexeme;
-    const createFn = create[name];
-    const created = createFn.call(ctx);
-    console.log('created', created);
-    ctx.put(created);
-    if (!createFn) return new ActionFailure(`Could not create '${name}'`);
-    return new ActionSuccess();
-  }
-}
+// /** @category Actions */
+// export class CreateAction extends Action {
+//   name = 'new';
+//   cost = 0;
+//   program: Quotation;
+//   args: Quotation;
+//   constructor(program: Quotation, args: Quotation) {
+//     super();
+//     this.program = program;
+//     this.args = args;
+//   }
+//   perform(ctx: Place) {
+//     const name = this.program.value[1].lexeme;
+//     const createFn = create[name];
+//     const created = createFn.call(ctx);
+//     console.log('created', created);
+//     ctx.put(created);
+//     if (!createFn) return new ActionFailure(`Could not create '${name}'`);
+//     return new ActionSuccess();
+//   }
+// }
 
 /** @category Actions */
 export class EvalAction extends Action {

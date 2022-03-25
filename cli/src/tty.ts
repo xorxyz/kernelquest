@@ -1,6 +1,4 @@
-import { Cursor, esc } from 'xor4-lib/esc';
-import { Vector } from 'xor4-lib/math';
-import { CLOCK_MS_DELAY, CursorModeHelpText, Keys, Signals } from 'xor4-game/constants';
+import { Cursor, esc, Vector, CLOCK_MS_DELAY, CursorModeHelpText, Keys, Signals } from 'xor4-lib';
 import {
   EvalAction,
   GetAction,
@@ -12,9 +10,8 @@ import {
   SelectCellAction,
   StepAction,
   SwitchModeAction,
-  TerminalAction,
-} from 'xor4-game/lib/actions';
-import { Agent, Place, Action } from 'xor4-game';
+} from 'xor4-game/lib';
+import { Agent, Place, Action, TerminalAction } from 'xor4-game/src';
 import { Editor } from './editor';
 import { MainView } from './views';
 import { CELL_WIDTH } from './component';

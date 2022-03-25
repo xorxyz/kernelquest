@@ -26,6 +26,10 @@ export abstract class Body {
 
   abstract renderStyle();
 
+  get label() {
+    return `${this.type.glyph.value} ${this.name}`;
+  }
+
   render() {
     let { style } = this.type;
 
@@ -40,10 +44,6 @@ export abstract class Body {
 export class Thing extends Body {
   public owner: Agent | null = null;
   public value: string;
-
-  get label() {
-    return `${this.type.glyph.value} ${this.name}`;
-  }
 
   renderStyle() {
     if (!this.owner && !this.type.style) {

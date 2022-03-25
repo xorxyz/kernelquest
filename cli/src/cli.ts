@@ -3,8 +3,8 @@
  Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
 import readline from 'readline';
-import { Engine, Agent, Place, World } from 'xor4-game';
-import { EvalAction } from 'xor4-game/lib/actions';
+import { Engine, Agent, Place, World } from 'xor4-game/src';
+import { EvalAction } from 'xor4-game/lib';
 import { Spirit } from 'xor4-game/lib/agents';
 import { Vector } from 'xor4-lib/math';
 

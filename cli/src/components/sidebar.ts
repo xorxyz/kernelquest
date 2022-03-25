@@ -10,7 +10,7 @@ export class Sidebar extends UiComponent {
     return [
       '┌───────────────────┐',
       `│ name: ${player.name.padEnd(11)} │`,
-      `│ path: ${(`${player.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
+      `│ path: ${(`${player.type.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
       `│ hand: ${(player.hand?.label || nothing(11)).padEnd(11)} │`,
       `│ eyes: ${(player.eyes?.label || nothing(11)).padEnd(11)} │`,
       `│ feet: ${(`[${player.position.label} ref]`).padEnd(11)} │`,

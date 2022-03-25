@@ -1,5 +1,4 @@
-import { esc, Screen, Style } from 'xor4-lib/esc';
-import { CLOCK_MS_DELAY } from 'xor4-game/constants';
+import { esc, Screen, Style, CLOCK_MS_DELAY } from 'xor4-lib';
 import { UiComponent } from './component';
 
 const CLEAR_RATE = CLOCK_MS_DELAY;

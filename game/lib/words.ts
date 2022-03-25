@@ -1,6 +1,6 @@
-import { Combinator, LiteralNumber, Quotation } from 'xor4-interpreter';
+import { Combinator, LiteralNumber } from 'xor4-interpreter';
 import { Vector } from 'xor4-lib';
-import { CreateAction, LookAction, PathfindingAction } from './actions';
+import { LookAction, PathfindingAction } from './actions';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['number', 'number'], async (stack, queue) => {
@@ -12,13 +12,13 @@ const goto = new Combinator(['goto'], ['number', 'number'], async (stack, queue)
   queue?.add(action);
 });
 
-/** @category Words */
-const create = new Combinator(['new'], ['quotation', 'quotation'], async (stack, queue) => {
-  const args = stack.pop() as Quotation;
-  const program = stack.pop() as Quotation;
+// /** @category Words */
+// const create = new Combinator(['new'], ['quotation', 'quotation'], async (stack, queue) => {
+//   const args = stack.pop() as Quotation;
+//   const program = stack.pop() as Quotation;
 
-  queue?.add(new CreateAction(program, args));
-});
+//   queue?.add(new CreateAction(program, args));
+// });
 
 /** @category Words */
 const look = new Combinator(['look'], [], async (stack, queue) => {
@@ -26,5 +26,5 @@ const look = new Combinator(['look'], [], async (stack, queue) => {
 });
 
 export default {
-  goto, create, look,
+  goto, look,
 };
