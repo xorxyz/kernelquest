@@ -22,9 +22,9 @@
     "lint:fix": "eslint . --fix --ext .js,.ts",
     "build": "parcel build",
     "postbuild": "cp -r app/public/.well-known dist/",
-    "docs": "npx typedoc --entryPointStrategy packages .",
+    "docs": "npx typedoc --entryPointStrategy packages --out www/public/docs .",
     "xor": "cd cli && npm start",
-    "deps": "npx dependency-cruiser --output-type dot game | dot -T svg > deps.svg"
+    "deps": "pwd && npx dependency-cruiser --output-type dot game | dot -T svg > www/public/images/diagrams/dependency-graph.svg"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
