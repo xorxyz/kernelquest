@@ -1,16 +1,61 @@
-import { Vector } from 'xor4-lib/math';
-import { Direction } from 'xor4-lib/directions';
-import { debug } from 'xor4-lib/logging';
+import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
 import { Quotation, Interpretation } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
-import { CursorModeHelpText, Keys } from '../constants';
-// import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
-import { Thing } from '../src/thing';
+import { Thing, Door } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-import { Crown, Flag } from './things';
-import { create } from './places';
+import { Crown, Flag, Book, Gold, Grass, Tree, Water } from './things';
+import { Wizard, Bug, Sheep } from './agents';
+
+/** @category Places */
+export const create: Record<string, (this: Place, ...any) => any> = {
+  flag(x, y) {
+    const flag = new Thing(new Flag());
+    this.flags.add(flag);
+    this.put(flag, new Vector(x, y));
+  },
+  crown(x, y) {
+    const crown = new Thing(new Crown());
+    this.crowns.add(crown);
+    this.put(crown, new Vector(x, y));
+  },
+  book(x, y) {
+    this.put(new Thing(new Book()), new Vector(x, y));
+  },
+  gold(x, y) {
+    this.put(new Thing(new Gold()), new Vector(x, y));
+  },
+  sheep(x, y) {
+    const sheep = new Agent(new Sheep());
+    this.put(sheep, new Vector(x, y));
+  },
+  house(x, y, w, h) {
+    const house = new Place(x, y, w, h);
+    const doors = [1].map(() => new Thing(new Door()));
+    this.build(house, doors);
+  },
+  wizard(x, y) {
+    const hero = new Agent(new Wizard());
+    this.put(hero, new Vector(x, y));
+    return hero;
+  },
+  bug(x, y) {
+    this.put(new Agent(new Bug()), new Vector(x, y));
+  },
+  trees(coordinates: Array<[number, number]>) {
+    return coordinates.forEach(([x, y]) =>
+      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Tree())));
+  },
+  grass(coordinates: Array<[number, number]>) {
+    return coordinates.forEach(([x, y]) =>
+      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Grass())));
+  },
+  water(coordinates: Array<[number, number]>) {
+    return coordinates.forEach(([x, y]) =>
+      this.cellAt(Vector.from({ x, y }))?.put(new Thing(new Water())));
+  },
+};
 
 /*
  * Actions in the World
@@ -90,7 +135,7 @@ export class StepAction extends Action {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
           // ctx.emit(DIE);
-          target.slot.glyph = new Glyph('☠️ ');
+          target.slot.type.glyph = new Glyph('☠️ ');
         } else {
           target.slot.velocity.add(agent.facing.direction.value);
           // ctx.emit(HIT);

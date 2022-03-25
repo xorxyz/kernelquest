@@ -1,5 +1,6 @@
 export * from './actions';
 export * from './agents';
 export * from './capabilities';
-export * from './places';
+export * from './events';
 export * from './things';
+export * from './words';

@@ -50,3 +50,15 @@ export const Keys = {
 export const Signals = {
   SIGINT: '03',
 };
+
+export const EMPTY_CELL_CHARS = '..';
+
+export const CursorModeHelpText = [
+  '<return> toggle between terminal & cursor mode.',
+  '<space>  push a ref to the highlighted cell.',
+  '<h>      print this help text.',
+  '<r>      rotate. change heading clockwise.',
+  '<s>      step forward.',
+  '<g>      get something.',
+  '<p>      put something down.',
+];

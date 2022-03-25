@@ -1,8 +1,6 @@
-import Clock from 'xor4-lib/clock';
-import { debug } from 'xor4-lib/logging';
+import { Clock, CLOCK_MS_DELAY, debug } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
-import { CLOCK_MS_DELAY } from '../constants';
 
 /** @category Engine */
 export interface EngineOptions {

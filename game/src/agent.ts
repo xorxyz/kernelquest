@@ -1,7 +1,7 @@
-import { Points, Rectangle, Vector } from 'xor4-lib/math';
-import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
-import { Colors, esc } from 'xor4-lib/esc';
-import { EntityType, Thing } from './thing';
+import {
+  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc,
+} from 'xor4-lib';
+import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
@@ -36,7 +36,7 @@ export class MP extends Points {}
 export class GP extends Points {}
 
 /** @category Agent */
-export class AgentType extends EntityType {
+export class AgentType extends BodyType {
   public weight: number = 10;
   public capabilities: Array<Capability> = [];
 }
@@ -77,7 +77,7 @@ export interface AgentLog {
 }
 
 /** @category Agent */
-export class Agent extends Thing {
+export class Agent extends Body {
   public name: string = 'anon';
   declare public type: AgentType;
   public mind: Mind;
@@ -107,6 +107,15 @@ export class Agent extends Thing {
       capability.bootstrap(this);
     });
   }
+
+  renderStyle() {
+    if (this.type instanceof Hero) {
+      return esc(Colors.Bg.Purple);
+    }
+
+    return null;
+  }
+
   get level() { return 1; }
 
   get isAlive() { return this.hp.value > 0; }

@@ -1,9 +1,8 @@
-import { Rectangle, Vector } from 'xor4-lib/math';
-import { Colors, esc, Style } from 'xor4-lib/esc';
-import { Direction } from 'xor4-lib/directions';
+import {
+  Rectangle, Vector, CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH, Colors, esc, Style, Direction,
+} from 'xor4-lib';
 import { Agent, Hero } from './agent';
 import { Cell, Glyph } from './cell';
-import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { Action } from './action';
 import { Wall, Door, Thing } from './thing';
 

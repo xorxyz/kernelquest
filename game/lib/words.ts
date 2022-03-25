@@ -1,6 +1,6 @@
 import { Combinator, LiteralNumber, Quotation } from 'xor4-interpreter';
-import { Vector } from 'xor4-lib/math';
-import { CreateAction, LookAction, PathfindingAction } from '../lib/actions';
+import { Vector } from 'xor4-lib';
+import { CreateAction, LookAction, PathfindingAction } from './actions';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['number', 'number'], async (stack, queue) => {

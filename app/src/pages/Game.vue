@@ -29,11 +29,10 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { Engine } from 'xor4-game/engine';
+import { Engine, HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game';
 import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
-import { TTY } from 'xor4-game/ui/tty';
-import { HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game/engine/events';
+import { TTY } from 'xor4-cli';
 import { Unicode14Addon } from '../../vendor/unicode14';
 
 const hit = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());

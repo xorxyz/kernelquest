@@ -1,10 +1,9 @@
-import { Vector } from 'xor4-lib/math';
-import { EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
-import { Colors, esc, Style } from 'xor4-lib/esc';
+import {
+  Vector, EMPTY_CELL_CHARS, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
+} from 'xor4-lib';
 import { Agent, Foe } from './agent';
 import { Place } from './place';
 import { Thing } from './thing';
-import { EMPTY_CELL_CHARS } from '../constants';
 
 /** @category Cell */
 export class Glyph {
@@ -82,7 +81,7 @@ export class Cell {
   render(ctx: Place) {
     if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
       return esc(Colors.Bg.Cyan) +
-      esc(Colors.Fg.Black) + (this.slot?.glyph.value || this.glyph.value) + esc(Style.Reset);
+      esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || this.glyph.value) + esc(Style.Reset);
     }
     return this.slot?.render() || this.glyph.value;
   }

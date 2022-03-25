@@ -23,7 +23,8 @@
     "build": "parcel build",
     "postbuild": "cp -r app/public/.well-known dist/",
     "docs": "npx typedoc --entryPointStrategy packages .",
-    "xor": "cd cli && npm start"
+    "xor": "cd cli && npm start",
+    "deps": "npx dependency-cruiser --output-type dot game | dot -T svg > deps.svg"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",

@@ -1,4 +1,4 @@
-import { getRandom, forN } from 'xor4-lib/math';
+import { getRandom, forN } from 'xor4-lib';
 import { RotateAction, StepAction, WaitAction } from './actions';
 import { Agent } from '../src/agent';
 import { Capability } from '../src/capability';

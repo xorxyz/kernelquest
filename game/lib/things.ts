@@ -1,9 +1,9 @@
-import { Colors, esc } from 'xor4-lib/esc';
+import { Colors, esc } from 'xor4-lib';
 import { Glyph } from '../src/cell';
-import { EntityType } from '../src/thing';
+import { BodyType } from '../src/thing';
 
 /** @category Things */
-export class Tree extends EntityType {
+export class Tree extends BodyType {
   name = 'tree';
   glyph = new Glyph('🌲');
   style = esc(Colors.Bg.Green);
@@ -12,7 +12,7 @@ export class Tree extends EntityType {
 }
 
 /** @category Things */
-export class Grass extends EntityType {
+export class Grass extends BodyType {
   name = 'grass';
   glyph = new Glyph(',,');
   style = esc(Colors.Fg.Green);
@@ -21,7 +21,7 @@ export class Grass extends EntityType {
 }
 
 /** @category Things */
-export class Water extends EntityType {
+export class Water extends BodyType {
   name = 'water';
   glyph = new Glyph('~~');
   style = esc(Colors.Bg.Blue);
@@ -30,25 +30,25 @@ export class Water extends EntityType {
 }
 
 /** @category Things */
-export class Flag extends EntityType {
+export class Flag extends BodyType {
   name = 'flag';
   glyph = new Glyph('🚩');
 }
 
 /** @category Things */
-export class Crown extends EntityType {
+export class Crown extends BodyType {
   name = 'crown';
   glyph = new Glyph('👑');
 }
 
 /** @category Things */
-export class Book extends EntityType {
+export class Book extends BodyType {
   name = 'book';
   glyph = new Glyph('📕');
 }
 
 /** @category Things */
-export class Gold extends EntityType {
+export class Gold extends BodyType {
   name = 'gold';
   glyph = new Glyph('💰');
 }

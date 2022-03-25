@@ -1,8 +1,7 @@
 import { Interpretation, Interpreter, Compiler, Factor } from 'xor4-interpreter';
-import { Queue } from 'xor4-lib/queue';
-import { Stack } from 'xor4-lib/stack';
+import { Queue, Stack } from 'xor4-lib';
 import { Action } from './action';
-import words from './words';
+import words from '../lib/words';
 
 /** @category Mind */
 interface Observation {

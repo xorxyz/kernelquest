@@ -1,4 +1,4 @@
-import { Stack } from 'xor4-lib/stack';
+import { Stack } from 'xor4-lib';
 import { Thing } from './thing';
 import { Agent } from './agent';
 import { Place } from './place';

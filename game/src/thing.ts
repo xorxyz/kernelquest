@@ -1,10 +1,9 @@
-import { Colors, esc, Style } from 'xor4-lib/esc';
-import { Vector } from 'xor4-lib/math';
+import { Colors, esc, Style, Vector } from 'xor4-lib';
 import { Agent, Foe, Hero } from './agent';
 import { Glyph } from './cell';
 
 /** @category Thing */
-export class EntityType {
+export class BodyType {
   public name: string;
   public glyph: Glyph;
   public style?: string;
@@ -13,51 +12,56 @@ export class EntityType {
 }
 
 /** @category Thing */
-export class Thing {
-  readonly name: string;
-  readonly type: EntityType;
-
-  public owner: Agent | null = null;
-  public glyph: Glyph;
-  public value: string;
+export abstract class Body {
+  readonly name: string = '';
+  readonly type: BodyType;
   public weight: number;
   public position: Vector = new Vector(0, 0);
   public velocity: Vector = new Vector(0, 0);
-  public cursorPosition: Vector = new Vector(0, 0);
 
-  constructor(type: EntityType, name: string = '') {
-    this.name = name;
+  constructor(type: BodyType) {
     this.type = type;
-    this.glyph = type.glyph;
-
-    if (!this.name && type.name) {
-      this.name = type.name;
-    }
+    this.name = type.name;
   }
 
-  get label() {
-    return `${this.glyph.value} ${this.name}`;
-  }
+  abstract renderStyle();
 
   render() {
     let { style } = this.type;
 
-    if (!this.owner && !this.type.style) {
-      style = esc(Colors.Bg.Yellow);
-    }
-    if (this.type instanceof Hero || this.owner?.type instanceof Hero) {
-      style = esc(Colors.Bg.Purple);
-    }
-    if (this.owner?.type instanceof Foe) {
-      style = esc(Colors.Bg.Red);
-    }
+    const rendered = this.renderStyle();
+    if (rendered) style = rendered;
 
-    return style + this.glyph.value + esc(Style.Reset);
+    return style + this.type.glyph.value + esc(Style.Reset);
   }
 }
 
 /** @category Thing */
-export class Wall extends EntityType {
+export class Thing extends Body {
+  public owner: Agent | null = null;
+  public value: string;
+
+  get label() {
+    return `${this.type.glyph.value} ${this.name}`;
+  }
+
+  renderStyle() {
+    if (!this.owner && !this.type.style) {
+      return esc(Colors.Bg.Yellow);
+    }
+    if (this.owner?.type instanceof Hero) {
+      return esc(Colors.Bg.Purple);
+    }
+    if (this.owner?.type instanceof Foe) {
+      return esc(Colors.Bg.Red);
+    }
+
+    return null;
+  }
+}
+
+/** @category Thing */
+export class Wall extends BodyType {
   name = 'wall';
   glyph = new Glyph('##');
   isStatic = true;
@@ -65,7 +69,7 @@ export class Wall extends EntityType {
 }
 
 /** @category Thing */
-export class Door extends EntityType {
+export class Door extends BodyType {
   name = 'door';
   glyph = new Glyph('++');
   isStatic = true;
