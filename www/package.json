@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run watch",
     "watch": "node bin/watch",
-    "build": "node bin/build",
+    "build": "node bin/build && cd .. && npm run generate-docs",
     "test": "standard --fix"
   },
   "repository": {

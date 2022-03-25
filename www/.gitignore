@@ -1,2 +1,4 @@
 !data
 !build
+public/docs/*
+public/images/diagram/dependency-graph.svg

@@ -18,13 +18,19 @@
     "xor4-cli": "./cli"
   },
   "scripts": {
+    "start": "cd cli && npm start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.ts",
     "build": "parcel build",
     "postbuild": "cp -r app/public/.well-known dist/",
-    "docs": "npx typedoc --entryPointStrategy packages --out www/public/docs .",
-    "xor": "cd cli && npm start",
-    "deps": "pwd && npx dependency-cruiser --output-type dot game | dot -T svg > www/public/images/diagrams/dependency-graph.svg"
+    "generate-docs": "run-s docs deps",
+    "docs": "npx typedoc --entryPointStrategy packages --out www/dist/docs .",
+    "deps": "npx dependency-cruiser --output-type dot game | dot -T svg > www/dist/images/diagrams/dependency-graph.svg",
+    "test": "run-s lint tests:* && echo 'All tests ran successfully'",
+    "tests:cli": "cd cli && npm run test",
+    "tests:game": "cd game && npm run test",
+    "tests:interpreter": "cd interpreter && npm run test",
+    "tests:lib": "cd lib && npm run test"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
@@ -36,7 +42,7 @@
     },
     "game": {
       "source": [
-        "game/engine/index.ts"
+        "game/src/index.ts"
       ]
     }
   },
