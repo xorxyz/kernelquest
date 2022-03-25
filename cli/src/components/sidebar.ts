@@ -4,6 +4,7 @@ import { TTY } from '../tty';
 
 const nothing = (n) => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style.Reset)}`;
 
+/** @category Components */
 export class Sidebar extends UiComponent {
   render({ player }: TTY) {
     return [

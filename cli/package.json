@@ -2,9 +2,9 @@
   "name": "xor4-cli",
   "version": "0.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon -x ts-node index.ts -w .",
+    "start": "nodemon -x ts-node src/index.ts -w .",
     "test": "tsc --noEmit"
   },
   "author": "Jonathan Dupré <hello@jonathandupre.com>",

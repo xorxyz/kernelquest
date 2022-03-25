@@ -2,13 +2,15 @@ import { Interpretation, Interpreter, Compiler, Factor } from 'xor4-interpreter'
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
 import { Action } from './action';
-import standardWords from '../lib/words';
+import words from './words';
 
+/** @category Mind */
 interface Observation {
   tick: number,
   message: string
 }
 
+/** @category Mind */
 export class Mind {
   public queue: Queue<Action> = new Queue<Action>();
   public stack: Stack<Factor> = new Stack();
@@ -17,7 +19,7 @@ export class Mind {
   public tick: number = 0;
 
   constructor() {
-    const compiler = new Compiler(standardWords);
+    const compiler = new Compiler(words);
 
     this.interpreter = new Interpreter(compiler, this.stack);
   }

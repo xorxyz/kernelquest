@@ -7,8 +7,10 @@ import { CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH } from '../constants';
 import { Action } from './action';
 import { Wall, Door, Thing } from './thing';
 
+/** @category Place */
 const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
 
+/** @category Place */
 export class Place {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
 

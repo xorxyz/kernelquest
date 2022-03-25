@@ -2,15 +2,19 @@ import { Agent } from './agent';
 import { Thing } from './thing';
 import { Place } from './place';
 
+/** @category Action */
 export abstract class ActionResult {
   public message: string;
   constructor(message: string = '') {
     this.message = message;
   }
 }
+/** @category Action */
 export class ActionSuccess extends ActionResult {}
+/** @category Action */
 export class ActionFailure extends ActionResult {}
 
+/** @category Action */
 export abstract class Action {
   abstract readonly name: string
   abstract readonly cost: number
@@ -37,10 +41,20 @@ export abstract class Action {
   }
 }
 
+/** @category Action */
 export class NoAction extends Action {
   name = 'noop';
   cost = 0;
   perform() {
     return new ActionSuccess();
+  }
+}
+
+/** @category Terminal Actions */
+export abstract class TerminalAction extends Action {
+  terminal;
+  constructor(terminal) {
+    super();
+    this.terminal = terminal;
   }
 }

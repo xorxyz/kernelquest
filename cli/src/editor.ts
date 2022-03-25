@@ -4,6 +4,7 @@ import { LINE_LENGTH } from './component';
 
 declare const Buffer;
 
+/** @category Editor */
 export class Editor {
   line: string = '';
   readonly cursor: Vector = new Vector();

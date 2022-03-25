@@ -1,6 +1,7 @@
 import { LINE_LENGTH, N_OF_LINES, UiComponent } from '../component';
 import { TTY } from '../tty';
 
+/** @category Components */
 export class Output extends UiComponent {
   render({ state }: TTY) {
     return [
@@ -13,6 +14,7 @@ export class Output extends UiComponent {
   }
 }
 
+/** @category Components */
 export class Input extends UiComponent {
   render({ state }: TTY) {
     const { line, prompt } = state;

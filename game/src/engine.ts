@@ -2,19 +2,21 @@ import Clock from 'xor4-lib/clock';
 import { debug } from 'xor4-lib/logging';
 import { EventEmitter } from 'events';
 import { World } from './world';
-import { demoRoom } from '../lib/places';
 import { CLOCK_MS_DELAY } from '../constants';
 
+/** @category Engine */
 export interface EngineOptions {
   world?: World
   rate?: number
 }
 
+/** @category Engine */
 export interface IWaitCallback {
   tick: number
   fn: Function
 }
 
+/** @category Engine */
 export class Engine extends EventEmitter {
   cycle: number = 0;
   world: World;
@@ -24,7 +26,7 @@ export class Engine extends EventEmitter {
   constructor(opts?: EngineOptions) {
     super();
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
-    this.world = opts?.world || new World([demoRoom]);
+    this.world = opts?.world || new World([]);
 
     this.clock.on('tick', this.update.bind(this));
   }

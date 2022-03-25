@@ -2,6 +2,7 @@
   "name": "xor4-app",
   "version": "4.13.0",
   "description": "",
+  "main": "src/script.ts",
   "scripts": {
     "check": "tsc --noEmit",
     "check:watch": "tsc --noEmit --watch",

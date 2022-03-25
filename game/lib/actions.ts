@@ -2,7 +2,7 @@ import { Vector } from 'xor4-lib/math';
 import { Direction } from 'xor4-lib/directions';
 import { debug } from 'xor4-lib/logging';
 import { Quotation, Interpretation } from 'xor4-interpreter';
-import { Action, ActionFailure, ActionResult, ActionSuccess } from '../src/action';
+import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { CursorModeHelpText, Keys } from '../constants';
@@ -17,6 +17,7 @@ import { create } from './places';
  * ====================
 */
 
+/** @category Actions */
 export class WaitAction extends Action {
   name = 'wait';
   cost = 0;
@@ -35,6 +36,7 @@ export class WaitAction extends Action {
   }
 }
 
+/** @category Actions */
 export class RotateAction extends Action {
   name = 'rotate';
   cost = 0;
@@ -46,6 +48,7 @@ export class RotateAction extends Action {
   }
 }
 
+/** @category Actions */
 export class SetHeadingAction extends Action {
   name = 'face';
   cost = 0;
@@ -62,6 +65,7 @@ export class SetHeadingAction extends Action {
   }
 }
 
+/** @category Actions */
 export class StepAction extends Action {
   name = 'step';
   cost = 1;
@@ -108,6 +112,7 @@ export class StepAction extends Action {
   }
 }
 
+/** @category Actions */
 export class GetAction extends Action {
   name = 'get';
   cost = 1;
@@ -162,6 +167,7 @@ export class GetAction extends Action {
   }
 }
 
+/** @category Actions */
 export class PutAction extends Action {
   name = 'put';
   cost = 1;
@@ -184,6 +190,7 @@ export class PutAction extends Action {
   }
 }
 
+/** @category Actions */
 export class ReadAction extends Action {
   name = 'read';
   cost = 10;
@@ -200,6 +207,7 @@ export class ReadAction extends Action {
   }
 }
 
+/** @category Actions */
 export class SpawnAction extends Action {
   name = 'spawn';
   cost = 0;
@@ -225,6 +233,7 @@ export class SpawnAction extends Action {
  * =========
 */
 
+/** @category Actions */
 class PriorityQueue<T> {
   items: Map<T, number> = new Map();
 
@@ -248,6 +257,7 @@ class PriorityQueue<T> {
   }
 }
 
+/** @category Actions */
 export class PathfindingAction extends Action {
   name = 'pathfinding';
   cost = 1;
@@ -392,6 +402,7 @@ export class PathfindingAction extends Action {
   }
 }
 
+/** @category Actions */
 export class PatrolAction extends Action {
   name = 'patrol';
   cost = 1;
@@ -400,6 +411,7 @@ export class PatrolAction extends Action {
   }
 }
 
+/** @category Actions */
 export class CreateAction extends Action {
   name = 'new';
   cost = 0;
@@ -421,6 +433,7 @@ export class CreateAction extends Action {
   }
 }
 
+/** @category Actions */
 export class EvalAction extends Action {
   name = 'eval';
   cost = 0;
@@ -443,6 +456,7 @@ export class EvalAction extends Action {
   }
 }
 
+/** @category Actions */
 export class LookAction extends Action {
   name = 'look';
   cost = 0;
@@ -460,14 +474,7 @@ export class LookAction extends Action {
  * ====================
 */
 
-export abstract class TerminalAction extends Action {
-  terminal;
-  constructor(terminal) {
-    super();
-    this.terminal = terminal;
-  }
-}
-
+/** @category Terminal Actions */
 export class SwitchModeAction extends TerminalAction {
   name = 'switch-mode';
   cost = 0;
@@ -477,6 +484,7 @@ export class SwitchModeAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class MoveCursorAction extends TerminalAction {
   name = 'move-cursor';
   cost = 0;
@@ -496,6 +504,7 @@ export class MoveCursorAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class MoveCursorToAction extends TerminalAction {
   name = 'move-cursor-to';
   cost = 0;
@@ -514,6 +523,7 @@ export class MoveCursorToAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class SelectCellAction extends TerminalAction {
   name = 'select-cell';
   cost = 0;
@@ -529,6 +539,7 @@ export class SelectCellAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class PrintCursorModeHelpAction extends TerminalAction {
   name = 'print-cursor-mode-help';
   cost = 0;

@@ -6,6 +6,7 @@ import { Place } from './place';
 import { Thing } from './thing';
 import { EMPTY_CELL_CHARS } from '../constants';
 
+/** @category Cell */
 export class Glyph {
   private chars: string;
 
@@ -20,6 +21,7 @@ export class Glyph {
   }
 }
 
+/** @category Cell */
 export class Cell {
   public position: Vector;
   public glyph: Glyph = new Glyph();

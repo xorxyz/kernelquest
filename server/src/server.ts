@@ -1,7 +1,6 @@
 import { createServer, Server, Socket } from 'net';
-import { Engine } from 'xor4-game/engine';
-import { TTY } from 'xor4-game/ui/tty';
-import { Hero } from 'xor4-game/engine/agents';
+import { Agent, Engine, Wizard } from 'xor4-game';
+import { TTY } from 'xor4-cli';
 import Connection from './connection';
 
 export interface Params { src?: string }
@@ -22,27 +21,23 @@ export default class GameServer {
 
   async onConnection(socket: Socket) {
     this.i++;
-    const player = new Hero(new Wizard());
+    const agent = new Agent(new Wizard());
 
-    player.name = 'Guest';
-    player.hp.increase(10);
-    player.mp.increase(10);
-    player.position.setXY(3, 0);
+    this.engine.world.places[0].put(agent);
 
-    this.engine.world.rooms[0].add(player);
-
-    const connection = new Connection(player, socket, () => {
-      const room = this.engine.world.find(player);
+    const connection = new Connection(agent, socket, () => {
+      const room = this.engine.world.find(agent);
 
       if (room) {
-        room.remove(player);
+        room.remove(agent);
       }
 
       this.connections.delete(connection);
     });
 
     const terminal = new TTY({
-      player,
+      player: agent,
+      place: this.engine.world.places[0],
       write: () => {},
     });
 

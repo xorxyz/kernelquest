@@ -2,6 +2,7 @@ import { Colors, esc, Style } from 'xor4-lib/esc';
 import { UiComponent } from '../component';
 import { TTY } from '../tty';
 
+/** @category Components */
 const Points = (bg, n) => {
   const str = `${String(n).padStart(3, ' ')} / 10 `;
 
@@ -16,6 +17,7 @@ const Hp = (n) => Points(Colors.Bg.Red, n);
 const Sp = (n) => Points(Colors.Bg.Green, n);
 const Mp = (n) => Points(Colors.Bg.Cyan, n);
 
+/** @category Components */
 export class Stats extends UiComponent {
   render({ player: p }: TTY) {
     return [

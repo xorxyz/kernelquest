@@ -5,6 +5,7 @@ import { Door, Thing } from '../src/thing';
 import { Wizard, Bug, Sheep } from './agents';
 import { Book, Crown, Flag, Gold, Grass, Tree, Water } from './things';
 
+/** @category Places */
 export const create: Record<string, (this: Place, ...any) => any> = {
   flag(x, y) {
     const flag = new Thing(new Flag());
@@ -53,6 +54,7 @@ export const create: Record<string, (this: Place, ...any) => any> = {
   },
 };
 
+/** @category Places */
 export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
   create.wizard.call(this, 4, 4);
 

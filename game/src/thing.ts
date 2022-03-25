@@ -3,6 +3,7 @@ import { Vector } from 'xor4-lib/math';
 import { Agent, Foe, Hero } from './agent';
 import { Glyph } from './cell';
 
+/** @category Thing */
 export class EntityType {
   public name: string;
   public glyph: Glyph;
@@ -11,6 +12,7 @@ export class EntityType {
   readonly isBlocking: boolean = true;
 }
 
+/** @category Thing */
 export class Thing {
   readonly name: string;
   readonly type: EntityType;
@@ -54,6 +56,7 @@ export class Thing {
   }
 }
 
+/** @category Thing */
 export class Wall extends EntityType {
   name = 'wall';
   glyph = new Glyph('##');
@@ -61,6 +64,7 @@ export class Wall extends EntityType {
   style = esc(Colors.Bg.Gray) + esc(Colors.Fg.Black);
 }
 
+/** @category Thing */
 export class Door extends EntityType {
   name = 'door';
   glyph = new Glyph('++');

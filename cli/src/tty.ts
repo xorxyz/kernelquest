@@ -19,8 +19,10 @@ import { Editor } from './editor';
 import { MainView } from './views';
 import { CELL_WIDTH } from './component';
 
+/** @category TTY */
 export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
 
+/** @category TTY */
 export interface IState {
   termMode: boolean
   prompt: string,
@@ -28,12 +30,14 @@ export interface IState {
   stdout: Array<string>
 }
 
+/** @category TTY */
 export interface IConnection {
   write: (str: string) => void,
   player: Agent,
   place: Place
 }
 
+/** @category TTY */
 export class TTY {
   public id: number;
   public player: Agent;

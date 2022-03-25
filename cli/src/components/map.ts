@@ -2,6 +2,7 @@ import { esc, Style } from 'xor4-lib/esc';
 import { UiComponent } from '../component';
 import { TTY } from '../tty';
 
+/** @category Components */
 export class Axis extends UiComponent {
   style = esc(Style.Dim);
   render() {
@@ -15,6 +16,7 @@ export class Axis extends UiComponent {
   }
 }
 
+/** @category Components */
 export class RoomMap extends UiComponent {
   render({ player, place }: TTY) {
     return place.render(player?.sees());

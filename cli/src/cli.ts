@@ -8,9 +8,7 @@ import { EvalAction } from 'xor4-game/lib/actions';
 import { Spirit } from 'xor4-game/lib/agents';
 import { Vector } from 'xor4-lib/math';
 
-export * from './ui';
-
-(async function main() {
+export default async function cli() {
   const { engine, agent } = createGameEngine();
   const rl = readline.createInterface({
     input: process.stdin,
@@ -44,7 +42,7 @@ export * from './ui';
   engine.start();
 
   rl.prompt();
-}());
+}
 
 function createGameEngine() {
   const room = new Place(0, 0, 16, 10);

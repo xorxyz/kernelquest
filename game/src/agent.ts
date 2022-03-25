@@ -2,10 +2,10 @@ import { Points, Rectangle, Vector } from 'xor4-lib/math';
 import { Direction, EAST, NORTH, SOUTH, WEST } from 'xor4-lib/directions';
 import { Colors, esc } from 'xor4-lib/esc';
 import { EntityType, Thing } from './thing';
-import { Action } from './action';
+import { Action, TerminalAction } from './action';
 import { Cell } from './cell';
-import { PathfindingAction, TerminalAction } from '../lib/actions';
 import { Mind } from './mind';
+import { Capability } from './capability';
 
 /**
  states:
@@ -23,43 +23,52 @@ import { Mind } from './mind';
 
 */
 
+/** @category Agent */
 export class HP extends Points {}
+
+/** @category Agent */
 export class SP extends Points {}
+
+/** @category Agent */
 export class MP extends Points {}
+
+/** @category Agent */
 export class GP extends Points {}
 
+/** @category Agent */
 export class AgentType extends EntityType {
   public weight: number = 10;
   public capabilities: Array<Capability> = [];
 }
 
+/** @category Agent */
 export abstract class Hero extends AgentType {
   style = esc(Colors.Bg.Purple);
 }
 
+/** @category Agent */
 export abstract class Friend extends AgentType {
   style = esc(Colors.Bg.Yellow);
 }
 
+/** @category Agent */
 export abstract class Foe extends AgentType {
   style = esc(Colors.Bg.Red);
 }
 
-export abstract class Capability {
-  abstract bootstrap (agent: Agent): void
-  abstract run (agent: Agent, tick: number): void
-}
-
+/** @category Agent */
 export interface IFacing {
   direction: Direction,
   cell: Cell | null
 }
 
+/** @category Agent */
 export enum AgentLogType {
   Info,
   Debug
 }
 
+/** @category Agent */
 export interface AgentLog {
   tick: number,
   message: string,
@@ -67,6 +76,7 @@ export interface AgentLog {
   eventName?: string,
 }
 
+/** @category Agent */
 export class Agent extends Thing {
   public name: string = 'anon';
   declare public type: AgentType;
@@ -80,9 +90,7 @@ export class Agent extends Thing {
   public flashing: boolean = true;
   public isWaitingUntil: null | number = null;
   public halted: boolean = false;
-  public dict = {
-    pathfinding: PathfindingAction,
-  };
+  public dict = {};
   public facing: IFacing = {
     direction: new Direction(SOUTH),
     cell: null,

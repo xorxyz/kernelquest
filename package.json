@@ -21,7 +21,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.ts",
     "build": "parcel build",
-    "postbuild": "cp -r app/public/.well-known dist/"
+    "postbuild": "cp -r app/public/.well-known dist/",
+    "docs": "npx typedoc --entryPointStrategy packages .",
+    "xor": "cd cli && npm start"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
@@ -49,6 +51,7 @@
     "@types/node": "^17.0.6",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
+    "dependency-cruiser": "^11.4.1",
     "eslint": "^8.6.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.22.1",

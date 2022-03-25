@@ -2,6 +2,7 @@ import { esc, Style } from 'xor4-lib/esc';
 import { SCREEN_WIDTH, UiComponent } from '../component';
 import { TTY } from '../tty';
 
+/** @category Components */
 export class Header extends UiComponent {
   style = esc(Style.Invert);
   render(tty: TTY) {
