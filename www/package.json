@@ -3,7 +3,6 @@
   "private": true,
   "version": "2021.2.28",
   "description": "XOR's Website",
-  "main": "src",
   "scripts": {
     "start": "npm run watch",
     "watch": "node bin/watch",
@@ -14,9 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/kareniel/www.git"
   },
-  "keywords": [
-    "www"
-  ],
   "author": "Jonathan Dupré <jonathan@diagonal.sh>",
   "license": "UNLICENSED",
   "bugs": {
