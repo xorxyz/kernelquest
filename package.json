@@ -9,7 +9,8 @@
     "interpreter",
     "game",
     "app",
-    "server"
+    "server",
+    "www"
   ],
   "alias": {
     "xor4-lib": "./lib",
