@@ -1,7 +1,7 @@
 {
   "name": "@xor/www",
   "private": true,
-  "version": "2021.2.28",
+  "version": "2022.03.26",
   "description": "XOR's Website",
   "scripts": {
     "start": "npm run watch",

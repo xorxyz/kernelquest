@@ -6,7 +6,7 @@ If you believe you've found a security issue in software that is maintained in t
 
 ## Reporting Security Issues
 
-Please do not report security vulnerabilities through public GitHub issues. Instead, please report them to the me at jonathan@diagonal.sh. If possible, encrypt your message with my PGP key; you can find the link at https://xor.xyz/.well-known/security.txt
+Please do not report security vulnerabilities through public GitHub issues. Instead, please report them to the me at hello@jonathandupre.com. 
 
 You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure I received your original message.
 
