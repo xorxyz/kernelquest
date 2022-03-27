@@ -48,18 +48,18 @@ function build() {
   console.log('Building...');
 
   const feed = new Feed({
-    title: 'Jonathan Dupré',
-    description: 'Web Security Advisor and Educator.',
-    id: 'https://jonathandupre.com/',
-    link: 'https://jonathandupre.com/',
+    title: 'Kernel Quest',
+    description: 'Capture all the flags and p0wn all the things.',
+    id: 'https://kernel.quest/',
+    link: 'https://kernel.quest/',
     language: 'en',
-    // image: "https://jonathandupre.com/images/logo/logomark-dark-572.png",
-    favicon: 'https://jonathandupre.com/favicon.ico',
-    copyright: '© 2012-2022, Jonathan Dupré.',
+    // image: "https://kernel.quest/images/logo/logomark-dark-572.png",
+    favicon: 'https://kernel.quest/favicon.ico',
+    copyright: '© 2018-2022, Jonathan Dupré.',
     generator: 'None',
     feedLinks: {
-      atom: 'https://jonathandupre.com/atom',
-      rss: 'https://jonathandupre.com/rss',
+      atom: 'https://kernel.quest/atom',
+      rss: 'https://kernel.quest/rss',
     },
     author: {
       name: 'Jonathan Dupré',
@@ -136,7 +136,7 @@ function build() {
           ...item,
           content,
           date: new Date(item.date),
-          link: `https://jonathandupre.com/blog/${item.slug}`,
+          link: `https://kernel.quest/blog/${item.slug}`,
         });
       }
 
