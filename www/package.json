@@ -8,7 +8,7 @@
     "watch": "ts-node bin/watch",
     "build": "run-s build:*",
     "build:www": "ts-node bin/build",
-    "build:docs": "cd .. && npx typedoc --entryPointStrategy packages --out www/dist/docs .",
+    "build:docs": "cd .. && npx typedoc --entryPointStrategy packages --out www/dist/ts .",
     "build:deps": "cd .. && npx dependency-cruiser --output-type dot game | dot -T svg > www/dist/images/diagrams/dependency-graph.svg",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.ts"
