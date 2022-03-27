@@ -7,7 +7,7 @@ sites:
     name: Discord
     src: /images/social/discord.svg
     url: https://discord.gg/kNJqKrkjxQ
-  # -
-  #   name: Twitch
-  #   src: /images/social/twitch.svg
-  #   url: https://twitch.tv/xorxyz
+  -
+    name: Reddit
+    src: /images/social/reddit.svg
+    url: https://reddit.com/r/wizardsofxor
