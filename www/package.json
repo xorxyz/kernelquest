@@ -2,11 +2,14 @@
   "name": "@xor/www",
   "private": true,
   "version": "2022.03.26",
-  "description": "XOR's Website",
+  "description": "The Kernel Quest Website",
   "scripts": {
     "start": "npm run watch",
     "watch": "ts-node bin/watch",
-    "build": "ts-node bin/build && cd .. && npm run generate-docs",
+    "build": "run-s build:*",
+    "build:www": "ts-node bin/build",
+    "build:docs": "cd .. && npx typedoc --entryPointStrategy packages --out www/dist/docs .",
+    "build:deps": "cd .. && npx dependency-cruiser --output-type dot game | dot -T svg > www/dist/images/diagrams/dependency-graph.svg",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.ts"
   },
