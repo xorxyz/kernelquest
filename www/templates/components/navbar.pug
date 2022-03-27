@@ -1,17 +1,18 @@
 input(type="checkbox" id="navbar-toggle")
 
 nav#navbar.w-100.flex.justify-center.pv2.bg-black.white(role="navigation")
-  .container.flex.justify-between.ph2
-    a.bsn.hover-bg-none.white.flex.items-center(href="/") 
-      img#nav-logo(src="/images/logo/xor.svg")
+  .container.flex.justify-between.ph2.h-100
+    a.bsn.hover-bg-none.white.flex.items-center(href="/")
+      span.mh2 🏰
+      h1.f5.code kernel quest
 
     ul.list.dn.flex-ns.items-center.ma0.tr.f7-l.f7
       each item in navbar.items
-        li.pl4.tr
-          a.white(href=item.route aria-haspopup=item.subitems)
+        li.tr
+          a.white.pv2.ph3(href=item.route aria-haspopup=item.subitems)
             | #{ item.name }
       li.pl4.tr
-        a.button.bg-purple(href="https://alpha.xor.xyz") Play
+        a.button.bg-purple(href="https://alpha.kernel.quest") Playtest
 
     label#navbar-button.flex.justify-center.items-center.dn-ns.w1.h1.pa1.mh2.tc.bg-black.br0.ba.bw05.b--white.white.pointer(
       for="navbar-toggle"
