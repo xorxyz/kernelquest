@@ -1,0 +1,16 @@
+extends /templates/layouts/layout.pug
+
+block body
+
+  main.w-100.flex.flex-column.items-center.mv3
+    .container.flex.flex-row.justify-center.ph2
+      div.mv3.dn.flex-ns(style="min-width: 33%")
+        include /templates/components/sidebar.pug
+      div.flex.flex-auto.ph2(style="min-width:512px")
+        section.home-hero.bg-dark-purple.white.flex.items-center.justify-center.ph3.flex-column
+          .container.tc.flex.flex-column.justify-center.items-center.h-100.pv4
+            h2.lh-title.f2.f1-ns.mt0.mv1
+              | About
+
+        section.home-hero.bg-white.black.flex.items-center.ph3.flex-column
+          .container.pv4
