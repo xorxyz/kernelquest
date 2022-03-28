@@ -140,7 +140,12 @@ function build() {
         });
       }
 
-      generatePage(route, dest, { post: { data: pageData, content } });
+      generatePage(route, dest, {
+        dir: fs.readdirSync(path.dirname(filepath)),
+        post: { 
+          data: pageData, content 
+        }, 
+      });
     });
   }
 

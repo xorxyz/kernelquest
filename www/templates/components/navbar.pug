@@ -1,12 +1,12 @@
 input(type="checkbox" id="navbar-toggle")
 
-nav#navbar.w-100.flex.justify-center.bg-black.white(role="navigation")
-  .container.flex.justify-between.ph2.h-100
-    a.bsn.hover-bg-none.white.flex.items-center(href="/")
+nav#navbar.w-100.bg-black.white.flex.flex-row.justify-center(role="navigation")
+  div.flex.justify-between(style="width: 100ex;")
+    a.bsn.hover-bg-none.white.flex.items-center.mh3(href="/")
       span.mh2 🏰
-      h1.f5.code kernel quest
+      h1.f5.fw5.code kernel quest
 
-    ul.list.dn.flex-ns.items-center.ma0.tr.f7-l.f7
+    ul.list.dn.flex-ns.items-center.ma0.tr.f7-l.f7.mh3
       each item in navbar.items
         li.tr
           a.white.pv2.ph3(href=item.route aria-haspopup=item.subitems)
