@@ -8,4 +8,15 @@ block body
 
   section.home-hero.bg-white.black.flex.items-center.ph3.flex-column
     .container.pv4
+      h2 Most recent posts
 
+      div
+        table
+          tbody
+          - routes.blog.sort((a,b) => new Date(b.date) - new Date(a.date))
+            each post in routes.blog
+              tr.lh-copy
+                td.w4(style="vertical-align:top;") #{ post.date } &nbsp;
+                td(style="vertical-align:top;")  
+                  a.link(href='/blog/' + post.slug)
+                    |#{ post.title }
