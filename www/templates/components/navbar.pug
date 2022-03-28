@@ -1,6 +1,6 @@
 input(type="checkbox" id="navbar-toggle")
 
-nav#navbar.w-100.flex.justify-center.pv2.bg-black.white(role="navigation")
+nav#navbar.w-100.flex.justify-center.bg-black.white(role="navigation")
   .container.flex.justify-between.ph2.h-100
     a.bsn.hover-bg-none.white.flex.items-center(href="/")
       span.mh2 🏰
@@ -11,7 +11,7 @@ nav#navbar.w-100.flex.justify-center.pv2.bg-black.white(role="navigation")
         li.tr
           a.white.pv2.ph3(href=item.route aria-haspopup=item.subitems)
             | #{ item.name }
-      li.pl4.tr
+      li.pl2.tr
         a.button.bg-purple(href="https://alpha.kernel.quest") Playtest
 
     label#navbar-button.flex.justify-center.items-center.dn-ns.w1.h1.pa1.mh2.tc.bg-black.br0.ba.bw05.b--white.white.pointer(
