@@ -1,13 +1,13 @@
 import { esc, Style } from 'xor4-lib/esc';
 import { SCREEN_WIDTH, UiComponent } from '../component';
-import { TTY } from '../tty';
+import { VirtualTerminal } from '../pty';
 
 /** @category Components */
 export class Header extends UiComponent {
   style = esc(Style.Invert);
-  render(tty: TTY) {
+  render({ place }: VirtualTerminal) {
     return [(
-      `🏰 Kernel Quest                                  👑 ${tty.place.capturedCrowns.size}/${tty.place.crowns.size}  🚩 ${tty.place.capturedFlags.size}/${tty.place.flags.size}  ⏳ ${String(tty.place.secondsLeft).padStart(3, '0')}`
+      `🏰 Kernel Quest                                  👑 ${place.capturedCrowns.size}/${place.crowns.size}  🚩 ${place.capturedFlags.size}/${place.flags.size}  ⏳ ${String(place.secondsLeft).padStart(3, '0')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }

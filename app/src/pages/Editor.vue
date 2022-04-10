@@ -78,8 +78,7 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { Engine } from 'xor4-game/engine';
-import { World } from 'xor4-game/engine/world';
+import { Engine, World } from 'xor4-game';
 import { StandardGlyphs } from '../constants';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import FileMenu from '../components/FileMenu.vue';

@@ -32,7 +32,8 @@ import { defineComponent, markRaw } from 'vue';
 import { Engine, HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game';
 import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
-import { TTY } from 'xor4-cli';
+import { VirtualTerminal } from 'xor4-cli';
+import { debug } from 'xor4-lib';
 import { Unicode14Addon } from '../../vendor/unicode14';
 
 const hit = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
@@ -68,7 +69,7 @@ let started = false;
 
 export default defineComponent({
   mounted() {
-    console.log('game mounted');
+    debug('game mounted');
     xterm.open(this.$refs.terminal as HTMLDivElement);
     xterm.focus();
     if (started) return;
@@ -79,93 +80,87 @@ export default defineComponent({
     });
 
     const place = engine.world.places[0];
-    const player = engine.world.places[0].findPlayers()[0];
+    const players = place.findPlayers();
+    const hero = players[0];
 
-    place.on(HIT, (e) => hit.play());
-    place.on(STEP, (e) => {
-      if (e?.agent !== player) return;
+    place.events.on(HIT, (e) => hit.play());
+    place.events.on(STEP, (e) => {
+      if (e?.agent !== hero) return;
       step.fastSeek(0);
       step.play();
     });
 
-    place.on(ROTATE, (e) => {
-      if (e?.agent !== player) return;
+    place.events.on(ROTATE, (e) => {
+      if (e?.agent !== hero) return;
       rotate.fastSeek(0);
       rotate.play();
     });
 
-    place.on(GET, (e) => {
+    place.events.on(GET, (e) => {
       get.fastSeek(0);
       get.play();
     });
 
-    place.on(PUT, (e) => {
+    place.events.on(PUT, (e) => {
       put.fastSeek(0);
       put.play();
     });
 
-    place.on(FAIL, (e) => {
-      if (e?.agent !== player) return;
+    place.events.on(FAIL, (e) => {
+      if (e?.agent !== hero) return;
       fail.fastSeek(0);
       fail.play();
     });
 
-    place.on(DIE, (e) => {
-      this.$refs.audio.pause();
+    place.events.on(DIE, (e) => {
+      (this.$refs.audio as HTMLAudioElement).pause();
       die.fastSeek(0);
       die.play();
     });
 
-    place.on('reset', () => {
-      this.$refs.audio.reset();
+    place.events.on('reset', () => {
+      // (this.$refs.audio).reset();
     });
 
     this.tty?.disconnect();
 
-    this.tty = markRaw(new TTY({
-      place,
-      player,
-      write: (str) => xterm.write(str),
-    }));
+    this.tty = markRaw(new VirtualTerminal(hero, place, (str) => xterm.write(str)));
 
-    // this.play();
+    this.play();
 
     started = true;
   },
-  data(): { tty: TTY | undefined, paused: boolean } {
+  data(): { tty: VirtualTerminal | undefined, paused: boolean } {
     return {
       tty: undefined,
-      paused: true,
+      paused: false,
     };
   },
   methods: {
     play() {
+      // start the engine and the music
       engine.start();
       this.paused = false;
-      this.$refs.terminal.focus();
+      // bring the game into focus
+      (this.$refs.terminal as HTMLElement).focus();
     },
     pause() {
+      // pause the engine and the music
       engine.pause();
-      this.$refs.audio.pause();
+      (this.$refs.audio as HTMLAudioElement).pause();
+      // store state
       this.paused = true;
     },
     input(key) {
-      this.tty?.handleInput(Buffer.from(key).toString('hex'));
+      if (!this.tty) {
+        debug('no tty');
+        return;
+      }
+
+      this.tty.handleInput(Buffer.from(key).toString('hex'));
     },
     reset() {
-      engine.world.places[0].reset();
-      this.$refs.audio.reset();
-
-      const place = engine.world.places[0];
-      const player = engine.world.places[0].findPlayers()[0];
-
-      this.tty?.disconnect();
-
-      this.tty = markRaw(new TTY({
-        place,
-        player,
-        write: (str) => xterm.write(str),
-      }));
+      // TODO
     },
   },
 });

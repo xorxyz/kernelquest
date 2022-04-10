@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { Colors, esc, Style, Vector } from 'xor4-lib';
 import { Agent, Foe, Hero } from './agent';
 import { Glyph } from './cell';
@@ -12,7 +13,7 @@ export class BodyType {
 }
 
 /** @category Thing */
-export abstract class Body {
+export abstract class Body extends EventEmitter {
   readonly name: string = '';
   readonly type: BodyType;
   public weight: number;
@@ -20,8 +21,9 @@ export abstract class Body {
   public velocity: Vector = new Vector(0, 0);
 
   constructor(type: BodyType) {
+    super();
     this.type = type;
-    this.name = type.name;
+    this.name = type.name || 'anon';
   }
 
   abstract renderStyle();

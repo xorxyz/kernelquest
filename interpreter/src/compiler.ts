@@ -26,7 +26,7 @@ export class Compiler {
     };
 
     const help = new Operator(['help'], [], () => {
-      throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.`);
+      throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.\n`);
     });
 
     this.dict.help = help;

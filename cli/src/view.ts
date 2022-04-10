@@ -1,5 +1,6 @@
 import { esc, Screen, Style, CLOCK_MS_DELAY } from 'xor4-lib';
 import { UiComponent } from './component';
+import { VirtualTerminal } from './pty';
 
 const CLEAR_RATE = CLOCK_MS_DELAY;
 
@@ -7,11 +8,11 @@ const CLEAR_RATE = CLOCK_MS_DELAY;
 export abstract class View {
   components: Record<string, UiComponent>;
 
-  compile(terminal, tick: number): string {
-    const lines = Object.values(this.components).map((component) =>
-      component.compile(terminal, tick) + esc(Style.Reset));
+  compile(pty: VirtualTerminal, tick: number): string {
+    const lines = Object.values(this.components).sort((a, b) => a.z - b.z).map((component) =>
+      component.compile(pty, tick) + esc(Style.Reset));
 
-    const clear = terminal.connection.player.mind.tick % CLEAR_RATE === 0
+    const clear = pty.player.mind.tick % CLEAR_RATE === 0
       ? esc(Screen.Clear)
       : '';
 

@@ -4,7 +4,7 @@
  */
 import { esc, Cursor } from 'xor4-lib/esc';
 import { Vector } from 'xor4-lib/math';
-import { TTY } from './tty';
+import { VirtualTerminal } from './pty';
 
 /** @category Component */
 export const SCREEN_WIDTH = 72;
@@ -21,17 +21,19 @@ export const CELL_WIDTH = 2;
 export abstract class UiComponent {
   public position: Vector;
   public style: string = '';
+  public z: number = 0;
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, z?: number) {
     this.position = new Vector(x, y);
+    if (z) this.z = z;
   }
 
-  abstract render(terminal: TTY, tick: number): Array<string>
+  abstract render(pty: VirtualTerminal, tick: number): Array<string>
 
-  compile(terminal: TTY, tick: number): string {
+  compile(pty: VirtualTerminal, tick: number): string {
     const { x, y } = this.position;
 
-    return esc(this.style) + this.render(terminal, tick)
+    return esc(this.style) + this.render(pty, tick)
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
