@@ -94,7 +94,7 @@ export class Place {
     let done = false;
     let cost = 0;
 
-    while (!done && cost <= agent.sp.value) {
+    while (!done && cost <= 1) {
       const action = agent.takeTurn(tick);
       if (!action) {
         done = true;

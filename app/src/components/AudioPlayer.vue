@@ -11,14 +11,16 @@
       :muted="muted"
       volume="0.10"
       id="audio_player"
-      class="hidden"
-      src="https://www.kernel.quest/music/dungeon.wav">
+      class="hidden">
+      <source
+        src="https://www.kernel.quest/music/village.wav"
+        type="audio/wav">
+      <source
+        src="https://www.kernel.quest/music/title_screen.wav"
+        type="audio/wav">
       <source
         src="https://www.kernel.quest/music/dungeon.wav"
         type="audio/wav">
-      <!-- <source
-        src="https://www.kernel.quest/music/village.wav"
-        type="audio/wav"> -->
     </audio>
   </div>
 </template>
@@ -26,8 +28,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-const MUTED = '🔇 Muted  ';
-const NOT_MUTED = '🔊 Unmuted';
+const MUTED = '🔊 Unmute';
+const NOT_MUTED = '🔇 Mute';
 
 export default defineComponent({
   data() {
@@ -40,16 +42,17 @@ export default defineComponent({
     togglePause() {
       this.$data.label = this.$data.muted ? NOT_MUTED : MUTED;
       this.$data.muted = !this.$data.muted;
+      if (!this.$data.muted) this.play();
     },
     reset() {
-      this.$refs.audio.fastSeek(0);
-      this.$refs.audio.pause();
+      (this.$refs.audio as HTMLAudioElement).fastSeek(0);
+      (this.$refs.audio as HTMLAudioElement).pause();
     },
     play() {
-      this.$refs.audio.play();
+      (this.$refs.audio as HTMLAudioElement).play();
     },
     pause() {
-      this.$refs.audio.pause();
+      (this.$refs.audio as HTMLAudioElement).pause();
     },
   },
 });
