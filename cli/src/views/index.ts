@@ -1,14 +1,16 @@
 import { UiComponent } from '../component';
 import { Axis, Header, Input, Message, Output, RoomMap, Sidebar, Stats } from '../components';
+import { StackPane } from '../components/stack';
 import { View } from '../view';
 
-const axis = new Axis(23 + 5, 4);
+const axis = new Axis(23 + 5, 3);
 
 /** @category Views */
 export class MainView extends View {
   components: Record<string, UiComponent> = {
     axis,
-    message: new Message(24, 10),
+    stack: new StackPane(22, 15),
+    message: new Message(25, 10, 1),
     nav: new Header(1, 1),
     output: new Output(22, 16),
     profile: new Sidebar(1, 3),
@@ -20,6 +22,5 @@ export class MainView extends View {
 
 /** @category Views */
 export class IntroView extends View {
-  components = {
-  };
+  components = {};
 }

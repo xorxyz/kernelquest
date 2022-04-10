@@ -1,3 +1,4 @@
+import { debug } from 'console';
 import { Agent } from './agent';
 import { Thing } from './thing';
 import { Place } from './place';
@@ -35,6 +36,8 @@ export abstract class Action {
   tryPerforming(ctx: Place, agent: Agent, object?: Agent | Thing): ActionResult {
     if (!this.authorize) return new ActionFailure('Not enough stamina.');
     const result = this.perform(ctx, agent, object);
+
+    debug('tryPerforming() -> result', result);
 
     return result;
   }

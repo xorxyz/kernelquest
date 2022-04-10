@@ -442,9 +442,11 @@ export class EvalAction extends Action {
     const result = agent.mind.interpret(this.text);
 
     if (result instanceof Error) {
+      debug('result.message', result.message);
       return new ActionFailure(result.message);
     } if (result instanceof Interpretation) {
       const term = result.stack.map((factor) => factor.toString()).join(' ');
+
       return new ActionSuccess(`[${term}]`);
     }
     return new ActionFailure('Unhandled Exception.');
