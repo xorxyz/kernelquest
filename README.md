@@ -8,9 +8,8 @@ This is the main source code repository for [Xor](https://xor.xyz). It contains 
 
 ```
 git clone https://github.com/xorxyz/xor4
-cd app
-npm install
-npm start
+cd xor4
+yarn
 ```
 
 ## Contributing to the project

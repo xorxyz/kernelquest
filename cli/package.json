@@ -1,0 +1,21 @@
+{
+  "name": "xor4-cli",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon -x ts-node src/index.ts -w .",
+    "test": "tsc --noEmit"
+  },
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
+  "license": "MIT",
+  "dependencies": {
+    "xor4-lib": "0.0.0",
+    "xor4-game": "0.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.40",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.1.1"
+  }
+}

@@ -1,15 +1,9 @@
-import { Colors, esc } from 'xor4-lib/esc';
-import { Glyph } from '../engine/cell';
-import { EntityType } from '../engine/things';
+import { Colors, esc } from 'xor4-lib';
+import { Glyph } from '../src/cell';
+import { BodyType } from '../src/thing';
 
-export class Wall extends EntityType {
-  name = 'wall';
-  glyph = new Glyph('##');
-  style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
-  isStatic = true;
-}
-
-export class Tree extends EntityType {
+/** @category Things */
+export class Tree extends BodyType {
   name = 'tree';
   glyph = new Glyph('🌲');
   style = esc(Colors.Bg.Green);
@@ -17,7 +11,8 @@ export class Tree extends EntityType {
   isBlocking = true;
 }
 
-export class Grass extends EntityType {
+/** @category Things */
+export class Grass extends BodyType {
   name = 'grass';
   glyph = new Glyph(',,');
   style = esc(Colors.Fg.Green);
@@ -25,7 +20,8 @@ export class Grass extends EntityType {
   isBlocking = false;
 }
 
-export class Water extends EntityType {
+/** @category Things */
+export class Water extends BodyType {
   name = 'water';
   glyph = new Glyph('~~');
   style = esc(Colors.Bg.Blue);
@@ -33,22 +29,26 @@ export class Water extends EntityType {
   isBlocking = true;
 }
 
-export class Flag extends EntityType {
+/** @category Things */
+export class Flag extends BodyType {
   name = 'flag';
   glyph = new Glyph('🚩');
 }
 
-export class Crown extends EntityType {
+/** @category Things */
+export class Crown extends BodyType {
   name = 'crown';
   glyph = new Glyph('👑');
 }
 
-export class Book extends EntityType {
+/** @category Things */
+export class Book extends BodyType {
   name = 'book';
   glyph = new Glyph('📕');
 }
 
-export class Gold extends EntityType {
+/** @category Things */
+export class Gold extends BodyType {
   name = 'gold';
   glyph = new Glyph('💰');
 }

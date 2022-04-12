@@ -1,4 +1,4 @@
-import { Ring, Vector } from './math';
+import { coinFlip, Ring, Vector } from './math';
 
 export class Heading extends Vector {}
 
@@ -53,4 +53,17 @@ export class Direction {
     const c = new Direction(this.value);
     return c;
   }
+}
+
+export function getRandomDirection() {
+  const direction = new Vector();
+  const vertical = coinFlip();
+
+  if (vertical === 1) {
+    direction.setY(coinFlip());
+  } else {
+    direction.setX(coinFlip());
+  }
+
+  return direction;
 }

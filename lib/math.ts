@@ -185,19 +185,6 @@ export function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-export function getRandomDirection() {
-  const direction = new Vector();
-  const vertical = coinFlip();
-
-  if (vertical === 1) {
-    direction.setY(coinFlip());
-  } else {
-    direction.setX(coinFlip());
-  }
-
-  return direction;
-}
-
 export function isNumeric(str: string) {
   // eslint-disable-next-line no-restricted-globals
   return !isNaN(str as any) && !isNaN(parseFloat(str));
@@ -258,3 +245,5 @@ export class Ring<T> {
     return this.current;
   }
 }
+
+export const forN = (n: number, fn) => new Array(n).fill(0).forEach(fn);

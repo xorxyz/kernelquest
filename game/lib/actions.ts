@@ -1,23 +1,18 @@
-import { Vector } from 'xor4-lib/math';
-import { Direction } from 'xor4-lib/directions';
-import { debug } from 'xor4-lib/logging';
-import { Quotation } from 'xor4-interpreter/literals';
-import { Action, ActionFailure, ActionResult, ActionSuccess } from '../engine/actions';
-import { Place } from '../engine/places';
-import { TTY } from '../ui/tty';
-import { Agent, AgentType, Foe, Hero } from '../engine/agents';
-import { CursorModeHelpText, Keys } from '../constants';
-import { HIT, STEP, ROTATE, GET, PUT, DIE, FAIL } from '../engine/events';
-import { Thing } from '../engine/things';
-import { Cell, Glyph } from '../engine/cell';
+import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
+import { Interpretation } from 'xor4-interpreter';
+import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
+import { Place } from '../src/place';
+import { Agent, AgentType, Foe, Hero } from '../src/agent';
+import { Thing } from '../src/thing';
+import { Cell, Glyph } from '../src/cell';
 import { Crown, Flag } from './things';
-import { create } from './places';
 
 /*
  * Actions in the World
  * ====================
 */
 
+/** @category Actions */
 export class WaitAction extends Action {
   name = 'wait';
   cost = 0;
@@ -31,22 +26,24 @@ export class WaitAction extends Action {
       agent.isWaitingUntil += this.duration;
       return new ActionSuccess(`Waiting an additional ${this.duration} ticks.`);
     }
-    agent.isWaitingUntil = agent.tick + this.duration;
+    agent.isWaitingUntil = agent.mind.tick + this.duration;
     return new ActionSuccess('');
   }
 }
 
+/** @category Actions */
 export class RotateAction extends Action {
   name = 'rotate';
   cost = 0;
   perform(ctx: Place, agent: Agent) {
     agent.facing.direction.rotate();
     agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-    ctx.emit(ROTATE, { agent });
+    // ctx.emit(ROTATE, { agent });
     return new ActionSuccess();
   }
 }
 
+/** @category Actions */
 export class SetHeadingAction extends Action {
   name = 'face';
   cost = 0;
@@ -57,12 +54,13 @@ export class SetHeadingAction extends Action {
   }
   perform(ctx: Place, agent: Agent) {
     agent.facing.direction.rotateUntil(this.direction.value);
-    ctx.emit(ROTATE, { agent });
+    // ctx.emit(ROTATE, { agent });
     agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
     return new ActionSuccess();
   }
 }
 
+/** @category Actions */
 export class StepAction extends Action {
   name = 'step';
   cost = 1;
@@ -72,10 +70,10 @@ export class StepAction extends Action {
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
-        ctx.emit(DIE);
+        // ctx.emit(DIE);
       } else {
         agent.velocity.sub(agent.facing.direction.value);
-        ctx.emit(HIT);
+        // ctx.emit(HIT);
       }
       return new ActionFailure();
     }
@@ -86,11 +84,11 @@ export class StepAction extends Action {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
-          ctx.emit(DIE);
-          target.slot.glyph = new Glyph('☠️ ');
+          // ctx.emit(DIE);
+          target.slot.type.glyph = new Glyph('☠️ ');
         } else {
           target.slot.velocity.add(agent.facing.direction.value);
-          ctx.emit(HIT);
+          // ctx.emit(HIT);
         }
         return new ActionSuccess();
       }
@@ -101,7 +99,7 @@ export class StepAction extends Action {
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-      ctx.emit(STEP, { agent });
+      // ctx.emit(STEP, { agent });
       return new ActionSuccess();
     }
 
@@ -109,99 +107,102 @@ export class StepAction extends Action {
   }
 }
 
+/** @category Actions */
 export class GetAction extends Action {
   name = 'get';
   cost = 1;
   perform(ctx: Place, agent: Agent) {
     if (!agent.facing.cell || !agent.facing.cell.slot) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
     }
 
     if (agent.hand) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('You hands are full.');
     }
 
     if (agent.facing.cell.slot instanceof Agent ||
        (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
       return new ActionFailure('You can\'t get this.');
     }
 
     if (agent.facing.cell && agent.facing.cell.containsFoe()) {
       agent.hp.decrease(1);
-      ctx.emit(HIT);
+      // ctx.emit(HIT);
       return new ActionFailure();
     }
 
     const thing = agent.get();
 
     if (thing) {
-      ctx.emit(GET);
+      // ctx.emit(GET);
 
       if (thing instanceof Thing) {
         thing.owner = agent;
 
         if (thing.type instanceof Crown) {
           ctx.capturedCrowns.add(thing);
-          ctx.emit('crown');
+          // ctx.emit('crown');
         }
 
         if (thing.type instanceof Flag) {
           ctx.capturedFlags.add(thing);
-          ctx.emit('flag');
+          // ctx.emit('flag');
         }
       }
 
       return new ActionSuccess(`You get the ${thing.name}.`);
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure();
   }
 }
 
+/** @category Actions */
 export class PutAction extends Action {
   name = 'put';
   cost = 1;
   perform(ctx: Place, agent: Agent) {
     if (!agent.hand) {
-      ctx.emit(FAIL);
+      // ctx.emit(FAIL);
 
       return new ActionFailure('You are not holding anything.');
     }
 
     const target = ctx.cellAt(agent.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
-      ctx.emit(PUT);
+      // ctx.emit(PUT);
       return new ActionSuccess(`You put down the ${(target.slot as Thing).name}.`);
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure('There\'s already something here.');
   }
 }
 
+/** @category Actions */
 export class ReadAction extends Action {
   name = 'read';
   cost = 10;
   perform(ctx: Place, agent: Agent) {
     if (agent.hand) {
-      const { value } = agent.hand;
-      console.log(value);
+      // const { value } = agent.hand;
 
       return new ActionSuccess();
     }
 
-    ctx.emit(FAIL);
+    // ctx.emit(FAIL);
 
     return new ActionFailure();
   }
 }
 
+/** @category Actions */
 export class SpawnAction extends Action {
   name = 'spawn';
   cost = 0;
@@ -227,6 +228,7 @@ export class SpawnAction extends Action {
  * =========
 */
 
+/** @category Actions */
 class PriorityQueue<T> {
   items: Map<T, number> = new Map();
 
@@ -250,6 +252,7 @@ class PriorityQueue<T> {
   }
 }
 
+/** @category Actions */
 export class PathfindingAction extends Action {
   name = 'pathfinding';
   cost = 1;
@@ -271,7 +274,7 @@ export class PathfindingAction extends Action {
 
     const actions = this.buildPathActions(ctx, agent, path.reverse());
 
-    actions.forEach((action) => agent.queue.add(action));
+    actions.forEach((action) => agent.schedule(action));
 
     return new ActionSuccess('Found a path to the destination cell.');
   }
@@ -394,6 +397,7 @@ export class PathfindingAction extends Action {
   }
 }
 
+/** @category Actions */
 export class PatrolAction extends Action {
   name = 'patrol';
   cost = 1;
@@ -402,20 +406,60 @@ export class PatrolAction extends Action {
   }
 }
 
-export class CreateAction extends Action {
-  name = 'new';
+// /** @category Actions */
+// export class CreateAction extends Action {
+//   name = 'new';
+//   cost = 0;
+//   program: Quotation;
+//   args: Quotation;
+//   constructor(program: Quotation, args: Quotation) {
+//     super();
+//     this.program = program;
+//     this.args = args;
+//   }
+//   perform(ctx: Place) {
+//     const name = this.program.value[1].lexeme;
+//     const createFn = create[name];
+//     const created = createFn.call(ctx);
+//     console.log('created', created);
+//     ctx.put(created);
+//     if (!createFn) return new ActionFailure(`Could not create '${name}'`);
+//     return new ActionSuccess();
+//   }
+// }
+
+/** @category Actions */
+export class EvalAction extends Action {
+  name = 'eval';
   cost = 0;
-  program: Quotation;
-  args: Quotation;
-  constructor(program: Quotation, args: Quotation) {
+  text: string;
+  constructor(text: string) {
     super();
-    this.program = program;
-    this.args = args;
+    this.text = text;
   }
-  perform() {
-    const name = this.program.value[1].lexeme;
-    const createFn = create[name];
-    if (!createFn) return new ActionFailure(`Could not create '${name}'`);
+
+  perform(ctx: Place, agent: Agent) {
+    const result = agent.mind.interpret(this.text);
+
+    if (result instanceof Error) {
+      return new ActionFailure(result.message);
+    } if (result instanceof Interpretation) {
+      const term = result.stack.map((factor) => factor.toString()).join(' ');
+      return new ActionSuccess(`[${term}]`);
+    }
+    return new ActionFailure('Unhandled Exception.');
+  }
+}
+
+/** @category Actions */
+export class LookAction extends Action {
+  name = 'look';
+  cost = 0;
+  perform(ctx: Place, agent: Agent) {
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: `${ctx.render(agent.sees()).join('\n')}`,
+    });
     return new ActionSuccess();
   }
 }
@@ -425,30 +469,23 @@ export class CreateAction extends Action {
  * ====================
 */
 
-export abstract class TerminalAction extends Action {}
-
+/** @category Terminal Actions */
 export class SwitchModeAction extends TerminalAction {
   name = 'switch-mode';
   cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
   perform() {
     this.terminal.switchModes();
     return new ActionSuccess();
   }
 }
 
+/** @category Terminal Actions */
 export class MoveCursorAction extends TerminalAction {
   name = 'move-cursor';
   cost = 0;
-  terminal: TTY;
   direction: Vector;
-  constructor(terminal: TTY, direction: Vector) {
-    super();
-    this.terminal = terminal;
+  constructor(terminal, direction: Vector) {
+    super(terminal);
     this.direction = direction;
   }
   authorize() { return true; }
@@ -462,14 +499,13 @@ export class MoveCursorAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class MoveCursorToAction extends TerminalAction {
   name = 'move-cursor-to';
   cost = 0;
-  terminal: TTY;
   destination: Vector;
-  constructor(terminal: TTY, destination: Vector) {
-    super();
-    this.terminal = terminal;
+  constructor(terminal, destination: Vector) {
+    super(terminal);
     this.destination = destination;
   }
   authorize() { return true; }
@@ -482,14 +518,10 @@ export class MoveCursorToAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class SelectCellAction extends TerminalAction {
   name = 'select-cell';
   cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
   authorize() { return true; }
   perform(ctx, agent: Agent) {
     this.terminal.switchModes();
@@ -502,40 +534,13 @@ export class SelectCellAction extends TerminalAction {
   }
 }
 
+/** @category Terminal Actions */
 export class PrintCursorModeHelpAction extends TerminalAction {
   name = 'print-cursor-mode-help';
   cost = 0;
-  terminal: TTY;
-  constructor(terminal: TTY) {
-    super();
-    this.terminal = terminal;
-  }
   authorize() { return true; }
   perform() {
     this.terminal.write(`${CursorModeHelpText.join('\n')}\n`);
     return new ActionSuccess();
-  }
-}
-
-export class EvalAction extends Action {
-  name = 'eval';
-  cost = 1;
-  text: string;
-  constructor(text: string) {
-    super();
-    this.text = text;
-  }
-  perform(ctx: Place, agent: Agent) {
-    const [err, interpretation] = agent.mind.interpreter.interpret(this.text, agent.queue);
-
-    debug('eval', err, interpretation);
-
-    if (err) {
-      return new ActionFailure(err.message);
-    }
-
-    const term = interpretation?.stack.map((factor) => factor.toString()).join(' ');
-
-    return new ActionSuccess(`[${term}]`);
   }
 }

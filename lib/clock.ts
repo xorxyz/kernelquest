@@ -3,7 +3,7 @@
  */
 import { EventEmitter } from 'events';
 
-export default class Clock extends EventEmitter {
+export class Clock extends EventEmitter {
   paused: boolean = true;
   private stepMsDelay: number;
   private tick: number = 0;

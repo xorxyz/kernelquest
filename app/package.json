@@ -2,6 +2,7 @@
   "name": "xor4-app",
   "version": "4.13.0",
   "description": "",
+  "main": "src/script.ts",
   "scripts": {
     "check": "tsc --noEmit",
     "check:watch": "tsc --noEmit --watch",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@parcel/packager-ts": "^2.0.1",
+    "@parcel/transformer-raw": "^2.0.1",
     "@parcel/transformer-typescript-types": "^2.0.1",
     "@parcel/transformer-vue": "^2.0.1",
     "@parcel/validator-typescript": "^2.0.1",

@@ -2,15 +2,16 @@
   "name": "xor4-server",
   "version": "0.0.0",
   "description": "",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'"
+    "start": "nodemon -x ts-node src/index.ts -w . -e ts -i '**/*.test.ts'"
   },
   "author": "Jonathan Dupré <jonathan@diagonal.sh>",
   "license": "MIT",
   "dependencies": {
+    "xor4-cli": "0.0.0",
     "xor4-lib": "0.0.0",
-    "xor4-game": "0.0.0",
-    "zksync": "^0.11.6"
+    "xor4-game": "0.0.0"
   },
   "devDependencies": {
     "@types/node": "^13.13.40",
