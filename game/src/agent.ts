@@ -1,5 +1,5 @@
 import {
-  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug, LINE_LENGTH,
+  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug,
 } from 'xor4-lib';
 import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
@@ -35,7 +35,7 @@ export class MP extends Points {}
 export class GP extends Points {}
 
 /** @category Agent */
-export class AgentType extends BodyType {
+export abstract class AgentType extends BodyType {
   public weight: number = 10;
   public capabilities: Array<Capability> = [];
 }
