@@ -2,7 +2,7 @@ import { Clock, CLOCK_MS_DELAY, debug, East, Vector, West } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
 import { Place } from './place';
-import { Dragon, King, Spirit } from '../lib';
+import { Dragon, King } from '../lib';
 import { Agent } from './agent';
 
 const defaultPlace = new Place(0, 0);

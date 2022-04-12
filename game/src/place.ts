@@ -228,7 +228,7 @@ export class Place {
   }
 
   reset() {
-    this.emit('reset');
+    this.events.emit('reset');
     this.clear();
     if (this.setupFn) this.setupFn();
   }

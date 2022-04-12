@@ -45,7 +45,7 @@ export default async function cli() {
 }
 
 function createGameEngine() {
-  const room = new Place(0, 0, 16, 10);
+  const room = new Place(0, 0);
   const world = new World([room]);
   const engine = new Engine({ world });
 
