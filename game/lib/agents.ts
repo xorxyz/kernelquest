@@ -3,6 +3,13 @@ import { Glyph } from '../src/cell';
 import { RandomWalkCapability } from './capabilities';
 
 /** @category Agents */
+export class King extends Hero {
+  name = 'king';
+  glyph = new Glyph('🤴');
+  weight = 1;
+}
+
+/** @category Agents */
 export class Spirit extends Hero {
   name = 'spirit';
   glyph = new Glyph('👼');
@@ -33,6 +40,13 @@ export class Sheep extends Friend {
   glyph = new Glyph('🐑');
   capabilities = [new RandomWalkCapability()];
   weight = 10;
+}
+
+/** @category Agents */
+export class Dragon extends Foe {
+  name = 'dragon';
+  glyph = new Glyph('🐉');
+  weight = 1;
 }
 
 /** @category Agents */

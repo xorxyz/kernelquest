@@ -5,7 +5,7 @@ import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-import { Crown, Flag } from './things';
+// import { Crown, Flag } from './things';
 import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
 
 /*
@@ -143,15 +143,15 @@ export class GetAction extends Action {
       if (thing instanceof Thing) {
         thing.owner = agent;
 
-        if (thing.type instanceof Crown) {
-          ctx.capturedCrowns.add(thing);
-          ctx.events.emit('crown');
-        }
+        // if (thing.type instanceof Crown) {
+        //   ctx.capturedCrowns.add(thing);
+        //   ctx.events.emit('crown');
+        // }
 
-        if (thing.type instanceof Flag) {
-          ctx.capturedFlags.add(thing);
-          ctx.events.emit('flag');
-        }
+        // if (thing.type instanceof Flag) {
+        //   ctx.capturedFlags.add(thing);
+        //   ctx.events.emit('flag');
+        // }
       }
 
       return new ActionSuccess(`You get the ${thing.name}.`);

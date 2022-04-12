@@ -21,15 +21,6 @@ export class Grass extends BodyType {
 }
 
 /** @category Things */
-export class Water extends BodyType {
-  name = 'water';
-  glyph = new Glyph('~~');
-  style = esc(Colors.Bg.Blue);
-  isStatic = true;
-  isBlocking = true;
-}
-
-/** @category Things */
 export class Flag extends BodyType {
   name = 'flag';
   glyph = new Glyph('🚩');
