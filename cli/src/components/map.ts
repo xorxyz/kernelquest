@@ -1,6 +1,6 @@
 import { esc, Style } from 'xor4-lib/esc';
 import { UiComponent } from '../component';
-import { TTY } from '../tty';
+import { VirtualTerminal } from '../pty';
 
 /** @category Components */
 export class Axis extends UiComponent {
@@ -18,7 +18,7 @@ export class Axis extends UiComponent {
 
 /** @category Components */
 export class RoomMap extends UiComponent {
-  render({ player, place }: TTY) {
+  render({ player, place }: VirtualTerminal) {
     return place.render(player?.sees());
   }
 }

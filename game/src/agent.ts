@@ -1,5 +1,5 @@
 import {
-  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc,
+  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug,
 } from 'xor4-lib';
 import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
@@ -35,7 +35,7 @@ export class MP extends Points {}
 export class GP extends Points {}
 
 /** @category Agent */
-export class AgentType extends BodyType {
+export abstract class AgentType extends BodyType {
   public weight: number = 10;
   public capabilities: Array<Capability> = [];
 }
@@ -79,7 +79,7 @@ export interface AgentLog {
 export class Agent extends Body {
   public name: string = 'anon';
   declare public type: AgentType;
-  public mind: Mind;
+  public mind: Mind = new Mind();
   public hand: Agent | Thing | null = null;
   public eyes: Agent | Thing | null = null;
   public hp = new HP();
@@ -96,15 +96,21 @@ export class Agent extends Body {
   };
   public cursorPosition: Vector = new Vector(0, 0);
   public experience: number = 0;
-  public logs: Array<AgentLog> = [];
+  public logs: Array<AgentLog> = [
+    { tick: 0, message: 'Use \'help\' for more commands.' },
+  ];
 
   constructor(type: AgentType) {
     super(type);
-    this.mind = new Mind();
 
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);
     });
+  }
+
+  remember(log: AgentLog) {
+    debug('remembering', log);
+    this.logs.push(log);
   }
 
   renderStyle() {
@@ -160,9 +166,9 @@ export class Agent extends Body {
       }
     }
 
-    if (this.halted && !(this.mind.queue.peek() instanceof TerminalAction)) {
-      return null;
-    }
+    // if (this.halted && !(this.mind.queue.peek() instanceof TerminalAction)) {
+    //   return null;
+    // }
 
     const action = this.mind.queue.next();
 

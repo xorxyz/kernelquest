@@ -2,7 +2,6 @@
   "name": "xor4-app",
   "version": "4.13.0",
   "description": "",
-  "main": "src/script.ts",
   "scripts": {
     "check": "tsc --noEmit",
     "check:watch": "tsc --noEmit --watch",
@@ -20,6 +19,7 @@
     "twemoji": "^13.1.0",
     "vue": "^3.2.26",
     "vue-router": "^4.0.12",
+    "xor4-cli": "0.0.0",
     "xor4-game": "0.0.0",
     "xor4-lib": "0.0.0",
     "xor4-interpreter": "0.0.0",

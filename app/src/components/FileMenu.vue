@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Engine } from 'xor4-game/engine';
+import { Engine } from 'xor4-game';
 import { debug } from 'xor4-lib/logging';
 import { defineComponent } from 'vue';
 

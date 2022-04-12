@@ -1,6 +1,6 @@
 import { Colors, esc, Style } from 'xor4-lib/esc';
 import { UiComponent } from '../component';
-import { TTY } from '../tty';
+import { VirtualTerminal } from '../pty';
 
 /** @category Components */
 const Points = (bg, n) => {
@@ -19,7 +19,7 @@ const Mp = (n) => Points(Colors.Bg.Cyan, n);
 
 /** @category Components */
 export class Stats extends UiComponent {
-  render({ player: p }: TTY) {
+  render({ player: p }: VirtualTerminal) {
     return [
       '┌───────────────────┐',
       '│ level: 1          │',

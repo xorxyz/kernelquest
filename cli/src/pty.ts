@@ -1,4 +1,4 @@
-import { Cursor, esc, Vector, CLOCK_MS_DELAY, CursorModeHelpText, Keys, Signals } from 'xor4-lib';
+import { Cursor, esc, Vector, CursorModeHelpText, Keys, Signals, debug } from 'xor4-lib';
 import {
   EvalAction,
   GetAction,
@@ -16,42 +16,33 @@ import { Editor } from './editor';
 import { MainView } from './views';
 import { CELL_WIDTH } from './component';
 
-/** @category TTY */
-export const REFRESH_RATE = CLOCK_MS_DELAY * 3;
-
-/** @category TTY */
-export interface IState {
+/** @category PTY */
+export interface IVirtalTerminalState {
   termMode: boolean
   prompt: string,
   line: string,
   stdout: Array<string>
 }
 
-/** @category TTY */
-export interface IConnection {
-  write: (str: string) => void,
-  player: Agent,
-  place: Place
-}
-
-/** @category TTY */
-export class TTY {
+/** @category PTY */
+export class VirtualTerminal {
   public id: number;
   public player: Agent;
   readonly place: Place;
-  public connection: IConnection;
-  public state: IState;
+  public state: IVirtalTerminalState;
   public lineEditor: Editor = new Editor();
   public view: MainView;
-  public stdout: Array<string>;
   public waiting = false;
+  public send: Function;
+
+  public paused = true;
 
   private timer;
 
-  constructor(connection: IConnection) {
-    this.connection = connection;
-    this.player = connection.player;
-    this.place = connection.place;
+  constructor(hero: Agent, place: Place, send: Function) {
+    this.player = hero;
+    this.place = place;
+    this.send = send;
     this.view = new MainView();
     this.state = {
       termMode: false,
@@ -60,12 +51,17 @@ export class TTY {
       stdout: CursorModeHelpText,
     };
 
-    this.timer = setInterval(
-      this.render.bind(this),
-      REFRESH_RATE,
-    );
+    place.events.on('pause', () => {
+      this.paused = true;
+      this.render(place.tick);
+    });
 
-    this.render(this.player.mind.tick);
+    place.events.on('start', () => {
+      this.paused = false;
+      this.render(place.tick);
+    });
+
+    place.events.on('update', () => this.render(place.tick));
   }
 
   disconnect() {
@@ -81,12 +77,14 @@ export class TTY {
   handleInput(str: string) {
     if (this.waiting) return;
 
+    // Ctrl-C disconnects the pty
     if (str === Signals.SIGINT) {
       console.log('received sigint!');
       this.disconnect();
       return;
     }
 
+    // Restart the level after you're dead by pressing Enter.
     if (str === Keys.ENTER && this.player.hp.value <= 0) {
       this.place.reset();
       return;
@@ -116,11 +114,13 @@ export class TTY {
   handleTerminalInput(str: string): void {
     if (str === Keys.ENTER) {
       if (this.lineEditor.value) {
+        debug('got input', this.lineEditor.value);
         const text = this.lineEditor.value.trim();
 
         this.write(this.state.prompt + text);
 
-        this.player.mind.queue.add(new EvalAction(text));
+        const action = new EvalAction(text);
+        this.player.schedule(action);
         this.state.line = '';
         this.lineEditor.reset();
 
@@ -131,8 +131,6 @@ export class TTY {
     } else if (this.lineEditor.insert(str) && this.view.components.prompt) {
       this.state.line = this.lineEditor.value.replace('\n', '');
     }
-
-    this.render(this.player.mind.tick);
   }
 
   getActionForKey(str: string): Action | null {
@@ -195,18 +193,18 @@ export class TTY {
   }
 
   render(tick: number) {
-    if (!this.connection) return;
+    if (!this.place) return;
 
     const output = this.view.compile(this, tick);
 
-    this.connection.write(output);
+    this.send(output);
 
     this.drawCursor();
   }
 
   drawCursor() {
+    if (this.paused) return;
     if (!this.player.isAlive) return;
-    if (!this.connection) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 
     const cursorUpdate = this.state.termMode
@@ -219,6 +217,6 @@ export class TTY {
         this.view.components.room.position.y + this.player.cursorPosition.y,
       ));
 
-    this.connection.write(cursorUpdate);
+    this.send(cursorUpdate);
   }
 }

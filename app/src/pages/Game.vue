@@ -21,7 +21,9 @@
         <span
           class="button link pv1 ph2 pointer mh1"
           @click="reset">↩️ Reset</span>
-        <span class="button link pv1 ph2 pointer mh1"><AudioPlayer ref="audio" /></span>
+        <span class="button link pv1 ph2 pointer mh1">
+          <AudioPlayer ref="audio" />
+        </span>
       </div>
     </div>
   </div>
@@ -32,16 +34,10 @@ import { defineComponent, markRaw } from 'vue';
 import { Engine, HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game';
 import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
-import { TTY } from 'xor4-cli';
+import { VirtualTerminal } from 'xor4-cli';
+import { debug } from 'xor4-lib';
 import { Unicode14Addon } from '../../vendor/unicode14';
-
-const hit = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
-const step = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
-const rotate = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
-const get = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
-const put = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
-const fail = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
-const die = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
+import AudioPlayer from '../components/AudioPlayer.vue';
 
 const engine = markRaw(new Engine({}));
 const fitAddon = new FitAddon.FitAddon();
@@ -68,7 +64,7 @@ let started = false;
 
 export default defineComponent({
   mounted() {
-    console.log('game mounted');
+    debug('game mounted');
     xterm.open(this.$refs.terminal as HTMLDivElement);
     xterm.focus();
     if (started) return;
@@ -79,93 +75,92 @@ export default defineComponent({
     });
 
     const place = engine.world.places[0];
-    const player = engine.world.places[0].findPlayers()[0];
+    const players = place.findPlayers();
+    const hero = players[0];
 
-    place.on(HIT, (e) => hit.play());
-    place.on(STEP, (e) => {
-      if (e?.agent !== player) return;
-      step.fastSeek(0);
-      step.play();
+    place.events.on(HIT, () => {
+      const sound = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on(ROTATE, (e) => {
-      if (e?.agent !== player) return;
-      rotate.fastSeek(0);
-      rotate.play();
+    place.events.on(STEP, (e) => {
+      if (e?.agent !== hero) return;
+      const sound = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on(GET, (e) => {
-      get.fastSeek(0);
-      get.play();
+    place.events.on(ROTATE, (e) => {
+      if (e?.agent !== hero) return;
+      const sound = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on(PUT, (e) => {
-      put.fastSeek(0);
-      put.play();
+    place.events.on(GET, () => {
+      const sound = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on(FAIL, (e) => {
-      if (e?.agent !== player) return;
-      fail.fastSeek(0);
-      fail.play();
+    place.events.on(PUT, () => {
+      const sound = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on(DIE, (e) => {
-      this.$refs.audio.pause();
-      die.fastSeek(0);
-      die.play();
+    place.events.on(FAIL, (e) => {
+      if (e?.agent !== hero) return;
+      const sound = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
+      sound.play();
     });
 
-    place.on('reset', () => {
-      this.$refs.audio.reset();
+    place.events.on(DIE, () => {
+      (this.$refs.audio as HTMLAudioElement).pause();
+      const sound = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
+      sound.play();
+    });
+
+    place.events.on('reset', () => {
+      (this.$refs.audio as InstanceType<typeof AudioPlayer>).reset();
     });
 
     this.tty?.disconnect();
 
-    this.tty = markRaw(new TTY({
-      place,
-      player,
-      write: (str) => xterm.write(str),
-    }));
+    this.tty = markRaw(new VirtualTerminal(hero, place, (str) => xterm.write(str)));
 
-    // this.play();
+    this.play();
 
     started = true;
   },
-  data(): { tty: TTY | undefined, paused: boolean } {
+  data(): { tty: VirtualTerminal | undefined, paused: boolean } {
     return {
       tty: undefined,
-      paused: true,
+      paused: false,
     };
   },
   methods: {
     play() {
+      // start the engine and the music
       engine.start();
       this.paused = false;
-      this.$refs.terminal.focus();
+      (this.$refs.audio as InstanceType<typeof AudioPlayer>).play();
+      // bring the game into focus
+      (this.$refs.terminal as HTMLElement).focus();
     },
     pause() {
+      // pause the engine and the music
       engine.pause();
-      this.$refs.audio.pause();
+      (this.$refs.audio as InstanceType<typeof AudioPlayer>).pause();
+      // store state
       this.paused = true;
     },
     input(key) {
-      this.tty?.handleInput(Buffer.from(key).toString('hex'));
+      if (!this.tty) {
+        debug('no tty');
+        return;
+      }
+
+      this.tty.handleInput(Buffer.from(key).toString('hex'));
     },
     reset() {
-      engine.world.places[0].reset();
-      this.$refs.audio.reset();
-
-      const place = engine.world.places[0];
-      const player = engine.world.places[0].findPlayers()[0];
-
-      this.tty?.disconnect();
-
-      this.tty = markRaw(new TTY({
-        place,
-        player,
-        write: (str) => xterm.write(str),
-      }));
+      // TODO
     },
   },
 });

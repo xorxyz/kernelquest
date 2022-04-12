@@ -1,5 +1,5 @@
 import { Interpretation, Interpreter, Compiler, Factor } from 'xor4-interpreter';
-import { Queue, Stack } from 'xor4-lib';
+import { debug, Queue, Stack } from 'xor4-lib';
 import { Action } from './action';
 import words from '../lib/words';
 
@@ -25,6 +25,8 @@ export class Mind {
 
   interpret(line: string): Interpretation | Error {
     const result = this.interpreter.interpret(line, this.queue);
+
+    debug(`interpret(${line}):`, result);
 
     return result;
   }

@@ -1,6 +1,7 @@
 import {
-  Rectangle, Vector, CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH, Colors, esc, Style, Direction,
+  Rectangle, Vector, CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH, Colors, esc, Style, Direction, debug,
 } from 'xor4-lib';
+import EventEmitter from 'events';
 import { Agent, Hero } from './agent';
 import { Cell, Glyph } from './cell';
 import { Action } from './action';
@@ -28,6 +29,8 @@ export class Place {
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
 
+  public events = new EventEmitter();
+
   private innerRectangle: Rectangle;
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
@@ -54,7 +57,7 @@ export class Place {
       .addY(this.size.y - 1);
   }
 
-  constructor(x: number, y: number, w: number, h: number, setupFn?: (this: Place) => void) {
+  constructor(x: number, y: number, setupFn?: (this: Place) => void) {
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / ROOM_WIDTH);
@@ -65,7 +68,7 @@ export class Place {
 
     this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
 
-    this.outerRectangle = new Rectangle(this.position, new Vector(w, h));
+    this.outerRectangle = new Rectangle(this.position, new Vector(ROOM_WIDTH, ROOM_HEIGHT));
     this.innerRectangle = new Rectangle(
       this.outerRectangle.position.clone().addX(1).addY(1),
       this.outerRectangle.size.clone().subX(2).subY(2),
@@ -80,10 +83,9 @@ export class Place {
   update(tick: number) {
     this.seconds = Math.trunc((tick * CLOCK_MS_DELAY) / 1000);
     this.agents.forEach((agent: Agent) => {
-      if (!agent.isAlive) return;
-
       this.processTurn(agent, tick);
       this.applyVelocity(agent);
+      this.events.emit('update');
     });
   }
 
@@ -92,7 +94,7 @@ export class Place {
     let done = false;
     let cost = 0;
 
-    while (!done && cost <= agent.sp.value) {
+    while (!done && cost <= 1) {
       const action = agent.takeTurn(tick);
       if (!action) {
         done = true;
@@ -103,9 +105,11 @@ export class Place {
     }
 
     if (actions.length) {
+      debug('actions', actions);
       actions.forEach((action) => {
         const result = action.tryPerforming(this, agent);
-        agent.logs.push({
+        if (!result.message) return;
+        agent.remember({
           tick,
           message: result.message,
         });
@@ -224,7 +228,7 @@ export class Place {
   }
 
   reset() {
-    // this.emit('reset');
+    this.emit('reset');
     this.clear();
     if (this.setupFn) this.setupFn();
   }
