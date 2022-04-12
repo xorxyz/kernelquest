@@ -6,7 +6,7 @@ import { Engine, Place, World } from 'xor4-game';
 import { create } from 'xor4-game/lib/create';
 import GameServer from './server';
 
-export const demoRoom = new Place(0, 0, 16, 10, function (this: Place) {
+export const demoRoom = new Place(0, 0, function (this: Place) {
   create.wizard.call(this, 4, 4);
 
   create.trees.call(this, [[5, 0], [1, 1], [3, 1], [4, 1], [0, 2], [1, 4]]);

@@ -1,7 +1,7 @@
 import { createServer, Server, Socket } from 'net';
 import { Agent, Engine } from 'xor4-game/src';
 import { Wizard } from 'xor4-game/lib';
-import { TTY } from 'xor4-cli';
+import { VirtualTerminal } from 'xor4-cli';
 import Connection from './connection';
 
 export interface Params { src?: string }
@@ -11,7 +11,7 @@ export default class GameServer {
   private engine: Engine;
   private tcpServer: Server;
   private connections: Set<Connection> = new Set();
-  private terminals: Set<TTY> = new Set();
+  private terminals: Set<VirtualTerminal> = new Set();
 
   constructor(engine: Engine) {
     this.engine = engine;
@@ -36,11 +36,7 @@ export default class GameServer {
       this.connections.delete(connection);
     });
 
-    const terminal = new TTY({
-      player: agent,
-      place: this.engine.world.places[0],
-      write: () => {},
-    });
+    const terminal = new VirtualTerminal(agent, this.engine.world.places[0], () => {});
 
     this.connections.add(connection);
     this.terminals.add(terminal);
