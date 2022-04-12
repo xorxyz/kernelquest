@@ -1,3 +1,7 @@
 items:
+  - name: Blog
+    route: /blog
+  - name: Docs
+    route: /docs
   - name: About
     route: /about
