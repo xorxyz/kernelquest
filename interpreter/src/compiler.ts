@@ -23,13 +23,10 @@ export class Compiler {
     this.dict = {
       ...this.dict,
       ...dict,
+      help: new Operator(['help'], [], () => {
+        throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.\n`);
+      }),
     };
-
-    const help = new Operator(['help'], [], () => {
-      throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.\n`);
-    });
-
-    this.dict.help = help;
   }
 
   compile(code: string): Term {
@@ -94,6 +91,7 @@ export class Compiler {
           break;
         case TokenType.IDENTIFIER:
           if (!factor) {
+            console.log(Object.keys(this.dict));
             throw new Error(`'${token.lexeme}' is not a recognized word.`);
           }
           break;

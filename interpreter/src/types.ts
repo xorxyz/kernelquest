@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
+import { Dictionary } from './compiler';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
 
@@ -13,13 +14,13 @@ export abstract class Factor {
   }
 
   abstract validate(stack: Stack<Factor>)
-  abstract execute(stack: Stack<Factor>, queue?: Queue<any>)
+  abstract execute(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary)
   abstract toString (): string
   _validate(stack: Stack<Factor>) {
     this.validate(stack);
   }
-  _execute(stack: Stack<Factor>, queue?: Queue<any>) {
-    this.execute(stack, queue);
+  _execute(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary) {
+    this.execute(stack, queue, dict);
   }
 }
 
@@ -33,7 +34,7 @@ export class Literal extends Factor {
   }
 
   toString() {
-    return this.lexeme;
+    return `${String(this.value)}`;
   }
 
   validate() {

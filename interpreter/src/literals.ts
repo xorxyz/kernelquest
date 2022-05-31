@@ -25,7 +25,10 @@ export class LiteralNumber extends Literal {
 export class LiteralString extends Literal {
   type = 'string';
   constructor(str: string) {
-    super(`"${str}"`, str);
+    super(`${str}`, str);
+  }
+  toString() {
+    return `"${String(this.value)}"`;
   }
 }
 
@@ -51,7 +54,7 @@ export class Quotation extends Literal {
   }
 
   toString() {
-    return `[${this.value.map((item) => item.toString()).join(' ')}]`;
+    return `[${this.value.map((item) => `${item.value}`).join(' ')}]`;
   }
 }
 

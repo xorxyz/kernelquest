@@ -10,6 +10,27 @@ export class King extends Hero {
 }
 
 /** @category Agents */
+export class Wind extends Friend {
+  name = 'wind';
+  glyph = new Glyph('🌬️ ');
+  weight = 0;
+}
+
+/** @category Agents */
+export class Earth extends Friend {
+  name = 'earth';
+  glyph = new Glyph('🌱');
+  weight = 0;
+}
+
+/** @category Agents */
+export class Fire extends Friend {
+  name = 'fire';
+  glyph = new Glyph('🔥');
+  weight = 0;
+}
+
+/** @category Agents */
 export class Spirit extends Hero {
   name = 'spirit';
   glyph = new Glyph('👼');

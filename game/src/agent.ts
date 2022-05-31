@@ -103,6 +103,8 @@ export class Agent extends Body {
   constructor(type: AgentType) {
     super(type);
 
+    this.name = type.name;
+
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);
     });

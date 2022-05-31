@@ -1,8 +1,8 @@
-import { Clock, CLOCK_MS_DELAY, debug, East, Vector, West } from 'xor4-lib';
+import { Clock, CLOCK_MS_DELAY, debug, Vector, West } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
 import { Place } from './place';
-import { Dragon, King } from '../lib';
+import { Dragon, Earth, Fire, King, Wind } from '../lib';
 import { Agent } from './agent';
 
 const defaultPlace = new Place(0, 0);
@@ -33,14 +33,15 @@ export class Engine extends EventEmitter {
     const king = new Agent(new King());
 
     king.name = 'me';
-    king.facing.direction.rotateUntil(new East());
 
-    const dragon = new Agent(new Dragon());
+    // const wind = new Agent(new Wind());
+    // const earth = new Agent(new Earth());
+    // const fire = new Agent(new Fire());
 
-    dragon.facing.direction.rotateUntil(new West());
-
-    defaultPlace.put(king, new Vector(1, 8));
-    defaultPlace.put(dragon, new Vector(14, 1));
+    defaultPlace.put(king, new Vector(0, 0));
+    // defaultPlace.put(wind, new Vector(2, 1));
+    // defaultPlace.put(earth, new Vector(3, 1));
+    // defaultPlace.put(fire, new Vector(4, 1));
 
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.world = opts?.world || new World([defaultPlace]);

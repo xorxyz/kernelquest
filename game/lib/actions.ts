@@ -5,7 +5,6 @@ import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-// import { Crown, Flag } from './things';
 import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
 
 /*
@@ -95,7 +94,7 @@ export class StepAction extends Action {
       }
     }
 
-    if (target && !target.isBlocked) {
+    if (target && (!target.isBlocked)) {
       ctx.cellAt(agent.position)?.take();
       target.put(agent);
       agent.position.add(agent.facing.direction.value);

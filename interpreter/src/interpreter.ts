@@ -5,7 +5,7 @@
 
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
-import { Compiler } from './compiler';
+import { Compiler, Dictionary } from './compiler';
 import { Factor, Term } from './types';
 
 export class Interpretation {
@@ -16,13 +16,13 @@ export class Interpretation {
     this.term = term;
   }
 
-  run(stack: Stack<Factor>, queue?: Queue<any>): Interpretation | Error {
+  run(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary): Interpretation | Error {
     this.stack = stack;
     for (let i = 0; i < this.term.length; i++) {
       const factor = this.term[i];
       try {
         factor.validate(stack);
-        factor.execute(stack, queue);
+        factor.execute(stack, queue, dict);
       } catch (err) {
         return err as Error;
       }
@@ -51,7 +51,7 @@ export class Interpreter {
     }
 
     const interpretation = new Interpretation(term);
-    const result = interpretation.run(this.stack, queue);
+    const result = interpretation.run(this.stack, queue, this.compiler.dict);
 
     return result;
   }

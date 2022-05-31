@@ -9,7 +9,7 @@ import { Thing, Water } from './thing';
 export class Glyph {
   private chars: string;
 
-  static Empty = '..';
+  static Empty = '  ';
 
   get value() {
     return this.chars;
@@ -29,7 +29,7 @@ export class Cell {
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
-    this.slot = new Thing(new Water());
+    // this.slot = new Thing(new Water());
   }
 
   public get isBlocked() {

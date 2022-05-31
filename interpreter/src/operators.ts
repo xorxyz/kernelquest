@@ -3,8 +3,9 @@ import { Queue } from 'xor4-lib/queue';
 import { debug } from 'xor4-lib/logging';
 import { Factor, Literal } from './types';
 import { LiteralNumber, LiteralString } from './literals';
+import { Dictionary } from './compiler';
 
-export type ExecuteFn = (stack: Stack<Factor>, queue?: Queue<any>) => void
+export type ExecuteFn = (stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary) => void
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -101,8 +102,8 @@ export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], (stack) => {
 });
 
 export const cat = new Operator(['cat'], ['string', 'string'], (stack) => {
-  const a = stack.pop() as LiteralString;
   const b = stack.pop() as LiteralString;
+  const a = stack.pop() as LiteralString;
 
   stack.push(new LiteralString(a.value + b.value));
 });
@@ -115,6 +116,7 @@ export const typeOf = new Operator(['typeof'], ['any'], (stack) => {
   const a = stack.pop();
 
   if (a) {
+    stack.push(a);
     stack.push(new LiteralString(a.type));
   }
 });
