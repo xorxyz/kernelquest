@@ -33,13 +33,31 @@ export class Crown extends BodyType {
 }
 
 /** @category Things */
-export class Book extends BodyType {
-  name = 'book';
-  glyph = new Glyph('📕');
+export class Stars extends BodyType {
+  name = 'stars';
+  glyph = new Glyph('✨');
 }
 
 /** @category Things */
-export class Gold extends BodyType {
-  name = 'gold';
-  glyph = new Glyph('💰');
+export class Key extends BodyType {
+  name = 'key';
+  glyph = new Glyph('🔑');
+}
+
+/** @category Things */
+export class Shield extends BodyType {
+  name = 'shield';
+  glyph = new Glyph('🛡️ ');
+}
+
+/** @category Things */
+export class Skull extends BodyType {
+  name = 'skull';
+  glyph = new Glyph('💀');
+}
+
+/** @category Things */
+export class Book extends BodyType {
+  name = 'book';
+  glyph = new Glyph('📕');
 }

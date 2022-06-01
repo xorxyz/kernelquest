@@ -1,5 +1,5 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
-import { Interpretation } from 'xor4-interpreter';
+import { Interpretation, LiteralRef } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Place } from '../src/place';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
@@ -199,27 +199,6 @@ export class ReadAction extends Action {
     // ctx.events.emit(FAIL);
 
     return new ActionFailure();
-  }
-}
-
-/** @category Actions */
-export class SpawnAction extends Action {
-  name = 'spawn';
-  cost = 0;
-  type: AgentType;
-  constructor(type: AgentType) {
-    super();
-    this.type = type;
-  }
-
-  perform(ctx: Place, agent: Agent) {
-    const spawned = new Agent(this.type);
-    spawned.position.copy(agent.position).add(agent.isLookingAt);
-    if (!Place.bounds.contains(spawned.position)) {
-      return new ActionFailure();
-    }
-    ctx.put(spawned);
-    return new ActionSuccess();
   }
 }
 
@@ -457,10 +436,114 @@ export class EvalAction extends Action {
 export class LookAction extends Action {
   name = 'look';
   cost = 0;
+  ref: LiteralRef;
+  constructor(ref: LiteralRef) {
+    super();
+    this.ref = ref;
+  }
+  perform(ctx: Place, agent: Agent) {
+    const cell = ctx.cellAt(this.ref.vector);
+    const seen = cell?.slot;
+    if (!seen) {
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: 'Nothing here.',
+      });
+    } else {
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: `${JSON.stringify(seen)}`,
+      });
+    }
+    return new ActionSuccess();
+  }
+}
+
+/** @category Actions */
+export class ListAction extends Action {
+  name = 'ls';
+  cost = 0;
   perform(ctx: Place, agent: Agent) {
     agent.logs.push({
       tick: agent.mind.tick,
-      message: `${ctx.render(agent.sees()).join('\n')}`,
+      message: ctx.list().map((x) => x.name + x.position.x + x.position.y).join(', '),
+    });
+    return new ActionSuccess();
+  }
+}
+
+/** @category Actions */
+export class MoveThingAction extends Action {
+  name = 'mv';
+  cost = 0;
+  fromRef: LiteralRef;
+  toRef: LiteralRef;
+
+  constructor(fromRef: LiteralRef, toRef: LiteralRef) {
+    super();
+    this.fromRef = fromRef;
+    this.toRef = toRef;
+  }
+
+  perform(ctx: Place, agent: Agent) {
+    const fromCell = ctx.cellAt(this.fromRef.vector);
+    const toCell = ctx.cellAt(this.toRef.vector);
+    const thing = fromCell?.take();
+
+    if (thing) {
+      toCell?.put(thing);
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: `Moved [${thing.label}] from [${fromCell?.position.label}] to [${toCell?.position.label}].`,
+      });
+    }
+    return new ActionSuccess();
+  }
+}
+
+/** @category Actions */
+export class RemoveAction extends Action {
+  name = 'rm';
+  cost = 0;
+  ref: LiteralRef;
+
+  constructor(ref: LiteralRef) {
+    super();
+    this.ref = ref;
+  }
+
+  perform(ctx: Place) {
+    const fromCell = ctx.cellAt(this.ref.vector);
+    fromCell?.take();
+
+    return new ActionSuccess();
+  }
+}
+
+/** @category Actions */
+export class SpawnAction extends Action {
+  name = 'spawn';
+  cost = 0;
+  type: AgentType;
+  constructor(type: AgentType) {
+    super();
+    this.type = type;
+  }
+
+  perform(ctx: Place, agent: Agent) {
+    const spawned = new Agent(this.type);
+    spawned.position.copy(agent.isLookingAt);
+    if (!Place.bounds.contains(spawned.position)) {
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: `[${spawned.position.label}] is out of bounds.`,
+      });
+      return new ActionFailure();
+    }
+    ctx.put(spawned);
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: `Spawned a spirit at [${spawned.position.label}].`,
     });
     return new ActionSuccess();
   }
@@ -527,7 +610,7 @@ export class SelectCellAction extends TerminalAction {
   authorize() { return true; }
   perform(ctx, agent: Agent) {
     this.terminal.switchModes();
-    const expr = `${agent.cursorPosition.x} ${agent.cursorPosition.y} goto`;
+    const expr = `${agent.cursorPosition.x} ${agent.cursorPosition.y} ref`;
     this.terminal.lineEditor.line = expr;
     this.terminal.state.line = expr;
     this.terminal.handleTerminalInput(Keys.ENTER);

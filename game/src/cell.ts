@@ -3,7 +3,7 @@ import {
 } from 'xor4-lib';
 import { Agent, Foe } from './agent';
 import { Place } from './place';
-import { Thing, Water } from './thing';
+import { Thing } from './thing';
 
 /** @category Cell */
 export class Glyph {
@@ -29,7 +29,6 @@ export class Cell {
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
-    // this.slot = new Thing(new Water());
   }
 
   public get isBlocked() {

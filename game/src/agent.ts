@@ -3,7 +3,7 @@ import {
 } from 'xor4-lib';
 import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
-import { Cell } from './cell';
+import { Cell, Glyph } from './cell';
 import { Mind } from './mind';
 
 /**
@@ -41,6 +41,16 @@ export abstract class AgentType extends BodyType {
 }
 
 /** @category Agent */
+export abstract class Element extends AgentType {
+  style = esc(Colors.Bg.White);
+}
+
+/** @category Agent */
+export abstract class House extends AgentType {
+  style = esc(Colors.Bg.Black);
+}
+
+/** @category Agent */
 export abstract class Hero extends AgentType {
   style = esc(Colors.Bg.Purple);
 }
@@ -53,6 +63,13 @@ export abstract class Friend extends AgentType {
 /** @category Agent */
 export abstract class Foe extends AgentType {
   style = esc(Colors.Bg.Red);
+}
+
+/** @category Agents */
+export class Spirit extends Hero {
+  name = 'spirit';
+  glyph = new Glyph('👼');
+  weight = 1;
 }
 
 /** @category Agent */
@@ -131,6 +148,10 @@ export class Agent extends Body {
     return this.position.clone().add(this.facing.direction.value);
   }
 
+  kill() {
+    this.hp.value = 0;
+  }
+
   get(): Agent | Thing | null {
     if (this.hand || !this.facing.cell) return this.hand || null;
 
@@ -143,6 +164,7 @@ export class Agent extends Body {
     if (!this.hand || !this.facing.cell || this.facing.cell.isBlocked) return false;
 
     this.facing.cell.put(this.hand);
+    this.hand.position.copy(this.facing.cell.position);
     this.hand = null;
 
     return true;

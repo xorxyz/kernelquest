@@ -1,6 +1,6 @@
 import { debug } from 'xor4-lib/logging';
 import { Interpretation } from './interpreter';
-import { Factor } from './types';
+import { Factor, Literal } from './types';
 import { LiteralNumber, LiteralRef, LiteralString, Quotation } from './literals';
 import { Operator } from './operators';
 
@@ -14,14 +14,17 @@ export const concat = new Combinator(['concat'], ['quotation', 'quotation'], (st
 });
 
 // [b] [a] -> [[b] a]
-export const cons = new Combinator(['cons'], ['quotation', 'quotation'], (stack) => {
-  const a = stack.pop() as Quotation;
+export const cons = new Combinator(['cons'], ['any', 'quotation'], (stack) => {
   const b = stack.pop() as Quotation;
+  const a = stack.pop() as Literal;
 
   const next = new Quotation();
 
-  next.add(b);
-  a.value.forEach((factor) => {
+  console.log(a);
+  console.log(b);
+
+  next.add(a);
+  b.value.forEach((factor) => {
     debug('factor', factor);
     next.add(factor);
   });

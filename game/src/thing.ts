@@ -11,15 +11,6 @@ export abstract class BodyType {
   readonly isBlocking: boolean = true;
 }
 
-/** @category Things */
-export class Water extends BodyType {
-  name = 'water';
-  glyph = new Glyph('~~');
-  style = esc(Colors.Bg.Blue);
-  isStatic = true;
-  isBlocking = true;
-}
-
 /** @category Thing */
 export abstract class Body extends EventEmitter {
   readonly name: string = '';
@@ -42,6 +33,8 @@ export abstract class Body extends EventEmitter {
 
   render() {
     let { style } = this.type;
+
+    if (!style) style = '';
 
     const rendered = this.renderStyle();
     if (rendered) style = rendered;

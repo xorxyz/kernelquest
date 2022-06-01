@@ -17,6 +17,8 @@ export class Place {
   readonly position: Vector;
   readonly timeLimit: number = 700;
 
+  public name: string = 'place';
+
   public tick: number = 0;
   public seconds: number = 0;
 
@@ -247,5 +249,13 @@ export class Place {
 
   childrenContain(vector: Vector) {
     return Array.from(this.places).some((place) => place.contains(vector));
+  }
+
+  list() {
+    return [
+      ...Array.from(this.agents),
+      ...Array.from(this.things),
+      ...Array.from(this.places),
+    ];
   }
 }

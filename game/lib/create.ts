@@ -1,7 +1,7 @@
 import { Vector } from 'xor4-lib';
 import { Agent, Door, Place, Thing } from '../src';
 import { Bug, Sheep, Wizard } from './agents';
-import { Book, Crown, Flag, Gold, Grass, Tree } from './things';
+import { Book, Crown, Flag, Grass, Tree } from './things';
 
 /** @category Create */
 export const create: Record<string, (this: Place, ...any) => any> = {
@@ -17,9 +17,6 @@ export const create: Record<string, (this: Place, ...any) => any> = {
   },
   book(x, y) {
     this.put(new Thing(new Book()), new Vector(x, y));
-  },
-  gold(x, y) {
-    this.put(new Thing(new Gold()), new Vector(x, y));
   },
   sheep(x, y) {
     const sheep = new Agent(new Sheep());

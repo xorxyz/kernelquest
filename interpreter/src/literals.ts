@@ -54,7 +54,7 @@ export class Quotation extends Literal {
   }
 
   toString() {
-    return `[${this.value.map((item) => `${item.value}`).join(' ')}]`;
+    return `[${this.value.map((item) => `${item.toString()}`).join(' ')}]`;
   }
 }
 

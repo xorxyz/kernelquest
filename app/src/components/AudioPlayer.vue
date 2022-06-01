@@ -9,7 +9,7 @@
       loop
       hidden
       :muted="muted"
-      volume="0.10"
+      volume="0.1"
       id="audio_player"
       class="hidden">
       <source
