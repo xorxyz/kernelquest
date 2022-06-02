@@ -1,10 +1,10 @@
 import { Vector } from 'xor4-lib';
-import { Agent, Door, Place, Thing } from '../src';
+import { Agent, Door, Area, Thing } from '../src';
 import { Bug, Sheep, Wizard } from './agents';
 import { Book, Crown, Flag, Grass, Tree } from './things';
 
 /** @category Create */
-export const create: Record<string, (this: Place, ...any) => any> = {
+export const create: Record<string, (this: Area, ...any) => any> = {
   flag(x, y) {
     const flag = new Thing(new Flag());
     this.flags.add(flag);
@@ -23,7 +23,7 @@ export const create: Record<string, (this: Place, ...any) => any> = {
     this.put(sheep, new Vector(x, y));
   },
   house(x, y) {
-    const house = new Place(x, y);
+    const house = new Area(x, y);
     const doors = [1].map(() => new Thing(new Door()));
     this.build(house, doors);
   },

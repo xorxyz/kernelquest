@@ -1,5 +1,5 @@
 import {
-  Rectangle, Vector, CLOCK_MS_DELAY, ROOM_HEIGHT, ROOM_WIDTH, Colors, esc, Style, Direction, debug,
+  Rectangle, Vector, CLOCK_MS_DELAY, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction, debug,
 } from 'xor4-lib';
 import EventEmitter from 'events';
 import { Agent, Hero } from './agent';
@@ -7,17 +7,17 @@ import { Cell, Glyph } from './cell';
 import { Action } from './action';
 import { Wall, Door, Thing } from './thing';
 
-/** @category Place */
-const CELL_COUNT = ROOM_WIDTH * ROOM_HEIGHT;
+/** @category Area */
+const CELL_COUNT = AREA_WIDTH * AREA_HEIGHT;
 
-/** @category Place */
-export class Place {
-  static bounds = new Rectangle(new Vector(0, 0), new Vector(ROOM_WIDTH, ROOM_HEIGHT));
+/** @category Area */
+export class Area {
+  static bounds = new Rectangle(new Vector(0, 0), new Vector(AREA_WIDTH, AREA_HEIGHT));
 
   readonly position: Vector;
   readonly timeLimit: number = 700;
 
-  public name: string = 'place';
+  public name: string = 'area';
 
   public tick: number = 0;
   public seconds: number = 0;
@@ -37,9 +37,9 @@ export class Place {
   private cells: Array<Cell>;
   private agents: Set<Agent> = new Set();
   private things: Set<Thing> = new Set();
-  private places: Set<Place> = new Set();
-  private rows: Array<Array<Cell>> = new Array(ROOM_HEIGHT).fill(0).map(() => []);
-  private setupFn?: (this: Place) => void;
+  private areas: Set<Area> = new Set();
+  private rows: Array<Array<Cell>> = new Array(AREA_HEIGHT).fill(0).map(() => []);
+  private setupFn?: (this: Area) => void;
 
   get secondsLeft() {
     return this.timeLimit - this.seconds;
@@ -59,18 +59,18 @@ export class Place {
       .addY(this.size.y - 1);
   }
 
-  constructor(x: number, y: number, setupFn?: (this: Place) => void) {
+  constructor(x: number, y: number, setupFn?: (this: Area) => void) {
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
-      const cellY = Math.floor(i / ROOM_WIDTH);
-      const cellX = i - (ROOM_WIDTH * cellY);
+      const cellY = Math.floor(i / AREA_WIDTH);
+      const cellX = i - (AREA_WIDTH * cellY);
 
       return new Cell(cellX, cellY);
     });
 
     this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
 
-    this.outerRectangle = new Rectangle(this.position, new Vector(ROOM_WIDTH, ROOM_HEIGHT));
+    this.outerRectangle = new Rectangle(this.position, new Vector(AREA_WIDTH, AREA_HEIGHT));
     this.innerRectangle = new Rectangle(
       this.outerRectangle.position.clone().addX(1).addY(1),
       this.outerRectangle.size.clone().subX(2).subY(2),
@@ -143,6 +143,10 @@ export class Place {
     this.agents.clear();
   }
 
+  save() {
+
+  }
+
   load(cells: Array<Cell>) {
     this.cells.forEach((cell, i) => {
       cell.glyph = new Glyph(cells[i].glyph.value);
@@ -175,8 +179,14 @@ export class Place {
     return true;
   }
 
-  find(agent: Agent): Cell | null {
-    return this.cells.find((cell) => cell.slot === agent) || null;
+  search(str: string) {
+    const all = [...this.agents, ...this.things, ...this.areas];
+
+    return all.filter((x) => x.name.includes(str));
+  }
+
+  find(thing: Agent | Thing): Cell | null {
+    return this.cells.find((cell) => cell.slot === thing) || null;
   }
 
   findPlayers(): Array<Agent> {
@@ -211,8 +221,8 @@ export class Place {
   }
 
   cellAt(position: Vector): Cell | null {
-    if (!Place.bounds.contains(position)) return null;
-    const index = position.y * ROOM_WIDTH + position.x;
+    if (!Area.bounds.contains(position)) return null;
+    const index = position.y * AREA_WIDTH + position.x;
     return this.cells[index];
   }
 
@@ -235,8 +245,8 @@ export class Place {
     if (this.setupFn) this.setupFn();
   }
 
-  build(house: Place, doors: Array<Thing>) {
-    this.places.add(house);
+  build(house: Area, doors: Array<Thing>) {
+    this.areas.add(house);
     this.cells.forEach((cell) => {
       if (!house.contains(cell.position) && house.outerRectangle.contains(cell.position)) {
         cell.slot = doors.find((door) => door.position.equals(cell.position)) ||
@@ -248,14 +258,14 @@ export class Place {
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }
 
   childrenContain(vector: Vector) {
-    return Array.from(this.places).some((place) => place.contains(vector));
+    return Array.from(this.areas).some((area) => area.contains(vector));
   }
 
   list() {
     return [
       ...Array.from(this.agents),
       ...Array.from(this.things),
-      ...Array.from(this.places),
+      ...Array.from(this.areas),
     ];
   }
 }

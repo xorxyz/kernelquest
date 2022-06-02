@@ -2,7 +2,7 @@ import {
   Vector, EMPTY_CELL_CHARS, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from 'xor4-lib';
 import { Agent, Foe } from './agent';
-import { Place } from './place';
+import { Area } from './area';
 import { Thing } from './thing';
 
 /** @category Cell */
@@ -78,7 +78,7 @@ export class Cell {
     return true;
   }
 
-  render(ctx: Place) {
+  render(ctx: Area) {
     if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
       return esc(Colors.Bg.Cyan) +
       esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || this.glyph.value) + esc(Style.Reset);

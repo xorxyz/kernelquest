@@ -1,11 +1,12 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
 import { Interpretation, LiteralRef } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
-import { Place } from '../src/place';
+import { Area } from '../src/area';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
 import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
+import { Crown, Flag } from './things';
 
 /*
  * Actions in the World
@@ -35,7 +36,7 @@ export class WaitAction extends Action {
 export class RotateAction extends Action {
   name = 'rotate';
   cost = 1;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     agent.facing.direction.rotate();
     agent.facing.cell = ctx.cellAt(agent.isLookingAt);
     ctx.events.emit(ROTATE, { agent });
@@ -52,7 +53,7 @@ export class SetHeadingAction extends Action {
     super();
     this.direction = direction;
   }
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     agent.facing.direction.rotateUntil(this.direction.value);
     ctx.events.emit(ROTATE, { agent });
     agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
@@ -64,7 +65,7 @@ export class SetHeadingAction extends Action {
 export class StepAction extends Action {
   name = 'step';
   cost = 1;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     const target = ctx.cellAt(agent.isLookingAt);
 
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
@@ -111,7 +112,7 @@ export class StepAction extends Action {
 export class GetAction extends Action {
   name = 'get';
   cost = 1;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     if (!agent.facing.cell || !agent.facing.cell.slot) {
       ctx.events.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
@@ -142,15 +143,15 @@ export class GetAction extends Action {
       if (thing instanceof Thing) {
         thing.owner = agent;
 
-        // if (thing.type instanceof Crown) {
-        //   ctx.capturedCrowns.add(thing);
-        //   ctx.events.emit('crown');
-        // }
+        if (thing.type instanceof Crown) {
+          ctx.capturedCrowns.add(thing);
+          ctx.events.emit('crown');
+        }
 
-        // if (thing.type instanceof Flag) {
-        //   ctx.capturedFlags.add(thing);
-        //   ctx.events.emit('flag');
-        // }
+        if (thing.type instanceof Flag) {
+          ctx.capturedFlags.add(thing);
+          ctx.events.emit('flag');
+        }
       }
 
       return new ActionSuccess(`You get the ${thing.name}.`);
@@ -166,7 +167,7 @@ export class GetAction extends Action {
 export class PutAction extends Action {
   name = 'put';
   cost = 1;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     if (!agent.hand) {
       ctx.events.emit(FAIL);
 
@@ -189,7 +190,7 @@ export class PutAction extends Action {
 export class ReadAction extends Action {
   name = 'read';
   cost = 10;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     if (agent.hand) {
       // const { value } = agent.hand;
 
@@ -240,7 +241,7 @@ export class PathfindingAction extends Action {
     super();
     this.destination = destination;
   }
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     if (agent.position.equals(this.destination)) {
       return new ActionFailure('Already here.');
     }
@@ -268,7 +269,7 @@ export class PathfindingAction extends Action {
     return kv ? kv[0] : null;
   }
 
-  pathfind(ctx: Place, agent: Agent) {
+  pathfind(ctx: Area, agent: Agent) {
     const start = ctx.cellAt(agent.position);
     const end = ctx.cellAt(this.destination);
 
@@ -351,7 +352,7 @@ export class PathfindingAction extends Action {
     return cells;
   }
 
-  buildPathActions(ctx: Place, agent: Agent, path: Array<Cell>): Array<Action> {
+  buildPathActions(ctx: Area, agent: Agent, path: Array<Cell>): Array<Action> {
     debug('buildPathActions()');
     const actions: Array<Action> = [];
     const previousDirection = agent.facing.direction.value.clone();
@@ -396,7 +397,7 @@ export class PatrolAction extends Action {
 //     this.program = program;
 //     this.args = args;
 //   }
-//   perform(ctx: Place) {
+//   perform(ctx: Area) {
 //     const name = this.program.value[1].lexeme;
 //     const createFn = create[name];
 //     const created = createFn.call(ctx);
@@ -417,7 +418,7 @@ export class EvalAction extends Action {
     this.text = text;
   }
 
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     const result = agent.mind.interpret(this.text);
 
     if (result instanceof Error) {
@@ -441,7 +442,7 @@ export class LookAction extends Action {
     super();
     this.ref = ref;
   }
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     const cell = ctx.cellAt(this.ref.vector);
     const seen = cell?.slot;
     if (!seen) {
@@ -463,7 +464,7 @@ export class LookAction extends Action {
 export class ListAction extends Action {
   name = 'ls';
   cost = 0;
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     agent.logs.push({
       tick: agent.mind.tick,
       message: ctx.list().map((x) => x.name + x.position.x + x.position.y).join(', '),
@@ -485,7 +486,7 @@ export class MoveThingAction extends Action {
     this.toRef = toRef;
   }
 
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     const fromCell = ctx.cellAt(this.fromRef.vector);
     const toCell = ctx.cellAt(this.toRef.vector);
     const thing = fromCell?.take();
@@ -512,7 +513,7 @@ export class RemoveAction extends Action {
     this.ref = ref;
   }
 
-  perform(ctx: Place) {
+  perform(ctx: Area) {
     const fromCell = ctx.cellAt(this.ref.vector);
     fromCell?.take();
 
@@ -530,10 +531,10 @@ export class SpawnAction extends Action {
     this.type = type;
   }
 
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     const spawned = new Agent(this.type);
     spawned.position.copy(agent.isLookingAt);
-    if (!Place.bounds.contains(spawned.position)) {
+    if (!Area.bounds.contains(spawned.position)) {
       agent.logs.push({
         tick: agent.mind.tick,
         message: `[${spawned.position.label}] is out of bounds.`,
@@ -549,6 +550,26 @@ export class SpawnAction extends Action {
   }
 }
 
+/** @category Actions */
+export class SearchAction extends Action {
+  name = 'search';
+  cost = 0;
+  str: string;
+  constructor(str: string) {
+    super();
+    this.str = str;
+  }
+
+  perform(ctx: Area, agent: Agent) {
+    const found = ctx.search(this.str).map((x) => `[${x.name}] at [${x.position.label}]`);
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: `Found ${found ? `${found.join(', ')}.` : 'nothing.'}`,
+    });
+
+    return new ActionSuccess();
+  }
+}
 /*
  * Terminal Actions
  * ====================
@@ -574,7 +595,7 @@ export class MoveCursorAction extends TerminalAction {
     this.direction = direction;
   }
   authorize() { return true; }
-  perform(ctx: Place, agent: Agent) {
+  perform(ctx: Area, agent: Agent) {
     if (agent.sees().contains(agent.cursorPosition.clone().add(this.direction))) {
       agent.cursorPosition.add(this.direction);
       const thing = ctx.cellAt(agent.cursorPosition)?.slot || null;

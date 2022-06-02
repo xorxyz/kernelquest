@@ -1,7 +1,7 @@
 import { Stack } from 'xor4-lib';
 import { Thing } from './thing';
 import { Agent } from './agent';
-import { Place } from './place';
+import { Area } from './area';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -11,17 +11,17 @@ export type DataStack = Stack<Thing>
 
 /** @category World */
 export class World {
-  public places: Array<Place>;
+  public areas: Array<Area>;
 
-  constructor(places: Array<Place>) {
-    this.places = [...places];
+  constructor(areas: Array<Area>) {
+    this.areas = [...areas];
   }
 
-  find(agent: Agent): Place | null {
-    return this.places.find((place) => place.has(agent)) || null;
+  find(agent: Agent): Area | null {
+    return this.areas.find((area) => area.has(agent)) || null;
   }
 
   clear() {
-    this.places.forEach((place) => place.clear());
+    this.areas.forEach((area) => area.clear());
   }
 }

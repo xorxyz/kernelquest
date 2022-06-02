@@ -74,56 +74,56 @@ export default defineComponent({
       this.input(key);
     });
 
-    const place = engine.world.places[0];
-    const players = place.findPlayers();
+    const area = engine.world.areas[0];
+    const players = area.findPlayers();
     const hero = players[0];
 
-    place.events.on(HIT, () => {
+    area.events.on(HIT, () => {
       const sound = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(STEP, (e) => {
+    area.events.on(STEP, (e) => {
       if (e?.agent !== hero) return;
       const sound = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(ROTATE, (e) => {
+    area.events.on(ROTATE, (e) => {
       if (e?.agent !== hero) return;
       const sound = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(GET, () => {
+    area.events.on(GET, () => {
       const sound = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(PUT, () => {
+    area.events.on(PUT, () => {
       const sound = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(FAIL, (e) => {
+    area.events.on(FAIL, (e) => {
       if (e?.agent !== hero) return;
       const sound = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on(DIE, () => {
+    area.events.on(DIE, () => {
       (this.$refs.audio as HTMLAudioElement).pause();
       const sound = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
       sound.play();
     });
 
-    place.events.on('reset', () => {
+    area.events.on('reset', () => {
       (this.$refs.audio as InstanceType<typeof AudioPlayer>).reset();
     });
 
     this.tty?.disconnect();
 
-    this.tty = markRaw(new VirtualTerminal(hero, place, (str) => xterm.write(str)));
+    this.tty = markRaw(new VirtualTerminal(hero, area, (str) => xterm.write(str)));
 
     this.play();
 

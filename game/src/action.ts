@@ -1,7 +1,7 @@
 import { debug } from 'console';
 import { Agent } from './agent';
 import { Thing } from './thing';
-import { Place } from './place';
+import { Area } from './area';
 
 /** @category Capability */
 export abstract class Capability {
@@ -25,7 +25,7 @@ export class ActionFailure extends ActionResult {}
 export abstract class Action {
   abstract readonly name: string
   abstract readonly cost: number
-  abstract perform(context: Place, subject: Agent, object?: Agent | Thing): ActionResult
+  abstract perform(context: Area, subject: Agent, object?: Agent | Thing): ActionResult
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
@@ -33,7 +33,7 @@ export abstract class Action {
     return true;
   }
 
-  tryPerforming(ctx: Place, agent: Agent, object?: Agent | Thing): ActionResult {
+  tryPerforming(ctx: Area, agent: Agent, object?: Agent | Thing): ActionResult {
     if (!this.authorize) return new ActionFailure('Not enough stamina.');
     const result = this.perform(ctx, agent, object);
 

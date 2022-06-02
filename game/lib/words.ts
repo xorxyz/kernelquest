@@ -1,6 +1,6 @@
-import { Combinator, LiteralRef } from 'xor4-interpreter';
+import { Combinator, LiteralRef, LiteralString } from 'xor4-interpreter';
 import { Spirit } from '../src';
-import { ListAction, LookAction, MoveThingAction, PathfindingAction, RemoveAction, SpawnAction } from './actions';
+import { ListAction, LookAction, MoveThingAction, PathfindingAction, RemoveAction, SearchAction, SpawnAction } from './actions';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
@@ -49,6 +49,12 @@ const spawn = new Combinator(['spawn'], [], async (stack, queue) => {
   queue?.items.unshift(new SpawnAction(new Spirit()));
 });
 
+/** @category Words */
+const search = new Combinator(['search'], ['string'], async (stack, queue) => {
+  const str = stack.pop() as LiteralString;
+  queue?.items.unshift(new SearchAction(str.value));
+});
+
 export default {
-  goto, look, ls, mv, rm, spawn,
+  goto, look, ls, mv, rm, spawn, search,
 };

@@ -1,15 +1,15 @@
-import { Clock, CLOCK_MS_DELAY, debug, Direction, EAST, East, Vector } from 'xor4-lib';
+import { Clock, CLOCK_MS_DELAY, debug, Direction, EAST, Vector } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
-import { Place } from './place';
+import { Area } from './area';
 import {
-  Dragon, Flag, King, Wind, Spirit, Sheep,
-  Microbe, Earth, Fire, Water, Crown, Shield, Stars, Skull, Key, Temple,
+  Flag, King, Wind,
+  Earth, Fire, Water, Crown, Shield, Stars, Skull, Key, Temple,
 } from '../lib';
 import { Agent } from './agent';
 import { Thing } from './thing';
 
-const defaultPlace = new Place(0, 0);
+const defaultArea = new Area(0, 0);
 
 /** @category Engine */
 export interface EngineOptions {
@@ -60,28 +60,28 @@ export class Engine extends EventEmitter {
     earth.facing.direction = new Direction(EAST);
     fire.facing.direction = new Direction(EAST);
 
-    defaultPlace.put(wind, new Vector(0, 0));
-    defaultPlace.put(water, new Vector(1, 0));
-    defaultPlace.put(earth, new Vector(2, 0));
-    defaultPlace.put(fire, new Vector(3, 0));
+    defaultArea.put(wind, new Vector(0, 0));
+    defaultArea.put(water, new Vector(1, 0));
+    defaultArea.put(earth, new Vector(2, 0));
+    defaultArea.put(fire, new Vector(3, 0));
 
-    defaultPlace.put(temple, new Vector(0, 9));
+    defaultArea.put(temple, new Vector(0, 9));
 
-    defaultPlace.put(king, new Vector(1, 8));
-    // defaultPlace.put(dragon, new Vector(15, 9));
-    // defaultPlace.put(sheep, new Vector(3, 3));
-    // defaultPlace.put(spirit, new Vector(4, 3));
-    // defaultPlace.put(microbe, new Vector(14, 8));
+    defaultArea.put(king, new Vector(1, 8));
+    // defaultArea.put(dragon, new Vector(15, 9));
+    // defaultArea.put(sheep, new Vector(3, 3));
+    // defaultArea.put(spirit, new Vector(4, 3));
+    // defaultArea.put(microbe, new Vector(14, 8));
 
-    defaultPlace.put(flag, new Vector(0, 8));
-    defaultPlace.put(crown, new Vector(1, 7));
-    defaultPlace.put(shield, new Vector(1, 9));
-    defaultPlace.put(stars, new Vector(4, 5));
-    defaultPlace.put(skull, new Vector(14, 7));
-    defaultPlace.put(key, new Vector(5, 3));
+    defaultArea.put(flag, new Vector(0, 8));
+    defaultArea.put(crown, new Vector(1, 7));
+    defaultArea.put(shield, new Vector(1, 9));
+    defaultArea.put(stars, new Vector(4, 5));
+    defaultArea.put(skull, new Vector(14, 7));
+    defaultArea.put(key, new Vector(5, 3));
 
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
-    this.world = opts?.world || new World([defaultPlace]);
+    this.world = opts?.world || new World([defaultArea]);
     this.heroes = [king];
 
     this.clock.on('tick', this.update.bind(this));
@@ -91,20 +91,20 @@ export class Engine extends EventEmitter {
     this.emit('begin-turn');
     this.cycle++;
 
-    this.world.places.forEach((place) => place.update(this.cycle));
+    this.world.areas.forEach((area) => area.update(this.cycle));
 
     this.emit('end-turn');
   }
 
   start() {
     this.clock.start();
-    this.world.places.forEach((place) => place.events.emit('start'));
+    this.world.areas.forEach((area) => area.events.emit('start'));
     debug('started engine.');
   }
 
   pause() {
     this.clock.pause();
-    this.world.places.forEach((place) => place.events.emit('pause'));
+    this.world.areas.forEach((area) => area.events.emit('pause'));
     debug('paused engine.');
   }
 }
