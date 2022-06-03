@@ -4,7 +4,7 @@ import { Action } from './action';
 import words from '../lib/words';
 
 /** @category Mind */
-interface Observation {
+export interface Observation {
   tick: number,
   message: string
 }

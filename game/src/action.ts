@@ -21,8 +21,15 @@ export class ActionSuccess extends ActionResult {}
 /** @category Action */
 export class ActionFailure extends ActionResult {}
 
+export interface IAction {
+  name: string
+  cost: number
+  tick?: number
+  agent?: string
+}
+
 /** @category Action */
-export abstract class Action {
+export abstract class Action implements IAction {
   abstract readonly name: string
   abstract readonly cost: number
   abstract perform(context: Area, subject: Agent, object?: Agent | Thing): ActionResult

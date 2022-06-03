@@ -35,7 +35,7 @@ export class Area {
 
   private innerRectangle: Rectangle;
   private cells: Array<Cell>;
-  private agents: Set<Agent> = new Set();
+  public agents: Set<Agent> = new Set();
   private things: Set<Thing> = new Set();
   private areas: Set<Area> = new Set();
   private rows: Array<Array<Cell>> = new Array(AREA_HEIGHT).fill(0).map(() => []);
@@ -82,75 +82,9 @@ export class Area {
     }
   }
 
-  update(tick: number) {
-    this.seconds = Math.trunc((tick * CLOCK_MS_DELAY) / 1000);
-    this.agents.forEach((agent: Agent) => {
-      this.processTurn(agent, tick);
-      this.applyVelocity(agent);
-      this.events.emit('update');
-    });
-  }
-
-  private processTurn(agent: Agent, tick: number) {
-    const actions: Array<Action> = [];
-    let done = false;
-    let cost = 0;
-
-    while (!done && cost <= 1) {
-      const action = agent.takeTurn(tick);
-      if (!action) {
-        done = true;
-      } else {
-        cost += action.cost;
-        actions.push(action);
-      }
-    }
-
-    if (actions.length) {
-      debug('actions', actions);
-      actions.forEach((action) => {
-        const result = action.tryPerforming(this, agent);
-        if (!result.message) return;
-        agent.remember({
-          tick,
-          message: result.message,
-        });
-      });
-    }
-
-    if (tick % 10 === 0) agent.sp.increase(1);
-  }
-
-  private applyVelocity(agent: Agent) {
-    if (agent.velocity.isZero()) return;
-
-    const next = agent.position.clone().add(agent.velocity);
-    const target = this.cellAt(next);
-
-    if (target && !target.isBlocked) {
-      const previous = this.cellAt(agent.position);
-      if (previous) previous.slot = null;
-      target.slot = agent;
-      agent.position.add(agent.velocity);
-      agent.facing.cell = this.cellAt(agent.isLookingAt);
-    }
-
-    agent.velocity.setXY(0, 0);
-  }
-
   clear() {
     this.cells.forEach((cell) => cell.clear());
     this.agents.clear();
-  }
-
-  save() {
-
-  }
-
-  load(cells: Array<Cell>) {
-    this.cells.forEach((cell, i) => {
-      cell.glyph = new Glyph(cells[i].glyph.value);
-    });
   }
 
   has(agent: Agent): boolean {

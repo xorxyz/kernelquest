@@ -8,6 +8,7 @@ export abstract class BodyType {
   public name: string;
   public glyph: Glyph;
   public style?: string;
+  public weight?: number = 1;
   readonly isStatic: boolean = false;
   readonly isBlocking: boolean = true;
 }
@@ -16,14 +17,13 @@ export abstract class BodyType {
 export abstract class Body extends EventEmitter {
   readonly name: string = '';
   readonly type: BodyType;
-  public weight: number;
   public position: Vector = new Vector(0, 0);
   public velocity: Vector = new Vector(0, 0);
 
   constructor(type: BodyType) {
     super();
     this.type = type;
-    this.name = type.name || 'anon';
+    this.name = String(type.name || '');
   }
 
   abstract renderStyle();

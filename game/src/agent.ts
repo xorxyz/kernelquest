@@ -34,6 +34,13 @@ export class MP extends Points {}
 /** @category Agent */
 export class GP extends Points {}
 
+export interface IAgentPoints {
+  hp: HP,
+  mp: MP,
+  sp: SP,
+  gp: GP
+}
+
 /** @category Agent */
 export abstract class AgentType extends BodyType {
   public weight: number = 10;
@@ -119,8 +126,6 @@ export class Agent extends Body {
 
   constructor(type: AgentType) {
     super(type);
-
-    this.name = type.name;
 
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);

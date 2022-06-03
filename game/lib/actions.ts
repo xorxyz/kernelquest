@@ -570,6 +570,21 @@ export class SearchAction extends Action {
     return new ActionSuccess();
   }
 }
+
+export class SaveAction extends Action {
+  name = 'save';
+  cost = 0;
+
+  perform(ctx: Area, agent: Agent) {
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: 'Saving...',
+    });
+
+    return new ActionSuccess();
+  }
+}
+
 /*
  * Terminal Actions
  * ====================

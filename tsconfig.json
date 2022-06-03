@@ -27,6 +27,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "strictPropertyInitialization":false,
     "typeRoots": [
       "node_modules/@types"

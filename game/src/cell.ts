@@ -23,7 +23,6 @@ export class Glyph {
 /** @category Cell */
 export class Cell {
   public position: Vector;
-  public glyph: Glyph = new Glyph();
   public slot: Agent | Thing | null;
   public buffer: Agent | Thing | null = null;
 
@@ -47,7 +46,6 @@ export class Cell {
   /* Empty the cell's slot. */
   clear() {
     this.slot = null;
-    this.glyph = new Glyph();
   }
 
   /* Take the thing that's in the cell's slot. */
@@ -81,9 +79,9 @@ export class Cell {
   render(ctx: Area) {
     if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
       return esc(Colors.Bg.Cyan) +
-      esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || this.glyph.value) + esc(Style.Reset);
+      esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || Glyph.Empty) + esc(Style.Reset);
     }
-    return this.slot?.render() || this.glyph.value;
+    return this.slot?.render() || Glyph.Empty;
   }
 
   isAdjacentTo(cell: Cell) {
