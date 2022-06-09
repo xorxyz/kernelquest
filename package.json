@@ -9,6 +9,7 @@
     "cli",
     "game",
     "interpreter",
+    "levels",
     "lib",
     "server",
     "www"

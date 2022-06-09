@@ -1,11 +1,10 @@
 import { Clock, CLOCK_MS_DELAY, debug, Vector } from 'xor4-lib';
 import { EventEmitter } from 'events';
+import levels from 'xor4-levels';
 import { World } from './world';
 import { Area } from './area';
 import { Agent, Dragon, IAgent, King } from './agent';
 import { Action, IAction } from './action';
-
-const defaultArea = new Area(0, 0);
 
 /** @category Engine */
 export interface EngineOptions {
@@ -37,18 +36,9 @@ export class Engine extends EventEmitter {
   constructor(opts?: EngineOptions) {
     super();
 
-    const king = new Agent(new King());
-
-    defaultArea.put(king, new Vector(1, 1));
-
-    const dragon = new Agent(new Dragon());
-
-    defaultArea.put(dragon, new Vector(9, 9));
+    this.load('1');
 
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
-    this.world = opts?.world || new World([defaultArea]);
-    this.heroes = [king];
-
     this.clock.on('tick', this.update.bind(this));
   }
 
@@ -68,6 +58,21 @@ export class Engine extends EventEmitter {
     });
 
     this.emit('end-turn');
+  }
+
+  load(id) {
+    const level = levels.find((l) => l.id === id);
+    if (level) {
+      const area = new Area(0, 0);
+      const king = new Agent(new King());
+      const dragon = new Agent(new Dragon());
+
+      area.put(king, new Vector(1, 1));
+      area.put(dragon, new Vector(9, 9));
+
+      this.world = new World([area]);
+      this.heroes = [king];
+    }
   }
 
   processTurn(area: Area, agent: Agent) {

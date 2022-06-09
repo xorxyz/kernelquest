@@ -5,3 +5,4 @@ build
 .DS_Store
 _deprecated/**/package-lock.json
 .parcel-cache
+yarn-error.log

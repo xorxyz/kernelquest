@@ -20,12 +20,12 @@
             class="tab link grow mh2 ph2 pv2 white pointer">
             <Emoji class="f5">🚩</Emoji> Levels
           </router-link>
-          <router-link
+          <!-- <router-link
             to="/editor"
             active-class="is-selected"
             class="tab link grow mh2 ph2 pv2 white pointer">
             <Emoji class="f5">🗺️</Emoji> Editor
-          </router-link>
+          </router-link> -->
         </div>
       </div>
       <div class="flex items-center ">

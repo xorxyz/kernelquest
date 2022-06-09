@@ -23,29 +23,34 @@
         </div>
         <div class="flex flex-column">
           <small class="mb2">Published on</small>
-          <div>01-06-19</div>
+          <div>{{ level.published_on }}</div>
         </div>
         <div class="flex flex-column">
           <small class="mb2">Creator</small>
           <div>
             <router-link
-              to="/users/kareniel"
+              :to="`/users/${level.creator}`"
               class="white">
-              kareniel
+              {{ level.creator }}
             </router-link>
           </div>
         </div>
       </div>
-      <p>The level description. </p><small>Tags</small>
+      <p>{{ level.description }}</p>
+      <small>Tags</small>
       <div>
-        <div class="tag">Unix</div>
-        <div class="tag">Operations</div>
+        <div
+          v-for="tag in level.tags"
+          :key="tag"
+          class="tag">
+          {{ tag }}
+        </div>
       </div><br>
       <div class="button-wrapper">
         <br>
         <router-link
           class="button f2 link pv2 ph4"
-          :to="`/game?level=${$route.params.levelId}`">
+          :to="`/game?level=${level.id}&cmd=load`">
           Play
         </router-link>
       </div>
@@ -111,11 +116,13 @@
 </template>
 
 <script lang="ts">import { defineComponent } from 'vue';
+import levels from 'xor4-levels';
 
 export default defineComponent({
   data() {
     return {
       name: 'Vue',
+      level: levels[0],
     };
   },
 });

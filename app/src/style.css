@@ -142,6 +142,12 @@ img.emoji {
   transition: 0.15s;
 }
 
+.tag.is-small {
+  padding: .25rem .5rem;
+  margin: .25rem 0.25rem .25rem 0;
+  font-size: .7rem;
+}
+
 .tag:hover {
   background-color: #131023;
   transition: 0.15s;

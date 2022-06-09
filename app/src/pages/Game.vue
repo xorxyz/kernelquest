@@ -60,14 +60,22 @@ const xterm = new Terminal({
 xterm.loadAddon(fitAddon);
 xterm.loadAddon(unicode14Addon);
 xterm.unicode.activeVersion = '14';
-let started = false;
 
 export default defineComponent({
+  beforeUnmount() {
+    console.log('beforeUnmount');
+  },
   mounted() {
     debug('game mounted');
+    this.pause();
+    const { cmd } = this.$router.currentRoute.value.query;
+    if (cmd === 'load') {
+      console.log('loading level');
+      engine.load('1');
+    }
     xterm.open(this.$refs.terminal as HTMLDivElement);
     xterm.focus();
-    if (started) return;
+    // if (started) return;
 
     (xterm as Terminal).onKey(({ key }) => {
       if (this.paused) return;
@@ -127,7 +135,7 @@ export default defineComponent({
 
     this.play();
 
-    started = true;
+    // started = true;
   },
   data(): { tty: VirtualTerminal | undefined, paused: boolean } {
     return {
