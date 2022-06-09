@@ -128,18 +128,6 @@ export const route = new Operator(['route'], ['ref', 'ref'], (stack) => {
   stack.push(new LiteralRef(b.vector.x, b.vector.y));
 });
 
-export const define = new Operator(['define'], ['quotation', 'string'], (stack, queue, dict) => {
-  const name = stack.pop() as LiteralString;
-  const program = stack.pop() as Quotation;
-  if (dict) {
-    dict[name.value] = program;
-    const p = new Quotation();
-    stack.push(p);
-  } else {
-    throw new Error('Dictionary is not accessible.');
-  }
-});
-
 const combinators = {};
 
 [
@@ -147,7 +135,6 @@ const combinators = {};
   i, dip,
   map, ifte,
   ref, struct, route,
-  define,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {
     combinators[alias] = combinator;

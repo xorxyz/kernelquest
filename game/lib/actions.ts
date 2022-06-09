@@ -1,8 +1,8 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
-import { Interpretation, LiteralRef, Quotation } from 'xor4-interpreter';
+import { Interpretation, LiteralRef } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Area } from '../src/area';
-import { Agent, AgentType, Foe, Hero, Wind } from '../src/agent';
+import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
 import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
@@ -383,27 +383,6 @@ export class PatrolAction extends Action {
   cost = 1;
   perform() {
     return new ActionFailure('TODO');
-  }
-}
-
-/** @category Actions */
-export class CreateAction extends Action {
-  name = 'create';
-  cost = 0;
-  program: Quotation;
-  constructor(program: Quotation) {
-    super();
-    this.program = program;
-  }
-  perform(ctx: Area, agent: Agent) {
-    // const name = this.program.value[1].lexeme;
-    const wind = new Agent(new Wind());
-    wind.facing.direction.value.copy(agent.facing.direction.value);
-    ctx.put(wind, agent.position.clone().add(agent.facing.direction.value));
-    // const created = createFn.call(ctx);
-    console.log('created', wind);
-    // ctx.put(created);
-    return new ActionSuccess();
   }
 }
 

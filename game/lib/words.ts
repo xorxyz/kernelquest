@@ -1,8 +1,8 @@
 import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from 'xor4-interpreter';
-import { Spirit } from '../src';
+import { agents, CreateAction, Spirit, Wind } from '../src';
 import {
   CloneAction,
-  CreateAction,
+  EvalAction,
   ListAction, LookAction,
   MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction, SpawnAction,
 } from './actions';
@@ -17,10 +17,17 @@ const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
 });
 
 /** @category Words */
-const create = new Combinator(['create'], ['quotation'], async (stack, queue) => {
-  const program = stack.pop() as Quotation;
+const create = new Combinator(['create'], ['string'], async (stack, queue) => {
+  const program = stack.pop() as LiteralString;
+  const name = program.lexeme;
 
-  queue?.add(new CreateAction(program));
+  const agentDict = {
+    ...agents,
+  };
+
+  const TypeCtor = agentDict[name] || Wind;
+
+  queue?.add(new CreateAction(new TypeCtor()));
 });
 
 /** @category Words */
@@ -71,6 +78,19 @@ export const clone = new Operator(['clone'], ['ref'], (stack, queue) => {
   queue?.add(new CloneAction(ref));
 });
 
+/** @category Words */
+export const define = new Operator(['define'], ['string', 'quotation'], (stack, queue, dict) => {
+  const program = stack.pop() as Quotation;
+  const name = stack.pop() as LiteralString;
+
+  if (dict) {
+    console.log(dict);
+    dict[name.value] = program;
+  } else {
+    throw new Error('Dictionary is not accessible.');
+  }
+});
+
 export default {
-  goto, look, ls, mv, rm, spawn, search, save, clone, create,
+  goto, look, ls, mv, rm, spawn, search, save, clone, create, define,
 };

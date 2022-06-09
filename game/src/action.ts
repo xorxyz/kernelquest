@@ -1,7 +1,7 @@
 import { debug } from 'console';
-import { Agent } from './agent';
 import { Thing } from './thing';
 import { Area } from './area';
+import { Agent } from './agent';
 
 /** @category Capability */
 export abstract class Capability {
