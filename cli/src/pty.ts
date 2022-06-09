@@ -11,7 +11,7 @@ import {
   StepAction,
   SwitchModeAction,
 } from 'xor4-game/lib';
-import { Agent, Place, Action, TerminalAction } from 'xor4-game/src';
+import { Agent, Area, Action, TerminalAction } from 'xor4-game/src';
 import { Editor } from './editor';
 import { MainView } from './views';
 import { CELL_WIDTH } from './component';
@@ -28,7 +28,7 @@ export interface IVirtalTerminalState {
 export class VirtualTerminal {
   public id: number;
   public player: Agent;
-  readonly place: Place;
+  readonly area: Area;
   public state: IVirtalTerminalState;
   public lineEditor: Editor = new Editor();
   public view: MainView;
@@ -39,9 +39,9 @@ export class VirtualTerminal {
 
   private timer;
 
-  constructor(hero: Agent, place: Place, send: Function) {
+  constructor(hero: Agent, area: Area, send: Function) {
     this.player = hero;
-    this.place = place;
+    this.area = area;
     this.send = send;
     this.view = new MainView();
     this.state = {
@@ -51,17 +51,17 @@ export class VirtualTerminal {
       stdout: CursorModeHelpText,
     };
 
-    place.events.on('pause', () => {
+    area.events.on('pause', () => {
       this.paused = true;
-      this.render(place.tick);
+      this.render(area.tick);
     });
 
-    place.events.on('start', () => {
+    area.events.on('start', () => {
       this.paused = false;
-      this.render(place.tick);
+      this.render(area.tick);
     });
 
-    place.events.on('update', () => this.render(place.tick));
+    area.events.on('update', () => this.render(area.tick));
   }
 
   disconnect() {
@@ -86,7 +86,7 @@ export class VirtualTerminal {
 
     // Restart the level after you're dead by pressing Enter.
     if (str === Keys.ENTER && this.player.hp.value <= 0) {
-      this.place.reset();
+      this.area.reset();
       return;
     }
 
@@ -96,7 +96,7 @@ export class VirtualTerminal {
       const action = this.getActionForKey(str);
 
       if (action instanceof TerminalAction) {
-        action.perform(this.place, this.player);
+        action.perform(this.area, this.player);
       } else if (action) {
         this.player.schedule(action);
       }
@@ -193,7 +193,7 @@ export class VirtualTerminal {
   }
 
   render(tick: number) {
-    if (!this.place) return;
+    if (!this.area) return;
 
     const output = this.view.compile(this, tick);
 

@@ -1,8 +1,8 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
-import { Interpretation, LiteralRef } from 'xor4-interpreter';
+import { Interpretation, LiteralRef, Quotation } from 'xor4-interpreter';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
 import { Area } from '../src/area';
-import { Agent, AgentType, Foe, Hero } from '../src/agent';
+import { Agent, AgentType, Foe, Hero, Wind } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
 import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
@@ -386,27 +386,26 @@ export class PatrolAction extends Action {
   }
 }
 
-// /** @category Actions */
-// export class CreateAction extends Action {
-//   name = 'new';
-//   cost = 0;
-//   program: Quotation;
-//   args: Quotation;
-//   constructor(program: Quotation, args: Quotation) {
-//     super();
-//     this.program = program;
-//     this.args = args;
-//   }
-//   perform(ctx: Area) {
-//     const name = this.program.value[1].lexeme;
-//     const createFn = create[name];
-//     const created = createFn.call(ctx);
-//     console.log('created', created);
-//     ctx.put(created);
-//     if (!createFn) return new ActionFailure(`Could not create '${name}'`);
-//     return new ActionSuccess();
-//   }
-// }
+/** @category Actions */
+export class CreateAction extends Action {
+  name = 'create';
+  cost = 0;
+  program: Quotation;
+  constructor(program: Quotation) {
+    super();
+    this.program = program;
+  }
+  perform(ctx: Area, agent: Agent) {
+    // const name = this.program.value[1].lexeme;
+    const wind = new Agent(new Wind());
+    wind.facing.direction.value.copy(agent.facing.direction.value);
+    ctx.put(wind, agent.position.clone().add(agent.facing.direction.value));
+    // const created = createFn.call(ctx);
+    console.log('created', wind);
+    // ctx.put(created);
+    return new ActionSuccess();
+  }
+}
 
 /** @category Actions */
 export class EvalAction extends Action {
@@ -453,7 +452,7 @@ export class LookAction extends Action {
     } else {
       agent.logs.push({
         tick: agent.mind.tick,
-        message: `${JSON.stringify(seen)}`,
+        message: `${seen.label}`,
       });
     }
     return new ActionSuccess();
@@ -515,7 +514,11 @@ export class RemoveAction extends Action {
 
   perform(ctx: Area) {
     const fromCell = ctx.cellAt(this.ref.vector);
-    fromCell?.take();
+    const thing = fromCell?.take();
+
+    if (thing) {
+      ctx.remove(thing);
+    }
 
     return new ActionSuccess();
   }
@@ -580,6 +583,41 @@ export class SaveAction extends Action {
       tick: agent.mind.tick,
       message: 'Saving...',
     });
+
+    return new ActionSuccess();
+  }
+}
+
+export class CloneAction extends Action {
+  name = 'clone';
+  cost = 0;
+  ref: LiteralRef;
+
+  constructor(ref: LiteralRef) {
+    super();
+    this.ref = ref;
+  }
+
+  perform(ctx: Area, agent: Agent) {
+    const cell = ctx.cellAt(this.ref.vector);
+
+    if (!cell || !cell.slot) {
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: `Nothing at [${this.ref.vector.label}].`,
+      });
+    } else {
+      if (cell.slot.type instanceof AgentType) {
+        const clone = new Agent(cell.slot.type);
+        clone.position.copy(cell.slot.position).addX(1);
+        ctx.put(clone, clone.position);
+      }
+
+      agent.logs.push({
+        tick: agent.mind.tick,
+        message: `Cloned [${cell.slot.label}].`,
+      });
+    }
 
     return new ActionSuccess();
   }

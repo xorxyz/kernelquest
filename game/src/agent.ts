@@ -1,10 +1,11 @@
 import {
   Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug,
 } from 'xor4-lib';
-import { Body, BodyType, Thing } from './thing';
+import { Body, BodyType, IBody, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
 import { Cell, Glyph } from './cell';
 import { Mind } from './mind';
+import { RandomWalkCapability, TemperatureCapability } from './capabilities';
 
 /**
  states:
@@ -72,11 +73,55 @@ export abstract class Foe extends AgentType {
   style = esc(Colors.Bg.Red);
 }
 
-/** @category Agents */
+/** @category Agent */
 export class Spirit extends Hero {
   name = 'spirit';
   glyph = new Glyph('👼');
   weight = 1;
+}
+
+/** @category Agents */
+export class King extends Hero {
+  name = 'king';
+  glyph = new Glyph('🤴');
+  weight = 1;
+}
+
+/** @category Agents */
+export class Dragon extends Foe {
+  name = 'dragon';
+  glyph = new Glyph('🐉');
+  weight = 1;
+  capabilities = [new RandomWalkCapability()];
+}
+
+/** @category Agents */
+export class Wind extends Element {
+  name = 'wind';
+  glyph = new Glyph('🌬️ ');
+  weight = 0;
+  capabilities = [new TemperatureCapability()];
+}
+
+/** @category Agents */
+export class Water extends Element {
+  name = 'water';
+  glyph = new Glyph('💧');
+  weight = 0;
+}
+
+/** @category Agents */
+export class Earth extends Element {
+  name = 'earth';
+  glyph = new Glyph('🌱');
+  weight = 0;
+}
+
+/** @category Agents */
+export class Fire extends Element {
+  name = 'fire';
+  glyph = new Glyph('🔥');
+  weight = 0;
 }
 
 /** @category Agent */
@@ -98,6 +143,8 @@ export interface AgentLog {
   type?: AgentLogType,
   eventName?: string,
 }
+
+export interface IAgent extends IBody {}
 
 /** @category Agent */
 export class Agent extends Body {
@@ -130,6 +177,16 @@ export class Agent extends Body {
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);
     });
+  }
+
+  static from(serialized: object) {
+    return new Agent(new Spirit());
+  }
+
+  serialize(): IAgent {
+    return {
+      type: this.type.name,
+    };
   }
 
   remember(log: AgentLog) {

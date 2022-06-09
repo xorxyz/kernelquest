@@ -1,6 +1,11 @@
-import { Combinator, LiteralRef, LiteralString } from 'xor4-interpreter';
+import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from 'xor4-interpreter';
 import { Spirit } from '../src';
-import { ListAction, LookAction, MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction, SpawnAction } from './actions';
+import {
+  CloneAction,
+  CreateAction,
+  ListAction, LookAction,
+  MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction, SpawnAction,
+} from './actions';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
@@ -11,13 +16,12 @@ const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
   queue?.add(action);
 });
 
-// /** @category Words */
-// const create = new Combinator(['new'], ['quotation', 'quotation'], async (stack, queue) => {
-//   const args = stack.pop() as Quotation;
-//   const program = stack.pop() as Quotation;
+/** @category Words */
+const create = new Combinator(['create'], ['quotation'], async (stack, queue) => {
+  const program = stack.pop() as Quotation;
 
-//   queue?.add(new CreateAction(program, args));
-// });
+  queue?.add(new CreateAction(program));
+});
 
 /** @category Words */
 const look = new Combinator(['look'], ['ref'], async (stack, queue) => {
@@ -60,6 +64,13 @@ const save = new Combinator(['save'], [], async (stack, queue) => {
   queue?.items.unshift(new SaveAction());
 });
 
+/** @category Words */
+export const clone = new Operator(['clone'], ['ref'], (stack, queue) => {
+  const ref = stack.pop() as LiteralRef;
+
+  queue?.add(new CloneAction(ref));
+});
+
 export default {
-  goto, look, ls, mv, rm, spawn, search, save,
+  goto, look, ls, mv, rm, spawn, search, save, clone, create,
 };

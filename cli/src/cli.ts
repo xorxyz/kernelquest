@@ -3,9 +3,9 @@
  Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
 import readline from 'readline';
-import { Engine, Agent, Place, World } from 'xor4-game/src';
+import { Engine, Agent, Area, World } from 'xor4-game/src';
 import { EvalAction } from 'xor4-game/lib';
-import { Spirit } from 'xor4-game/lib/agents';
+import { Spirit } from 'xor4-game/src/agent';
 import { Vector } from 'xor4-lib/math';
 
 export default async function cli() {
@@ -45,7 +45,7 @@ export default async function cli() {
 }
 
 function createGameEngine() {
-  const room = new Place(0, 0);
+  const room = new Area(0, 0);
   const world = new World([room]);
   const engine = new Engine({ world });
 

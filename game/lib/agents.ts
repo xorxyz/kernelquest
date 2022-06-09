@@ -1,41 +1,6 @@
-import { Hero, Foe, Friend, Element, House } from '../src/agent';
+import { Hero, Foe, Friend, House } from '../src/agent';
 import { Glyph } from '../src/cell';
-import { RandomWalkCapability } from './capabilities';
-
-/** @category Agents */
-export class King extends Hero {
-  name = 'king';
-  glyph = new Glyph('🤴');
-  weight = 1;
-}
-
-/** @category Agents */
-export class Wind extends Element {
-  name = 'wind';
-  glyph = new Glyph('🌬️ ');
-  weight = 0;
-}
-
-/** @category Agents */
-export class Water extends Element {
-  name = 'water';
-  glyph = new Glyph('💧');
-  weight = 0;
-}
-
-/** @category Agents */
-export class Earth extends Element {
-  name = 'earth';
-  glyph = new Glyph('🌱');
-  weight = 0;
-}
-
-/** @category Agents */
-export class Fire extends Element {
-  name = 'fire';
-  glyph = new Glyph('🔥');
-  weight = 0;
-}
+import { RandomWalkCapability } from '../src/capabilities';
 
 /** @category Agents */
 export class Fairy extends Hero {
@@ -61,13 +26,6 @@ export class Sheep extends Friend {
   glyph = new Glyph('🐑');
   capabilities = [new RandomWalkCapability()];
   weight = 10;
-}
-
-/** @category Agents */
-export class Dragon extends Foe {
-  name = 'dragon';
-  glyph = new Glyph('🐉');
-  weight = 1;
 }
 
 /** @category Agents */

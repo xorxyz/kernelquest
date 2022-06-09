@@ -5,9 +5,9 @@ import { VirtualTerminal } from '../pty';
 /** @category Components */
 export class Header extends UiComponent {
   style = esc(Style.Invert);
-  render({ place }: VirtualTerminal) {
+  render({ area }: VirtualTerminal) {
     return [(
-      `🏰 Kernel Quest                                  👑 ${place.capturedCrowns.size}/${place.crowns.size}  🚩 ${place.capturedFlags.size}/${place.flags.size}  ⏳ ${String(place.secondsLeft).padStart(3, '0')}`
+      `🏰 Kernel Quest                                  👑 ${area.capturedCrowns.size}/${area.crowns.size}  🚩 ${area.capturedFlags.size}/${area.flags.size}  ⏳ ${String(area.secondsLeft).padStart(3, '0')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }

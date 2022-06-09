@@ -24,15 +24,21 @@ export class ActionFailure extends ActionResult {}
 export interface IAction {
   name: string
   cost: number
-  tick?: number
-  agent?: string
 }
 
 /** @category Action */
 export abstract class Action implements IAction {
   abstract readonly name: string
   abstract readonly cost: number
+
   abstract perform(context: Area, subject: Agent, object?: Agent | Thing): ActionResult
+
+  serialize(): IAction {
+    return {
+      name: this.name,
+      cost: this.cost,
+    };
+  }
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry

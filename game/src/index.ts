@@ -1,5 +1,6 @@
 export * from './action';
 export * from './agent';
+export * from './capabilities';
 export * from './cell';
 export * from './engine';
 export * from './mind';

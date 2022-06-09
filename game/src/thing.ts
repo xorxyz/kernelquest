@@ -13,6 +13,8 @@ export abstract class BodyType {
   readonly isBlocking: boolean = true;
 }
 
+export interface IBody {}
+
 /** @category Thing */
 export abstract class Body extends EventEmitter {
   readonly name: string = '';
@@ -43,6 +45,8 @@ export abstract class Body extends EventEmitter {
     return style + this.type.glyph.value + esc(Style.Reset);
   }
 }
+
+export interface IThing extends IBody {}
 
 /** @category Thing */
 export class Thing extends Body {

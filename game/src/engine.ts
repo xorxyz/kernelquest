@@ -2,10 +2,8 @@ import { Clock, CLOCK_MS_DELAY, debug, Vector } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
 import { Area } from './area';
-import { Agent } from './agent';
-import { Thing } from './thing';
-import { Action } from './action';
-import { Crown, Flag, King, Skull, Stars, Temple } from '../lib';
+import { Agent, Dragon, IAgent, King } from './agent';
+import { Action, IAction } from './action';
 
 const defaultArea = new Area(0, 0);
 
@@ -21,30 +19,31 @@ export interface IWaitCallback {
   fn: Function
 }
 
+export interface HistoryEvent {
+  tick: number,
+  agent: IAgent,
+  action: IAction
+}
+
 /** @category Engine */
 export class Engine extends EventEmitter {
   cycle: number = 0;
   world: World;
   heroes: Array<Agent>;
   elapsed: number = 0;
+  history: Array<HistoryEvent> = [];
   readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {
     super();
 
     const king = new Agent(new King());
-    const temple = new Thing(new Temple());
-    const flag = new Thing(new Flag());
-    const crown = new Thing(new Crown());
-    const stars = new Thing(new Stars());
-    const skull = new Thing(new Skull());
 
-    defaultArea.put(temple, new Vector(0, 9));
-    defaultArea.put(king, new Vector(1, 8));
-    defaultArea.put(flag, new Vector(0, 8));
-    defaultArea.put(crown, new Vector(1, 7));
-    defaultArea.put(stars, new Vector(4, 5));
-    defaultArea.put(skull, new Vector(14, 7));
+    defaultArea.put(king, new Vector(1, 1));
+
+    const dragon = new Agent(new Dragon());
+
+    defaultArea.put(dragon, new Vector(9, 9));
 
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.world = opts?.world || new World([defaultArea]);
@@ -88,7 +87,15 @@ export class Engine extends EventEmitter {
 
     if (actions.length) {
       debug('actions', actions);
+
       actions.forEach((action) => {
+        /* Keep a history of actions so we can save them later */
+        this.history.push({
+          tick: this.cycle,
+          agent: agent.serialize(),
+          action: action.serialize(),
+        });
+
         const result = action.tryPerforming(area, agent);
         if (!result.message) return;
         agent.remember({

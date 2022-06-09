@@ -1,10 +1,7 @@
-import {
-  Rectangle, Vector, CLOCK_MS_DELAY, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction, debug,
-} from 'xor4-lib';
+import { Rectangle, Vector, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction } from 'xor4-lib';
 import EventEmitter from 'events';
 import { Agent, Hero } from './agent';
-import { Cell, Glyph } from './cell';
-import { Action } from './action';
+import { Cell } from './cell';
 import { Wall, Door, Thing } from './thing';
 
 /** @category Area */
