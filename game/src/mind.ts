@@ -1,7 +1,7 @@
 import { Interpretation, Interpreter, Compiler, Factor } from 'xor4-interpreter';
 import { debug, Queue, Stack } from 'xor4-lib';
 import { Action } from './action';
-import words from '../lib/words';
+import words from './words';
 import { World } from './world';
 
 /** @category Mind */

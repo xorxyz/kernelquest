@@ -1,12 +1,13 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
 import { Interpretation, LiteralRef } from 'xor4-interpreter';
-import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src/action';
-import { Area } from '../src/area';
-import { Agent, AgentType, Foe, Hero } from '../src/agent';
-import { Thing } from '../src/thing';
-import { Cell, Glyph } from '../src/cell';
-import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
-import { Crown, Flag } from './things';
+import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from './action';
+import { Area } from './area';
+import { Agent, AgentType, Foe, Hero } from './agent';
+import { Thing } from './thing';
+import { Cell, Glyph } from './cell';
+import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from '../lib/events';
+import { Crown, Flag } from '../lib/things';
+import { Wind } from './agents';
 
 /*
  * Actions in the World
@@ -597,6 +598,39 @@ export class CloneAction extends Action {
         message: `Cloned [${cell.slot.label}].`,
       });
     }
+
+    return new ActionSuccess();
+  }
+}
+
+export class CreateAction extends Action {
+  name = 'create';
+  cost = 0;
+  type: AgentType;
+
+  constructor(type: string) {
+    super();
+    const TypeCtor = {
+
+    }[type] || Wind;
+
+    this.type = new TypeCtor();
+  }
+
+  perform(ctx: Area, agent: Agent) {
+    const at = agent.position.add(agent.facing.direction.value);
+    const cell = ctx.cellAt(at);
+
+    if (!cell) {
+      return new ActionFailure('The target cell is out of bounds.');
+    }
+    if (cell.slot) {
+      return new ActionFailure('There is already somthing here.');
+    }
+
+    const created = new Agent(this.type);
+
+    cell.put(created);
 
     return new ActionSuccess();
   }

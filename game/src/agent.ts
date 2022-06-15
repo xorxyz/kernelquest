@@ -2,10 +2,9 @@ import {
   Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug,
 } from 'xor4-lib';
 import { Body, BodyType, IBody, Thing } from './thing';
-import { Action, TerminalAction, Capability, ActionSuccess, ActionFailure } from './action';
-import { Cell, Glyph } from './cell';
+import { Action, TerminalAction, Capability } from './action';
+import { Cell } from './cell';
 import { Mind } from './mind';
-import { Area } from './area';
 
 /**
  states:
@@ -74,67 +73,6 @@ export abstract class Foe extends AgentType {
 }
 
 /** @category Agent */
-export class Spirit extends Hero {
-  name = 'spirit';
-  glyph = new Glyph('👼');
-  weight = 1;
-}
-
-/** @category Agents */
-export class King extends Hero {
-  name = 'king';
-  glyph = new Glyph('🤴');
-  weight = 1;
-}
-
-/** @category Agents */
-export class Dragon extends Foe {
-  name = 'dragon';
-  glyph = new Glyph('🐉');
-  weight = 1;
-  capabilities = [];
-}
-
-/** @category Agents */
-export class Wind extends Element {
-  name = 'wind';
-  glyph = new Glyph('🌬️ ');
-  weight = 0;
-  capabilities = [];
-}
-
-/** @category Agents */
-export class Water extends Element {
-  name = 'water';
-  glyph = new Glyph('💧');
-  weight = 0;
-}
-
-/** @category Agents */
-export class Earth extends Element {
-  name = 'earth';
-  glyph = new Glyph('🌱');
-  weight = 0;
-}
-
-/** @category Agents */
-export class Fire extends Element {
-  name = 'fire';
-  glyph = new Glyph('🔥');
-  weight = 0;
-}
-
-export const agents = {
-  wind: Wind,
-  water: Water,
-  earth: Earth,
-  fire: Fire,
-  king: King,
-  dragon: Dragon,
-  spirit: Spirit,
-};
-
-/** @category Agent */
 export interface IFacing {
   direction: Direction,
   cell: Cell | null
@@ -187,10 +125,6 @@ export class Agent extends Body {
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);
     });
-  }
-
-  static from(serialized: object) {
-    return new Agent(new Spirit());
   }
 
   serialize(): IAgent {
@@ -310,34 +244,34 @@ export class Agent extends Body {
   }
 }
 
-/** @category Actions */
-export class CreateAction extends Action {
-  name = 'create';
-  cost = 0;
-  type: AgentType;
+// /** @category Actions */
+// export class CreateAction extends Action {
+//   name = 'create';
+//   cost = 0;
+//   type: AgentType;
 
-  constructor(type: AgentType) {
-    super();
-    this.type = type;
-  }
+//   constructor(type: AgentType) {
+//     super();
+//     this.type = type;
+//   }
 
-  perform(ctx: Area, agent: Agent) {
-    // You can't create things outside of an area.
-    if (!Area.bounds.contains(agent.facing.direction.value)) {
-      return new ActionFailure();
-    }
+//   perform(ctx: Area, agent: Agent) {
+//     // You can't create things outside of an area.
+//     if (!Area.bounds.contains(agent.facing.direction.value)) {
+//       return new ActionFailure();
+//     }
 
-    const entity = new Agent(this.type);
-    const at = agent.position.clone().add(agent.facing.direction.value);
+//     const entity = new Agent(this.type);
+//     const at = agent.position.clone().add(agent.facing.direction.value);
 
-    // New agents face the same direction as the agent that creates them
-    if (entity instanceof Agent) {
-      entity.facing?.direction.value.copy(agent.facing.direction.value);
-    }
+//     // New agents face the same direction as the agent that creates them
+//     if (entity instanceof Agent) {
+//       entity.facing?.direction.value.copy(agent.facing.direction.value);
+//     }
 
-    ctx.put(entity, at);
-    console.log('created', entity);
+//     ctx.put(entity, at);
+//     console.log('created', entity);
 
-    return new ActionSuccess();
-  }
-}
+//     return new ActionSuccess();
+//   }
+// }

@@ -9,7 +9,7 @@ export const MAX_Y = AREA_HEIGHT - 1;
 
 export const SCREEN_WIDTH = 60;
 export const SCREEN_HEIGHT = 20;
-export const LINE_LENGTH = 41;
+export const LINE_LENGTH = 55;
 export const N_OF_LINES = 5;
 export const CELL_WIDTH = 2;
 

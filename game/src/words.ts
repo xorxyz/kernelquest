@@ -1,8 +1,7 @@
 import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from 'xor4-interpreter';
-import { agents, CreateAction, Spirit, Wind } from '../src';
 import {
   CloneAction,
-  EvalAction,
+  CreateAction,
   ListAction, LookAction,
   MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction, SpawnAction,
 } from './actions';
@@ -21,13 +20,7 @@ const create = new Combinator(['create'], ['string'], async (stack, queue) => {
   const program = stack.pop() as LiteralString;
   const name = program.lexeme;
 
-  const agentDict = {
-    ...agents,
-  };
-
-  const TypeCtor = agentDict[name] || Wind;
-
-  queue?.add(new CreateAction(new TypeCtor()));
+  queue?.add(new CreateAction(name));
 });
 
 /** @category Words */
@@ -57,7 +50,7 @@ const rm = new Combinator(['rm'], ['ref'], async (stack, queue) => {
 
 /** @category Words */
 const spawn = new Combinator(['spawn'], [], async (stack, queue) => {
-  queue?.items.unshift(new SpawnAction(new Spirit()));
+  // queue?.items.unshift(new SpawnAction(new Spirit()));
 });
 
 /** @category Words */

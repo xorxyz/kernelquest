@@ -1,5 +1,7 @@
 export * from './action';
+export * from './actions';
 export * from './agent';
+export * from './agents';
 export * from './capabilities';
 export * from './cell';
 export * from './engine';
@@ -7,3 +9,4 @@ export * from './mind';
 export * from './area';
 export * from './thing';
 export * from './world';
+export * from './words';

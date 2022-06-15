@@ -1,5 +1,5 @@
-import { debug } from 'xor4-lib';
-import { LINE_LENGTH, N_OF_LINES, UiComponent } from '../component';
+import { debug, LINE_LENGTH } from 'xor4-lib';
+import { N_OF_LINES, UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
 
 function formatLines(str: string): Array<string> {

@@ -36,7 +36,7 @@ import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
 import { VirtualTerminal } from 'xor4-cli';
 import { debug } from 'xor4-lib';
-import { Unicode14Addon } from '../../vendor/unicode14';
+import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
 import AudioPlayer from '../components/AudioPlayer.vue';
 
 const engine = markRaw(new Engine({}));

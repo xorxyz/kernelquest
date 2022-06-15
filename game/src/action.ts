@@ -1,4 +1,4 @@
-import { debug } from 'console';
+import { debug } from 'xor4-lib';
 import { Thing } from './thing';
 import { Area } from './area';
 import { Agent } from './agent';

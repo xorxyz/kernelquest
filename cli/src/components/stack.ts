@@ -7,7 +7,7 @@ import { VirtualTerminal } from '../pty';
 export class StackPane extends UiComponent {
   render({ player }: VirtualTerminal) {
     return [
-      `  [ ${player.mind.stack.map((factor: Factor) => factor.toString()).join(' ').padEnd(LINE_LENGTH)} ]`,
+      `  [ ${player.mind.stack.map((factor: Factor) => factor.toString()).join(' ').padEnd(LINE_LENGTH - 8)} ]`,
     ];
   }
 }

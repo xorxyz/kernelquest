@@ -2,10 +2,8 @@
  Written by Jonathan Dupré
  Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
-import readline from 'readline';
-import { Engine, Agent, Area, World } from 'xor4-game/src';
-import { EvalAction } from 'xor4-game/lib';
-import { Spirit } from 'xor4-game/src/agent';
+import readline from 'readline-browser';
+import { Engine, Agent, Area, World, EvalAction, Spirit } from 'xor4-game/src';
 import { Vector } from 'xor4-lib/math';
 
 export default async function cli() {
@@ -56,6 +54,6 @@ function createGameEngine() {
   return { engine, room, agent };
 }
 
-process.on('uncaughtException', (err) => {
-  console.error('There was an uncaught error', err);
-});
+// process.on('uncaughtException', (err) => {
+//   console.error('There was an uncaught error', err);
+// });

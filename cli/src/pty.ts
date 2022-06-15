@@ -10,7 +10,7 @@ import {
   SelectCellAction,
   StepAction,
   SwitchModeAction,
-} from 'xor4-game/lib';
+} from 'xor4-game/src/actions';
 import { Agent, Area, Action, TerminalAction } from 'xor4-game/src';
 import { Editor } from './editor';
 import { MainView } from './views';

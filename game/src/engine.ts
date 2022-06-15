@@ -3,8 +3,9 @@ import { EventEmitter } from 'events';
 import levels from 'xor4-levels';
 import { World } from './world';
 import { Area } from './area';
-import { Agent, Dragon, IAgent, King } from './agent';
+import { Agent, IAgent } from './agent';
 import { Action, IAction } from './action';
+import { King } from './agents';
 
 /** @category Engine */
 export interface EngineOptions {
@@ -65,10 +66,10 @@ export class Engine extends EventEmitter {
     if (level) {
       const area = new Area(0, 0);
       const king = new Agent(new King());
-      const dragon = new Agent(new Dragon());
+      // const dragon = new Agent(new Dragon());
 
       area.put(king, new Vector(1, 1));
-      area.put(dragon, new Vector(9, 9));
+      // area.put(dragon, new Vector(9, 9));
 
       this.world = new World([area]);
       this.heroes = [king];

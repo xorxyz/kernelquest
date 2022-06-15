@@ -1,5 +1,4 @@
-import { Vector, Keys } from 'xor4-lib';
-import { LINE_LENGTH } from './component';
+import { Vector, Keys, LINE_LENGTH } from 'xor4-lib';
 
 declare const Buffer;
 

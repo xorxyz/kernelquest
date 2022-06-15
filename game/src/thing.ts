@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
 import { Colors, esc, Style, Vector } from 'xor4-lib';
-import { Foe, Hero } from './agent';
 import { Glyph } from './cell';
 
 /** @category Thing */
@@ -57,12 +56,12 @@ export class Thing extends Body {
     if (!this.owner && !this.type.style) {
       return esc(Colors.Bg.Yellow);
     }
-    if (this.owner?.type instanceof Hero) {
-      return esc(Colors.Bg.Purple);
-    }
-    if (this.owner?.type instanceof Foe) {
-      return esc(Colors.Bg.Red);
-    }
+    // if (this.owner?.type instanceof Hero) {
+    //   return esc(Colors.Bg.Purple);
+    // }
+    // if (this.owner?.type instanceof Foe) {
+    //   return esc(Colors.Bg.Red);
+    // }
 
     return null;
   }
