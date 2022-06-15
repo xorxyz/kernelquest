@@ -3,3 +3,7 @@ body {
     Arial, sans-serif;
   background-color: #000;
 }
+
+#terminal * {
+  cursor: default;
+}

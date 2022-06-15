@@ -49,7 +49,7 @@ const xterm = new Terminal({
     green: '#0CFF24',
     red: '#F92672',
   },
-  cols: 72,
+  cols: 80,
   rows: 25,
   fontSize: 21,
   cursorBlink: true,

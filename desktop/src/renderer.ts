@@ -2,6 +2,7 @@ import { Terminal } from 'xterm';
 import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
 import { Engine } from 'xor4-game';
 import { VirtualTerminal } from 'xor4-cli';
+import { Buffer } from 'buffer';
 
 import './index.css';
 import 'xterm/css/xterm.css';
@@ -47,9 +48,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
   const tty = new VirtualTerminal(hero, area, (str) => term.write(str));
 
-  // document.addEventListener('keydown')
-
-  terminalEl.addEventListener('keydown', ({ key }) => {
+  document.addEventListener('keydown', ({ key }) => {
     tty.handleInput(Buffer.from(key).toString('hex'));
   });
 

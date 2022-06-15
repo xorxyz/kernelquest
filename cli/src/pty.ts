@@ -75,6 +75,7 @@ export class VirtualTerminal {
   }
 
   handleInput(str: string) {
+    console.log('input', str);
     if (this.waiting) return;
 
     // Ctrl-C disconnects the pty
