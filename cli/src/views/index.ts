@@ -3,7 +3,7 @@ import { Axis, Header, Input, Message, Output, RoomMap, Sidebar, Stats } from '.
 import { StackPane } from '../components/stack';
 import { View } from '../view';
 
-const axis = new Axis(23 + 5, 3);
+const axis = new Axis(30, 3);
 
 /** @category Views */
 export class MainView extends View {

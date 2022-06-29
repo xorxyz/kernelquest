@@ -3,7 +3,9 @@
  Copyright 2019-2020-2021-2022 Diagonal Systems Inc.
  */
 import readline from 'readline-browser';
-import { Engine, Agent, Area, World, EvalAction, Spirit } from 'xor4-game/src';
+import { EvalAction } from 'xor4-game/lib/actions';
+import { Spirit } from 'xor4-game/lib/agents';
+import { Engine, Agent, Area, World } from 'xor4-game/src';
 import { Vector } from 'xor4-lib/math';
 
 export default async function cli() {
@@ -25,8 +27,8 @@ export default async function cli() {
 
     agent.schedule(new EvalAction(line));
 
-    engine.once('end-turn', () => {
-      engine.once('end-turn', () => {
+    engine.events.once('end-turn', () => {
+      engine.events.once('end-turn', () => {
         const logs = agent.logs.filter((log) => log.tick >= now && log.tick <= agent.mind.tick);
 
         logs.forEach((log) => console.log(`${log.message}`));
