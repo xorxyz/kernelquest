@@ -1,11 +1,9 @@
 import { Clock, CLOCK_MS_DELAY, debug, Vector } from 'xor4-lib';
 import { EventEmitter } from 'events';
-import levels from 'xor4-levels';
 import { World } from './world';
 import { Area } from './area';
-import { Agent, IAgent } from './agent';
-import { Action, IAction } from './action';
-import { King } from './agents';
+import { Agent } from './agent';
+import { Action } from './action';
 
 /** @category Engine */
 export interface EngineOptions {
@@ -21,8 +19,9 @@ export interface IWaitCallback {
 
 export interface HistoryEvent {
   tick: number,
-  agent: IAgent,
-  action: IAction
+  agent: number,
+  area: [number, number],
+  action: string
 }
 
 /** @category Engine */
@@ -37,8 +36,7 @@ export class Engine extends EventEmitter {
   constructor(opts?: EngineOptions) {
     super();
 
-    this.load('1');
-
+    this.world = opts?.world || new World([]);
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
   }
@@ -61,19 +59,39 @@ export class Engine extends EventEmitter {
     this.emit('end-turn');
   }
 
-  load(id) {
-    const level = levels.find((l) => l.id === id);
-    if (level) {
-      const area = new Area(0, 0);
-      const king = new Agent(new King());
-      // const dragon = new Agent(new Dragon());
+  load(actions: Array<HistoryEvent>) {
+    actions.forEach((action) => {
+      const agent = [...this.world.agents.values()].find((a) => a.id === action.agent);
+      const position = new Vector(action.area[0], action.area[1]);
+      const area = this.world.areas.find((a) => a.position.equals(position));
 
-      area.put(king, new Vector(1, 1));
-      // area.put(dragon, new Vector(9, 9));
+      if (!agent || !area) return;
 
-      this.world = new World([area]);
-      this.heroes = [king];
-    }
+      this.cycle = action.tick;
+
+      const proxy = new Proxy(agent, {
+        apply(target, thisArg, args) {
+
+        },
+      });
+
+      // if take turn
+      // return this action instead
+
+      this.processTurn(area, proxy);
+    });
+    // const level = levels.find((l) => l.id === id);
+    // if (level) {
+    //   const area = new Area(0, 0);
+    //   const king = new Agent(new King());
+    //   const dragon = new Agent(new Dragon());
+
+    //   area.put(king, new Vector(1, 1));
+    //   area.put(dragon, new Vector(9, 9));
+
+    //   this.world = new World([area]);
+    //   this.heroes = [king];
+    // }
   }
 
   processTurn(area: Area, agent: Agent) {
@@ -95,19 +113,18 @@ export class Engine extends EventEmitter {
       debug('actions', actions);
 
       actions.forEach((action) => {
+        const result = action.tryPerforming(area, agent);
+        if (!result.message) return;
+
         /* Keep a history of actions so we can save them later */
         this.history.push({
           tick: this.cycle,
-          agent: agent.serialize(),
-          action: action.serialize(),
+          area: [area.position.x, area.position.y],
+          agent: agent.id,
+          action: action.name,
         });
 
-        const result = action.tryPerforming(area, agent);
-        if (!result.message) return;
-        agent.remember({
-          tick: this.cycle,
-          message: result.message,
-        });
+        console.log(this.history);
       });
     }
 

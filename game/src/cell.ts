@@ -9,7 +9,7 @@ import { Thing } from './thing';
 export class Glyph {
   private chars: string;
 
-  static Empty = '  ';
+  static Empty = EMPTY_CELL_CHARS;
 
   get value() {
     return this.chars;

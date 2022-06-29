@@ -1,13 +1,13 @@
 import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
 import { Interpretation, LiteralRef } from 'xor4-interpreter';
-import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from './action';
-import { Area } from './area';
-import { Agent, AgentType, Foe, Hero } from './agent';
-import { Thing } from './thing';
-import { Cell, Glyph } from './cell';
-import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from '../lib/events';
-import { Crown, Flag } from '../lib/things';
+import { Area } from '../src/area';
+import { Agent, AgentType, Foe, Hero } from '../src/agent';
+import { Thing } from '../src/thing';
+import { Cell, Glyph } from '../src/cell';
+import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
+import { Crown, Flag } from './things';
 import { Wind } from './agents';
+import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src';
 
 /*
  * Actions in the World
@@ -23,7 +23,7 @@ export class WaitAction extends Action {
     super();
     this.duration = duration;
   }
-  perform(_: never, agent: Agent): ActionResult {
+  perform(ctx, agent: Agent): ActionResult {
     if (agent.isWaitingUntil !== null) {
       agent.isWaitingUntil += this.duration;
       return new ActionSuccess('');

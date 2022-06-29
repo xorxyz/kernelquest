@@ -31,15 +31,25 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { Engine, HIT, STEP, ROTATE, GET, PUT, FAIL, DIE } from 'xor4-game';
+import {
+  Engine, HIT, STEP, ROTATE, GET, PUT, FAIL, DIE, Agent, Area, World,
+} from 'xor4-game';
 import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
 import { VirtualTerminal } from 'xor4-cli';
-import { debug } from 'xor4-lib';
+import { debug, Vector } from 'xor4-lib';
 import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
+import { King } from 'xor4-game/lib/agents';
 import AudioPlayer from '../components/AudioPlayer.vue';
 
-const engine = markRaw(new Engine({}));
+const hero = new Agent(new King());
+const area = new Area(0, 0);
+const engine = markRaw(new Engine({
+  world: new World([area]),
+}));
+
+area.cellAt(new Vector(0, 0))?.put(hero);
+
 const fitAddon = new FitAddon.FitAddon();
 const unicode14Addon = new Unicode14Addon();
 const xterm = new Terminal({
@@ -67,11 +77,11 @@ export default defineComponent({
   },
   mounted() {
     debug('game mounted');
-    this.pause();
+    // this.pause();
     const { cmd } = this.$router.currentRoute.value.query;
     if (cmd === 'load') {
       console.log('loading level');
-      engine.load('1');
+      // engine.load('1');
     }
     xterm.open(this.$refs.terminal as HTMLDivElement);
     xterm.focus();
@@ -82,55 +92,50 @@ export default defineComponent({
       this.input(key);
     });
 
-    const area = engine.world.areas[0];
-    const players = area.findPlayers();
-    const hero = players[0];
+    // area.events.on(HIT, () => {
+    //   const sound = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(HIT, () => {
-      const sound = new Audio(new URL('~/public/hit.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(STEP, (e) => {
+    //   if (e?.agent !== hero) return;
+    //   const sound = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(STEP, (e) => {
-      if (e?.agent !== hero) return;
-      const sound = new Audio(new URL('~/public/step.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(ROTATE, (e) => {
+    //   if (e?.agent !== hero) return;
+    //   const sound = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(ROTATE, (e) => {
-      if (e?.agent !== hero) return;
-      const sound = new Audio(new URL('~/public/rotate.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(GET, () => {
+    //   const sound = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(GET, () => {
-      const sound = new Audio(new URL('~/public/get.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(PUT, () => {
+    //   const sound = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(PUT, () => {
-      const sound = new Audio(new URL('~/public/put.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(FAIL, (e) => {
+    //   if (e?.agent !== hero) return;
+    //   const sound = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(FAIL, (e) => {
-      if (e?.agent !== hero) return;
-      const sound = new Audio(new URL('~/public/fail.wav', import.meta.url).toString());
-      sound.play();
-    });
+    // area.events.on(DIE, () => {
+    //   (this.$refs.audio as HTMLAudioElement).pause();
+    //   const sound = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
+    //   sound.play();
+    // });
 
-    area.events.on(DIE, () => {
-      (this.$refs.audio as HTMLAudioElement).pause();
-      const sound = new Audio(new URL('~/public/die.wav', import.meta.url).toString());
-      sound.play();
-    });
-
-    area.events.on('reset', () => {
-      (this.$refs.audio as InstanceType<typeof AudioPlayer>).reset();
-    });
+    // area.events.on('reset', () => {
+    //   (this.$refs.audio as InstanceType<typeof AudioPlayer>).reset();
+    // });
 
     this.tty?.disconnect();
-
     this.tty = markRaw(new VirtualTerminal(hero, area, (str) => xterm.write(str)));
 
     this.play();

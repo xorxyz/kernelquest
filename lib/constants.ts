@@ -61,7 +61,7 @@ export const Signals = {
   SIGINT: '03',
 };
 
-export const EMPTY_CELL_CHARS = '  ';
+export const EMPTY_CELL_CHARS = '➖';
 
 export const CursorModeHelpText = [
   '<return> toggle between terminal & cursor mode.',

@@ -1,8 +1,7 @@
 import { Stack, Vector } from 'xor4-lib';
 import { Area } from './area';
-import { IThing, Thing } from './thing';
-import { Agent, IAgent, IFacing } from './agent';
-import { IAction } from './action';
+import { Thing } from './thing';
+import { Agent, IFacing } from './agent';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -17,42 +16,14 @@ export interface Position {
 }
 
 /** @category World */
-export interface IWorldState {
-  history: Array<IAction>,
-  agents: Array<IAgent>,
-  things: Array<IThing>,
-  positions: Record<string, Position>,
-}
-
-export interface IWorld {
-  state: IWorldState
-}
-
-/** @category World */
 export class World {
   public tick: number = 0;
   public areas: Array<Area>;
-  private agents: Set<Agent> = new Set();
-  private things: Set<Thing> = new Set();
-  private state: IWorldState = {
-    history: [],
-    agents: [],
-    things: [],
-    positions: {},
-  };
+  public agents: Set<Agent> = new Set();
+  public things: Set<Thing> = new Set();
 
   constructor(areas: Array<Area>) {
     this.areas = [...areas];
-  }
-
-  static from(serialized: IWorld): World {
-    return new World([]);
-  }
-
-  serialize(): IWorld {
-    return {
-      state: this.state,
-    };
   }
 
   find(agent: Agent): Area | null {

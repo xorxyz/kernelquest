@@ -7,5 +7,19 @@
   "creator": "kareniel",
   "style": "quest",
   "difficulty": "easy",
-  "tags": ["unix", "operations"]
+  "tags": ["unix", "operations"],
+  "code": [
+    "the world has 10 rows of areas",
+    "with 16 areas in each row",
+    "area [1,1]:",
+    "it's filled with water",
+    "there is an island in the middle of the area",
+    "a path connects the west edge to the east edge"
+  ],
+  "comments": [
+    "some words make you enter a new context",
+    "contexts are stacked on top of each other",
+    "so you have a stack of terms to work out your current idea",
+    "and a stack of contexts to keep track of what you were talking about"
+  ]
 }

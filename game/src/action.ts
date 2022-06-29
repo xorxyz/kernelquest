@@ -21,24 +21,12 @@ export class ActionSuccess extends ActionResult {}
 /** @category Action */
 export class ActionFailure extends ActionResult {}
 
-export interface IAction {
-  name: string
-  cost: number
-}
-
 /** @category Action */
-export abstract class Action implements IAction {
+export abstract class Action {
   abstract readonly name: string
   abstract readonly cost: number
 
   abstract perform(context: Area, subject: Agent, object?: Agent | Thing): ActionResult
-
-  serialize(): IAction {
-    return {
-      name: this.name,
-      cost: this.cost,
-    };
-  }
 
   authorize(agent: Agent) {
     if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
@@ -51,6 +39,11 @@ export abstract class Action implements IAction {
     const result = this.perform(ctx, agent, object);
 
     debug('tryPerforming() -> result', result);
+
+    agent.remember({
+      tick: agent.mind.tick,
+      message: result.message,
+    });
 
     return result;
   }

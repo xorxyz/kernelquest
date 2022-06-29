@@ -1,14 +1,16 @@
 import { Rectangle, Vector, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction } from 'xor4-lib';
 import EventEmitter from 'events';
-import { Agent, Hero } from './agent';
+import { Agent } from './agent';
 import { Cell } from './cell';
-import { Wall, Door, Thing } from './thing';
+import { Wall, Door, Thing, BodyType } from './thing';
 
 /** @category Area */
 const CELL_COUNT = AREA_WIDTH * AREA_HEIGHT;
 
+export class AreaBody extends BodyType {}
+
 /** @category Area */
-export class Area {
+export class Area extends Thing {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(AREA_WIDTH, AREA_HEIGHT));
 
   readonly position: Vector;
@@ -57,6 +59,7 @@ export class Area {
   }
 
   constructor(x: number, y: number, setupFn?: (this: Area) => void) {
+    super(new AreaBody());
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / AREA_WIDTH);
@@ -118,10 +121,6 @@ export class Area {
 
   find(thing: Agent | Thing): Cell | null {
     return this.cells.find((cell) => cell.slot === thing) || null;
-  }
-
-  findPlayers(): Array<Agent> {
-    return Array.from(this.agents).filter((agent) => agent.type instanceof Hero);
   }
 
   remove(entity: Agent | Thing) {

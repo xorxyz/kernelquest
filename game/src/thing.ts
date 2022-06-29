@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { Colors, esc, Style, Vector } from 'xor4-lib';
+import { Colors, esc, getRandomInt, Style, Vector } from 'xor4-lib';
 import { Glyph } from './cell';
 
 /** @category Thing */
@@ -16,13 +16,15 @@ export interface IBody {}
 
 /** @category Thing */
 export abstract class Body extends EventEmitter {
+  readonly id: number;
   readonly name: string = '';
   readonly type: BodyType;
   public position: Vector = new Vector(0, 0);
   public velocity: Vector = new Vector(0, 0);
 
-  constructor(type: BodyType) {
+  constructor(type: BodyType, id?: number) {
     super();
+    this.id = id || getRandomInt(0, Number.MAX_VALUE);
     this.type = type;
     this.name = String(type.name || '');
   }

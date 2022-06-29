@@ -3,7 +3,7 @@ import {
   CloneAction,
   CreateAction,
   ListAction, LookAction,
-  MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction, SpawnAction,
+  MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction,
 } from './actions';
 
 /** @category Words */

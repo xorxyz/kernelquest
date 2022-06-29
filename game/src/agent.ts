@@ -1,60 +1,27 @@
 import {
-  Points, Rectangle, Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, debug,
+  Points, Rectangle,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, debug, FSM, getRandomInt, Colors, esc,
 } from 'xor4-lib';
-import { Body, BodyType, IBody, Thing } from './thing';
+import { Dictionary } from 'xor4-interpreter';
+import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
-
-/**
- states:
-
-  halt (pause ai brain)
-  listen (direction, wait for a message to interpret)
-  sleep (duration)
-  random (speed)
-  patrol (row or column)
-  find (thing or agent)
-  walk (towards route tree root or leaves)
-  follow (agent)
-  visit (agent's last known position)
-  return (bring the flag home and return the value in hand)
-
-*/
+import { createBodyMachine, createMindMachine } from './machines';
 
 /** @category Agent */
 export class HP extends Points {}
-
 /** @category Agent */
 export class SP extends Points {}
-
 /** @category Agent */
 export class MP extends Points {}
-
 /** @category Agent */
 export class GP extends Points {}
-
-export interface IAgentPoints {
-  hp: HP,
-  mp: MP,
-  sp: SP,
-  gp: GP
-}
 
 /** @category Agent */
 export abstract class AgentType extends BodyType {
   public weight: number = 10;
   public capabilities: Array<Capability> = [];
-}
-
-/** @category Agent */
-export abstract class Element extends AgentType {
-  style = esc(Colors.Bg.White);
-}
-
-/** @category Agent */
-export abstract class House extends AgentType {
-  style = esc(Colors.Bg.Black);
 }
 
 /** @category Agent */
@@ -92,13 +59,11 @@ export interface AgentLog {
   eventName?: string,
 }
 
-export interface IAgent extends IBody {}
-
 /** @category Agent */
 export class Agent extends Body {
   public name: string = 'anon';
   declare public type: AgentType;
-  public mind: Mind = new Mind();
+  public mind: Mind;
   public hand: Agent | Thing | null = null;
   public eyes: Agent | Thing | null = null;
   public hp = new HP();
@@ -117,20 +82,20 @@ export class Agent extends Body {
   public experience: number = 0;
   public logs: Array<AgentLog> = [
     { tick: 0, message: 'Use \'help\' for more commands.' },
+    { tick: 0, message: '' },
+    { tick: 0, message: '' },
+    { tick: 0, message: '' },
+    { tick: 0, message: '' },
+    { tick: 0, message: '' },
   ];
 
-  constructor(type: AgentType) {
+  constructor(type: AgentType, words?: Dictionary) {
     super(type);
+    this.mind = new Mind(words);
 
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);
     });
-  }
-
-  serialize(): IAgent {
-    return {
-      type: this.type.name,
-    };
   }
 
   remember(log: AgentLog) {
@@ -139,11 +104,7 @@ export class Agent extends Body {
   }
 
   renderStyle() {
-    if (this.type instanceof Hero) {
-      return esc(Colors.Bg.Purple);
-    }
-
-    return null;
+    return this.type.style || null;
   }
 
   get level() { return 1; }
