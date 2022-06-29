@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import { Colors, esc, getRandomInt, Style, Vector } from 'xor4-lib';
 import { Glyph } from './cell';
 
@@ -15,7 +14,7 @@ export abstract class BodyType {
 export interface IBody {}
 
 /** @category Thing */
-export abstract class Body extends EventEmitter {
+export abstract class Body {
   readonly id: number;
   readonly name: string = '';
   readonly type: BodyType;
@@ -23,7 +22,6 @@ export abstract class Body extends EventEmitter {
   public velocity: Vector = new Vector(0, 0);
 
   constructor(type: BodyType, id?: number) {
-    super();
     this.id = id || getRandomInt(0, Number.MAX_VALUE);
     this.type = type;
     this.name = String(type.name || '');

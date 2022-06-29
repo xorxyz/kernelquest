@@ -4,6 +4,7 @@ import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
 import { Action } from './action';
+import { King } from '../lib/agents';
 
 /** @category Engine */
 export interface EngineOptions {
@@ -25,7 +26,8 @@ export interface HistoryEvent {
 }
 
 /** @category Engine */
-export class Engine extends EventEmitter {
+export class Engine {
+  events = new EventEmitter();
   cycle: number = 0;
   world: World;
   heroes: Array<Agent>;
@@ -34,15 +36,13 @@ export class Engine extends EventEmitter {
   readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {
-    super();
-
     this.world = opts?.world || new World([]);
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
   }
 
   update() {
-    this.emit('begin-turn');
+    this.events.emit('begin-turn');
     this.cycle++;
 
     const seconds = Math.trunc((this.cycle * CLOCK_MS_DELAY) / 1000);
@@ -52,34 +52,34 @@ export class Engine extends EventEmitter {
       area.agents.forEach((agent: Agent) => {
         this.processTurn(area, agent);
         this.applyVelocity(area, agent);
-        area.events.emit('update');
+        // area.events.emit('update');
       });
     });
 
-    this.emit('end-turn');
+    this.events.emit('end-turn');
   }
 
   load(actions: Array<HistoryEvent>) {
-    actions.forEach((action) => {
-      const agent = [...this.world.agents.values()].find((a) => a.id === action.agent);
-      const position = new Vector(action.area[0], action.area[1]);
-      const area = this.world.areas.find((a) => a.position.equals(position));
+    // actions.forEach((action) => {
+    //   const agent = [...this.world.agents.values()].find((a) => a.id === action.agent);
+    //   const position = new Vector(action.area[0], action.area[1]);
+    //   const area = this.world.areas.find((a) => a.position.equals(position));
 
-      if (!agent || !area) return;
+    //   if (!agent || !area) return;
 
-      this.cycle = action.tick;
+    //   this.cycle = action.tick;
 
-      const proxy = new Proxy(agent, {
-        apply(target, thisArg, args) {
+    //   const virtualAgent = new Proxy(agent, {
+    //     apply(target, thisArg, args) {
 
-        },
-      });
+    //     },
+    //   });
 
-      // if take turn
-      // return this action instead
+    //   // if take turn
+    //   // return this action instead
 
-      this.processTurn(area, proxy);
-    });
+    //   this.processTurn(area, virtualAgent);
+    // });
     // const level = levels.find((l) => l.id === id);
     // if (level) {
     //   const area = new Area(0, 0);
@@ -100,7 +100,8 @@ export class Engine extends EventEmitter {
     let cost = 0;
 
     while (!done && cost <= 1) {
-      const action = agent.takeTurn(this.cycle);
+      const senses = new Proxy(area, {});
+      const action = agent.takeTurn(this.cycle, senses);
       if (!action) {
         done = true;
       } else {
@@ -116,19 +117,18 @@ export class Engine extends EventEmitter {
         const result = action.tryPerforming(area, agent);
         if (!result.message) return;
 
-        /* Keep a history of actions so we can save them later */
+        /* Keep a history of actions so we can store them */
         this.history.push({
           tick: this.cycle,
           area: [area.position.x, area.position.y],
           agent: agent.id,
           action: action.name,
         });
-
-        console.log(this.history);
       });
     }
 
     if (this.cycle % 10 === 0) agent.sp.increase(1);
+    this.events.emit('update', this.cycle);
   }
 
   applyVelocity(area: Area, agent: Agent) {
@@ -150,13 +150,13 @@ export class Engine extends EventEmitter {
 
   start() {
     this.clock.start();
-    this.world.areas.forEach((area) => area.events.emit('start'));
+    this.events.emit('start', this.cycle);
     debug('started engine.');
   }
 
   pause() {
     this.clock.pause();
-    this.world.areas.forEach((area) => area.events.emit('pause'));
+    this.events.emit('pause', this.cycle);
     debug('paused engine.');
   }
 }

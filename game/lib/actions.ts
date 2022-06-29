@@ -4,7 +4,7 @@ import { Area } from '../src/area';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
+// import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
 import { Crown, Flag } from './things';
 import { Wind } from './agents';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src';
@@ -40,7 +40,7 @@ export class RotateAction extends Action {
   perform(ctx: Area, agent: Agent) {
     agent.facing.direction.rotate();
     agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-    ctx.events.emit(ROTATE, { agent });
+    // ctx.events.emit(ROTATE, { agent });
     return new ActionSuccess();
   }
 }
@@ -56,7 +56,7 @@ export class SetHeadingAction extends Action {
   }
   perform(ctx: Area, agent: Agent) {
     agent.facing.direction.rotateUntil(this.direction.value);
-    ctx.events.emit(ROTATE, { agent });
+    // ctx.events.emit(ROTATE, { agent });
     agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
     return new ActionSuccess();
   }
@@ -72,10 +72,10 @@ export class StepAction extends Action {
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
       if (agent.hp.value === 0) {
-        ctx.events.emit(DIE);
+        // ctx.events.emit(DIE);
       } else {
         agent.velocity.sub(agent.facing.direction.value);
-        ctx.events.emit(HIT);
+        // ctx.events.emit(HIT);
       }
       return new ActionFailure();
     }
@@ -86,11 +86,11 @@ export class StepAction extends Action {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
-          ctx.events.emit(DIE);
+          // ctx.events.emit(DIE);
           target.slot.type.glyph = new Glyph('☠️ ');
         } else {
           target.slot.velocity.add(agent.facing.direction.value);
-          ctx.events.emit(HIT);
+          // ctx.events.emit(HIT);
         }
         return new ActionSuccess();
       }
@@ -101,7 +101,7 @@ export class StepAction extends Action {
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = ctx.cellAt(agent.isLookingAt);
-      ctx.events.emit(STEP, { agent });
+      // ctx.events.emit(STEP, { agent });
       return new ActionSuccess();
     }
 
@@ -115,50 +115,50 @@ export class GetAction extends Action {
   cost = 1;
   perform(ctx: Area, agent: Agent) {
     if (!agent.facing.cell || !agent.facing.cell.slot) {
-      ctx.events.emit(FAIL);
+      // ctx.events.emit(FAIL);
       return new ActionFailure('There\'s nothing here.');
     }
 
     if (agent.hand) {
-      ctx.events.emit(FAIL);
+      // ctx.events.emit(FAIL);
       return new ActionFailure('You hands are full.');
     }
 
     if (agent.facing.cell.slot instanceof Agent ||
        (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
-      ctx.events.emit(FAIL);
+      // ctx.events.emit(FAIL);
       return new ActionFailure('You can\'t get this.');
     }
 
     if (agent.facing.cell && agent.facing.cell.containsFoe()) {
       agent.hp.decrease(1);
-      ctx.events.emit(HIT);
+      // ctx.events.emit(HIT);
       return new ActionFailure();
     }
 
     const thing = agent.get();
 
     if (thing) {
-      ctx.events.emit(GET);
+      // ctx.events.emit(GET);
 
       if (thing instanceof Thing) {
         thing.owner = agent;
 
         if (thing.type instanceof Crown) {
           ctx.capturedCrowns.add(thing);
-          ctx.events.emit('crown');
+          // ctx.events.emit('crown');
         }
 
         if (thing.type instanceof Flag) {
           ctx.capturedFlags.add(thing);
-          ctx.events.emit('flag');
+          // ctx.events.emit('flag');
         }
       }
 
       return new ActionSuccess(`You get the ${thing.name}.`);
     }
 
-    ctx.events.emit(FAIL);
+    // ctx.events.emit(FAIL);
 
     return new ActionFailure();
   }
@@ -170,18 +170,18 @@ export class PutAction extends Action {
   cost = 1;
   perform(ctx: Area, agent: Agent) {
     if (!agent.hand) {
-      ctx.events.emit(FAIL);
+      // ctx.events.emit(FAIL);
 
       return new ActionFailure('You are not holding anything.');
     }
 
     const target = ctx.cellAt(agent.isLookingAt);
     if (target && !target.isBlocked && agent.drop()) {
-      ctx.events.emit(PUT);
+      // ctx.events.emit(PUT);
       return new ActionSuccess(`You put down the ${(target.slot as Thing).name}.`);
     }
 
-    ctx.events.emit(FAIL);
+    // ctx.events.emit(FAIL);
 
     return new ActionFailure('There\'s already something here.');
   }

@@ -1,13 +1,13 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, debug, FSM, getRandomInt, Colors, esc,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, debug, Colors, esc,
 } from 'xor4-lib';
 import { Dictionary } from 'xor4-interpreter';
 import { Body, BodyType, Thing } from './thing';
 import { Action, TerminalAction, Capability } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
-import { createBodyMachine, createMindMachine } from './machines';
+import { Area } from './area';
 
 /** @category Agent */
 export class HP extends Points {}
@@ -89,6 +89,8 @@ export class Agent extends Body {
     { tick: 0, message: '' },
   ];
 
+  public view: Array<string> = [];
+
   constructor(type: AgentType, words?: Dictionary) {
     super(type);
     this.mind = new Mind(words);
@@ -145,9 +147,9 @@ export class Agent extends Body {
     }
   }
 
-  takeTurn(tick: number): Action | null {
-    this.mind.update(tick);
-    this.type.capabilities.forEach((capability) => capability.run(this, tick));
+  takeTurn(tick: number, area: Area): Action | null {
+    this.see(area);
+    this.mind.update(tick, area);
 
     if (this.isWaitingUntil) {
       if (this.mind.tick >= this.isWaitingUntil) {
@@ -156,10 +158,6 @@ export class Agent extends Body {
         return null;
       }
     }
-
-    // if (this.halted && !(this.mind.queue.peek() instanceof TerminalAction)) {
-    //   return null;
-    // }
 
     const action = this.mind.queue.next();
 
@@ -195,12 +193,15 @@ export class Agent extends Body {
     return rectangle.contains(vector);
   }
 
+  see(area: Area) {
+    this.view = area.render(this.sees());
+  }
+
   sees() {
     // eslint-disable-next-line prefer-const
     let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
 
     const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
-
     return rect;
   }
 }

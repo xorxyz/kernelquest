@@ -19,16 +19,16 @@ const Mp = (n) => Points(Colors.Bg.Cyan, n);
 
 /** @category Components */
 export class Stats extends UiComponent {
-  render({ player: p }: VirtualTerminal) {
+  render({ agent }: VirtualTerminal) {
     return [
       '┌───────────────────┐',
       '│ level: 1          │',
       '│ experience: 0     │',
-      `│ gold: ${String(p.gp.value).padEnd(12, ' ')}│`,
+      `│ gold: ${String(agent.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
-      `│ health:  ${Hp(p.hp.value)}│`,
-      `│ stamina: ${Sp(p.sp.value)}│`,
-      `│ magic:   ${Mp(p.mp.value)}│`,
+      `│ health:  ${Hp(agent.hp.value)}│`,
+      `│ stamina: ${Sp(agent.sp.value)}│`,
+      `│ magic:   ${Mp(agent.mp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];

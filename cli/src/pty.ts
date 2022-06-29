@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { Cursor, esc, Vector, CursorModeHelpText, Keys, Signals, debug } from 'xor4-lib';
 import {
   EvalAction,
@@ -11,7 +12,7 @@ import {
   StepAction,
   SwitchModeAction,
 } from 'xor4-game/lib/actions';
-import { Agent, Area, Action, TerminalAction } from 'xor4-game/src';
+import { Action, Agent } from 'xor4-game/src';
 import { Editor } from './editor';
 import { MainView } from './views';
 import { CELL_WIDTH } from './component';
@@ -27,8 +28,8 @@ export interface IVirtalTerminalState {
 /** @category PTY */
 export class VirtualTerminal {
   public id: number;
-  public player: Agent;
-  readonly area: Area;
+  public agent: Agent;
+  public events: EventEmitter;
   public state: IVirtalTerminalState;
   public lineEditor: Editor = new Editor();
   public view: MainView;
@@ -39,9 +40,9 @@ export class VirtualTerminal {
 
   private timer;
 
-  constructor(hero: Agent, area: Area, send: Function) {
-    this.player = hero;
-    this.area = area;
+  constructor(agent: Agent, events: EventEmitter, send: Function) {
+    this.agent = agent;
+    this.events = events;
     this.send = send;
     this.view = new MainView();
     this.state = {
@@ -51,17 +52,17 @@ export class VirtualTerminal {
       stdout: CursorModeHelpText,
     };
 
-    area.events.on('pause', () => {
+    events.on('pause', (tick) => {
       this.paused = true;
-      this.render(area.tick);
+      this.render(tick);
     });
 
-    area.events.on('start', () => {
+    events.on('start', (tick) => {
       this.paused = false;
-      this.render(area.tick);
+      this.render(tick);
     });
 
-    area.events.on('update', () => this.render(area.tick));
+    events.on('update', (tick) => this.render(tick));
   }
 
   disconnect() {
@@ -70,7 +71,7 @@ export class VirtualTerminal {
 
   switchModes() {
     this.state.termMode = !this.state.termMode;
-    this.player.halted = this.state.termMode;
+    this.agent.halted = this.state.termMode;
     this.drawCursor();
   }
 
@@ -86,24 +87,20 @@ export class VirtualTerminal {
     }
 
     // Restart the level after you're dead by pressing Enter.
-    if (str === Keys.ENTER && this.player.hp.value <= 0) {
-      this.area.reset();
-      return;
-    }
+    // if (str === Keys.ENTER && this.agent.hp.value <= 0) {
+    //   this.area.reset();
+    //   return;
+    // }
 
     if (this.state.termMode) {
       this.handleTerminalInput(str);
     } else {
       const action = this.getActionForKey(str);
 
-      if (action instanceof TerminalAction) {
-        action.perform(this.area, this.player);
-      } else if (action) {
-        this.player.schedule(action);
-      }
+      if (action) this.agent.schedule(action);
     }
 
-    this.render(this.player.mind.tick);
+    this.render(this.agent.mind.tick);
   }
 
   write(message: string) {
@@ -121,11 +118,11 @@ export class VirtualTerminal {
         this.write(this.state.prompt + text);
 
         const action = new EvalAction(text);
-        this.player.schedule(action);
+        this.agent.schedule(action);
         this.state.line = '';
         this.lineEditor.reset();
 
-        this.render(this.player.mind.tick);
+        this.render(this.agent.mind.tick);
       } else {
         this.switchModes();
       }
@@ -148,16 +145,16 @@ export class VirtualTerminal {
         action = new SwitchModeAction(this);
         break;
       case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 0));
+        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 0));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.player.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(15, this.agent.cursorPosition.y));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.player.cursorPosition.x, 9));
+        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 9));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.player.cursorPosition.y));
+        action = new MoveCursorToAction(this, new Vector(0, this.agent.cursorPosition.y));
         break;
       case (Keys.ARROW_UP):
         action = new MoveCursorAction(this, new Vector(0, -1));
@@ -194,8 +191,6 @@ export class VirtualTerminal {
   }
 
   render(tick: number) {
-    if (!this.area) return;
-
     const output = this.view.compile(this, tick);
 
     this.send(output);
@@ -205,7 +200,7 @@ export class VirtualTerminal {
 
   drawCursor() {
     if (this.paused) return;
-    if (!this.player.isAlive) return;
+    if (!this.agent.isAlive) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 
     const cursorUpdate = this.state.termMode
@@ -214,8 +209,8 @@ export class VirtualTerminal {
         this.view.components.prompt.position.y,
       ))
       : esc(Cursor.setXY(
-        this.view.components.room.position.x + (this.player.cursorPosition.x) * CELL_WIDTH,
-        this.view.components.room.position.y + this.player.cursorPosition.y,
+        this.view.components.room.position.x + (this.agent.cursorPosition.x) * CELL_WIDTH,
+        this.view.components.room.position.y + this.agent.cursorPosition.y,
       ));
 
     this.send(cursorUpdate);

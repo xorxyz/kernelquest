@@ -6,14 +6,14 @@ const nothing = (n) => `${esc(Style.Dim)}${'nothing.'.padEnd(n, ' ')}${esc(Style
 
 /** @category Components */
 export class Sidebar extends UiComponent {
-  render({ player }: VirtualTerminal) {
+  render({ agent }: VirtualTerminal) {
     return [
       '┌───────────────────┐',
-      `│ name: ${player.name.padEnd(11)} │`,
-      `│  job: ${(`${player.type.glyph?.value} ${player.type.name}`).padEnd(11)} │`,
-      `│ hand: ${(player.hand?.label || nothing(11)).padEnd(11)} │`,
-      `│ eyes: ${(player.eyes?.label || nothing(11)).padEnd(11)} │`,
-      `│ feet: ${(`[${player.position.label} ref]`).padEnd(11)} │`,
+      `│ name: ${agent.name.padEnd(11)} │`,
+      `│  job: ${(`${agent.type.glyph?.value} ${agent.type.name}`).padEnd(11)} │`,
+      `│ hand: ${(agent.hand?.label || nothing(11)).padEnd(11)} │`,
+      `│ eyes: ${(agent.eyes?.label || nothing(11)).padEnd(11)} │`,
+      `│ feet: ${(`[${agent.position.label} ref]`).padEnd(11)} │`,
       '│                   │',
       '│                   │',
       '│                   │',

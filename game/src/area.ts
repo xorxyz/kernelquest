@@ -1,5 +1,4 @@
 import { Rectangle, Vector, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction } from 'xor4-lib';
-import EventEmitter from 'events';
 import { Agent } from './agent';
 import { Cell } from './cell';
 import { Wall, Door, Thing, BodyType } from './thing';
@@ -10,7 +9,7 @@ const CELL_COUNT = AREA_WIDTH * AREA_HEIGHT;
 export class AreaBody extends BodyType {}
 
 /** @category Area */
-export class Area extends Thing {
+export class Area {
   static bounds = new Rectangle(new Vector(0, 0), new Vector(AREA_WIDTH, AREA_HEIGHT));
 
   readonly position: Vector;
@@ -29,8 +28,6 @@ export class Area extends Thing {
 
   public doors: Set<Door> = new Set();
   public outerRectangle: Rectangle;
-
-  public events = new EventEmitter();
 
   private innerRectangle: Rectangle;
   private cells: Array<Cell>;
@@ -59,7 +56,6 @@ export class Area extends Thing {
   }
 
   constructor(x: number, y: number, setupFn?: (this: Area) => void) {
-    super(new AreaBody());
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / AREA_WIDTH);
@@ -170,7 +166,6 @@ export class Area extends Thing {
   }
 
   reset() {
-    this.events.emit('reset');
     this.clear();
     if (this.setupFn) this.setupFn();
   }

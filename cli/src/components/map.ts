@@ -18,7 +18,7 @@ export class Axis extends UiComponent {
 
 /** @category Components */
 export class RoomMap extends UiComponent {
-  render({ player, area }: VirtualTerminal) {
-    return area.render(player?.sees());
+  render({ agent }: VirtualTerminal) {
+    return agent.view;
   }
 }

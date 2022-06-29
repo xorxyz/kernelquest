@@ -12,7 +12,7 @@ export abstract class View {
     const lines = Object.values(this.components).sort((a, b) => a.z - b.z).map((component) =>
       component.compile(pty, tick) + esc(Style.Reset));
 
-    const clear = pty.player.mind.tick % CLEAR_RATE === 0
+    const clear = pty.agent.mind.tick % CLEAR_RATE === 0
       ? esc(Screen.Clear)
       : '';
 

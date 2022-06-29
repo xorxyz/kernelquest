@@ -1,4 +1,4 @@
-import { debug, LINE_LENGTH } from 'xor4-lib';
+import { LINE_LENGTH } from 'xor4-lib';
 import { N_OF_LINES, UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
 
@@ -15,8 +15,8 @@ function formatLines(str: string): Array<string> {
 
 /** @category Components */
 export class Output extends UiComponent {
-  render({ player }: VirtualTerminal) {
-    const logs = player.logs.reduce((arr, log) => {
+  render({ agent }: VirtualTerminal) {
+    const logs = agent.logs.reduce((arr, log) => {
       const lines = formatLines(log.message);
       lines.forEach((line) => arr.push(line));
       return arr;
