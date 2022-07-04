@@ -1,8 +1,8 @@
-# The Xor Framework
+# Kernel Quest
 
-> run a broken system manually while defending it against impossible odds
+> Run a broken system manually while defending it against impossible odds
 
-This is the main source code repository for [Xor](https://xor.xyz). It contains the JIT compiler, interpreter, standard library, web app, game engine, and documentation.
+This is the main source code repository for [Kernel Quest](https://kernel.quest). It contains the JIT compiler, interpreter, standard library, web app, game engine, and documentation.
 
 # Getting started
 
