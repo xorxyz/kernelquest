@@ -32,15 +32,16 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import { Engine, Agent, Area, World } from 'xor4-game';
+import words from 'xor4-game/lib/words';
 import { Terminal } from 'xterm';
 import * as FitAddon from 'xterm-addon-fit';
-import { VirtualTerminal } from 'xor4-cli';
+import { SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
 import { debug, Vector } from 'xor4-lib';
 import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
 import { King } from 'xor4-game/lib/agents';
 import AudioPlayer from '../components/AudioPlayer.vue';
 
-const hero = new Agent(new King());
+const hero = new Agent(new King(), words);
 const area = new Area(0, 0);
 const engine = markRaw(new Engine({
   world: new World([area]),
@@ -58,7 +59,7 @@ const xterm = new Terminal({
     green: '#0CFF24',
     red: '#F92672',
   },
-  cols: 80,
+  cols: SCREEN_WIDTH,
   rows: 25,
   fontSize: 21,
   cursorBlink: true,

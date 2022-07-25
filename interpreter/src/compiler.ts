@@ -1,7 +1,7 @@
 import { debug } from 'xor4-lib/logging';
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
-import literals, { LiteralNumber, LiteralString, Quotation } from './literals';
+import literals, { LiteralNumber, LiteralString, LiteralTerm, Quotation } from './literals';
 import operators, { Operator } from './operators';
 import combinators from './combinators';
 import syscalls from './syscalls';
@@ -92,7 +92,9 @@ export class Compiler {
         case TokenType.IDENTIFIER:
           if (!factor) {
             console.log(Object.keys(this.dict));
-            throw new Error(`'${token.lexeme}' is not a recognized word.`);
+            console.warn(`'${token.lexeme}' is not a recognized word.`);
+            factor = new LiteralTerm(token.lexeme);
+            // throw new Error(`'${token.lexeme}' is not a recognized word.`);
           }
           break;
         case TokenType.PLUS:

@@ -2,11 +2,11 @@ import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
 import { Interpretation, LiteralRef } from 'xor4-interpreter';
 import { Area } from '../src/area';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
-import { Thing } from '../src/thing';
+import { BodyType, Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
 // import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
-import { Crown, Flag } from './things';
-import { Wind } from './agents';
+import { Crown, Flag, Tree } from './things';
+import { Water, Wind } from './agents';
 import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src';
 
 /*
@@ -406,7 +406,7 @@ export class EvalAction extends Action {
     } if (result instanceof Interpretation) {
       const term = result.stack.map((factor) => factor.toString()).join(' ');
 
-      return new ActionSuccess(`[${term}]`);
+      return new ActionSuccess();
     }
     return new ActionFailure('Unhandled Exception.');
   }
@@ -586,13 +586,17 @@ export class CloneAction extends Action {
         tick: agent.mind.tick,
         message: `Nothing at [${this.ref.vector.label}].`,
       });
-    } else {
-      if (cell.slot.type instanceof AgentType) {
-        const clone = new Agent(cell.slot.type);
-        clone.position.copy(cell.slot.position).addX(1);
-        ctx.put(clone, clone.position);
-      }
+      return new ActionFailure();
+    }
 
+    const clone = cell.slot.type instanceof AgentType
+      ? new Agent(cell.slot.type)
+      : new Thing(cell.slot.type);
+
+    clone.position.copy(this.ref.vector).addX(1);
+    ctx.put(clone, clone.position);
+
+    if (cell.slot.type) {
       agent.logs.push({
         tick: agent.mind.tick,
         message: `Cloned [${cell.slot.label}].`,
@@ -606,19 +610,20 @@ export class CloneAction extends Action {
 export class CreateAction extends Action {
   name = 'create';
   cost = 0;
-  type: AgentType;
+  type: AgentType | BodyType;
 
   constructor(type: string) {
     super();
     const TypeCtor = {
-
+      tree: Tree,
+      water: Water,
     }[type] || Wind;
 
     this.type = new TypeCtor();
   }
 
   perform(ctx: Area, agent: Agent) {
-    const at = agent.position.add(agent.facing.direction.value);
+    const at = agent.position.clone().add(agent.facing.direction.value);
     const cell = ctx.cellAt(at);
 
     if (!cell) {
@@ -628,7 +633,9 @@ export class CreateAction extends Action {
       return new ActionFailure('There is already somthing here.');
     }
 
-    const created = new Agent(this.type);
+    const created = this.type instanceof AgentType
+      ? new Agent(this.type)
+      : new Thing(this.type);
 
     cell.put(created);
 

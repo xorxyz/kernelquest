@@ -73,6 +73,19 @@ export class LiteralRef extends LiteralNumber {
   }
 }
 
+export class LiteralTerm extends Literal {
+  type = 'term';
+  value: string;
+  constructor(term: string) {
+    super(term);
+    this.value = term;
+  }
+
+  toString() {
+    return `${this.value}`;
+  }
+}
+
 const literals = {};
 
 [t, f].forEach((literal) => {

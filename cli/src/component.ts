@@ -7,7 +7,7 @@ import { Vector } from 'xor4-lib/math';
 import { VirtualTerminal } from './pty';
 
 /** @category Component */
-export const SCREEN_WIDTH = 80;
+export const SCREEN_WIDTH = 90;
 /** @category Component */
 export const SCREEN_HEIGHT = 25;
 /** @category Component */

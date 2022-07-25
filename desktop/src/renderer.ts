@@ -1,14 +1,14 @@
 import { Terminal } from 'xterm';
 import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
-import { Engine } from 'xor4-game';
-import { VirtualTerminal } from 'xor4-cli';
+import { Area, Engine } from 'xor4-game';
+import { SCREEN_HEIGHT, SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
 import { Buffer } from 'buffer';
 
 import './index.css';
 import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
 
-document.addEventListener('DOMContentLoaded', (e) => {
+document.addEventListener('DOMContentLoaded', () => {
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
 
   if (!terminalEl) return console.error('Cant find the element.');
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
       red: '#F92672',
     },
     rendererType: 'dom', // default is canvas
-    cols: 80,
-    rows: 25,
+    cols: SCREEN_WIDTH,
+    rows: SCREEN_HEIGHT,
     fontSize: 20,
     cursorBlink: true,
     cursorWidth: 12,
@@ -42,11 +42,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
   const engine = new Engine({});
 
-  const area = engine.world.areas[0];
-  const players = area.findPlayers();
+  const area: Area = engine.world.areas[0];
+  if (!area) throw new Error('World missing an area');
+  const players = [...area.agents.values()];
   const hero = players[0];
 
-  const tty = new VirtualTerminal(hero, area, (str) => term.write(str));
+  const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
 
   document.addEventListener('keydown', ({ key }) => {
     tty.handleInput(Buffer.from(key).toString('hex'));
@@ -55,4 +56,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
   engine.start();
 
   terminalEl.focus();
+
+  return true;
 });
