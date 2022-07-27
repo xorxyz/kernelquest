@@ -4,8 +4,9 @@ declare const Buffer;
 
 /** @category Editor */
 export class Editor {
-  line: string = '';
+  private line: string = '';
   readonly cursor: Vector = new Vector();
+  private history = [] as Array<string>;
 
   get value() {
     return this.line;
@@ -16,6 +17,8 @@ export class Editor {
     if (str === Keys.BACKSPACE) return this.backspace();
     if (str === Keys.ARROW_LEFT) return this.moveLeft();
     if (str === Keys.ARROW_RIGHT) return this.moveRight();
+    if (str === Keys.ARROW_UP) return this.moveUp();
+    if (str === Keys.ARROW_DOWN) return this.moveDown();
 
     /* catch all other ctrl sequences */
     if (str.startsWith('1b')) return false;
@@ -57,9 +60,40 @@ export class Editor {
     return true;
   }
 
+  moveUp(): boolean {
+    if (this.cursor.y === 0) return false;
+
+    if (this.cursor.y >= this.history.length) {
+      this.history.push(this.line);
+    }
+
+    if (this.cursor.y === this.history.length - 1) {
+      this.history[this.cursor.y] = this.line;
+    }
+
+    this.cursor.y--;
+    this.line = this.history[this.cursor.y];
+    this.cursor.x = this.line.length;
+
+    return true;
+  }
+
+  moveDown(): boolean {
+    if (this.cursor.y >= this.history.length - 1) return false;
+
+    this.cursor.y++;
+    this.line = this.history[this.cursor.y];
+    this.cursor.x = this.line.length;
+
+    return true;
+  }
+
   reset(): boolean {
+    this.history.push(this.line);
+    this.history = this.history.filter((x) => x); // remove blank lines
     this.line = '';
     this.cursor.x = 0;
+    this.cursor.y = this.history.length;
     return true;
   }
 }

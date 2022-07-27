@@ -1,10 +1,28 @@
-export class Stack<T> extends Array {
+export class Stack<T> {
+  arr = [] as Array<T>;
+
+  get length() {
+    return this.arr.length;
+  }
+
+  map(...args) {
+    return this.arr.map(...args);
+  }
+
+  slice(...args) {
+    return this.arr.slice(...args);
+  }
+
+  push(...a: Array<T>) {
+    this.arr.push(...a);
+  }
+
   clear() {
-    this.length = 0;
+    this.arr.length = 0;
   }
 
   pop(): T | undefined {
-    return super.pop();
+    return this.arr.pop();
   }
 
   /** pop multiple values */
@@ -21,10 +39,10 @@ export class Stack<T> extends Array {
 
   /** peek at the value on top of the stack */
   peek(): T | null {
-    return this[this.length - 1] || null;
+    return this[this.arr.length - 1] || null;
   }
 
   peekN(n: number): T | null {
-    return this[this.length - 1 - n] || null;
+    return this[this.arr.length - 1 - n] || null;
   }
 }
