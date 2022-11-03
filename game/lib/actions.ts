@@ -1,28 +1,160 @@
-import { Vector, CursorModeHelpText, Keys, Direction, debug } from 'xor4-lib';
+import { Vector, CursorModeHelpText, Keys, Direction, debug, PriorityQueue } from 'xor4-lib';
 import { Interpretation, LiteralRef } from 'xor4-interpreter';
 import { Area } from '../src/area';
 import { Agent, AgentType, Foe, Hero } from '../src/agent';
 import { BodyType, Thing } from '../src/thing';
 import { Cell, Glyph } from '../src/cell';
-// import { DIE, FAIL, GET, HIT, PUT, ROTATE, STEP } from './events';
 import { Crown, Flag, Tree } from './things';
 import { Water, Wind } from './agents';
-import { Action, ActionFailure, ActionResult, ActionSuccess, TerminalAction } from '../src';
+import { Action, ActionFailure, ActionResult, ActionsDict, ActionSuccess, TerminalAction } from '../src';
 
 /*
  * Actions in the World
  * ====================
 */
 
+export const abc: ActionsDict = {
+  noop: {
+    cost: 0,
+    perform() {
+      return new ActionSuccess();
+    },
+  },
+  wait: {
+    cost: 1,
+    perform(ctx, agent: Agent) {
+      if (agent.isWaitingUntil !== null) {
+        agent.isWaitingUntil += this.params.duration;
+        return new ActionSuccess('');
+      }
+      agent.isWaitingUntil = agent.mind.tick + this.params.duration;
+      return new ActionSuccess('');
+    },
+  },
+  rotate: {
+    cost: 1,
+    perform(ctx: Area, agent: Agent) {
+      agent.facing.direction.rotate();
+      agent.facing.cell = ctx.cellAt(agent.isLookingAt);
+      return new ActionSuccess();
+    },
+  },
+  face: {
+    cost: 1,
+    perform(ctx: Area, agent: Agent) {
+      agent.facing.direction.rotateUntil(this.params.direction.value);
+      agent.facing.cell = ctx.cellAt(agent.position.clone().add(agent.facing.direction.value));
+      return new ActionSuccess();
+    },
+  },
+  step: {
+    cost: 1,
+    perform(ctx: Area, agent: Agent) {
+      const target = ctx.cellAt(agent.isLookingAt);
+
+      if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
+        agent.hp.decrease(1);
+        if (agent.hp.value !== 0) {
+          agent.velocity.sub(agent.facing.direction.value);
+        }
+        return new ActionFailure();
+      }
+
+      if (agent.type instanceof Foe &&
+      target?.slot instanceof Agent &&
+      target.slot.type instanceof Hero) {
+        if (target.slot.isAlive) {
+          target.slot.hp.decrease(1);
+          if (target.slot.hp.value === 0) {
+            target.slot.type.glyph = new Glyph('☠️ ');
+          } else {
+            target.slot.velocity.add(agent.facing.direction.value);
+          }
+          return new ActionSuccess();
+        }
+      }
+
+      if (target && (!target.isBlocked)) {
+        ctx.cellAt(agent.position)?.take();
+        target.put(agent);
+        agent.position.add(agent.facing.direction.value);
+        agent.facing.cell = ctx.cellAt(agent.isLookingAt);
+        return new ActionSuccess();
+      }
+
+      return new ActionFailure();
+    },
+  },
+  get: {
+    cost: 1,
+    perform(ctx: Area, agent: Agent) {
+      if (!agent.facing.cell || !agent.facing.cell.slot) {
+        return new ActionFailure('There\'s nothing here.');
+      }
+
+      if (agent.hand) {
+        return new ActionFailure('You hands are full.');
+      }
+
+      if (agent.facing.cell.slot instanceof Agent ||
+         (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
+        return new ActionFailure('You can\'t get this.');
+      }
+
+      if (agent.facing.cell && agent.facing.cell.containsFoe()) {
+        agent.hp.decrease(1);
+        return new ActionFailure();
+      }
+
+      const thing = agent.get();
+
+      if (thing) {
+        if (thing instanceof Thing) {
+          thing.owner = agent;
+
+          if (thing.type instanceof Crown) {
+            ctx.capturedCrowns.add(thing);
+          }
+
+          if (thing.type instanceof Flag) {
+            ctx.capturedFlags.add(thing);
+          }
+        }
+
+        return new ActionSuccess(`You get the ${thing.name}.`);
+      }
+
+      return new ActionFailure();
+    },
+  },
+  put: {
+    cost: 1,
+    perform(ctx: Area, agent: Agent) {
+      if (!agent.hand) {
+        return new ActionFailure('You are not holding anything.');
+      }
+
+      const target = ctx.cellAt(agent.isLookingAt);
+      if (target && !target.isBlocked && agent.drop()) {
+        return new ActionSuccess(`You put down the ${(target.slot as Thing).name}.`);
+      }
+
+      return new ActionFailure('There\'s already something here.');
+    },
+  },
+};
+
 /** @category Actions */
 export class WaitAction extends Action {
   name = 'wait';
   cost = 1;
   duration: number;
+
   constructor(duration: number) {
     super();
     this.duration = duration;
   }
+
   perform(ctx, agent: Agent): ActionResult {
     if (agent.isWaitingUntil !== null) {
       agent.isWaitingUntil += this.duration;
@@ -208,30 +340,6 @@ export class ReadAction extends Action {
  * Processes
  * =========
 */
-
-/** @category Actions */
-class PriorityQueue<T> {
-  items: Map<T, number> = new Map();
-
-  /* adds an item in the queue */
-  put(item: T, priority: number) {
-    this.items.set(item, priority);
-  }
-
-  /* returns lowest priority item */
-  get() {
-    const sorted = Array.from(this.items.entries()).sort((a, b) => a[1] - b[1]);
-    const item = sorted[0][0];
-
-    this.items.delete(item);
-
-    return item;
-  }
-
-  isEmpty() {
-    return this.items.size === 0;
-  }
-}
 
 /** @category Actions */
 export class PathfindingAction extends Action {

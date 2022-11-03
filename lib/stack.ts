@@ -5,8 +5,8 @@ export class Stack<T> {
     return this.arr.length;
   }
 
-  map(...args) {
-    return this.arr.map(...args);
+  map(fn) {
+    return this.arr.map(fn);
   }
 
   slice(...args) {

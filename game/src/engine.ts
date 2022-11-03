@@ -4,7 +4,6 @@ import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
 import { Action } from './action';
-import { King } from '../lib/agents';
 
 /** @category Engine */
 export interface EngineOptions {
@@ -65,7 +64,10 @@ export class Engine {
     //   const position = new Vector(action.area[0], action.area[1]);
     //   const area = this.world.areas.find((a) => a.position.equals(position));
 
-    //   if (!agent || !area) return;
+    //   if (!agent || !area) {
+    //     console.error('missing agent and/or area:', agent, area)
+    //     return;
+    //   }
 
     //   this.cycle = action.tick;
 
@@ -78,7 +80,7 @@ export class Engine {
     //   // if take turn
     //   // return this action instead
 
-    //   this.processTurn(area, virtualAgent);
+    // this.processTurn(area, agent, [action]);
     // });
     // const level = levels.find((l) => l.id === id);
     // if (level) {
@@ -94,19 +96,20 @@ export class Engine {
     // }
   }
 
-  processTurn(area: Area, agent: Agent) {
-    const actions: Array<Action> = [];
+  processTurn(area: Area, agent: Agent, actions: Array<Action> = []) {
     let done = false;
     let cost = 0;
 
-    while (!done && cost <= 1) {
-      const senses = new Proxy(area, {});
-      const action = agent.takeTurn(this.cycle, senses);
-      if (!action) {
-        done = true;
-      } else {
-        cost += action.cost;
-        actions.push(action);
+    if (!actions.length) {
+      while (!done && cost <= 1) {
+        const senses = new Proxy(area, {});
+        const action = agent.takeTurn(this.cycle, senses);
+        if (!action) {
+          done = true;
+        } else {
+          cost += action.cost;
+          actions.push(action);
+        }
       }
     }
 

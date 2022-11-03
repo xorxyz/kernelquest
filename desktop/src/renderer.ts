@@ -1,61 +1,65 @@
-import { Terminal } from 'xterm';
-import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
-import { Area, Engine } from 'xor4-game';
-import { SCREEN_HEIGHT, SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
-import { Buffer } from 'buffer';
-
 import './index.css';
-import 'xterm/css/xterm.css';
-import 'tachyons/css/tachyons.css';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const terminalEl = document.querySelector('#terminal') as HTMLElement;
+console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-  if (!terminalEl) return console.error('Cant find the element.');
+// import { Terminal } from 'xterm';
+// import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
+// import { Area, Engine } from 'xor4-game';
+// import { SCREEN_HEIGHT, SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
+// import { Buffer } from 'buffer';
 
-  console.log('👋 This message is being logged by "renderer.js", included via webpack');
+// import './index.css';
+// import 'xterm/css/xterm.css';
+// import 'tachyons/css/tachyons.css';
 
-  const unicode14Addon = new Unicode14Addon();
+// document.addEventListener('DOMContentLoaded', () => {
+//   const terminalEl = document.querySelector('#terminal') as HTMLElement;
 
-  const term = new Terminal({
-    theme: {
-      background: '#000000',
-      black: '#000000',
-      green: '#0CFF24',
-      red: '#F92672',
-    },
-    rendererType: 'dom', // default is canvas
-    cols: SCREEN_WIDTH,
-    rows: SCREEN_HEIGHT,
-    fontSize: 20,
-    cursorBlink: true,
-    cursorWidth: 12,
-    customGlyphs: true,
-    fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-  });
+//   if (!terminalEl) return console.error('Cant find the element.');
 
-  term.loadAddon(unicode14Addon);
-  term.unicode.activeVersion = '14';
+//   console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-  term.open(terminalEl);
-  term.focus();
+//   const unicode14Addon = new Unicode14Addon();
 
-  const engine = new Engine({});
+//   const term = new Terminal({
+//     theme: {
+//       background: '#000000',
+//       black: '#000000',
+//       green: '#0CFF24',
+//       red: '#F92672',
+//     },
+//     rendererType: 'dom', // default is canvas
+//     cols: SCREEN_WIDTH,
+//     rows: SCREEN_HEIGHT,
+//     fontSize: 20,
+//     cursorBlink: true,
+//     cursorWidth: 12,
+//     customGlyphs: true,
+//     fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
+//   });
 
-  const area: Area = engine.world.areas[0];
-  if (!area) throw new Error('World missing an area');
-  const players = [...area.agents.values()];
-  const hero = players[0];
+//   term.loadAddon(unicode14Addon);
+//   term.unicode.activeVersion = '14';
 
-  const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
+//   term.open(terminalEl);
+//   term.focus();
 
-  document.addEventListener('keydown', ({ key }) => {
-    tty.handleInput(Buffer.from(key).toString('hex'));
-  });
+//   const engine = new Engine({});
 
-  engine.start();
+//   const area: Area = engine.world.areas[0];
+//   if (!area) throw new Error('World missing an area');
+//   const players = [...area.agents.values()];
+//   const hero = players[0];
 
-  terminalEl.focus();
+//   const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
 
-  return true;
-});
+//   document.addEventListener('keydown', ({ key }) => {
+//     tty.handleInput(Buffer.from(key).toString('hex'));
+//   });
+
+//   engine.start();
+
+//   terminalEl.focus();
+
+//   return true;
+// });

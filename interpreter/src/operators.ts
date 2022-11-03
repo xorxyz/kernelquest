@@ -85,6 +85,8 @@ export const division = new Operator(['/', 'quotient'], ['number', 'number'], (s
 export const dup = new Operator(['dup'], ['any'], (stack) => {
   const a = stack.pop();
 
+  if (!a) return;
+
   stack.push(a);
   stack.push(a);
 });
@@ -92,6 +94,8 @@ export const dup = new Operator(['dup'], ['any'], (stack) => {
 export const swap = new Operator(['swap'], ['any', 'any'], (stack) => {
   const a = stack.pop();
   const b = stack.pop();
+
+  if (!a || !b) return;
 
   stack.push(a);
   stack.push(b);

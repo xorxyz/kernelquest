@@ -21,6 +21,55 @@ export class ActionSuccess extends ActionResult {}
 /** @category Action */
 export class ActionFailure extends ActionResult {}
 
+export type ActionFn = (this: AgentAction,
+  context: Area, subject: Agent, object?: Agent | Thing) => ActionResult
+export type ActionParams = Record<string, any>
+
+export type ActionsDict = Record<string, {
+  cost: number,
+  perform: ActionFn,
+}>
+
+export class AgentAction {
+  name: string;
+  cost: number;
+  params: ActionParams;
+  perform: ActionFn;
+
+  constructor(name: string, params: ActionParams, actions: ActionsDict) {
+    const action = actions[name];
+
+    if (!action) {
+      debug(actions);
+      throw new Error(`Failed to create action '${name}': action not found`);
+    }
+
+    this.name = name;
+    this.params = params;
+    this.cost = action.cost;
+    this.perform = action.perform;
+  }
+
+  authorize(agent: Agent) {
+    if (agent.sp.value - this.cost < 0) return false; // too expensive sorry
+    agent.sp.decrease(this.cost);
+    return true;
+  }
+
+  tryPerforming(ctx: Area, agent: Agent, object?: Agent | Thing): ActionResult {
+    if (!this.authorize) return new ActionFailure('Not enough stamina.');
+    const result = this.perform(ctx, agent, object);
+    debug('tryPerforming() -> result', result);
+
+    agent.remember({
+      tick: agent.mind.tick,
+      message: result.message,
+    });
+
+    return result;
+  }
+}
+
 /** @category Action */
 export abstract class Action {
   abstract readonly name: string
