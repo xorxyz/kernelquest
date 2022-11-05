@@ -1,6 +1,6 @@
 {
   "name": "xor4-desktop",
-  "productName": "KernelQuest",
+  "productName": "Kernel Quest",
   "private": true,
   "version": "0.0.0",
   "description": "Electron KQ client",

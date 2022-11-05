@@ -1,65 +1,73 @@
 import './index.css';
 
+import { Terminal } from 'xterm';
+import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
+import { Agent, Area, Engine, World } from 'xor4-game';
+import { SCREEN_HEIGHT, SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
+import { Buffer } from 'buffer';
+import words from 'xor4-game/lib/words';
+
+import 'xterm/css/xterm.css';
+import 'tachyons/css/tachyons.css';
+import { King } from 'xor4-game/lib/agents';
+import { Vector } from 'xor4-lib';
+
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-// import { Terminal } from 'xterm';
-// import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
-// import { Area, Engine } from 'xor4-game';
-// import { SCREEN_HEIGHT, SCREEN_WIDTH, VirtualTerminal } from 'xor4-cli';
-// import { Buffer } from 'buffer';
+document.addEventListener('DOMContentLoaded', () => {
+  const terminalEl = document.querySelector('#terminal') as HTMLElement;
 
-// import './index.css';
-// import 'xterm/css/xterm.css';
-// import 'tachyons/css/tachyons.css';
+  if (!terminalEl) return console.error('Cant find the element.');
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   const terminalEl = document.querySelector('#terminal') as HTMLElement;
+  console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
-//   if (!terminalEl) return console.error('Cant find the element.');
+  const unicode14Addon = new Unicode14Addon();
 
-//   console.log('👋 This message is being logged by "renderer.js", included via webpack');
+  const term = new Terminal({
+    theme: {
+      background: '#000000',
+      black: '#000000',
+      green: '#0CFF24',
+      red: '#F92672',
+    },
+    rendererType: 'dom', // default is canvas
+    cols: SCREEN_WIDTH,
+    rows: SCREEN_HEIGHT,
+    fontSize: 20,
+    cursorBlink: true,
+    cursorWidth: 12,
+    customGlyphs: true,
+    fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
+  });
 
-//   const unicode14Addon = new Unicode14Addon();
+  term.loadAddon(unicode14Addon);
+  term.unicode.activeVersion = '14';
 
-//   const term = new Terminal({
-//     theme: {
-//       background: '#000000',
-//       black: '#000000',
-//       green: '#0CFF24',
-//       red: '#F92672',
-//     },
-//     rendererType: 'dom', // default is canvas
-//     cols: SCREEN_WIDTH,
-//     rows: SCREEN_HEIGHT,
-//     fontSize: 20,
-//     cursorBlink: true,
-//     cursorWidth: 12,
-//     customGlyphs: true,
-//     fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-//   });
+  term.open(terminalEl);
+  term.focus();
 
-//   term.loadAddon(unicode14Addon);
-//   term.unicode.activeVersion = '14';
+  const area = new Area(0, 0);
+  const engine = new Engine({
+    world: new World([area]),
+  });
 
-//   term.open(terminalEl);
-//   term.focus();
+  const hero = new Agent(new King(), words);
+  area.agents.add(hero);
+  area.cellAt(new Vector(0, 0))?.put(hero);
 
-//   const engine = new Engine({});
+  const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
 
-//   const area: Area = engine.world.areas[0];
-//   if (!area) throw new Error('World missing an area');
-//   const players = [...area.agents.values()];
-//   const hero = players[0];
+  document.addEventListener('keydown', ({ key }) => {
+    tty.handleInput(Buffer.from(key).toString('hex'));
+  });
 
-//   const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
+  terminalEl.focus();
 
-//   document.addEventListener('keydown', ({ key }) => {
-//     tty.handleInput(Buffer.from(key).toString('hex'));
-//   });
+  term.onKey(({ key }) => {
+    tty.handleInput(Buffer.from(key).toString('hex'));
+  });
 
-//   engine.start();
+  engine.start();
 
-//   terminalEl.focus();
-
-//   return true;
-// });
+  return true;
+});

@@ -1,6 +1,7 @@
 import { Vector, Keys, LINE_LENGTH } from 'xor4-lib';
+import { Buffer } from 'buffer';
 
-declare const Buffer;
+// declare const Buffer;
 
 /** @category Editor */
 export class Editor {
