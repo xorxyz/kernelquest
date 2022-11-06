@@ -1,4 +1,4 @@
-import { Clock, CLOCK_MS_DELAY, debug, Vector } from 'xor4-lib';
+import { Clock, CLOCK_MS_DELAY, debug } from 'xor4-lib';
 import { EventEmitter } from 'events';
 import { World } from './world';
 import { Area } from './area';

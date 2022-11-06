@@ -6,4 +6,5 @@ body {
 
 #terminal * {
   cursor: default;
+  overflow: hidden; /* Hide scrollbars */
 }

@@ -1,21 +1,11 @@
 import EventEmitter from 'events';
-import { Cursor, esc, Vector, CursorModeHelpText, Keys, Signals, debug } from 'xor4-lib';
-import {
-  EvalAction,
-  GetAction,
-  MoveCursorAction,
-  MoveCursorToAction,
-  PrintCursorModeHelpAction,
-  PutAction,
-  RotateAction,
-  SelectCellAction,
-  StepAction,
-  SwitchModeAction,
-} from 'xor4-game/lib/actions';
-import { Action, Agent } from 'xor4-game/src';
+import { Cursor, esc, CursorModeHelpText } from 'xor4-lib';
+import { Agent } from 'xor4-game/src';
 import { Editor } from './editor';
-import { MainView } from './views';
 import { CELL_WIDTH } from './component';
+import { View } from './view';
+import { GameScreen } from './views/game-screen';
+import { TitleScreen } from './views/title-screen';
 
 /** @category PTY */
 export interface IVirtalTerminalState {
@@ -32,19 +22,18 @@ export class VirtualTerminal {
   public events: EventEmitter;
   public state: IVirtalTerminalState;
   public lineEditor: Editor = new Editor();
-  public view: MainView;
-  public waiting = false;
+  public view: View;
   public send: Function;
 
   public paused = true;
 
   private timer;
 
-  constructor(agent: Agent, events: EventEmitter, send: Function) {
+  constructor(agent: Agent, events: EventEmitter, send: (s: string) => void) {
     this.agent = agent;
     this.events = events;
     this.send = send;
-    this.view = new MainView();
+    this.view = new TitleScreen();
     this.state = {
       termMode: false,
       prompt: '$ ',
@@ -75,119 +64,16 @@ export class VirtualTerminal {
     this.drawCursor();
   }
 
-  handleInput(str: string) {
-    console.log('input', str);
-    if (this.waiting) return;
-
-    // Ctrl-C disconnects the pty
-    if (str === Signals.SIGINT) {
-      console.log('received sigint!');
-      this.disconnect();
-      return;
-    }
-
-    // Restart the level after you're dead by pressing Enter.
-    // if (str === Keys.ENTER && this.agent.hp.value <= 0) {
-    //   this.area.reset();
-    //   return;
-    // }
-
-    if (this.state.termMode) {
-      this.handleTerminalInput(str);
-    } else {
-      const action = this.getActionForKey(str);
-
-      if (action) this.agent.schedule(action);
-    }
-
-    this.render(this.agent.mind.tick);
-  }
-
   write(message: string) {
     message.match(/(.{1,50})/g)?.forEach((str) => {
       this.state.stdout.push(str.trim());
     });
   }
 
-  handleTerminalInput(str: string): void {
-    if (str === Keys.ENTER) {
-      if (this.lineEditor.value) {
-        debug('got input', this.lineEditor.value);
-        const text = this.lineEditor.value.trim();
+  handleInput(str) {
+    this.view.handleInput(str, this);
 
-        this.write(this.state.prompt + text);
-
-        const action = new EvalAction(text);
-        this.agent.schedule(action);
-        this.state.line = '';
-        this.lineEditor.reset();
-
-        this.render(this.agent.mind.tick);
-      } else {
-        this.switchModes();
-      }
-    } else if (this.lineEditor.insert(str) && this.view.components.prompt) {
-      this.state.line = this.lineEditor.value.replace('\n', '');
-    }
-  }
-
-  getActionForKey(str: string): Action | null {
-    let action: Action | null = null;
-
-    switch (str) {
-      case (Keys.ESCAPE):
-        action = new SwitchModeAction(this);
-        break;
-      case (Keys.SPACE):
-        action = new SelectCellAction(this);
-        break;
-      case (Keys.ENTER):
-        action = new SwitchModeAction(this);
-        break;
-      case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 0));
-        break;
-      case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.agent.cursorPosition.y));
-        break;
-      case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 9));
-        break;
-      case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.agent.cursorPosition.y));
-        break;
-      case (Keys.ARROW_UP):
-        action = new MoveCursorAction(this, new Vector(0, -1));
-        break;
-      case (Keys.ARROW_RIGHT):
-        action = new MoveCursorAction(this, new Vector(1, 0));
-        break;
-      case (Keys.ARROW_DOWN):
-        action = new MoveCursorAction(this, new Vector(0, 1));
-        break;
-      case (Keys.ARROW_LEFT):
-        action = new MoveCursorAction(this, new Vector(-1, 0));
-        break;
-      case (Keys.LOWER_H):
-        action = new PrintCursorModeHelpAction(this);
-        break;
-      case (Keys.LOWER_P):
-        action = new PutAction();
-        break;
-      case (Keys.LOWER_G):
-        action = new GetAction();
-        break;
-      case (Keys.LOWER_R):
-        action = new RotateAction();
-        break;
-      case (Keys.LOWER_S):
-        action = new StepAction();
-        break;
-      default:
-        break;
-    }
-
-    return action;
+    this.render(this.agent.mind.tick);
   }
 
   render(tick: number) {

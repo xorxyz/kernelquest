@@ -8,6 +8,8 @@ const CLEAR_RATE = CLOCK_MS_DELAY;
 export abstract class View {
   components: Record<string, UiComponent>;
 
+  abstract handleInput (str: string, pty: VirtualTerminal): void
+
   compile(pty: VirtualTerminal, tick: number): string {
     const lines = Object.values(this.components).sort((a, b) => a.z - b.z).map((component) =>
       component.compile(pty, tick) + esc(Style.Reset));

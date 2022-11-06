@@ -17,6 +17,9 @@ export const CELL_WIDTH = 2;
 
 /** @category Component */
 export abstract class UiComponent {
+  handleInput(str: string) {
+    throw new Error('Method not implemented.');
+  }
   public position: Vector;
   public style: string = '';
   public z: number = 0;
@@ -35,4 +38,17 @@ export abstract class UiComponent {
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
+}
+
+class EmptyComponent extends UiComponent {
+  value: Array<string> = [''];
+  render() {
+    return this.value;
+  }
+}
+
+export function componentFrom(x, y, arr: Array<string>) {
+  const component = new EmptyComponent(x, y);
+  component.value = arr;
+  return component;
 }

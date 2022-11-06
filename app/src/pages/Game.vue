@@ -132,6 +132,8 @@ export default defineComponent({
         return;
       }
 
+      console.log('input:', key);
+
       this.tty.handleInput(Buffer.from(key).toString('hex'));
     },
     reset() {
