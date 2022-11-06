@@ -43,7 +43,7 @@ class PlayerSelectMenu extends UiComponent {
 export class PlayerSelectScreen extends View {
   selected = 0;
   components = {
-    title: componentFrom(40, 6, ['Player Select']),
+    title: componentFrom(39, 6, ['Player Select']),
     menu: new PlayerSelectMenu(27, 9),
   };
 
@@ -52,6 +52,7 @@ export class PlayerSelectScreen extends View {
     if (str === Keys.ARROW_DOWN) this.components.menu.down();
     if (str === Keys.ENTER) {
       this.components.menu.select();
+      pty.clear();
       pty.view = new GameScreen();
     }
   }

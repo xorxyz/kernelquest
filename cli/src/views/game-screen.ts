@@ -19,7 +19,7 @@ import { StackPane } from '../components/stack';
 import { VirtualTerminal } from '../pty';
 import { View } from '../view';
 
-const axis = new Axis(37, 3);
+const axis = new Axis(37, 4);
 
 /** @category Views */
 export class GameScreen extends View {
@@ -41,6 +41,7 @@ export class GameScreen extends View {
       if (str === Keys.ESCAPE) {
         this.menuIsOpen = false;
         this.components.navbar.visible = false;
+        pty.clear();
       } else {
         this.components.navbar.handleInput(str, pty);
       }

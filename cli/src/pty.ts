@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { Cursor, esc, CursorModeHelpText } from 'xor4-lib';
+import { Cursor, esc, CursorModeHelpText, Style, Screen } from 'xor4-lib';
 import { Agent } from 'xor4-game/src';
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
@@ -68,6 +68,10 @@ export class VirtualTerminal {
     message.match(/(.{1,50})/g)?.forEach((str) => {
       this.state.stdout.push(str.trim());
     });
+  }
+
+  clear() {
+    this.send(esc(Screen.Clear));
   }
 
   handleInput(str) {

@@ -39,6 +39,7 @@ export class Navbar extends UiComponent {
     if (str === Keys.ENTER) {
       const selected = this.select();
       if (selected === 'Quit          ') {
+        pty.clear();
         pty.view = new TitleScreen();
       }
     }

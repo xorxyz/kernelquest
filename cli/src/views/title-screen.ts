@@ -10,6 +10,7 @@ export class TitleScreen extends View {
     prompt: componentFrom(37, 18, ['Press any key ']),
   };
   handleInput(str, pty) {
+    pty.clear();
     pty.view = new PlayerSelectScreen();
   }
 }
