@@ -10,6 +10,10 @@ export class TitleScreen extends View {
     prompt: componentFrom(37, 18, ['Press any key ']),
   };
   handleInput(str, pty) {
+    if (str === Keys.ESCAPE) {
+      if (global.electron) global.electron.exit();
+      return;
+    }
     pty.clear();
     pty.view = new PlayerSelectScreen();
   }

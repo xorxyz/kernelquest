@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 import words from 'xor4-game/lib/words';
 import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
-import { King } from 'xor4-game/lib/agents';
+import { Wizard } from 'xor4-game/lib/agents';
 import { VirtualTerminal } from 'xor4-cli';
 import { term } from './term';
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
   if (!terminalEl) throw new Error('Cant find the element.');
 
-  const hero = new Agent(new King(), words);
+  const hero = new Agent(new Wizard(), words);
   const area = new Area(0, 0);
   const engine = new Engine({ world: new World([area]) });
   const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
@@ -24,10 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   term.open(terminalEl);
   term.focus();
 
-  document.addEventListener('click', (e) => {
-    console.log('onclick');
-    term.focus();
-  });
+  document.addEventListener('click', () => term.focus());
 
   engine.start();
 });

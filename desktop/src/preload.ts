@@ -2,10 +2,15 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 // Preload Script
-import { app, contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('env', {
-  NODE_ENV: app.isPackaged ? 'production' : 'dev',
+console.log('👋 Hello from preload');
+
+contextBridge.exposeInMainWorld('electron', {
+  // NODE_ENV: app.isPackaged ? 'production' : 'dev',
+  exit: () => {
+    ipcRenderer.send('exit');
+  },
 });
 
 export {};

@@ -1,5 +1,6 @@
 import { Cursor, esc, Keys, Style } from 'xor4-lib';
 import { UiComponent } from '../component';
+import { IntroScreen } from '../views/intro-screen';
 import { TitleScreen } from '../views/title-screen';
 
 /** @category Components */
@@ -7,9 +8,9 @@ export class Navbar extends UiComponent {
   visible = false;
   selected = 0;
   options = [
-    'Save Game     ',
-    'Restore Game  ',
-    'Quit          ',
+    { label: 'Save Game      ' },
+    { label: 'Restore Game   ' },
+    { label: 'Quit           ', key: 'quit' },
   ];
   up() {
     if (this.selected === 0) return;
@@ -25,10 +26,10 @@ export class Navbar extends UiComponent {
   }
   render() {
     if (!this.visible) return [];
-    return ['File'].concat(
+    return ['File           '].concat(
       this.options.map((row, i) => {
-        if (i === this.selected) return `${row}`;
-        return `${esc(Style.Invert)}${row}${esc(Style.Reset)}`;
+        if (i === this.selected) return `${row.label}`;
+        return `${esc(Style.Invert)}${row.label}${esc(Style.Reset)}`;
       }),
       [esc(Cursor.setXY(this.position.x, this.position.y + this.selected))],
     );
@@ -38,9 +39,11 @@ export class Navbar extends UiComponent {
     if (str === Keys.ARROW_DOWN) this.down();
     if (str === Keys.ENTER) {
       const selected = this.select();
-      if (selected === 'Quit          ') {
+      if (selected.key === 'quit') {
         pty.clear();
-        pty.view = new TitleScreen();
+        pty.menuIsOpen = false;
+        this.visible = false;
+        pty.view = new IntroScreen(pty);
       }
     }
   }
