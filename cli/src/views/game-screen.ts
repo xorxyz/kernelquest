@@ -13,7 +13,7 @@ export class GameScreen extends View {
   components: Record<string, UiComponent> = {
     axis,
     stack: new StackPane(23, 15),
-    message: new Message(25, 10, 1),
+    message: new Message(26, 11, 1),
     nav: new Header(1, 1),
     output: new Output(23, 16),
     profile: new Sidebar(1, 3),

@@ -15,10 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const hero = new Agent(new Wizard(), words);
   const area = new Area(0, 0);
-  const engine = new Engine({ world: new World([area]) });
+  const world = new World([area]);
+  const engine = new Engine({ world });
   const tty = new VirtualTerminal(hero, engine.events, (str) => term.write(str));
 
   area.put(hero);
+  engine.heroes.push(hero);
 
   term.onKey(({ key }) => tty.handleInput(Buffer.from(key).toString('hex')));
   term.open(terminalEl);

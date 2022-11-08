@@ -6,11 +6,13 @@ export class Message extends UiComponent {
   render(pty: VirtualTerminal) {
     if (!pty.paused) return [];
     return [
-      '┌───────────────────┐',
-      '│                   │',
-      '│      Paused.      │',
-      '│                   │',
-      `${'└'.padEnd(20, '─')}┘`,
+      '┌───────────────────────────────────┐',
+      '│                                   │',
+      '│                                   │',
+      '│              Paused.              │',
+      '│                                   │',
+      '│                                   │',
+      `${'└'.padEnd(36, '─')}┘`,
     ];
   }
 }

@@ -676,6 +676,20 @@ export class SaveAction extends Action {
   }
 }
 
+export class LoadAction extends Action {
+  name = 'load';
+  cost = 0;
+
+  perform(ctx: Area, agent: Agent) {
+    agent.logs.push({
+      tick: agent.mind.tick,
+      message: 'Loading...',
+    });
+
+    return new ActionSuccess();
+  }
+}
+
 export class CloneAction extends Action {
   name = 'clone';
   cost = 0;

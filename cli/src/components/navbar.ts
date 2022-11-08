@@ -1,15 +1,16 @@
+import { LoadAction, SaveAction } from 'xor4-game/lib/actions';
 import { Cursor, esc, Keys, Style } from 'xor4-lib';
 import { UiComponent } from '../component';
+import { VirtualTerminal } from '../pty';
 import { IntroScreen } from '../views/intro-screen';
-import { TitleScreen } from '../views/title-screen';
 
 /** @category Components */
 export class Navbar extends UiComponent {
   visible = false;
   selected = 0;
   options = [
-    { label: 'Save Game      ' },
-    { label: 'Restore Game   ' },
+    { label: 'Save Game      ', key: 'save' },
+    { label: 'Restore Game   ', key: 'load' },
     { label: 'Quit           ', key: 'quit' },
   ];
   up() {
@@ -34,11 +35,23 @@ export class Navbar extends UiComponent {
       [esc(Cursor.setXY(this.position.x, this.position.y + this.selected))],
     );
   }
-  handleInput(str: string, pty) {
+  handleInput(str: string, pty: VirtualTerminal) {
     if (str === Keys.ARROW_UP) this.up();
     if (str === Keys.ARROW_DOWN) this.down();
     if (str === Keys.ENTER) {
       const selected = this.select();
+      if (selected.key === 'save') {
+        pty.agent.schedule(new SaveAction());
+        pty.menuIsOpen = false;
+        this.visible = false;
+        pty.clear();
+      }
+      if (selected.key === 'load') {
+        pty.agent.schedule(new LoadAction());
+        pty.menuIsOpen = false;
+        this.visible = false;
+        pty.clear();
+      }
       if (selected.key === 'quit') {
         pty.clear();
         pty.menuIsOpen = false;

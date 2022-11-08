@@ -1,6 +1,21 @@
 import { Colors, esc, getRandomInt, Style, Vector } from 'xor4-lib';
 import { Glyph } from './cell';
 
+const numberGenerator = {
+  numbers: [] as Array<number>,
+  next() {
+    return getRandomInt(0, 999999999);
+  },
+  random() {
+    let n = this.next();
+    while (this.numbers.includes(n)) {
+      n = this.next();
+    }
+    this.numbers.push(n);
+    return n;
+  },
+};
+
 /** @category Thing */
 export abstract class BodyType {
   public name: string;
@@ -22,7 +37,7 @@ export abstract class Body {
   public velocity: Vector = new Vector(0, 0);
 
   constructor(type: BodyType, id?: number) {
-    this.id = id || getRandomInt(0, Number.MAX_VALUE);
+    this.id = id || numberGenerator.random();
     this.type = type;
     this.name = String(type.name || '');
   }

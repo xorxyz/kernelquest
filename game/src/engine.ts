@@ -29,7 +29,7 @@ export class Engine {
   events = new EventEmitter();
   cycle: number = 0;
   world: World;
-  heroes: Array<Agent>;
+  heroes: Array<Agent> = [];
   elapsed: number = 0;
   history: Array<HistoryEvent> = [];
   readonly clock: Clock;
@@ -58,42 +58,26 @@ export class Engine {
     this.events.emit('end-turn');
   }
 
-  load(actions: Array<HistoryEvent>) {
-    // actions.forEach((action) => {
-    //   const agent = [...this.world.agents.values()].find((a) => a.id === action.agent);
-    //   const position = new Vector(action.area[0], action.area[1]);
-    //   const area = this.world.areas.find((a) => a.position.equals(position));
+  async save() {
+    console.log('saving:', this.history);
+    this.pause();
+    await global.electron.save(0, this.history);
+    this.start();
+    this.heroes.forEach((h) => {
+      h.remember({
+        tick: h.mind.tick,
+        message: 'Saved.',
+      });
+    });
+  }
 
-    //   if (!agent || !area) {
-    //     console.error('missing agent and/or area:', agent, area)
-    //     return;
-    //   }
+  async load() {
+    this.pause();
 
-    //   this.cycle = action.tick;
+    const history = await global.electron.load(0);
 
-    //   const virtualAgent = new Proxy(agent, {
-    //     apply(target, thisArg, args) {
-
-    //     },
-    //   });
-
-    //   // if take turn
-    //   // return this action instead
-
-    // this.processTurn(area, agent, [action]);
-    // });
-    // const level = levels.find((l) => l.id === id);
-    // if (level) {
-    //   const area = new Area(0, 0);
-    //   const king = new Agent(new King());
-    //   const dragon = new Agent(new Dragon());
-
-    //   area.put(king, new Vector(1, 1));
-    //   area.put(dragon, new Vector(9, 9));
-
-    //   this.world = new World([area]);
-    //   this.heroes = [king];
-    // }
+    history.forEach(() => {
+    });
   }
 
   processTurn(area: Area, agent: Agent, actions: Array<Action> = []) {
@@ -117,8 +101,7 @@ export class Engine {
       debug('actions', actions);
 
       actions.forEach((action) => {
-        const result = action.tryPerforming(area, agent);
-        if (!result.message) return;
+        action.tryPerforming(area, agent);
 
         /* Keep a history of actions so we can store them */
         this.history.push({
@@ -127,6 +110,14 @@ export class Engine {
           agent: agent.id,
           action: action.name,
         });
+
+        if (action.name === 'save') {
+          this.save();
+        }
+
+        if (action.name === 'load') {
+          this.load();
+        }
       });
     }
 
