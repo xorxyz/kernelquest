@@ -21,6 +21,7 @@ export class World {
   public areas: Array<Area>;
   public agents: Set<Agent> = new Set();
   public things: Set<Thing> = new Set();
+  public hero: Agent;
 
   constructor(areas: Array<Area>) {
     this.areas = [...areas];

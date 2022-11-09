@@ -87,8 +87,6 @@ export abstract class Action {
     if (!this.authorize) return new ActionFailure('Not enough stamina.');
     const result = this.perform(ctx, agent, object);
 
-    debug('tryPerforming() -> result', result);
-
     agent.remember({
       tick: agent.mind.tick,
       message: result.message,

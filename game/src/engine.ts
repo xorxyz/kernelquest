@@ -3,7 +3,15 @@ import { EventEmitter } from 'events';
 import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
-import { Action } from './action';
+import { King, Wizard } from '../lib/agents';
+import words from '../lib/words';
+import { CreateAction } from '../lib/actions';
+
+const unsavedActionTypes = [
+  'move-cursor',
+  'move-cursor-to',
+  'switch-mode',
+];
 
 /** @category Engine */
 export interface EngineOptions {
@@ -28,16 +36,33 @@ export interface HistoryEvent {
 export class Engine {
   events = new EventEmitter();
   cycle: number = 0;
+  master: Agent;
   world: World;
-  heroes: Array<Agent> = [];
   elapsed: number = 0;
   history: Array<HistoryEvent> = [];
+  counter = 0;
   readonly clock: Clock;
 
   constructor(opts?: EngineOptions) {
     this.world = opts?.world || new World([]);
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
+
+    this.master = new Agent(this.counter++, new King(), words);
+
+    const area = new Area(0, 0);
+
+    this.world.areas.push(area);
+
+    this.world.agents.add(this.master);
+
+    this.world.hero = this.master;
+
+    area.agents.add(this.master);
+
+    // this.master.schedule(new CreateAction('wizard'));
+
+    // this.processTurn(area, this.master);
   }
 
   update() {
@@ -51,7 +76,6 @@ export class Engine {
       area.agents.forEach((agent: Agent) => {
         this.processTurn(area, agent);
         this.applyVelocity(area, agent);
-        // area.events.emit('update');
       });
     });
 
@@ -61,64 +85,54 @@ export class Engine {
   async save() {
     console.log('saving:', this.history);
     this.pause();
-    await global.electron.save(0, this.history);
+    await global.electron.save(0, {
+      history: this.history,
+    });
     this.start();
-    this.heroes.forEach((h) => {
-      h.remember({
-        tick: h.mind.tick,
-        message: 'Saved.',
-      });
+    this.world.hero.remember({
+      tick: this.world.hero.mind.tick,
+      message: 'Saved.',
     });
   }
 
   async load() {
     this.pause();
 
-    const history = await global.electron.load(0);
+    const { history } = await global.electron.load(0);
 
-    history.forEach(() => {
+    this.clock.reset();
+
+    console.log(history);
+
+    history.forEach((action) => {
     });
+
+    this.start();
   }
 
-  processTurn(area: Area, agent: Agent, actions: Array<Action> = []) {
-    let done = false;
-    let cost = 0;
+  processTurn(area: Area, agent: Agent) {
+    const action = agent.takeTurn(this.cycle, area);
 
-    if (!actions.length) {
-      while (!done && cost <= 1) {
-        const senses = new Proxy(area, {});
-        const action = agent.takeTurn(this.cycle, senses);
-        if (!action) {
-          done = true;
-        } else {
-          cost += action.cost;
-          actions.push(action);
-        }
-      }
-    }
+    if (action) {
+      action.tryPerforming(area, agent);
 
-    if (actions.length) {
-      debug('actions', actions);
-
-      actions.forEach((action) => {
-        action.tryPerforming(area, agent);
-
-        /* Keep a history of actions so we can store them */
+      /* Keep a history of actions so we can store them */
+      if (!unsavedActionTypes.includes(action.name)) {
         this.history.push({
           tick: this.cycle,
           area: [area.position.x, area.position.y],
           agent: agent.id,
           action: action.name,
         });
+      }
 
-        if (action.name === 'save') {
-          this.save();
-        }
+      if (action.name === 'save') {
+        this.save();
+      }
 
-        if (action.name === 'load') {
-          this.load();
-        }
-      });
+      if (action.name === 'load') {
+        this.load();
+      }
     }
 
     if (this.cycle % 10 === 0) agent.sp.increase(1);

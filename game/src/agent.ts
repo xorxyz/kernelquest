@@ -91,8 +91,9 @@ export class Agent extends Body {
 
   public view: Array<string> = [];
 
-  constructor(type: AgentType, words?: Dictionary) {
-    super(type);
+  constructor(id: number, type: AgentType, words?: Dictionary) {
+    super(id, type);
+
     this.mind = new Mind(words);
 
     type.capabilities.forEach((capability) => {
@@ -101,7 +102,6 @@ export class Agent extends Body {
   }
 
   remember(log: AgentLog) {
-    debug('remembering', log);
     this.logs.push(log);
   }
 

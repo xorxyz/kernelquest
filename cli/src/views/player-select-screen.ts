@@ -9,7 +9,7 @@ import { TitleScreen } from './title-screen';
 class PlayerSelectMenu extends UiComponent {
   selected = 0;
   options = [
-    { label: '1. 🧙 Kareniel      L01 GPx123 T01:23', key: '1' },
+    { label: '1. 🤴 King          L99 GPxFFF T07:77', key: '1' },
     { label: '2. 👼               L00 GPx000 T00:00', key: '2' },
     { label: '3. 👼               L00 GPx000 T00:00', key: '3' },
     { label: 'Copy                                  ', key: 'copy' },
