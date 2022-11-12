@@ -3,9 +3,9 @@ import { EventEmitter } from 'events';
 import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
-import { King, Wizard } from '../lib/agents';
+import { King } from '../lib/agents';
 import words from '../lib/words';
-import { CreateAction } from '../lib/actions';
+import actions, { fail, IAction, IActionDefinition, IActionResult } from '../lib/actions.v2';
 
 const unsavedActionTypes = [
   'move-cursor',
@@ -28,15 +28,14 @@ export interface IWaitCallback {
 export interface HistoryEvent {
   tick: number,
   agent: number,
-  area: [number, number],
-  action: string
+  action: IAction
 }
 
 /** @category Engine */
 export class Engine {
   events = new EventEmitter();
   cycle: number = 0;
-  master: Agent;
+  creator: Agent;
   world: World;
   elapsed: number = 0;
   history: Array<HistoryEvent> = [];
@@ -48,35 +47,28 @@ export class Engine {
     this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
 
-    this.master = new Agent(this.counter++, new King(), words);
+    this.creator = new Agent(this.counter++, new King(), words);
 
     const area = new Area(0, 0);
 
     this.world.areas.push(area);
 
-    this.world.agents.add(this.master);
+    this.world.agents.add(this.creator);
 
-    this.world.hero = this.master;
+    this.world.hero = this.creator;
 
-    area.agents.add(this.master);
-
-    // this.master.schedule(new CreateAction('wizard'));
-
-    // this.processTurn(area, this.master);
+    area.put(this.creator);
   }
 
   update() {
     this.events.emit('begin-turn');
     this.cycle++;
 
-    const seconds = Math.trunc((this.cycle * CLOCK_MS_DELAY) / 1000);
-
-    this.world.areas.forEach((area) => {
-      area.seconds = seconds;
-      area.agents.forEach((agent: Agent) => {
-        this.processTurn(area, agent);
-        this.applyVelocity(area, agent);
-      });
+    this.world.agents.forEach((agent: Agent) => {
+      const area = this.world.find(agent);
+      if (!area) return;
+      this.processTurn(area, agent);
+      this.applyVelocity(area, agent);
     });
 
     this.events.emit('end-turn');
@@ -110,28 +102,45 @@ export class Engine {
     this.start();
   }
 
+  authorize(action: IActionDefinition<any>, agent: Agent) {
+    if (agent.sp.value - action.cost < 0) return false; // too expensive sorry
+    agent.sp.decrease(action.cost);
+    return true;
+  }
+
+  tryPerforming(action: IAction, agent: Agent, area: Area): IActionResult {
+    const actionDefinition = actions[action.name];
+
+    if (!this.authorize) return fail('Not enough stamina.');
+
+    const context = {
+      agent,
+      area,
+      engine: this,
+      world: this.world,
+    };
+
+    return actionDefinition.perform(context, action.args);
+  }
+
   processTurn(area: Area, agent: Agent) {
     const action = agent.takeTurn(this.cycle, area);
 
     if (action) {
-      action.tryPerforming(area, agent);
+      const result = this.tryPerforming(action, agent, area);
+
+      agent.remember({
+        tick: agent.mind.tick,
+        message: result.message,
+      });
 
       /* Keep a history of actions so we can store them */
       if (!unsavedActionTypes.includes(action.name)) {
         this.history.push({
+          action,
           tick: this.cycle,
-          area: [area.position.x, area.position.y],
           agent: agent.id,
-          action: action.name,
         });
-      }
-
-      if (action.name === 'save') {
-        this.save();
-      }
-
-      if (action.name === 'load') {
-        this.load();
       }
     }
 

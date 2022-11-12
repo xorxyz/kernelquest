@@ -1,13 +1,22 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, debug, Colors, esc,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc,
 } from 'xor4-lib';
 import { Dictionary } from 'xor4-interpreter';
 import { Body, BodyType, Thing } from './thing';
-import { Action, TerminalAction, Capability } from './action';
+import { Capability } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
 import { Area } from './area';
+import { IAction } from '../lib/actions.v2';
+
+export const TERMINAL_ACTIONS = [
+  'switch-mode',
+  'move-cursor',
+  'move-cursor-to',
+  'select-cell',
+  'print-cursor-mode-help',
+];
 
 /** @category Agent */
 export class HP extends Points {}
@@ -139,17 +148,17 @@ export class Agent extends Body {
     return true;
   }
 
-  schedule(action: Action) {
-    if (action instanceof TerminalAction) {
+  schedule(action: IAction) {
+    if (TERMINAL_ACTIONS.includes(action.name)) {
       this.mind.queue.items.unshift(action);
     } else {
       this.mind.queue.add(action);
     }
   }
 
-  takeTurn(tick: number, area: Area): Action | null {
+  takeTurn(tick: number, area: Area): IAction | null {
     this.see(area);
-    this.mind.update(tick, area);
+    this.mind.update(tick);
 
     if (this.isWaitingUntil) {
       if (this.mind.tick >= this.isWaitingUntil) {
@@ -195,6 +204,8 @@ export class Agent extends Body {
 
   see(area: Area) {
     this.view = area.render(this.sees());
+    const thing = area.cellAt(this.cursorPosition)?.slot || null;
+    this.eyes = thing;
   }
 
   sees() {
@@ -204,36 +215,10 @@ export class Agent extends Body {
     const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
     return rect;
   }
+
+  moveCursor(direction: Vector) {
+    if (this.sees().contains(this.cursorPosition.clone().add(direction))) {
+      this.cursorPosition.add(direction);
+    }
+  }
 }
-
-// /** @category Actions */
-// export class CreateAction extends Action {
-//   name = 'create';
-//   cost = 0;
-//   type: AgentType;
-
-//   constructor(type: AgentType) {
-//     super();
-//     this.type = type;
-//   }
-
-//   perform(ctx: Area, agent: Agent) {
-//     // You can't create things outside of an area.
-//     if (!Area.bounds.contains(agent.facing.direction.value)) {
-//       return new ActionFailure();
-//     }
-
-//     const entity = new Agent(this.type);
-//     const at = agent.position.clone().add(agent.facing.direction.value);
-
-//     // New agents face the same direction as the agent that creates them
-//     if (entity instanceof Agent) {
-//       entity.facing?.direction.value.copy(agent.facing.direction.value);
-//     }
-
-//     ctx.put(entity, at);
-//     console.log('created', entity);
-
-//     return new ActionSuccess();
-//   }
-// }

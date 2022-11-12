@@ -1,22 +1,10 @@
 import EventEmitter from 'events';
 import { Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug } from 'xor4-lib';
-import { Action, Agent } from 'xor4-game';
-import {
-  EvalAction,
-  GetAction,
-  MoveCursorAction,
-  MoveCursorToAction,
-  PrintCursorModeHelpAction,
-  PutAction,
-  RotateAction,
-  SelectCellAction,
-  StepAction,
-  SwitchModeAction,
-} from 'xor4-game/lib/actions';
+import { Agent } from 'xor4-game';
+import { IAction } from 'xor4-game/lib/actions.v2';
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
 import { View } from './view';
-import { TitleScreen } from './views/title-screen';
 import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
 /** @category PTY */
@@ -148,8 +136,11 @@ export class VirtualTerminal {
 
         this.write(this.state.prompt + text);
 
-        const action = new EvalAction(text);
-        this.agent.schedule(action);
+        this.agent.schedule({
+          name: 'exec',
+          args: { text },
+        });
+
         this.state.line = '';
         this.lineEditor.reset();
       } else {
@@ -160,57 +151,60 @@ export class VirtualTerminal {
     }
   }
 
-  getActionForKey(str: string): Action | null {
-    let action: Action | null = null;
+  getActionForKey(str: string): IAction | null {
+    let action: IAction | null = null;
 
     switch (str) {
       case (Keys.ESCAPE):
-        action = new SwitchModeAction(this);
-        break;
-      case (Keys.SPACE):
-        action = new SelectCellAction(this);
-        break;
       case (Keys.ENTER):
-        action = new SwitchModeAction(this);
+        this.switchModes();
         break;
       case (Keys.CTRL_ARROW_UP):
-        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 0));
+        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 0));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        action = new MoveCursorToAction(this, new Vector(15, this.agent.cursorPosition.y));
+        this.agent.cursorPosition.copy(new Vector(15, this.agent.cursorPosition.y));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        action = new MoveCursorToAction(this, new Vector(this.agent.cursorPosition.x, 9));
+        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 9));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        action = new MoveCursorToAction(this, new Vector(0, this.agent.cursorPosition.y));
+        this.agent.cursorPosition.copy(new Vector(0, this.agent.cursorPosition.y));
         break;
       case (Keys.ARROW_UP):
-        action = new MoveCursorAction(this, new Vector(0, -1));
+        this.agent.moveCursor(new Vector(0, -1));
         break;
       case (Keys.ARROW_RIGHT):
-        action = new MoveCursorAction(this, new Vector(1, 0));
+        this.agent.moveCursor(new Vector(1, 0));
         break;
       case (Keys.ARROW_DOWN):
-        action = new MoveCursorAction(this, new Vector(0, 1));
+        this.agent.moveCursor(new Vector(0, 1));
         break;
       case (Keys.ARROW_LEFT):
-        action = new MoveCursorAction(this, new Vector(-1, 0));
+        this.agent.moveCursor(new Vector(-1, 0));
         break;
       case (Keys.LOWER_H):
-        action = new PrintCursorModeHelpAction(this);
+        this.write(`${CursorModeHelpText.join('\n')}\n`);
         break;
       case (Keys.LOWER_P):
-        action = new PutAction();
+        action = { name: 'put' };
         break;
       case (Keys.LOWER_G):
-        action = new GetAction();
+        action = { name: 'get' };
         break;
       case (Keys.LOWER_R):
-        action = new RotateAction();
+        action = { name: 'rotate' };
         break;
       case (Keys.LOWER_S):
-        action = new StepAction();
+        action = { name: 'step' };
+        break;
+      case (Keys.SPACE):
+        action = {
+          name: 'exec',
+          args: {
+            text: `${this.agent.cursorPosition.x} ${this.agent.cursorPosition.y} ref`,
+          },
+        };
         break;
       default:
         break;

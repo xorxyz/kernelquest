@@ -1,4 +1,3 @@
-import { LoadAction, SaveAction } from 'xor4-game/lib/actions';
 import { Cursor, esc, Keys, Style } from 'xor4-lib';
 import { UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
@@ -41,13 +40,13 @@ export class Navbar extends UiComponent {
     if (str === Keys.ENTER) {
       const selected = this.select();
       if (selected.key === 'save') {
-        pty.agent.schedule(new SaveAction());
+        pty.agent.schedule({ name: 'save' });
         pty.menuIsOpen = false;
         this.visible = false;
         pty.clear();
       }
       if (selected.key === 'load') {
-        pty.agent.schedule(new LoadAction());
+        pty.agent.schedule({ name: 'load' });
         pty.menuIsOpen = false;
         this.visible = false;
         pty.clear();

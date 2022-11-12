@@ -1,51 +1,62 @@
 import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from 'xor4-interpreter';
-import {
-  CloneAction,
-  CreateAction,
-  ListAction, LookAction,
-  MoveThingAction, PathfindingAction, RemoveAction, SaveAction, SearchAction,
-} from './actions';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
   const ref = stack.pop() as LiteralRef;
 
-  const action = new PathfindingAction(ref.vector);
-
-  queue?.add(action);
+  queue?.add({
+    name: 'goto',
+    args: { x: ref.vector.x, y: ref.vector.y },
+  });
 });
 
 /** @category Words */
 const create = new Combinator(['create'], ['string'], async (stack, queue) => {
   const program = stack.pop() as LiteralString;
-  const name = program.lexeme;
 
-  queue?.add(new CreateAction(name));
+  queue?.add({
+    name: 'create',
+    args: { name: program.lexeme },
+  });
 });
 
 /** @category Words */
 const look = new Combinator(['look'], ['ref'], async (stack, queue) => {
   const ref = stack.pop() as LiteralRef;
 
-  queue?.items.unshift(new LookAction(ref));
+  queue?.items.unshift({
+    name: 'look',
+    args: { x: ref.vector.x, y: ref.vector.y },
+  });
 });
 
 /** @category Words */
 const ls = new Combinator(['ls'], [], async (stack, queue) => {
-  queue?.items.unshift(new ListAction());
+  queue?.items.unshift({ name: 'ls' });
 });
 
 /** @category Words */
 const mv = new Combinator(['mv'], ['ref', 'ref'], async (stack, queue) => {
   const a = stack.pop() as LiteralRef;
   const b = stack.pop() as LiteralRef;
-  queue?.items.unshift(new MoveThingAction(b, a));
+  queue?.items.unshift({
+    name: 'mv',
+    args: {
+      fromX: b.vector.x,
+      fromY: b.vector.y,
+      toX: a.vector.x,
+      toY: a.vector.y,
+    },
+  });
 });
 
 /** @category Words */
 const rm = new Combinator(['rm'], ['ref'], async (stack, queue) => {
   const ref = stack.pop() as LiteralRef;
-  queue?.items.unshift(new RemoveAction(ref));
+  queue?.items.unshift({
+    name: 'rm',
+    args: { x: ref.vector.x, y: ref.vector.y },
+  });
 });
 
 /** @category Words */
@@ -53,23 +64,23 @@ const spawn = new Combinator(['spawn'], [], async (stack, queue) => {
   // queue?.items.unshift(new SpawnAction(new Spirit()));
 });
 
-/** @category Words */
-const search = new Combinator(['search'], ['string'], async (stack, queue) => {
-  const str = stack.pop() as LiteralString;
-  queue?.items.unshift(new SearchAction(str.value));
-});
+// /** @category Words */
+// const search = new Combinator(['search'], ['string'], async (stack, queue) => {
+//   const str = stack.pop() as LiteralString;
+//   queue?.items.unshift(new SearchAction(str.value));
+// });
 
-/** @category Words */
-const save = new Combinator(['save'], [], async (stack, queue) => {
-  queue?.items.unshift(new SaveAction());
-});
+// /** @category Words */
+// const save = new Combinator(['save'], [], async (stack, queue) => {
+//   queue?.items.unshift(new SaveAction());
+// });
 
-/** @category Words */
-export const clone = new Operator(['clone'], ['ref'], (stack, queue) => {
-  const ref = stack.pop() as LiteralRef;
+// /** @category Words */
+// export const clone = new Operator(['clone'], ['ref'], (stack, queue) => {
+//   const ref = stack.pop() as LiteralRef;
 
-  queue?.add(new CloneAction(ref));
-});
+//   queue?.add(new CloneAction(ref));
+// });
 
 /** @category Words */
 export const define = new Operator(['define'], ['string', 'quotation'], (stack, queue, dict) => {
@@ -85,5 +96,5 @@ export const define = new Operator(['define'], ['string', 'quotation'], (stack, 
 });
 
 export default {
-  goto, look, ls, mv, rm, spawn, search, save, clone, create, define,
+  goto, look, ls, mv, rm, spawn, create, define,
 };

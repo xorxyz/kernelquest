@@ -1,6 +1,6 @@
 import { Interpretation, Interpreter, Compiler, Factor, Dictionary } from 'xor4-interpreter';
 import { debug, Queue, Stack } from 'xor4-lib';
-import { Action } from './action';
+import { IAction } from '../lib/actions.v2';
 import { Area } from './area';
 import { World } from './world';
 
@@ -15,7 +15,7 @@ export class Mind {
   public tick: number = 0;
   private worlds: Record<string, World> = {};
   public memory: Array<Observation> = [];
-  public queue: Queue<Action> = new Queue<Action>();
+  public queue: Queue<IAction> = new Queue<IAction>();
   public stack: Stack<Factor> = new Stack();
   private interpreter: Interpreter;
 
@@ -34,7 +34,7 @@ export class Mind {
     return result;
   }
 
-  update(tick, area?: Area) {
+  update(tick) {
     this.tick = tick;
     this.worlds.me.tick = tick;
   }
