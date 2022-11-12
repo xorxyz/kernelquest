@@ -289,7 +289,7 @@ export const exec: IActionDefinition<{ text: string }> = {
   },
 };
 
-const actions: Record<ValidActions, IActionDefinition<any>> = {
+export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
   noop,
@@ -306,8 +306,6 @@ const actions: Record<ValidActions, IActionDefinition<any>> = {
   rm,
   exec,
 };
-
-export default actions;
 
 export function succeed(msg: string): IActionResult {
   return {

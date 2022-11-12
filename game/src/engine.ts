@@ -1,63 +1,76 @@
+/* eslint-disable no-var */
 import { Clock, CLOCK_MS_DELAY, debug } from 'xor4-lib';
 import { EventEmitter } from 'events';
+import { VirtualTerminal } from 'xor4-cli';
 import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
-import { King } from '../lib/agents';
-import words from '../lib/words';
-import actions, { fail, IAction, IActionDefinition, IActionResult } from '../lib/actions.v2';
+import { actions, fail, IAction, IActionDefinition, IActionResult } from '../lib/actions.v2';
+import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 
-const unsavedActionTypes = [
-  'move-cursor',
-  'move-cursor-to',
-  'switch-mode',
-];
+export type SendFn = (str: string) => void
 
 /** @category Engine */
 export interface EngineOptions {
   world?: World
   rate?: number
-}
-
-/** @category Engine */
-export interface IWaitCallback {
-  tick: number
-  fn: Function
-}
-
-export interface HistoryEvent {
-  tick: number,
-  agent: number,
-  action: IAction
+  send: SendFn
 }
 
 /** @category Engine */
 export class Engine {
-  events = new EventEmitter();
-  cycle: number = 0;
-  creator: Agent;
-  world: World;
-  elapsed: number = 0;
-  history: Array<HistoryEvent> = [];
-  counter = 0;
+  public events = new EventEmitter();
+  public cycle: number = 0;
+  public world: World;
+  public elapsed: number = 0;
+  public history: Array<HistoryEvent> = [];
+  public counter = 1;
+  public saveGames: SaveGameDict;
+  private tty: VirtualTerminal;
+  private opts: EngineOptions;
+  private initiated = false;
+  private saveGameId: SaveGameId;
   readonly clock: Clock;
 
-  constructor(opts?: EngineOptions) {
-    this.world = opts?.world || new World([]);
-    this.clock = new Clock(opts?.rate || CLOCK_MS_DELAY);
+  constructor(opts: EngineOptions) {
+    this.opts = opts;
+    this.clock = new Clock(opts.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
 
-    this.creator = new Agent(this.counter++, new King(), words);
+    this.reset();
+  }
 
-    const area = new Area(0, 0);
+  async init() {
+    const zero = await global.electron.load(0);
+    const one = await global.electron.load(1);
+    const two = await global.electron.load(2);
 
-    this.world.areas.push(area);
+    this.saveGames = {
+      0: zero,
+      1: one,
+      2: two,
+    };
 
-    this.world.agents.add(this.creator);
+    console.log(this.saveGames);
+    this.initiated = true;
+  }
 
-    this.world.hero = this.creator;
+  reset() {
+    this.clock.reset();
+    this.world = new World();
+    if (this.tty) {
+      this.tty.agent = this.world.hero;
+    } else {
+      this.tty = new VirtualTerminal(this, this.opts.send);
+    }
+  }
 
-    area.put(this.creator);
+  selectSaveFile(id: SaveGameId) {
+    this.saveGameId = id;
+  }
+
+  handleInput(input: string) {
+    this.tty.handleInput(input);
   }
 
   update() {
@@ -77,9 +90,17 @@ export class Engine {
   async save() {
     console.log('saving:', this.history);
     this.pause();
-    await global.electron.save(0, {
+
+    await global.electron.save(this.saveGameId, {
+      name: this.world.hero.name,
       history: this.history,
+      stats: {
+        level: this.world.hero.level,
+        gold: this.world.hero.gp.value,
+        time: this.cycle,
+      },
     });
+
     this.start();
     this.world.hero.remember({
       tick: this.world.hero.mind.tick,
@@ -89,15 +110,27 @@ export class Engine {
 
   async load() {
     this.pause();
+    this.reset();
 
-    const { history } = await global.electron.load(0);
+    const data = await global.electron.load(this.saveGameId);
 
-    this.clock.reset();
+    console.log(data);
 
-    console.log(history);
+    const agents = [...this.world.agents];
+    const { areas } = this.world;
 
-    history.forEach((action) => {
+    // TODO: Ensure agents exist
+    // and make this more robust
+
+    data.history.forEach((event) => {
+      this.cycle = event.tick;
+      const agent = agents.find((a) => a.id === event.agentId) as Agent;
+      const area = areas.find((a) => a.has(agent)) as Area;
+      this.tryPerforming(event.action, agent, area);
     });
+
+    this.history = data.history;
+    this.cycle = data.stats.time;
 
     this.start();
   }
@@ -134,12 +167,11 @@ export class Engine {
         message: result.message,
       });
 
-      /* Keep a history of actions so we can store them */
-      if (!unsavedActionTypes.includes(action.name)) {
+      if (!['save', 'load', 'exit'].includes(action.name)) {
         this.history.push({
           action,
           tick: this.cycle,
-          agent: agent.id,
+          agentId: agent.id,
         });
       }
     }
@@ -166,6 +198,9 @@ export class Engine {
   }
 
   start() {
+    if (!this.initiated) {
+      throw new Error('Engine not initiated. Call \'await engine.init()\' first.');
+    }
     this.clock.start();
     this.events.emit('start', this.cycle);
     debug('started engine.');

@@ -11,6 +11,7 @@
   "author": "Jonathan Dupré <hello@jonathandupre.com>",
   "license": "MIT",
   "dependencies": {
+    "xor4-cli": "0.0.0",
     "xor4-interpreter": "0.0.0",
     "xor4-levels": "0.0.0",
     "xor4-lib": "0.0.0"

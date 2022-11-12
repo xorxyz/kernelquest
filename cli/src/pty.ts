@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug } from 'xor4-lib';
-import { Agent } from 'xor4-game';
+import { Agent, Engine, SendFn } from 'xor4-game';
 import { IAction } from 'xor4-game/lib/actions.v2';
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
@@ -25,15 +25,17 @@ export class VirtualTerminal {
   public view: View;
   public send: Function;
   public menuIsOpen = false;
+  public engine: Engine;
 
   public paused = true;
 
   private timer;
 
-  constructor(agent: Agent, events: EventEmitter, send: (s: string) => void) {
-    this.agent = agent;
-    this.events = events;
+  constructor(engine: Engine, send: SendFn) {
+    this.agent = engine.world.hero;
+    this.events = engine.events;
     this.send = send;
+    this.engine = engine;
     this.view = new IntroScreen(this);
     this.state = {
       termMode: false,
@@ -42,17 +44,17 @@ export class VirtualTerminal {
       stdout: CursorModeHelpText,
     };
 
-    events.on('pause', (tick) => {
+    this.events.on('pause', (tick) => {
       this.paused = true;
       this.render(tick);
     });
 
-    events.on('start', (tick) => {
+    this.events.on('start', (tick) => {
       this.paused = false;
       this.render(tick);
     });
 
-    events.on('update', (tick) => this.render(tick));
+    this.events.on('update', (tick) => this.render(tick));
   }
 
   disconnect() {

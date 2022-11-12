@@ -4,11 +4,11 @@ import {
 } from 'xor4-lib';
 import { Dictionary } from 'xor4-interpreter';
 import { Body, BodyType, Thing } from './thing';
-import { Capability } from './action';
 import { Cell } from './cell';
 import { Mind } from './mind';
 import { Area } from './area';
 import { IAction } from '../lib/actions.v2';
+import { Capability } from '../lib/capabilities';
 
 export const TERMINAL_ACTIONS = [
   'switch-mode',

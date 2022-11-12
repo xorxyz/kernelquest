@@ -20,8 +20,8 @@ export class Clock extends EventEmitter {
     return this.tick;
   }
 
-  reset() {
-    this.tick = 0;
+  reset(tick = 0) {
+    this.tick = tick;
     this.edge = false;
   }
 

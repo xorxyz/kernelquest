@@ -2,14 +2,16 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from 'electron';
-
-type SaveGameId = 0 | 1 | 2
+import { LoadFn, SaveFn, ExitFn } from 'xor4-game/src/io';
 
 console.log('👋 Hello from preload');
 
+const exit: ExitFn = () => ipcRenderer.send('exit');
+const save: SaveFn = (saveGameId, contents) => ipcRenderer.invoke('save', saveGameId, contents);
+const load: LoadFn = (saveGameId) => ipcRenderer.invoke('load', saveGameId);
+
 contextBridge.exposeInMainWorld('electron', {
-  // NODE_ENV: app.isPackaged ? 'production' : 'dev',
-  exit: () => ipcRenderer.send('exit'),
-  save: async (saveGameId: SaveGameId, history) => ipcRenderer.invoke('save', saveGameId, history),
-  load: async (saveGameId: SaveGameId) => ipcRenderer.invoke('load', saveGameId),
+  exit,
+  save,
+  load,
 });

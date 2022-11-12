@@ -3,12 +3,6 @@
 // import { Area } from './area';
 // import { Agent } from './agent';
 
-// /** @category Capability */
-// export abstract class Capability {
-//   abstract bootstrap (agent: Agent): void
-//   abstract run (agent: Agent, tick: number): void
-// }
-
 // /** @category Action */
 // export abstract class ActionResult {
 //   public message: string;
