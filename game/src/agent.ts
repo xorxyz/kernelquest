@@ -168,6 +168,10 @@ export class Agent extends Body {
       }
     }
 
+    this.type.capabilities.forEach((capability) => {
+      capability.run(this, tick);
+    });
+
     const action = this.mind.queue.next();
 
     return action;

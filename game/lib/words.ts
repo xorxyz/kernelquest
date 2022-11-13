@@ -10,15 +10,15 @@ const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
   });
 });
 
-/** @category Words */
-const create = new Combinator(['create'], ['string'], async (stack, queue) => {
-  const program = stack.pop() as LiteralString;
+// /** @category Words */
+// const create = new Combinator(['create'], ['string'], async (stack, queue) => {
+//   const program = stack.pop() as LiteralString;
 
-  queue?.add({
-    name: 'create',
-    args: { name: program.lexeme },
-  });
-});
+//   queue?.add({
+//     name: 'create',
+//     args: { name: program.lexeme },
+//   });
+// });
 
 /** @category Words */
 const look = new Combinator(['look'], ['ref'], async (stack, queue) => {
@@ -62,6 +62,12 @@ const rm = new Combinator(['rm'], ['ref'], async (stack, queue) => {
 /** @category Words */
 const spawn = new Combinator(['spawn'], [], async (stack, queue) => {
   // queue?.items.unshift(new SpawnAction(new Spirit()));
+});
+
+const create = new Combinator(['create'], [], async (stack, queue) => {
+  queue?.add({
+    name: 'create',
+  });
 });
 
 // /** @category Words */

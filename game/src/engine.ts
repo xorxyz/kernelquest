@@ -24,7 +24,6 @@ export class Engine {
   public world: World;
   public elapsed: number = 0;
   public history: Array<HistoryEvent> = [];
-  public counter = 1;
   public saveGames: SaveGameDict;
   private tty: VirtualTerminal;
   private opts: EngineOptions;
@@ -119,7 +118,6 @@ export class Engine {
     this.reset();
 
     const data = await global.electron.load(this.saveGameId);
-    const agents = [...this.world.agents];
     const { areas } = this.world;
 
     // TODO: Ensure agents exist
@@ -127,7 +125,7 @@ export class Engine {
 
     data.history.forEach((event) => {
       this.cycle = event.tick;
-      const agent = agents.find((a) => a.id === event.agentId) as Agent;
+      const agent = [...this.world.agents].find((a) => a.id === event.agentId) as Agent;
       const area = areas.find((a) => a.has(agent)) as Area;
       this.tryPerforming(event.action, agent, area);
     });
@@ -148,6 +146,8 @@ export class Engine {
 
   tryPerforming(action: IAction, agent: Agent, area: Area): IActionResult {
     const actionDefinition = actions[action.name];
+
+    debug(action, agent, area);
 
     if (!this.authorize) return fail('Not enough stamina.');
 
@@ -172,7 +172,7 @@ export class Engine {
         message: result.message,
       });
 
-      if (!['save', 'load', 'exit'].includes(action.name)) {
+      if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
         this.history.push({
           action,
           tick: this.cycle,

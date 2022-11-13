@@ -52,6 +52,7 @@ export class Navbar extends UiComponent {
         pty.clear();
       }
       if (selected.key === 'quit') {
+        pty.engine.pause();
         pty.clear();
         pty.menuIsOpen = false;
         this.visible = false;

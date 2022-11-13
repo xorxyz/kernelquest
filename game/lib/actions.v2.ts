@@ -1,6 +1,7 @@
 import { Interpretation } from 'xor4-interpreter';
 import { debug, Vector } from 'xor4-lib';
 import { Agent, Area, Engine, Foe, Glyph, Hero, Thing, World } from '../src';
+import { Bug } from './agents';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
 
@@ -10,7 +11,7 @@ export type ValidActions = (
   'rotate' | 'face' | 'step' | 'goto' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
-  'exec'
+  'exec' | 'create'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -289,6 +290,15 @@ export const exec: IActionDefinition<{ text: string }> = {
   },
 };
 
+export const create: IActionDefinition<{ name: string }> = {
+  cost: 0,
+  perform({ world, agent, area }) {
+    const bug = world.spawn('bug', area, agent.isLookingAt.clone());
+    bug.name = 'bug';
+    return succeed('');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -305,6 +315,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   mv,
   rm,
   exec,
+  create,
 };
 
 export function succeed(msg: string): IActionResult {
