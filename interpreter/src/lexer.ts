@@ -1,9 +1,9 @@
 const AlphaNumeric = /^[a-zA-Z0-9]*$/;
 const Alpha = /^[a-zA-Z]*$/;
 const Digit = /^[0-9]*$/;
-const isAlphaNumeric = (str: string) => str.match(AlphaNumeric);
-const isAlpha = (str: string) => str.match(Alpha);
-const isDigit = (str: string) => str.match(Digit);
+export const isAlphaNumeric = (str: string) => str.match(AlphaNumeric);
+export const isAlpha = (str: string) => str.match(Alpha);
+export const isDigit = (str: string) => str.match(Digit);
 
 // eslint-disable-next-line no-shadow
 export enum TokenType {

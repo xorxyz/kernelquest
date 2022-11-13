@@ -91,21 +91,27 @@ export class Engine {
     console.log('saving:', this.history);
     this.pause();
 
-    await global.electron.save(this.saveGameId, {
-      name: this.world.hero.name,
+    const oldContents = this.saveGames[this.saveGameId];
+    const contents = {
+      name: oldContents.name,
       history: this.history,
       stats: {
         level: this.world.hero.level,
         gold: this.world.hero.gp.value,
         time: this.cycle,
       },
-    });
+    };
 
-    this.start();
+    this.saveGames[this.saveGameId] = contents;
+
+    await global.electron.save(this.saveGameId, contents);
+
     this.world.hero.remember({
       tick: this.world.hero.mind.tick,
       message: 'Saved.',
     });
+
+    this.start();
   }
 
   async load() {
@@ -113,9 +119,6 @@ export class Engine {
     this.reset();
 
     const data = await global.electron.load(this.saveGameId);
-
-    console.log(data);
-
     const agents = [...this.world.agents];
     const { areas } = this.world;
 
@@ -131,6 +134,8 @@ export class Engine {
 
     this.history = data.history;
     this.cycle = data.stats.time;
+
+    this.world.hero.name = data.name;
 
     this.start();
   }

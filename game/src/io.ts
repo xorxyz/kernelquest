@@ -25,3 +25,15 @@ export type ExitFn = () => void
 export type SaveFn = (saveGameId: SaveGameId, contents: SaveFileContents) => Promise<void>
 
 export type LoadFn = (saveGameId: SaveGameId) => Promise<SaveFileContents>
+
+export function createEmptySaveFile(): SaveFileContents {
+  return {
+    name: '',
+    stats: {
+      level: 0,
+      gold: 0,
+      time: 0,
+    },
+    history: [],
+  };
+}

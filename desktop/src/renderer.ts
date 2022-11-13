@@ -26,4 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await engine.init();
 
   engine.start();
+
+  global.engine = engine;
 });

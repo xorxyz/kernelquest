@@ -7,6 +7,7 @@ import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
+import { PlayerNamingScreen } from './views/player-naming-screen';
 /** @category PTY */
 export interface IVirtalTerminalState {
   termMode: boolean
