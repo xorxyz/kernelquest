@@ -1,4 +1,4 @@
-import { Interpretation, Interpreter, Compiler, Factor, Dictionary } from 'xor4-interpreter';
+import { Interpretation, Interpreter, Compiler, Factor, Dictionary, IExecutionAgent } from 'xor4-interpreter';
 import { debug, Queue, Stack } from 'xor4-lib';
 import { IAction } from '../lib/actions.v2';
 
@@ -22,8 +22,8 @@ export class Mind {
     this.interpreter = new Interpreter(compiler, this.stack);
   }
 
-  interpret(line: string): Interpretation | Error {
-    const result = this.interpreter.interpret(line, this.queue);
+  interpret(agent: IExecutionAgent, line: string): Interpretation | Error {
+    const result = this.interpreter.interpret(line, this.queue, agent);
 
     debug(`interpret(${line}):`, result);
 

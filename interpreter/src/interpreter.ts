@@ -5,8 +5,8 @@
 
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
-import { Compiler, Dictionary } from './compiler';
-import { Factor, Term } from './types';
+import { Compiler } from './compiler';
+import { Factor, IExecutionAgent, IExecutionArguments, Term } from './types';
 
 export class Interpretation {
   public term: Term;
@@ -16,13 +16,13 @@ export class Interpretation {
     this.term = term;
   }
 
-  run(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary): Interpretation | Error {
+  run({ stack, queue, dict, agent }: IExecutionArguments): Interpretation | Error {
     this.stack = stack;
     for (let i = 0; i < this.term.length; i++) {
       const factor = this.term[i];
       try {
         factor.validate(stack);
-        factor.execute(stack, queue, dict);
+        factor.execute({ stack, queue, dict, agent });
       } catch (err) {
         return err as Error;
       }
@@ -41,7 +41,7 @@ export class Interpreter {
     this.stack = stack || new Stack();
   }
 
-  interpret(line: string, queue: Queue<any>): Interpretation | Error {
+  interpret(line: string, queue: Queue<any>, agent: IExecutionAgent): Interpretation | Error {
     let term;
 
     try {
@@ -51,7 +51,12 @@ export class Interpreter {
     }
 
     const interpretation = new Interpretation(term);
-    const result = interpretation.run(this.stack, queue, this.compiler.dict);
+    const result = interpretation.run({
+      queue,
+      agent,
+      stack: this.stack,
+      dict: this.compiler.dict,
+    });
 
     return result;
   }

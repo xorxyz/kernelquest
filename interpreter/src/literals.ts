@@ -3,9 +3,9 @@ import { Factor, Literal, Term } from './types';
 
 // () -> Truth
 export class LiteralTruth extends Literal {
-  value: Boolean = true;
+  value: boolean = true;
   type = 'truth';
-  constructor(value: Boolean) {
+  constructor(value: boolean) {
     super(String(value), value);
   }
 }
@@ -16,6 +16,7 @@ const f = new LiteralTruth(false);
 // () -> Number
 export class LiteralNumber extends Literal {
   type = 'number';
+  declare value: number;
   constructor(n: number) {
     super(String(n), n);
   }
@@ -24,6 +25,7 @@ export class LiteralNumber extends Literal {
 // () -> String
 export class LiteralString extends Literal {
   type = 'string';
+  declare value: string;
   constructor(str: string) {
     super(`${str}`, str);
   }

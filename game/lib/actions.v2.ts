@@ -1,17 +1,18 @@
 import { Interpretation } from 'xor4-interpreter';
 import { debug, Vector } from 'xor4-lib';
-import { Agent, Area, Engine, Foe, Glyph, Hero, Thing, World } from '../src';
-import { Bug } from './agents';
+import {
+  Agent, AgentTypeName, Area, BodyTypeName, Engine, Foe, Glyph, Hero, Thing, World,
+} from '../src';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
 
 export type ValidActions = (
   'save' | 'load' |
   'noop' | 'wait' |
-  'rotate' | 'face' | 'step' | 'goto' |
+  'rotate' | 'face' | 'step' | 'backstep' | 'goto' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
-  'exec' | 'create'
+  'exec' | 'create' | 'spawn'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -73,10 +74,14 @@ export const wait: IActionDefinition<{ duration: number }> = {
   },
 };
 
-export const rotate: IActionDefinition<{}> = {
+export const rotate: IActionDefinition<{ direction: string }> = {
   cost: 0,
-  perform({ agent, area }) {
-    agent.facing.direction.rotate();
+  perform({ agent, area }, { direction }) {
+    if (direction === 'left') {
+      agent.facing.direction.rotateLeft();
+    } else {
+      agent.facing.direction.rotateRight();
+    }
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
@@ -129,6 +134,48 @@ export const step: IActionDefinition<{}> = {
       area.cellAt(agent.position)?.take();
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
+      agent.facing.cell = area.cellAt(agent.isLookingAt);
+      return succeed('');
+    }
+
+    return fail('');
+  },
+};
+
+export const backstep: IActionDefinition<{}> = {
+  cost: 0,
+  perform({ agent, area }) {
+    const oppositeDirection = agent.facing.direction.clone().rotateRight().rotateRight();
+    const target = area.cellAt(agent.position.clone().add(oppositeDirection.value));
+
+    if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
+      agent.hp.decrease(1);
+      if (agent.hp.value === 0) {
+        // TODO: Handle death of agent
+      } else {
+        agent.velocity.sub(agent.facing.direction.value);
+      }
+      return fail('');
+    }
+
+    if (agent.type instanceof Foe &&
+      target?.slot instanceof Agent &&
+      target.slot.type instanceof Hero) {
+      if (target.slot.isAlive) {
+        target.slot.hp.decrease(1);
+        if (target.slot.hp.value === 0) {
+          target.slot.type.glyph = new Glyph('☠️ ');
+        } else {
+          target.slot.velocity.add(agent.facing.direction.value);
+        }
+        return succeed('');
+      }
+    }
+
+    if (target && (!target.isBlocked)) {
+      area.cellAt(agent.position)?.take();
+      target.put(agent);
+      agent.position.sub(agent.facing.direction.value);
       agent.facing.cell = area.cellAt(agent.isLookingAt);
       return succeed('');
     }
@@ -275,7 +322,7 @@ export const rm: IActionDefinition<{ x: number, y: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-    const result = agent.mind.interpret(text);
+    const result = agent.mind.interpret(agent, text);
 
     if (result instanceof Error) {
       debug('result.message', result.message);
@@ -290,12 +337,23 @@ export const exec: IActionDefinition<{ text: string }> = {
   },
 };
 
-export const create: IActionDefinition<{ name: string }> = {
+export const create: IActionDefinition<{ thingName: BodyTypeName, x: number, y: number }> = {
   cost: 0,
-  perform({ world, agent, area }) {
-    const bug = world.spawn('bug', area, agent.isLookingAt.clone());
-    bug.name = 'bug';
-    return succeed('');
+  perform({ world, area }, { thingName, x, y }) {
+    console.log('name:', thingName);
+    const thing = world.create(thingName, area, new Vector(x, y));
+
+    return succeed(`Created a ${thingName} at ${thing.position.label}`);
+  },
+};
+
+export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
+  cost: 0,
+  perform({ world, area }, { agentName, x, y }) {
+    console.log('name:', agentName);
+    const newAgent = world.spawn(agentName, area, new Vector(x, y));
+
+    return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
   },
 };
 
@@ -307,6 +365,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   rotate,
   face,
   step,
+  backstep,
   goto,
   ls,
   look,
@@ -316,6 +375,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   rm,
   exec,
   create,
+  spawn,
 };
 
 export function succeed(msg: string): IActionResult {

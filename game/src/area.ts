@@ -155,13 +155,13 @@ export class Area {
   getCellNeighbours(cell: Cell, direction: Direction): Array<Cell | null> {
     return [
       this.cellAt(cell.position.clone().add(direction.value)),
-      this.cellAt(cell.position.clone().add(direction.rotate().value)),
-      this.cellAt(cell.position.clone().add(direction.rotate().value)),
-      this.cellAt(cell.position.clone().add(direction.rotate().value)),
-    ];
+      this.cellAt(cell.position.clone().add(direction.rotateRight().value)),
+      this.cellAt(cell.position.clone().add(direction.rotateRight().value)),
+      this.cellAt(cell.position.clone().add(direction.rotateRight().value)),
+    ].filter((x) => x);
   }
 
-  findAgentsWithCell(cell: Cell): Array<Agent> {
+  findAgentsFacingCell(cell: Cell): Array<Agent> {
     return Array.from(this.agents).filter((agent) => agent.facing.cell === cell);
   }
 

@@ -1,7 +1,7 @@
 import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from 'xor4-interpreter';
 
 /** @category Words */
-const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
+const goto = new Combinator(['goto'], ['ref'], async ({ stack, queue }) => {
   const ref = stack.pop() as LiteralRef;
 
   queue?.add({
@@ -11,7 +11,7 @@ const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
 });
 
 // /** @category Words */
-// const create = new Combinator(['create'], ['string'], async (stack, queue) => {
+// const create = new Combinator(['create'], ['string'], async ({stack, queue}) => {
 //   const program = stack.pop() as LiteralString;
 
 //   queue?.add({
@@ -21,7 +21,7 @@ const goto = new Combinator(['goto'], ['ref'], async (stack, queue) => {
 // });
 
 /** @category Words */
-const look = new Combinator(['look'], ['ref'], async (stack, queue) => {
+const look = new Combinator(['look'], ['ref'], async ({ stack, queue }) => {
   const ref = stack.pop() as LiteralRef;
 
   queue?.items.unshift({
@@ -31,12 +31,12 @@ const look = new Combinator(['look'], ['ref'], async (stack, queue) => {
 });
 
 /** @category Words */
-const ls = new Combinator(['ls'], [], async (stack, queue) => {
+const ls = new Combinator(['ls'], [], async ({ stack, queue }) => {
   queue?.items.unshift({ name: 'ls' });
 });
 
 /** @category Words */
-const mv = new Combinator(['mv'], ['ref', 'ref'], async (stack, queue) => {
+const mv = new Combinator(['mv'], ['ref', 'ref'], async ({ stack, queue }) => {
   const a = stack.pop() as LiteralRef;
   const b = stack.pop() as LiteralRef;
   queue?.items.unshift({
@@ -51,7 +51,7 @@ const mv = new Combinator(['mv'], ['ref', 'ref'], async (stack, queue) => {
 });
 
 /** @category Words */
-const rm = new Combinator(['rm'], ['ref'], async (stack, queue) => {
+const rm = new Combinator(['rm'], ['ref'], async ({ stack, queue }) => {
   const ref = stack.pop() as LiteralRef;
   queue?.items.unshift({
     name: 'rm',
@@ -59,25 +59,32 @@ const rm = new Combinator(['rm'], ['ref'], async (stack, queue) => {
   });
 });
 
-/** @category Words */
-const spawn = new Combinator(['spawn'], [], async (stack, queue) => {
-  // queue?.items.unshift(new SpawnAction(new Spirit()));
-});
-
-const create = new Combinator(['create'], [], async (stack, queue) => {
+const create = new Combinator(['create'], ['any'], async ({ stack, queue, agent }) => {
+  const str = stack.pop() as LiteralString;
+  const { x, y } = agent.cursorPosition;
   queue?.add({
     name: 'create',
+    args: { thingName: str.lexeme, x, y },
+  });
+});
+
+const spawn = new Combinator(['spawn'], ['any'], async ({ stack, queue, agent }) => {
+  const str = stack.pop() as LiteralString;
+  const { x, y } = agent.cursorPosition;
+  queue?.add({
+    name: 'spawn',
+    args: { agentName: str.lexeme, x, y },
   });
 });
 
 // /** @category Words */
-// const search = new Combinator(['search'], ['string'], async (stack, queue) => {
+// const search = new Combinator(['search'], ['string'], async ({stack, queue}) => {
 //   const str = stack.pop() as LiteralString;
 //   queue?.items.unshift(new SearchAction(str.value));
 // });
 
 // /** @category Words */
-// const save = new Combinator(['save'], [], async (stack, queue) => {
+// const save = new Combinator(['save'], [], async ({stack, queue}) => {
 //   queue?.items.unshift(new SaveAction());
 // });
 
@@ -89,7 +96,7 @@ const create = new Combinator(['create'], [], async (stack, queue) => {
 // });
 
 /** @category Words */
-export const define = new Operator(['define'], ['string', 'quotation'], (stack, queue, dict) => {
+export const define = new Operator(['define'], ['string', 'quotation'], ({ stack, queue, dict }) => {
   const program = stack.pop() as Quotation;
   const name = stack.pop() as LiteralString;
 

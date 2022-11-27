@@ -38,14 +38,19 @@ export class Direction {
     return this.ring.value;
   }
 
-  rotate() {
+  rotateRight() {
     this.ring.next();
+    return this;
+  }
+
+  rotateLeft() {
+    this.ring.prev();
     return this;
   }
 
   rotateUntil(direction: North | East | South | West | Vector) {
     while (!this.ring.value.equals(direction)) {
-      this.rotate();
+      this.rotateRight();
     }
   }
 

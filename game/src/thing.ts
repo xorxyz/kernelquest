@@ -33,6 +33,16 @@ export abstract class Body {
     return `${this.type.glyph.value} ${this.name}`;
   }
 
+  abstract render()
+}
+
+export interface IThing extends IBody {}
+
+/** @category Thing */
+export class Thing extends Body {
+  public owner: Body | null = null;
+  public value: string;
+
   render() {
     let { style } = this.type;
 
@@ -43,14 +53,6 @@ export abstract class Body {
 
     return style + this.type.glyph.value + esc(Style.Reset);
   }
-}
-
-export interface IThing extends IBody {}
-
-/** @category Thing */
-export class Thing extends Body {
-  public owner: Body | null = null;
-  public value: string;
 
   renderStyle() {
     if (!this.owner && !this.type.style) {

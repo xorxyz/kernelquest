@@ -1,8 +1,8 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from 'xor4-lib';
-import { Dictionary } from 'xor4-interpreter';
+import { Dictionary, IExecutionAgent } from 'xor4-interpreter';
 import { Body, BodyType, Thing } from './thing';
 import { Cell } from './cell';
 import { Mind } from './mind';
@@ -69,15 +69,15 @@ export interface AgentLog {
 }
 
 /** @category Agent */
-export class Agent extends Body {
+export class Agent extends Body implements IExecutionAgent {
   public name: string = 'anon';
   declare public type: AgentType;
   public mind: Mind;
   public hand: Agent | Thing | null = null;
   public eyes: Agent | Thing | null = null;
-  public hp = new HP();
-  public sp = new SP();
-  public mp = new MP();
+  public hp = new HP(10);
+  public sp = new SP(0, 10);
+  public mp = new MP(10);
   public gp = new GP();
   public flashing: boolean = true;
   public isWaitingUntil: null | number = null;
@@ -114,8 +114,14 @@ export class Agent extends Body {
     this.logs.push(log);
   }
 
+  render() {
+    const glyph = this.hp.value > 0 ? this.type.glyph.value : '💀';
+
+    return this.renderStyle() + glyph + esc(Style.Reset);
+  }
+
   renderStyle() {
-    return this.type.style || null;
+    return this.type.style || '';
   }
 
   get level() { return 1; }

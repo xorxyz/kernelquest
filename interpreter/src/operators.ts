@@ -1,11 +1,7 @@
 import { Stack } from 'xor4-lib/stack';
-import { Queue } from 'xor4-lib/queue';
 import { debug } from 'xor4-lib/logging';
-import { Factor, Literal } from './types';
+import { ExecuteFn, Factor, Literal } from './types';
 import { LiteralNumber, LiteralString } from './literals';
-import { Dictionary } from './compiler';
-
-export type ExecuteFn = (stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary) => void
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -50,15 +46,15 @@ export class Operator extends Factor {
   }
 }
 
-export const sum = new Operator(['+', 'sum', 'add'], ['number', 'number'], (stack) => {
-  const [b] = stack.popN(1);
-  const [a] = stack.popN(1);
-  const result = (a as LiteralNumber).value + (b as LiteralNumber).value;
+export const sum = new Operator(['+', 'sum', 'add'], ['number', 'number'], ({ stack }) => {
+  const b = stack.pop() as LiteralNumber;
+  const a = stack.pop() as LiteralNumber;
+  const result = a.value + b.value;
 
   stack.push(new LiteralNumber(result));
 });
 
-export const difference = new Operator(['-', 'minus'], ['number', 'number'], (stack) => {
+export const difference = new Operator(['-', 'minus'], ['number', 'number'], ({ stack }) => {
   const [b] = stack.popN(1);
   const [a] = stack.popN(1);
   const result = (a as LiteralNumber).value - (b as LiteralNumber).value;
@@ -66,7 +62,7 @@ export const difference = new Operator(['-', 'minus'], ['number', 'number'], (st
   stack.push(new LiteralNumber(result));
 });
 
-export const product = new Operator(['*', 'mul'], ['number', 'number'], (stack) => {
+export const product = new Operator(['*', 'mul'], ['number', 'number'], ({ stack }) => {
   const [b] = stack.popN(1);
   const [a] = stack.popN(1);
   const result = (a as LiteralNumber).value * (b as LiteralNumber).value;
@@ -74,7 +70,7 @@ export const product = new Operator(['*', 'mul'], ['number', 'number'], (stack) 
   stack.push(new LiteralNumber(result));
 });
 
-export const division = new Operator(['/', 'quotient'], ['number', 'number'], (stack) => {
+export const division = new Operator(['/', 'quotient'], ['number', 'number'], ({ stack }) => {
   const [b] = stack.popN(1);
   const [a] = stack.popN(1);
   const result = (a as LiteralNumber).value / (b as LiteralNumber).value;
@@ -82,7 +78,7 @@ export const division = new Operator(['/', 'quotient'], ['number', 'number'], (s
   stack.push(new LiteralNumber(result));
 });
 
-export const dup = new Operator(['dup'], ['any'], (stack) => {
+export const dup = new Operator(['dup'], ['any'], ({ stack }) => {
   const a = stack.pop();
 
   if (!a) return;
@@ -91,7 +87,7 @@ export const dup = new Operator(['dup'], ['any'], (stack) => {
   stack.push(a);
 });
 
-export const swap = new Operator(['swap'], ['any', 'any'], (stack) => {
+export const swap = new Operator(['swap'], ['any', 'any'], ({ stack }) => {
   const a = stack.pop();
   const b = stack.pop();
 
@@ -101,22 +97,22 @@ export const swap = new Operator(['swap'], ['any', 'any'], (stack) => {
   stack.push(b);
 });
 
-export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], (stack) => {
+export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], ({ stack }) => {
   stack.pop();
 });
 
-export const cat = new Operator(['cat'], ['string', 'string'], (stack) => {
+export const cat = new Operator(['cat'], ['string', 'string'], ({ stack }) => {
   const b = stack.pop() as LiteralString;
   const a = stack.pop() as LiteralString;
 
   stack.push(new LiteralString(a.value + b.value));
 });
 
-export const clear = new Operator(['clear'], [], (stack) => {
+export const clear = new Operator(['clear'], [], ({ stack }) => {
   stack.popN(stack.length);
 });
 
-export const typeOf = new Operator(['typeof'], ['any'], (stack) => {
+export const typeOf = new Operator(['typeof'], ['any'], ({ stack }) => {
   const a = stack.pop();
 
   if (a) {

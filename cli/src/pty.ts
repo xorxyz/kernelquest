@@ -194,11 +194,17 @@ export class VirtualTerminal {
       case (Keys.LOWER_G):
         action = { name: 'get' };
         break;
-      case (Keys.LOWER_R):
-        action = { name: 'rotate' };
+      case (Keys.LOWER_D):
+        action = { name: 'rotate', args: { direction: 'right' } };
+        break;
+      case (Keys.LOWER_A):
+        action = { name: 'rotate', args: { direction: 'left' } };
+        break;
+      case (Keys.LOWER_W):
+        action = { name: 'step' };
         break;
       case (Keys.LOWER_S):
-        action = { name: 'step' };
+        action = { name: 'backstep' };
         break;
       case (Keys.SPACE):
         action = {

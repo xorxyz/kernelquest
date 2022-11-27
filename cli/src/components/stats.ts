@@ -22,13 +22,13 @@ export class Stats extends UiComponent {
   render({ agent }: VirtualTerminal) {
     return [
       '┌───────────────────┐',
-      '│ level: 1          │',
-      '│ experience: 0     │',
-      `│ gold: ${String(agent.gp.value).padEnd(12, ' ')}│`,
+      '│ Level: 1          │',
+      '│ Experience: 0     │',
+      `│ Gold: ${String(agent.gp.value).padEnd(12, ' ')}│`,
       '│                   │',
-      `│ health:  ${Hp(agent.hp.value)}│`,
-      `│ stamina: ${Sp(agent.sp.value)}│`,
-      `│ magic:   ${Mp(agent.mp.value)}│`,
+      `│ Health:  ${Hp(agent.hp.value)}│`,
+      `│ Stamina: ${Sp(agent.sp.value)}│`,
+      `│ Magic:   ${Mp(agent.mp.value)}│`,
       '│                   │',
       `${'└'.padEnd(20, '─')}┘`,
     ];

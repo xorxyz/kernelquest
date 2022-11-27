@@ -46,6 +46,7 @@ export const Keys = {
   BACKSPACE: '7f',
   TAB: '09',
   SPACE: '20',
+  LOWER_A: '61',
   LOWER_B: '62',
   LOWER_D: '64',
   LOWER_G: '67',

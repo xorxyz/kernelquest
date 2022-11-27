@@ -77,7 +77,7 @@ export class Cell {
   }
 
   render(ctx: Area) {
-    if ((ctx.findAgentsWithCell(this).filter((agent) => agent.isAlive).length)) {
+    if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)) {
       return esc(Colors.Bg.Cyan) +
       esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || Glyph.Empty) + esc(Style.Reset);
     }

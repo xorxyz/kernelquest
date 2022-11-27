@@ -77,10 +77,12 @@ export class Engine {
     this.cycle++;
 
     this.world.agents.forEach((agent: Agent) => {
-      const area = this.world.find(agent);
-      if (!area) return;
-      this.processTurn(area, agent);
-      this.applyVelocity(area, agent);
+      if (agent.hp.value > 0) {
+        const area = this.world.find(agent);
+        if (!area) return;
+        this.processTurn(area, agent);
+        this.applyVelocity(area, agent);
+      }
     });
 
     this.events.emit('end-turn');

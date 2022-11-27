@@ -1,9 +1,10 @@
 import { Stack, Vector } from 'xor4-lib';
 import { Area } from './area';
-import { Thing } from './thing';
+import { BodyType, Thing, Wall } from './thing';
 import { Agent, AgentType, Hero, IFacing } from './agent';
 import { Bug, King } from '../lib/agents';
 import words from '../lib/words';
+import { Tree } from '../lib';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -18,10 +19,16 @@ export interface Position {
 }
 
 export type AgentTypeName = 'king' | 'bug'
+export type BodyTypeName = 'tree' | 'wall'
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   king: King,
   bug: Bug,
+};
+
+export const BodyTypeDict: Record<BodyTypeName, new () => BodyType> = {
+  tree: Tree,
+  wall: Wall,
 };
 
 /** @category World */
@@ -47,6 +54,15 @@ export class World {
     this.agents.add(agent);
     area.put(agent, position);
     return agent;
+  }
+
+  create(bodyType: BodyTypeName, area: Area, position?: Vector) {
+    const BodyTypeCtor = BodyTypeDict[bodyType];
+    console.log(bodyType, bodyType, 'ctor', BodyTypeCtor);
+    const thing = new Thing(this.counter++, new BodyTypeCtor());
+    this.things.add(thing);
+    area.put(thing, position);
+    return thing;
   }
 
   find(agent: Agent): Area | null {

@@ -12,6 +12,15 @@ export class Tree extends BodyType {
 }
 
 /** @category Things */
+export class Wall extends BodyType {
+  name = 'wall';
+  glyph = new Glyph('##');
+  style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
+  isStatic = false;
+  isBlocking = true;
+}
+
+/** @category Things */
 export class Grass extends BodyType {
   name = 'grass';
   glyph = new Glyph(',,');
@@ -61,3 +70,7 @@ export class Book extends BodyType {
   name = 'book';
   glyph = new Glyph('📕');
 }
+
+export const thingDict = {
+  tree: Tree,
+};

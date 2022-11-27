@@ -1,9 +1,23 @@
 /* eslint-disable no-underscore-dangle */
+import { Vector } from 'xor4-lib';
 import { Queue } from 'xor4-lib/queue';
 import { Stack } from 'xor4-lib/stack';
 import { Dictionary } from './compiler';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
+
+export interface IExecutionAgent {
+  cursorPosition: Vector
+}
+
+export interface IExecutionArguments {
+  stack: Stack<Factor>,
+  queue?: Queue<any>,
+  dict?: Dictionary,
+  agent: IExecutionAgent
+}
+
+export type ExecuteFn = (args: IExecutionArguments) => void
 
 export abstract class Factor {
   type: string;
@@ -14,13 +28,13 @@ export abstract class Factor {
   }
 
   abstract validate(stack: Stack<Factor>)
-  abstract execute(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary)
+  abstract execute(args: IExecutionArguments)
   abstract toString (): string
   _validate(stack: Stack<Factor>) {
     this.validate(stack);
   }
-  _execute(stack: Stack<Factor>, queue?: Queue<any>, dict?: Dictionary) {
-    this.execute(stack, queue, dict);
+  _execute(args: IExecutionArguments) {
+    this.execute(args);
   }
 }
 
@@ -41,7 +55,7 @@ export class Literal extends Factor {
     return true;
   }
 
-  execute(stack: Stack<Factor>) {
+  execute({ stack }) {
     stack.push(this);
   }
 }

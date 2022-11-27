@@ -205,8 +205,13 @@ export const takeN = (n: number) => (a) => a.reduce((arr, x, i1) => {
 }, [[]]);
 
 export abstract class Points {
-  value: number = 10;
-  cap: number = 10;
+  value: number;
+  cap: number;
+
+  constructor(value?: number, cap?: number) {
+    this.value = value || 0;
+    this.cap = cap || Infinity;
+  }
 
   increase(amount: number) {
     this.value = Math.min(this.value + amount, this.cap);
@@ -233,6 +238,15 @@ export class Ring<T> {
     this.current = arr[0];
   }
   get value() {
+    return this.current;
+  }
+  prev() {
+    const index = this.values.findIndex((x) => x === this.current);
+    const y = this.values[index - 1];
+    this.current = y === undefined
+      ? this.values[this.values.length - 1]
+      : y;
+
     return this.current;
   }
   next() {
