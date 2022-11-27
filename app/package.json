@@ -19,11 +19,7 @@
     "twemoji": "^13.1.0",
     "vue": "^3.2.26",
     "vue-router": "^4.0.12",
-    "xor4-cli": "0.0.0",
     "xor4-game": "0.0.0",
-    "xor4-interpreter": "0.0.0",
-    "xor4-levels": "0.0.0",
-    "xor4-lib": "0.0.0",
     "xterm": "^4.15.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0"

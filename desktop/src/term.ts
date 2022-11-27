@@ -1,5 +1,5 @@
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'xor4-cli';
-import { Unicode14Addon } from 'xor4-cli/vendor/unicode14';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'xor4-game/src/ui';
+import { Unicode14Addon } from 'xor4-game/vendor/unicode14';
 import { Terminal } from 'xterm';
 
 export const term = new Terminal({

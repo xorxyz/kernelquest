@@ -1,7 +1,7 @@
 import './index.css';
 import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
-import { Engine } from 'xor4-game';
+import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
 import { term } from './term';
 

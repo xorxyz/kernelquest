@@ -6,22 +6,13 @@
   "main": "./app/src/script.ts",
   "workspaces": [
     "app",
-    "cli",
     "desktop",
     "game",
-    "interpreter",
-    "levels",
-    "lib",
-    "server",
     "www"
   ],
   "alias": {
     "xor4-app": "./app",
-    "xor4-cli": "./cli",
     "xor4-game": "./game",
-    "xor4-interpreter": "./interpreter",
-    "xor4-lib": "./lib",
-    "xor4-server": "./server",
     "xor4-www": "./www"
   },
   "scripts": {
@@ -31,10 +22,7 @@
     "build": "parcel build",
     "postbuild": "cp -r app/public/.well-known dist/",
     "test": "run-s lint tests:* && echo 'All tests ran successfully'",
-    "tests:cli": "cd cli && npm run test",
-    "tests:game": "cd game && npm run test",
-    "tests:interpreter": "cd interpreter && npm run test",
-    "tests:lib": "cd lib && npm run test"
+    "tests:game": "cd game && npm run test"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
