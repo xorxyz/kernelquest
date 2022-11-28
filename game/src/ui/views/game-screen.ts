@@ -1,5 +1,7 @@
 import { UiComponent } from '../component';
-import { Axis, Header, Input, Message, Output, RoomMap, Sidebar, Stats } from '../components';
+import {
+  Axis, Header, Input, Message, Output, RoomMap, Sidebar, Stats,
+} from '../components';
 import { Navbar } from '../components/navbar';
 import { StackPane } from '../components/stack';
 import { View } from '../view';
@@ -21,5 +23,7 @@ export class GameScreen extends View {
     navbar: new Navbar(0, 1),
   };
 
-  handleInput() {}
+  handleInput() {
+    throw new Error('Not implemented');
+  }
 }

@@ -10,7 +10,7 @@ export class Vector {
     return `${this.x} ${this.y}`;
   }
 
-  constructor(x: number = 0, y: number = 0) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
@@ -166,9 +166,8 @@ export const ArrN = (n) => Array(n).fill(0);
 export type a = () => boolean
 
 /** creates a Matrix<T> out of a thunk */
-export const matrixOf = (w: number, h: number, fn) =>
-  ArrN(h).map((rows, y) =>
-    ArrN(w).map((row, x) => fn(x, y)));
+export const matrixOf = (w: number, h: number, fn) => ArrN(h)
+  .map((_, y) => ArrN(w).map((__, x) => fn(x, y)));
 
 export function coinFlip() {
   return Math.floor(Math.random() * 2) === 0
@@ -186,14 +185,13 @@ export function getRandomInt(min, max) {
 }
 
 export function isNumeric(str: string) {
-  // eslint-disable-next-line no-restricted-globals
-  return !isNaN(str as any) && !isNaN(parseFloat(str));
+  return !Number.isNaN(str) && !Number.isNaN(parseFloat(str));
 }
 
 export type TakeN<T> = (arr: Array<T>) => Array<Array<T>>
 
 /** [ 1, 2, 3, 4 ] -> [[ 1, 2 ],[ 3, 4 ]] */
-export const takeN = (n: number) => (a) => a.reduce((arr, x, i1) => {
+export const takeN = (n: number) => (m) => m.reduce((arr, x, i1) => {
   const i2 = i1 % n;
   if (i2 === 0) {
     arr.push([]);

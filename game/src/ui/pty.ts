@@ -1,12 +1,17 @@
 import EventEmitter from 'events';
-import { IAction, Agent, Engine, SendFn } from '../engine';
-import { Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug } from '../shared';
+import {
+  IAction, Agent, Engine, SendFn,
+} from '../engine';
+import {
+  Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug,
+} from '../shared';
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
 import { Navbar } from './components/navbar';
+
 /** @category PTY */
 export interface IVirtalTerminalState {
   termMode: boolean
@@ -23,7 +28,7 @@ export class VirtualTerminal {
   public state: IVirtalTerminalState;
   public lineEditor: Editor = new Editor();
   public view: View;
-  public send: Function;
+  public send: SendFn;
   public menuIsOpen = false;
   public engine: Engine;
 
@@ -85,7 +90,7 @@ export class VirtualTerminal {
           (this.view.components.navbar as Navbar).visible = false;
           this.clear();
         } else {
-          this.view.components.navbar.handleInput(str, this);
+          (this.view.components.navbar as Navbar).handleInput(str, this);
         }
       } else if (str === Keys.ESCAPE) {
         this.menuIsOpen = true;

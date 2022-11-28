@@ -16,12 +16,9 @@ export const CELL_WIDTH = 2;
 
 /** @category Component */
 export abstract class UiComponent {
-  handleInput(str: string, pty: VirtualTerminal) {
-    throw new Error('Method not implemented.');
-  }
   public position: Vector;
-  public style: string = '';
-  public z: number = 0;
+  public style = '';
+  public z = 0;
 
   constructor(x: number, y: number, z?: number) {
     this.position = new Vector(x, y);
@@ -43,6 +40,9 @@ class EmptyComponent extends UiComponent {
   value: Array<string> = [''];
   render() {
     return this.value;
+  }
+  handleInput() {
+    throw new Error('Not implemented');
   }
 }
 

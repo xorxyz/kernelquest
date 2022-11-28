@@ -1,4 +1,6 @@
-import { Combinator, LiteralRef, LiteralString, Operator, Quotation } from '../interpreter';
+import {
+  Combinator, LiteralRef, LiteralString, Operator, Quotation,
+} from '../interpreter';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['ref'], async ({ stack, queue }) => {
@@ -31,7 +33,7 @@ const look = new Combinator(['look'], ['ref'], async ({ stack, queue }) => {
 });
 
 /** @category Words */
-const ls = new Combinator(['ls'], [], async ({ stack, queue }) => {
+const ls = new Combinator(['ls'], [], async ({ queue }) => {
   queue?.items.unshift({ name: 'ls' });
 });
 
@@ -95,19 +97,20 @@ const spawn = new Combinator(['spawn'], ['any'], async ({ stack, queue, agent })
 //   queue?.add(new CloneAction(ref));
 // });
 
-/** @category Words */
-export const define = new Operator(['define'], ['string', 'quotation'], ({ stack, queue, dict }) => {
-  const program = stack.pop() as Quotation;
-  const name = stack.pop() as LiteralString;
+// /** @category Words */
+// eslint-disable-next-line max-len
+// export const define = new Operator(['define'], ['string', 'quotation'], ({ stack, queue, dict }) => {
+//   const program = stack.pop() as Quotation;
+//   const name = stack.pop() as LiteralString;
 
-  if (dict) {
-    console.log(dict);
-    dict[name.value] = program;
-  } else {
-    throw new Error('Dictionary is not accessible.');
-  }
-});
+//   if (dict) {
+//     console.log(dict);
+//     dict[name.value] = program;
+//   } else {
+//     throw new Error('Dictionary is not accessible.');
+//   }
+// });
 
 export default {
-  goto, look, ls, mv, rm, spawn, create, define,
+  goto, look, ls, mv, rm, spawn, create,
 };

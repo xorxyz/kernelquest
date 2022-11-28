@@ -12,6 +12,6 @@ export class DeathScreen extends View {
   };
 
   handleInput() {
-
+    throw new Error('Not implemented');
   }
 }

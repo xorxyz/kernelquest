@@ -1,0 +1,38 @@
+{
+  "root": true,
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import",
+    "@typescript-eslint"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["."],
+        "extensions": [".ts"]
+      }
+    }
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "no-use-before-define": "off",
+    "import/extensions": "off",
+    "lines-between-class-members": "off",
+    "import/prefer-default-export": "off",
+    "no-plusplus": "off",
+    "max-classes-per-file": "off",
+    "class-methods-use-this": "off"
+  }
+}

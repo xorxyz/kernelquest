@@ -1,4 +1,4 @@
-import { IAction } from './engine/actions';
+import { IAction } from './actions';
 
 export interface HistoryEvent {
   tick: number,

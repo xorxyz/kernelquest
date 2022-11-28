@@ -1,4 +1,6 @@
-import { Colors, esc, Style, Vector } from '../shared';
+import {
+  Colors, esc, Style, Vector,
+} from '../shared';
 import { Glyph } from './cell';
 
 /** @category Thing */
@@ -10,8 +12,6 @@ export abstract class BodyType {
   readonly isStatic: boolean = false;
   readonly isBlocking: boolean = true;
 }
-
-export interface IBody {}
 
 /** @category Thing */
 export abstract class Body {
@@ -35,8 +35,6 @@ export abstract class Body {
 
   abstract render()
 }
-
-export interface IThing extends IBody {}
 
 /** @category Thing */
 export class Thing extends Body {

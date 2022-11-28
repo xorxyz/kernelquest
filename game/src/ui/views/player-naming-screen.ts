@@ -1,5 +1,5 @@
 import { Cursor, esc, Keys } from '../../shared';
-import { SaveGameId } from '../../io';
+import { SaveGameId } from '../../engine/io';
 import { UiComponent } from '../component';
 import { Editor } from '../editor';
 import { VirtualTerminal } from '../pty';
@@ -7,6 +7,9 @@ import { View } from '../view';
 import { PlayerSelectScreen } from './player-select-screen';
 
 class MessageBoxComponent extends UiComponent {
+  handleInput() {
+    throw new Error('Not implemented');
+  }
   render() {
     return [
       '┌────────────────────────────────────┐',
@@ -21,6 +24,9 @@ class MessageBoxComponent extends UiComponent {
 }
 
 class InputComponent extends UiComponent {
+  handleInput() {
+    throw new Error('Not implemented');
+  }
   value = '';
   editor = new Editor();
   render(): string[] {

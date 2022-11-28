@@ -5,8 +5,10 @@ import { VirtualTerminal } from '../ui';
 import { World } from './world';
 import { Area } from './area';
 import { Agent } from './agent';
-import { actions, fail, IAction, IActionDefinition, IActionResult } from './actions';
-import { HistoryEvent, SaveGameDict, SaveGameId } from '../io';
+import {
+  actions, fail, IAction, IActionDefinition, IActionResult,
+} from './actions';
+import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 
 export type SendFn = (str: string) => void
 
@@ -20,9 +22,9 @@ export interface EngineOptions {
 /** @category Engine */
 export class Engine {
   public events = new EventEmitter();
-  public cycle: number = 0;
-  public world: World;
-  public elapsed: number = 0;
+  public cycle = 0;
+  public world = new World();
+  public elapsed = 0;
   public history: Array<HistoryEvent> = [];
   public saveGames: SaveGameDict;
   private tty: VirtualTerminal;

@@ -1,5 +1,7 @@
-import { createEmptySaveFile, SaveFileContents, SaveGameDict } from '../../io';
-import { Cursor, esc, Keys, Style } from '../../shared';
+import { createEmptySaveFile, SaveFileContents, SaveGameDict } from '../../engine/io';
+import {
+  Cursor, esc, Keys, Style,
+} from '../../shared';
 import { componentFrom, UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
 import { View } from '../view';
@@ -12,6 +14,9 @@ const MS_PER_STEP = 60;
 const MS_PER_TICK = MS_PER_STEP * 2;
 
 class PlayerSelectMenu extends UiComponent {
+  handleInput() {
+    throw new Error('Not implemented');
+  }
   selected = 0;
   options;
   saveGames: SaveGameDict;
@@ -62,8 +67,8 @@ class PlayerSelectMenu extends UiComponent {
   buildLabel(id: number, saveFile: SaveFileContents) {
     return [
       `${id + 1} `,
-      '👼 ' +
-      `${saveFile.name.padEnd(10, ' ')}`,
+      '👼 '
+      + `${saveFile.name.padEnd(10, ' ')}`,
       '          ',
       `L${String(saveFile.stats.level).padStart(2, '0')} `,
       `GPx${String(saveFile.stats.gold).padStart(3, '0')} `,

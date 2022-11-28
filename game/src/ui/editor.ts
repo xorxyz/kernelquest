@@ -5,7 +5,7 @@ import { Vector, Keys, LINE_LENGTH } from '../shared';
 
 /** @category Editor */
 export class Editor {
-  private line: string = '';
+  private line = '';
   readonly cursor: Vector = new Vector();
   private history = [] as Array<string>;
 

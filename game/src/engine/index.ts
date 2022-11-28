@@ -5,7 +5,7 @@ export * from './area';
 export * from './capabilities';
 export * from './cell';
 export * from './engine';
-export * from '../io';
+export * from './io';
 export * from './mind';
 export * from './pathfinding';
 export * from './thing';

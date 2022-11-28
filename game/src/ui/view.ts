@@ -1,4 +1,6 @@
-import { esc, Screen, Style, CLOCK_MS_DELAY } from '../shared';
+import {
+  esc, Screen, Style, CLOCK_MS_DELAY,
+} from '../shared';
 import { UiComponent } from './component';
 import { VirtualTerminal } from './pty';
 
@@ -11,8 +13,9 @@ export abstract class View {
   abstract handleInput (str: string, pty: VirtualTerminal): void
 
   compile(pty: VirtualTerminal, tick: number): string {
-    const lines = Object.values(this.components).sort((a, b) => a.z - b.z).map((component) =>
-      component.compile(pty, tick) + esc(Style.Reset));
+    const lines = Object.values(this.components)
+      .sort((a, b) => a.z - b.z)
+      .map((component) => component.compile(pty, tick) + esc(Style.Reset));
 
     const clear = pty.agent.mind.tick % CLEAR_RATE === 0
       ? esc(Screen.Clear)

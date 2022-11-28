@@ -23,7 +23,7 @@ export class Glyph {
 /** @category Cell */
 export class Cell {
   public position: Vector;
-  public slot: Agent | Thing | null;
+  public slot: Agent | Thing | null = null;
   public buffer: Agent | Thing | null = null;
 
   constructor(x: number, y: number) {
@@ -32,8 +32,8 @@ export class Cell {
 
   public get isBlocked() {
     return (
-      this.slot instanceof Agent ||
-      (this.slot instanceof Thing && this.slot.type.isBlocking)
+      this.slot instanceof Agent
+      || (this.slot instanceof Thing && this.slot.type.isBlocking)
     );
   }
 
@@ -78,18 +78,18 @@ export class Cell {
 
   render(ctx: Area) {
     if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)) {
-      return esc(Colors.Bg.Cyan) +
-      esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || Glyph.Empty) + esc(Style.Reset);
+      return esc(Colors.Bg.Cyan)
+      + esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || Glyph.Empty) + esc(Style.Reset);
     }
     return this.slot?.render() || Glyph.Empty;
   }
 
   isAdjacentTo(cell: Cell) {
     return (
-      cell.position.clone().add(NORTH).equals(this.position) ||
-      cell.position.clone().add(EAST).equals(this.position) ||
-      cell.position.clone().add(SOUTH).equals(this.position) ||
-      cell.position.clone().add(WEST).equals(this.position)
+      cell.position.clone().add(NORTH).equals(this.position)
+      || cell.position.clone().add(EAST).equals(this.position)
+      || cell.position.clone().add(SOUTH).equals(this.position)
+      || cell.position.clone().add(WEST).equals(this.position)
     );
   }
 
