@@ -1,5 +1,17 @@
-import { Rectangle, Vector, AREA_HEIGHT, AREA_WIDTH, Colors, esc, Style, Direction } from '../shared';
-import { Agent, Cell, Wall, Door, Thing, BodyType } from '.';
+import {
+  Rectangle,
+  Vector,
+  AREA_HEIGHT,
+  AREA_WIDTH,
+  Colors,
+  esc,
+  Style,
+  Direction,
+} from '../shared';
+import { Agent } from './agent';
+import { Cell } from './cell';
+import { BodyType, Thing } from './thing';
+import { Door } from './things';
 
 /** @category Area */
 const CELL_COUNT = AREA_WIDTH * AREA_HEIGHT;

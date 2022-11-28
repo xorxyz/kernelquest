@@ -3,7 +3,12 @@ import {
   Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from '../shared';
 import { Dictionary, IExecutionAgent } from '../interpreter';
-import { Cell, Mind, Area, IAction, Capability, Body, BodyType, Thing } from '.';
+import { Capability } from './capabilities';
+import { Body, BodyType, Thing } from './thing';
+import { Cell } from './cell';
+import { Mind } from './mind';
+import { IAction } from './actions';
+import { Area } from './area';
 
 export const TERMINAL_ACTIONS = [
   'switch-mode',

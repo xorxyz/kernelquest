@@ -343,20 +343,24 @@ export const exec: IActionDefinition<{ text: string }> = {
 export const create: IActionDefinition<{ thingName: BodyTypeName, x: number, y: number }> = {
   cost: 0,
   perform({ world, area }, { thingName, x, y }) {
-    console.log('name:', thingName);
-    const thing = world.create(thingName, area, new Vector(x, y));
-
-    return succeed(`Created a ${thingName} at ${thing.position.label}`);
+    try {
+      const thing = world.create(thingName, area, new Vector(x, y));
+      return succeed(`Created a ${thingName} at ${thing.position.label}`);
+    } catch (err) {
+      return fail(`Can't create a '${thingName}'`);
+    }
   },
 };
 
 export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
   cost: 0,
   perform({ world, area }, { agentName, x, y }) {
-    console.log('name:', agentName);
-    const newAgent = world.spawn(agentName, area, new Vector(x, y));
-
-    return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
+    try {
+      const newAgent = world.spawn(agentName, area, new Vector(x, y));
+      return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
+    } catch (err) {
+      return fail(`Can't spawn a '${agentName}'`);
+    }
   },
 };
 

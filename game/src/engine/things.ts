@@ -16,7 +16,7 @@ export class Wall extends BodyType {
   name = 'wall';
   glyph = new Glyph('##');
   isStatic = true;
-  style = esc(Colors.Bg.Gray) + esc(Colors.Fg.Black);
+  style = esc(Colors.Bg.White) + esc(Colors.Fg.Black);
 }
 
 /** @category Thing */
