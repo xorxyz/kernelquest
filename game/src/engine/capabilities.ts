@@ -9,9 +9,12 @@ export abstract class Capability {
 
 /** @category Capabilities */
 export class RandomWalkCapability extends Capability {
-  bootstrap() {}
+  bootstrap() {
+
+  }
 
   run(agent: Agent, tick: number) {
+    if (agent.halted) return;
     if (agent.mind.queue.size !== 0 || tick % 10 !== 0) return;
     const n = getRandom(0, 3) as 0 | 1 | 2 | 3;
 

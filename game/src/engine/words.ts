@@ -1,5 +1,5 @@
 import {
-  Combinator, LiteralRef, LiteralString, Operator, Quotation,
+  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 
 /** @category Words */
@@ -79,6 +79,24 @@ const spawn = new Combinator(['spawn'], ['any'], async ({ stack, queue, agent })
   });
 });
 
+const tell = new Operator(['tell'], ['number', 'string'], async ({ stack, queue, agent }) => {
+  const message = stack.pop() as LiteralString;
+  const agentId = stack.pop() as LiteralNumber;
+  queue?.add({
+    name: 'tell',
+    args: {
+      agentId: agentId.value,
+      message: message.value,
+    },
+  });
+});
+
+const halt = new Operator(['halt'], [], async ({ queue }) => {
+  queue?.add({
+    name: 'halt',
+  });
+});
+
 // /** @category Words */
 // const search = new Combinator(['search'], ['string'], async ({stack, queue}) => {
 //   const str = stack.pop() as LiteralString;
@@ -112,5 +130,5 @@ const spawn = new Combinator(['spawn'], ['any'], async ({ stack, queue, agent })
 // });
 
 export default {
-  goto, look, ls, mv, rm, spawn, create,
+  goto, look, ls, mv, rm, spawn, create, tell, halt,
 };

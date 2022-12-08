@@ -5,7 +5,9 @@
 
 import { Queue, Stack } from '../shared';
 import { Compiler } from './compiler';
-import { Factor, IExecutionAgent, IExecutionArguments, Term } from './types';
+import {
+  Factor, IExecutionAgent, IExecutionArguments, Term,
+} from './types';
 
 export class Interpretation {
   public term: Term;
@@ -15,13 +17,13 @@ export class Interpretation {
     this.term = term;
   }
 
-  run({ stack, queue, dict, agent }: IExecutionArguments): Interpretation | Error {
-    this.stack = stack;
+  run(execArgs: IExecutionArguments): Interpretation | Error {
+    this.stack = execArgs.stack;
     for (let i = 0; i < this.term.length; i++) {
       const factor = this.term[i];
       try {
-        factor.validate(stack);
-        factor.execute({ stack, queue, dict, agent });
+        factor.validate(execArgs.stack);
+        factor.execute(execArgs);
       } catch (err) {
         return err as Error;
       }

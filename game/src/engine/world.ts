@@ -2,7 +2,9 @@ import { Stack, Vector } from '../shared';
 import { Area } from './area';
 import { BodyType, Thing } from './thing';
 import { Agent, AgentType, IFacing } from './agent';
-import { Bug, King } from './agents';
+import {
+  Bug, King, Man, Spirit,
+} from './agents';
 import { Tree, Wall } from './things';
 import words from './words';
 
@@ -18,12 +20,14 @@ export interface Position {
   facing: IFacing
 }
 
-export type AgentTypeName = 'king' | 'bug'
+export type AgentTypeName = 'king' | 'bug' | 'man' | 'spirit'
 export type BodyTypeName = 'tree' | 'wall'
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   king: King,
   bug: Bug,
+  man: Man,
+  spirit: Spirit,
 };
 
 export const BodyTypeDict: Record<BodyTypeName, new () => BodyType> = {
@@ -33,7 +37,7 @@ export const BodyTypeDict: Record<BodyTypeName, new () => BodyType> = {
 
 /** @category World */
 export class World {
-  public tick: number = 0;
+  public tick = 0;
   public areas: Array<Area>;
   public agents: Set<Agent> = new Set();
   public things: Set<Thing> = new Set();

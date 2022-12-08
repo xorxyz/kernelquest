@@ -29,7 +29,7 @@ export class GP extends Points {}
 
 /** @category Agent */
 export abstract class AgentType extends BodyType {
-  public weight: number = 10;
+  public weight = 10;
   public capabilities: Array<Capability> = [];
 }
 
@@ -70,7 +70,7 @@ export interface AgentLog {
 
 /** @category Agent */
 export class Agent extends Body implements IExecutionAgent {
-  public name: string = 'anon';
+  public name = 'anon';
   declare public type: AgentType;
   public mind: Mind;
   public hand: Agent | Thing | null = null;
@@ -79,16 +79,16 @@ export class Agent extends Body implements IExecutionAgent {
   public sp = new SP(0, 10);
   public mp = new MP(10);
   public gp = new GP();
-  public flashing: boolean = true;
+  public flashing = true;
   public isWaitingUntil: null | number = null;
-  public halted: boolean = false;
+  public halted = false;
   public dict = {};
   public facing: IFacing = {
     direction: new Direction(SOUTH),
     cell: null,
   };
   public cursorPosition: Vector = new Vector(0, 0);
-  public experience: number = 0;
+  public experience = 0;
   public logs: Array<AgentLog> = [
     { tick: 0, message: 'Use \'help\' for more commands.' },
     { tick: 0, message: '' },
@@ -230,5 +230,9 @@ export class Agent extends Body implements IExecutionAgent {
     if (this.sees().contains(this.cursorPosition.clone().add(direction))) {
       this.cursorPosition.add(direction);
     }
+  }
+
+  halt() {
+    this.halted = true;
   }
 }

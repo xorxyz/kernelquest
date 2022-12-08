@@ -1,4 +1,6 @@
-import { Interpretation, Interpreter, Compiler, Factor, Dictionary, IExecutionAgent } from '../interpreter';
+import {
+  Interpretation, Interpreter, Compiler, Factor, Dictionary, IExecutionAgent,
+} from '../interpreter';
 import { debug, Queue, Stack } from '../shared';
 import { IAction } from './actions';
 
@@ -10,7 +12,7 @@ export interface Observation {
 
 /** @category Mind */
 export class Mind {
-  public tick: number = 0;
+  public tick = 0;
   public memory: Array<Observation> = [];
   public queue: Queue<IAction> = new Queue<IAction>();
   public stack: Stack<Factor> = new Stack();

@@ -25,10 +25,10 @@ export class Area {
   readonly position: Vector;
   readonly timeLimit: number = 700;
 
-  public name: string = 'area';
+  public name = 'area';
 
-  public tick: number = 0;
-  public seconds: number = 0;
+  public tick = 0;
+  public seconds = 0;
 
   public flags: Set<Thing> = new Set();
   public capturedFlags: Set<Thing> = new Set();
@@ -186,11 +186,13 @@ export class Area {
     return Array.from(this.areas).some((area) => area.contains(vector));
   }
 
-  list() {
-    return [
-      ...Array.from(this.agents),
-      ...Array.from(this.things),
-      ...Array.from(this.areas),
-    ];
+  list(): Array<Agent> {
+    return [...this.agents.values()];
+  }
+
+  findAgentById(agentId: number): Agent | null {
+    const agent = [...this.agents.values()].find((a) => a.id === agentId);
+
+    return agent || null;
   }
 }

@@ -15,7 +15,8 @@ export type ValidActions = (
   'rotate' | 'face' | 'step' | 'backstep' | 'goto' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
-  'exec' | 'create' | 'spawn'
+  'exec' | 'create' | 'spawn' |
+  'tell' | 'halt'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -42,7 +43,7 @@ export interface IAction {
   args?: ActionArguments
 }
 
-export const save: IActionDefinition<{}> = {
+export const save: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ engine }) {
     engine.save();
@@ -50,7 +51,7 @@ export const save: IActionDefinition<{}> = {
   },
 };
 
-export const load: IActionDefinition<{}> = {
+export const load: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ engine }) {
     engine.load();
@@ -58,7 +59,7 @@ export const load: IActionDefinition<{}> = {
   },
 };
 
-export const noop: IActionDefinition<{}> = {
+export const noop: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform() {
     return succeed('');
@@ -119,9 +120,9 @@ export const step: IActionDefinition<{}> = {
       return fail('');
     }
 
-    if (agent.type instanceof Foe &&
-      target?.slot instanceof Agent &&
-      target.slot.type instanceof Hero) {
+    if (agent.type instanceof Foe
+      && target?.slot instanceof Agent
+      && target.slot.type instanceof Hero) {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
@@ -161,9 +162,9 @@ export const backstep: IActionDefinition<{}> = {
       return fail('');
     }
 
-    if (agent.type instanceof Foe &&
-      target?.slot instanceof Agent &&
-      target.slot.type instanceof Hero) {
+    if (agent.type instanceof Foe
+      && target?.slot instanceof Agent
+      && target.slot.type instanceof Hero) {
       if (target.slot.isAlive) {
         target.slot.hp.decrease(1);
         if (target.slot.hp.value === 0) {
@@ -212,7 +213,7 @@ export const ls: IActionDefinition<{}> = {
   cost: 0,
   perform({ area }) {
     const msg = area.list()
-      .map((x) => x.name + x.position.x + x.position.y)
+      .map((x) => `${x.type.name} #${x.id}`)
       .join(', ');
 
     return succeed(msg);
@@ -243,8 +244,8 @@ export const get: IActionDefinition<{}> = {
       return fail('You hands are full.');
     }
 
-    if (agent.facing.cell.slot instanceof Agent ||
-       (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
+    if (agent.facing.cell.slot instanceof Agent
+       || (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
       return fail('You can\'t get this.');
     }
 
@@ -290,7 +291,9 @@ export const put: IActionDefinition<{}> = {
 
 export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, toY: number}> = {
   cost: 0,
-  perform({ area }, { fromX, fromY, toX, toY }) {
+  perform({ area }, {
+    fromX, fromY, toX, toY,
+  }) {
     const fromCell = area.cellAt(new Vector(fromX, fromY));
     const toCell = area.cellAt(new Vector(toX, toY));
 
@@ -364,6 +367,33 @@ export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: 
   },
 };
 
+export const tell: IActionDefinition<{ agentId: number, message: string }> = {
+  cost: 0,
+  perform({ area }, { agentId, message }) {
+    const targetAgent = area.findAgentById(agentId);
+
+    if (!targetAgent) {
+      return fail(`Could not find an agent with id ${agentId}`);
+    }
+
+    const result = targetAgent.mind.interpret(targetAgent, message);
+
+    if (result instanceof Error) {
+      return fail(result.message);
+    }
+
+    return succeed(`Told ${targetAgent.type.name} #${targetAgent.id}: "${message}".`);
+  },
+};
+
+export const halt: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent }) {
+    agent.halt();
+    return succeed('Halted.');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -383,6 +413,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   exec,
   create,
   spawn,
+  tell,
+  halt,
 };
 
 export function succeed(msg: string): IActionResult {

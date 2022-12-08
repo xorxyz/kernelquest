@@ -1,5 +1,7 @@
 import { Colors, esc } from '../shared';
-import { AgentType, Foe, Friend, Glyph, Hero } from '.';
+import {
+  AgentType, Foe, Friend, Glyph, Hero,
+} from '.';
 import { RandomWalkCapability } from './capabilities';
 
 /** @category Agent */
@@ -16,6 +18,13 @@ export abstract class House extends AgentType {
 export class Spirit extends Hero {
   name = 'spirit';
   glyph = new Glyph('👼');
+  weight = 1;
+}
+
+/** @category Agent */
+export class Man extends Hero {
+  name = 'man';
+  glyph = new Glyph('👨');
   weight = 1;
 }
 
