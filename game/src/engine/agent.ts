@@ -2,7 +2,7 @@ import {
   Points, Rectangle,
   Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from '../shared';
-import { Dictionary, IExecutionAgent } from '../interpreter';
+import { Dictionary } from '../interpreter';
 import { Capability } from './capabilities';
 import { Body, BodyType, Thing } from './thing';
 import { Cell } from './cell';
@@ -69,7 +69,7 @@ export interface AgentLog {
 }
 
 /** @category Agent */
-export class Agent extends Body implements IExecutionAgent {
+export class Agent extends Body {
   public name = 'anon';
   declare public type: AgentType;
   public mind: Mind;

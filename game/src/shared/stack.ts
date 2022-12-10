@@ -39,10 +39,10 @@ export class Stack<T> {
 
   /** peek at the value on top of the stack */
   peek(): T | null {
-    return this[this.arr.length - 1] || null;
+    return this.arr[this.arr.length - 1] || null;
   }
 
   peekN(n: number): T | null {
-    return this[this.arr.length - 1 - n] || null;
+    return this.arr[this.arr.length - 1 - n] || null;
   }
 }

@@ -3,10 +3,11 @@
  * manipulate typescript objects with js's reflection capabilities
  */
 
-import { Queue, Stack } from '../shared';
+import { IAction } from '../engine';
+import { debug, Queue, Stack } from '../shared';
 import { Compiler } from './compiler';
 import {
-  Factor, IExecutionAgent, IExecutionArguments, Term,
+  Factor, IExecutionArguments, Term,
 } from './types';
 
 export class Interpretation {
@@ -42,7 +43,28 @@ export class Interpreter {
     this.stack = stack || new Stack();
   }
 
-  interpret(line: string, queue: Queue<any>): Interpretation | Error {
+  step(line: string, queue: Queue<IAction>) {
+    debug('interpreter.step', line);
+    const term = this.compiler.compile(line);
+    try {
+      const factor = term.shift();
+
+      if (!factor) throw new Error('Term is missing a factor');
+
+      factor.validate(this.stack);
+      factor.execute({
+        queue,
+        stack: this.stack,
+        dict: this.compiler.dict,
+      });
+
+      return term.map((t) => t.lexeme).join(' ');
+    } catch (err) {
+      return err as Error;
+    }
+  }
+
+  interpret(line: string, queue: Queue<IAction>): Interpretation | Error {
     let term;
 
     try {

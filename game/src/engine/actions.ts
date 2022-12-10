@@ -344,8 +344,17 @@ export const exec: IActionDefinition<{ text: string }> = {
     if (result instanceof Error) {
       debug('result.message', result.message);
       return fail(result.message);
-    } if (result instanceof Interpretation) {
-      result.stack.map((factor) => factor.toString()).join(' ');
+    }
+
+    if (typeof result === 'string') {
+      if (result) {
+        agent.mind.queue.add({
+          name: 'exec',
+          args: {
+            text: result,
+          },
+        });
+      }
 
       return succeed('');
     }
@@ -434,7 +443,7 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
     const cell = area.cellAt(new Vector(x, y));
 
     if (!cell || !cell.slot) {
-      agent.mind.stack.push(new LiteralTruth(false));
+      agent.mind.stack.push(new LiteralRef(0));
       return fail('');
     }
 

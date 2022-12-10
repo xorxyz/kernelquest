@@ -150,7 +150,7 @@ const operators = {};
 [
   sum, difference, product, division,
   dup, dupd, pop, popd,
-  swap, cat, clear, typeOf,
+  swap, swapd, cat, clear, typeOf,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

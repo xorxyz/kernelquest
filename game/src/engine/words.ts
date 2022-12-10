@@ -30,6 +30,16 @@ const ls = new Combinator(['ls'], [], async ({ queue }) => {
 });
 
 /** @category Words */
+const step = new Combinator(['step'], [], async ({ queue }) => {
+  queue?.items.unshift({ name: 'step' });
+});
+
+/** @category Words */
+const backstep = new Combinator(['backstep'], [], async ({ queue }) => {
+  queue?.items.unshift({ name: 'backstep' });
+});
+
+/** @category Words */
 const right = new Combinator(['right'], [], async ({ queue }) => {
   queue?.items.unshift({ name: 'right' });
 });
@@ -107,5 +117,5 @@ const point = new Operator(['point'], ['number', 'number'], async ({ stack, queu
 });
 
 export default {
-  goto, look, ls, right, left, rm, spawn, create, tell, halt, prop, point,
+  goto, look, ls, step, backstep, right, left, rm, spawn, create, tell, halt, prop, point,
 };

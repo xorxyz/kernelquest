@@ -16,16 +16,17 @@ export class Mind {
   public memory: Array<Observation> = [];
   public queue: Queue<IAction> = new Queue<IAction>();
   public stack: Stack<Factor> = new Stack();
+  private compiler: Compiler;
   private interpreter: Interpreter;
 
   constructor(words?: Dictionary) {
-    const compiler = new Compiler(words);
+    this.compiler = new Compiler(words);
 
-    this.interpreter = new Interpreter(compiler, this.stack);
+    this.interpreter = new Interpreter(this.compiler, this.stack);
   }
 
-  interpret(line: string): Interpretation | Error {
-    const result = this.interpreter.interpret(line, this.queue);
+  interpret(line: string): string | Error {
+    const result = this.interpreter.step(line, this.queue);
 
     debug(`interpret(${line}):`, result);
 

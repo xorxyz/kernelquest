@@ -4,10 +4,10 @@
 import { EventEmitter } from 'events';
 
 export class Clock extends EventEmitter {
-  paused: boolean = true;
+  paused = true;
   private stepMsDelay: number;
-  private tick: number = 0;
-  private edge: Boolean = false;
+  private tick = 0;
+  private edge = false;
   private timeoutRef;
 
   constructor(msDelay: number) {
