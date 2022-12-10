@@ -1,7 +1,9 @@
 import { debug } from '../shared';
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
-import literals, { LiteralNumber, LiteralString, LiteralTerm, Quotation } from './literals';
+import literals, {
+  LiteralNumber, LiteralPointer, LiteralString, LiteralTerm, Quotation,
+} from './literals';
 import operators, { Operator } from './operators';
 import combinators from './combinators';
 import syscalls from './syscalls';
@@ -73,6 +75,15 @@ export class Compiler {
           } else {
             debug('adding number to term');
             factor = new LiteralNumber(token.literal as unknown as number);
+          }
+          break;
+        case TokenType.POINTER:
+          if (this.level > 0 && previous instanceof Quotation) {
+            debug('adding pointer to quotation', token);
+            previous.add(new LiteralPointer(token.literal as unknown as number));
+          } else {
+            debug('adding pointer to term');
+            factor = new LiteralPointer(token.literal as unknown as number);
           }
           break;
         case TokenType.LEFT_BRACKET:

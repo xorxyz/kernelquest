@@ -235,4 +235,8 @@ export class Agent extends Body implements IExecutionAgent {
   halt() {
     this.halted = true;
   }
+
+  tell() {
+
+  }
 }

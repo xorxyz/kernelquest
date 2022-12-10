@@ -3,7 +3,7 @@ import { Factor, Literal, Term } from './types';
 
 // () -> Truth
 export class LiteralTruth extends Literal {
-  value: boolean = true;
+  value = true;
   type = 'truth';
   constructor(value: boolean) {
     super(String(value), value);
@@ -40,6 +40,19 @@ export class LiteralSet extends Literal {
   value: Set<Literal> = new Set();
   constructor(set: Set<Literal>) {
     super('{}', set);
+  }
+}
+
+// () -> Pointer
+export class LiteralPointer extends Literal {
+  type = 'pointer';
+  declare value: number;
+  constructor(n: number) {
+    super(`*${n}`, n);
+  }
+
+  toString() {
+    return this.lexeme;
   }
 }
 

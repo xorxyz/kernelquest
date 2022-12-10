@@ -24,7 +24,8 @@ export enum TokenType {
   NUMBER = 'number',
   EOF = '\0',
   QUOTATION = 'quotation',
-  ATOM = 'atom'
+  ATOM = 'atom',
+  POINTER = 'pointer'
 }
 
 const keywords = {
@@ -145,6 +146,28 @@ export class Scanner {
     this.addToken(type);
   }
 
+  private pointerOrStar() {
+    const nextChar = this.peek();
+
+    if (nextChar === ' ') {
+      this.addToken(TokenType.STAR, '*');
+      return;
+    }
+
+    while (this.peek() !== ' ' && !this.isAtEnd()) {
+      this.next();
+    }
+
+    const text = this.source.substring(this.start + 1, this.current);
+    const n = Number(text);
+
+    if (Number.isNaN(n)) {
+      throw new Error('Pointer should be a positive number');
+    }
+
+    this.addToken(TokenType.POINTER, n);
+  }
+
   private next() {
     return this.source.charAt(this.current++);
   }
@@ -164,7 +187,7 @@ export class Scanner {
       case '"': this.string(); break;
       case TokenType.DOT: this.addToken(TokenType.DOT, char); break;
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
-      case TokenType.STAR: this.addToken(TokenType.STAR, char); break;
+      case TokenType.STAR: this.pointerOrStar(); break;
       case TokenType.MINUS:
         nextChar = this.peek();
         // negative number
