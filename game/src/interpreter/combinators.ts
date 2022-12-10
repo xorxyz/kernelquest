@@ -1,7 +1,7 @@
 import { debug } from '../shared';
 import { Interpretation } from './interpreter';
 import { Factor, Literal } from './types';
-import { LiteralNumber, Quotation } from './literals';
+import { Quotation } from './literals';
 import { Operator } from './operators';
 
 export class Combinator extends Operator {}
@@ -41,28 +41,28 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   stack.push(next);
 });
 
-export const i = new Combinator(['i', 'exec'], ['quotation'], ({ stack, agent }) => {
+export const i = new Combinator(['i', 'exec'], ['quotation'], ({ stack, queue }) => {
   const program = stack.pop() as Quotation;
 
-  const interpretation = new Interpretation(program.value);
+  debug('program:', program);
 
-  try {
-    interpretation.run({ stack, agent });
-  } catch (err) {
-    stack.push(program);
-    throw err;
-  }
+  queue?.add({
+    name: 'exec',
+    args: {
+      text: program.toString().slice(1, -1),
+    },
+  });
 });
 
 // [B] [A] -> A [B]
-export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack, agent }) => {
+export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack }) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
 
   const interpretation = new Interpretation(a.value);
 
   try {
-    interpretation.run({ stack, agent });
+    interpretation.run({ stack });
     stack.push(b);
   } catch (err) {
     stack.push(a);
@@ -71,7 +71,7 @@ export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack,
   }
 });
 
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, agent }) => {
+export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
@@ -80,7 +80,7 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
 
   list.value.forEach((factor) => {
     stack.push(factor);
-    interpretation.run({ stack, agent });
+    interpretation.run({ stack });
     const result = stack.pop();
     if (result) {
       results.add(result);
@@ -91,21 +91,22 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
 });
 
 // [C] [B] [A] -> B || A
-export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, agent }) => {
+export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack }) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
   const c = stack.pop() as Quotation;
 
   const test = new Interpretation(c.value);
-  test.run({ stack, agent });
+  test.run({ stack });
   const tested = stack.pop();
+  debug('result of test:', tested);
 
   const term = tested && tested.value
     ? b.value
     : a.value;
 
   const interpretation = new Interpretation(term);
-  interpretation.run({ stack, agent });
+  interpretation.run({ stack });
 });
 
 const combinators = {};

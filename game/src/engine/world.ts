@@ -6,7 +6,7 @@ import {
   Bug, Dragon, Earth, Elf, Fairy, Fire, King, Man, Sheep, Spirit, Water, Wind, Wizard,
 } from './agents';
 import {
-  Book, Crown, Flag, Key, Shield, Skull, Tree, Wall,
+  Book, Crown, Door, Flag, Key, Shield, Skull, Tree, Wall,
 } from './things';
 import words from './words';
 
@@ -28,7 +28,7 @@ export type AgentTypeName = (
   'fairy' | 'elf' | 'wizard' | 'sheep' | 'bug' | 'man' | 'spirit'
 )
 export type ThingTypeName = (
-  'tree' | 'wall' | 'flag' | 'crown' | 'key' | 'shield' | 'skull' | 'book'
+  'tree' | 'wall' | 'door' | 'flag' | 'crown' | 'key' | 'shield' | 'skull' | 'book'
 )
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
@@ -50,6 +50,7 @@ export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
 export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
   tree: Tree,
   wall: Wall,
+  door: Door,
   flag: Flag,
   crown: Crown,
   key: Key,

@@ -59,7 +59,7 @@ export class LiteralRef extends Literal {
 // () -> Quotation
 export class Quotation extends Literal {
   type = 'quotation';
-  value: Term = [];
+  declare value: Term;
   constructor(term?: Term) {
     super('[]', term || []);
   }
@@ -69,7 +69,7 @@ export class Quotation extends Literal {
   }
 
   toString() {
-    return `[${this.value.map((item) => `${item.toString()}`).join(' ')}]`;
+    return `[${this.value.map((factor) => factor.toString()).join(' ')}]`;
   }
 }
 

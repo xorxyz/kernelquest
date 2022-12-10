@@ -378,6 +378,7 @@ export const create: IActionDefinition<{ thingName: ThingTypeName }> = {
 export const spawn: IActionDefinition<{ agentName: AgentTypeName }> = {
   cost: 0,
   perform({ world, area, agent }, { agentName }) {
+    if (area.cellAt(agent.cursorPosition)?.slot) return fail('There is already something here');
     try {
       const newAgent = world.spawn(agentName, area, agent.cursorPosition);
       return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
@@ -396,11 +397,14 @@ export const tell: IActionDefinition<{ agentId: number, message: string }> = {
       return fail(`Could not find an agent with id ${agentId}`);
     }
 
-    const result = targetAgent.mind.interpret(message);
+    console.log('message:', message);
 
-    if (result instanceof Error) {
-      return fail(result.message);
-    }
+    targetAgent.mind.queue.add({
+      name: 'exec',
+      args: {
+        text: message,
+      },
+    });
 
     return succeed(`Told ${targetAgent.type.name} #${targetAgent.id}: "${message}".`);
   },

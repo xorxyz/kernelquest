@@ -1,5 +1,5 @@
 import {
-  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator,
+  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 
 /** @category Words */
@@ -74,14 +74,14 @@ const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue }) => 
   });
 });
 
-const tell = new Operator(['tell'], ['ref', 'string'], async ({ stack, queue }) => {
-  const message = stack.pop() as LiteralString;
+const tell = new Operator(['tell'], ['ref', 'quotation'], async ({ stack, queue }) => {
+  const message = stack.pop() as Quotation;
   const agentId = stack.pop() as LiteralRef;
   queue?.add({
     name: 'tell',
     args: {
       agentId: agentId.value,
-      message: message.value,
+      message: message.toString().slice(1, -1),
     },
   });
 });

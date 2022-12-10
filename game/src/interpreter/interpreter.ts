@@ -46,10 +46,12 @@ export class Interpreter {
   step(line: string, queue: Queue<IAction>) {
     debug('interpreter.step', line);
     const term = this.compiler.compile(line);
+    debug('term is', term);
     try {
       const factor = term.shift();
 
-      if (!factor) throw new Error('Term is missing a factor');
+      if (!factor) return '';
+      debug('factor is', factor);
 
       factor.validate(this.stack);
       factor.execute({

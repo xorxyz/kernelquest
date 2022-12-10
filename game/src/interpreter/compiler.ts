@@ -55,7 +55,10 @@ export class Compiler {
       factor = this.dict[token.lexeme];
 
       if (this.level > 0 && previous instanceof Quotation) {
+        debug('adding factor to quotation', factor);
         previous.add(factor);
+
+        factor = undefined;
       }
     } else {
       switch (token.type) {
@@ -94,18 +97,16 @@ export class Compiler {
             debug('adding quotation to term');
             factor = new Quotation();
           }
+          debug('level++');
           this.level++;
           break;
         case TokenType.RIGHT_BRACKET:
-          debug('TERM', term);
+          debug('level--', 'term:', term);
           this.level--;
           break;
         case TokenType.IDENTIFIER:
           if (!factor) {
-            console.log(Object.keys(this.dict));
-            console.warn(`'${token.lexeme}' is not a recognized word.`);
-            factor = new LiteralTerm(token.lexeme);
-            // throw new Error(`'${token.lexeme}' is not a recognized word.`);
+            throw new Error(`'${token.lexeme}' is not a recognized word.`);
           }
           break;
         case TokenType.PLUS:
