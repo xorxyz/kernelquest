@@ -1,5 +1,5 @@
 import {
-  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
+  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator,
 } from '../interpreter';
 
 /** @category Words */
@@ -40,30 +40,29 @@ const ls = new Combinator(['ls'], [], async ({ queue }) => {
 });
 
 /** @category Words */
-const rm = new Combinator(['rm'], ['number', 'number'], async ({ stack, queue }) => {
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+const rm = new Combinator(['rm'], ['ref'], async ({ stack, queue }) => {
+  const ref = stack.pop() as LiteralRef;
   queue?.items.unshift({
     name: 'rm',
-    args: { x: x.value, y: y.value },
+    args: { id: ref.value },
   });
 });
 
-const create = new Combinator(['create'], ['any'], async ({ stack, queue, agent }) => {
+const create = new Combinator(['create'], ['string'], async ({ stack, queue, agent }) => {
   const str = stack.pop() as LiteralString;
   const { x, y } = agent.cursorPosition;
   queue?.add({
     name: 'create',
-    args: { thingName: str.lexeme, x, y },
+    args: { thingName: str.value, x, y },
   });
 });
 
-const spawn = new Combinator(['spawn'], ['any'], async ({ stack, queue, agent }) => {
+const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue, agent }) => {
   const str = stack.pop() as LiteralString;
   const { x, y } = agent.cursorPosition;
   queue?.add({
     name: 'spawn',
-    args: { agentName: str.lexeme, x, y },
+    args: { agentName: str.value, x, y },
   });
 });
 

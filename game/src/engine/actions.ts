@@ -313,15 +313,17 @@ export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, t
   },
 };
 
-export const rm: IActionDefinition<{ x: number, y: number }> = {
+export const rm: IActionDefinition<{ id: number }> = {
   cost: 0,
-  perform({ area }, { x, y }) {
-    const fromCell = area.cellAt(new Vector(x, y));
-    const thing = fromCell?.take();
+  perform({ agent, area }, { id }) {
+    const body = area.findBodyById(id);
 
-    if (thing) {
-      area.remove(thing);
-      return succeed(`Removed ${thing.name} from [${x} ${y}].`);
+    if (body) {
+      if (body.id === agent.id) {
+        return fail('Cannot remove self.');
+      }
+      area.remove(body);
+      return succeed(`Removed ${body.name}.`);
     }
 
     return fail('Nothing here.');
