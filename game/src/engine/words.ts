@@ -1,5 +1,5 @@
 import {
-  Combinator, LiteralNumber, LiteralString, Operator, Quotation,
+  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 
 /** @category Words */
@@ -85,6 +85,30 @@ const halt = new Operator(['halt'], [], async ({ queue }) => {
   });
 });
 
+const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, queue }) => {
+  const propName = stack.pop() as LiteralString;
+  const ref = stack.pop() as LiteralRef;
+  queue?.add({
+    name: 'prop',
+    args: {
+      id: ref.value,
+      propName: propName.value,
+    },
+  });
+});
+
+const point = new Operator(['point'], ['number', 'number'], async ({ stack, queue }) => {
+  const y = stack.pop() as LiteralNumber;
+  const x = stack.pop() as LiteralNumber;
+  queue?.add({
+    name: 'point',
+    args: {
+      x: x.value,
+      y: y.value,
+    },
+  });
+});
+
 export default {
-  goto, look, ls, rm, spawn, create, tell, halt,
+  goto, look, ls, rm, spawn, create, tell, halt, prop, point,
 };

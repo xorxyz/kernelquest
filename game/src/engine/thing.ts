@@ -1,3 +1,4 @@
+import { Literal } from '../interpreter';
 import {
   Colors, esc, Style, Vector,
 } from '../shared';

@@ -213,9 +213,10 @@ export class VirtualTerminal {
         break;
       case (Keys.SPACE):
         action = {
-          name: 'exec',
+          name: 'point',
           args: {
-            text: `${this.agent.cursorPosition.x} ${this.agent.cursorPosition.y} ref`,
+            x: this.agent.cursorPosition.x,
+            y: this.agent.cursorPosition.y,
           },
         };
         break;

@@ -1,5 +1,7 @@
 import { debug, Vector } from '../shared';
-import { Interpretation } from '../interpreter';
+import {
+  Interpretation, LiteralRef, LiteralString, LiteralTruth,
+} from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
 import { AgentTypeName, BodyTypeName, World } from './world';
@@ -16,7 +18,8 @@ export type ValidActions = (
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
-  'tell' | 'halt'
+  'tell' | 'halt' |
+  'prop' | 'point'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -213,7 +216,7 @@ export const ls: IActionDefinition<{}> = {
   cost: 0,
   perform({ area }) {
     const msg = area.list()
-      .map((x) => `${x.type.name} #${x.id}`)
+      .map((x) => `&${x.id} ${x.type.name}`)
       .join(', ');
 
     return succeed(msg);
@@ -394,6 +397,45 @@ export const halt: IActionDefinition<ActionArguments> = {
   },
 };
 
+export const prop: IActionDefinition<{ id: number, propName: string }> = {
+  cost: 0,
+  perform({ agent, area }, { id, propName }) {
+    const target = area.findBodyById(id);
+
+    if (!target) {
+      return fail(`Cannot find &${id}`);
+    }
+
+    const propValue = target[propName];
+
+    if (typeof propValue === 'undefined') {
+      return fail(`Cannot find prop ${propName} on &${id} (${target.type.name})`);
+    }
+
+    const litStr = new LiteralString(String(propValue));
+
+    agent.mind.stack.push(litStr);
+
+    return succeed('');
+  },
+};
+
+export const point: IActionDefinition<{ x: number, y: number }> = {
+  cost: 0,
+  perform({ agent, area }, { x, y }) {
+    const cell = area.cellAt(new Vector(x, y));
+
+    if (!cell || !cell.slot) {
+      agent.mind.stack.push(new LiteralTruth(false));
+      return fail('');
+    }
+
+    agent.mind.stack.push(new LiteralRef(cell.slot.id));
+
+    return succeed('');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -415,6 +457,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   spawn,
   tell,
   halt,
+  prop,
+  point,
 };
 
 export function succeed(msg: string): IActionResult {

@@ -3,8 +3,8 @@ import { Factor, Literal, Term } from './types';
 
 // () -> Truth
 export class LiteralTruth extends Literal {
-  value = true;
   type = 'truth';
+  declare value: boolean;
   constructor(value: boolean) {
     super(String(value), value);
   }

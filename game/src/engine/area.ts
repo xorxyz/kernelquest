@@ -186,13 +186,23 @@ export class Area {
     return Array.from(this.areas).some((area) => area.contains(vector));
   }
 
-  list(): Array<Agent> {
-    return [...this.agents.values()];
+  list(): Array<Agent|Thing> {
+    return [...this.agents.values(), ...this.things.values()].sort((a, b) => a.id - b.id);
   }
 
   findAgentById(agentId: number): Agent | null {
     const agent = [...this.agents.values()].find((a) => a.id === agentId);
 
     return agent || null;
+  }
+
+  findThingById(thingId: number): Thing | null {
+    const thing = [...this.things.values()].find((a) => a.id === thingId);
+
+    return thing || null;
+  }
+
+  findBodyById(id:number): Agent | Thing | null {
+    return this.findAgentById(id) || this.findThingById(id);
   }
 }
