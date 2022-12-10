@@ -112,13 +112,6 @@ export class Microbe extends Foe {
   capabilities = [];
 }
 
-/** @category Things */
-export class Temple extends House {
-  name = 'temple';
-  glyph = new Glyph('🏛️ ');
-  capabilities = [];
-}
-
 export const agents = {
   wind: Wind,
   water: Water,

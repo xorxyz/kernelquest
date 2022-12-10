@@ -3,9 +3,11 @@ import { Area } from './area';
 import { BodyType, Thing } from './thing';
 import { Agent, AgentType, IFacing } from './agent';
 import {
-  Bug, King, Man, Spirit,
+  Bug, Dragon, Earth, Elf, Fairy, Fire, King, Man, Sheep, Spirit, Water, Wind, Wizard,
 } from './agents';
-import { Tree, Wall } from './things';
+import {
+  Book, Crown, Flag, Key, Shield, Skull, Tree, Wall,
+} from './things';
 import words from './words';
 
 /** @category World */
@@ -20,19 +22,40 @@ export interface Position {
   facing: IFacing
 }
 
-export type AgentTypeName = 'king' | 'bug' | 'man' | 'spirit'
-export type BodyTypeName = 'tree' | 'wall'
+export type AgentTypeName = (
+  'king' | 'dragon' |
+  'wind' | 'water' | 'earth' | 'fire' |
+  'fairy' | 'elf' | 'wizard' | 'sheep' | 'bug' | 'man' | 'spirit'
+)
+export type ThingTypeName = (
+  'tree' | 'wall' | 'flag' | 'crown' | 'key' | 'shield' | 'skull' | 'book'
+)
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   king: King,
+  dragon: Dragon,
+  wind: Wind,
+  water: Water,
+  earth: Earth,
+  fire: Fire,
+  fairy: Fairy,
+  elf: Elf,
+  wizard: Wizard,
+  sheep: Sheep,
   bug: Bug,
   man: Man,
   spirit: Spirit,
 };
 
-export const BodyTypeDict: Record<BodyTypeName, new () => BodyType> = {
+export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
   tree: Tree,
   wall: Wall,
+  flag: Flag,
+  crown: Crown,
+  key: Key,
+  shield: Shield,
+  skull: Skull,
+  book: Book,
 };
 
 /** @category World */
@@ -61,7 +84,7 @@ export class World {
   }
 
   create(bodyType: BodyTypeName, area: Area, position?: Vector) {
-    const BodyTypeCtor = BodyTypeDict[bodyType];
+    const BodyTypeCtor = ThingTypeDict[bodyType];
     console.log(bodyType, bodyType, 'ctor', BodyTypeCtor);
     const thing = new Thing(this.counter++, new BodyTypeCtor());
     this.things.add(thing);
