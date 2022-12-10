@@ -42,7 +42,7 @@ export class Interpreter {
     this.stack = stack || new Stack();
   }
 
-  interpret(line: string, queue: Queue<any>, agent: IExecutionAgent): Interpretation | Error {
+  interpret(line: string, queue: Queue<any>): Interpretation | Error {
     let term;
 
     try {
@@ -54,7 +54,6 @@ export class Interpreter {
     const interpretation = new Interpretation(term);
     const result = interpretation.run({
       queue,
-      agent,
       stack: this.stack,
       dict: this.compiler.dict,
     });

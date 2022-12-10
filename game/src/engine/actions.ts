@@ -4,7 +4,7 @@ import {
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
-import { AgentTypeName, BodyTypeName, World } from './world';
+import { AgentTypeName, ThingTypeName, World } from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
@@ -339,7 +339,7 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-    const result = agent.mind.interpret(agent, text);
+    const result = agent.mind.interpret(text);
 
     if (result instanceof Error) {
       debug('result.message', result.message);
@@ -354,11 +354,11 @@ export const exec: IActionDefinition<{ text: string }> = {
   },
 };
 
-export const create: IActionDefinition<{ thingName: BodyTypeName, x: number, y: number }> = {
+export const create: IActionDefinition<{ thingName: ThingTypeName }> = {
   cost: 0,
-  perform({ world, area }, { thingName, x, y }) {
+  perform({ world, area, agent }, { thingName }) {
     try {
-      const thing = world.create(thingName, area, new Vector(x, y));
+      const thing = world.create(thingName, area, agent.cursorPosition);
       return succeed(`Created a ${thingName} at ${thing.position.label}`);
     } catch (err) {
       return fail(`Can't create a '${thingName}'`);
@@ -366,11 +366,11 @@ export const create: IActionDefinition<{ thingName: BodyTypeName, x: number, y: 
   },
 };
 
-export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
+export const spawn: IActionDefinition<{ agentName: AgentTypeName }> = {
   cost: 0,
-  perform({ world, area }, { agentName, x, y }) {
+  perform({ world, area, agent }, { agentName }) {
     try {
-      const newAgent = world.spawn(agentName, area, new Vector(x, y));
+      const newAgent = world.spawn(agentName, area, agent.cursorPosition);
       return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
     } catch (err) {
       return fail(`Can't spawn a '${agentName}'`);
@@ -387,7 +387,7 @@ export const tell: IActionDefinition<{ agentId: number, message: string }> = {
       return fail(`Could not find an agent with id ${agentId}`);
     }
 
-    const result = targetAgent.mind.interpret(targetAgent, message);
+    const result = targetAgent.mind.interpret(message);
 
     if (result instanceof Error) {
       return fail(result.message);

@@ -4,15 +4,10 @@ import { Dictionary } from './compiler';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
 
-export interface IExecutionAgent {
-  cursorPosition: Vector
-}
-
 export interface IExecutionArguments {
   stack: Stack<Factor>,
   queue?: Queue<any>,
   dict?: Dictionary,
-  agent: IExecutionAgent
 }
 
 export type ExecuteFn = (args: IExecutionArguments) => void

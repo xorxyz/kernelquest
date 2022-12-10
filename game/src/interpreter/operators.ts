@@ -33,8 +33,8 @@ export class Operator extends Factor {
       }
       if (type !== 'any' && arg.type !== type) {
         throw new Error(
-          'signature doesn\'t match stack type. \n' +
-          `expected: '${type}' got: '${arg.type}' at arg ${i}`,
+          'signature doesn\'t match stack type. \n'
+          + `expected: '${type}' got: '${arg.type}' at arg ${i}`,
         );
       }
     });
@@ -86,6 +86,15 @@ export const dup = new Operator(['dup'], ['any'], ({ stack }) => {
   stack.push(a);
 });
 
+export const dupd = new Operator(['dupd'], ['any', 'any'], ({ stack }) => {
+  const a = stack.pop() as Factor;
+  const b = stack.pop() as Factor;
+
+  stack.push(b);
+  stack.push(b);
+  stack.push(a);
+});
+
 export const swap = new Operator(['swap'], ['any', 'any'], ({ stack }) => {
   const a = stack.pop();
   const b = stack.pop();
@@ -96,8 +105,24 @@ export const swap = new Operator(['swap'], ['any', 'any'], ({ stack }) => {
   stack.push(b);
 });
 
-export const drop = new Operator(['drop', 'zap', 'pop'], ['any'], ({ stack }) => {
+export const swapd = new Operator(['swapd'], ['any', 'any', 'any'], ({ stack }) => {
+  const a = stack.pop() as Factor;
+  const b = stack.pop() as Factor;
+  const c = stack.pop() as Factor;
+
+  stack.push(b);
+  stack.push(c);
+  stack.push(a);
+});
+
+export const pop = new Operator(['pop'], ['any'], ({ stack }) => {
   stack.pop();
+});
+
+export const popd = new Operator(['popd'], ['any', 'any'], ({ stack }) => {
+  const a = stack.pop() as Factor;
+  stack.pop();
+  stack.push(a);
 });
 
 export const cat = new Operator(['cat'], ['string', 'string'], ({ stack }) => {
@@ -124,8 +149,8 @@ const operators = {};
 
 [
   sum, difference, product, division,
-  dup,
-  swap, drop, cat, clear, typeOf,
+  dup, dupd, pop, popd,
+  swap, cat, clear, typeOf,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

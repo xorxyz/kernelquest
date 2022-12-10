@@ -48,21 +48,19 @@ const rm = new Combinator(['rm'], ['ref'], async ({ stack, queue }) => {
   });
 });
 
-const create = new Combinator(['create'], ['string'], async ({ stack, queue, agent }) => {
+const create = new Combinator(['create'], ['string'], async ({ stack, queue }) => {
   const str = stack.pop() as LiteralString;
-  const { x, y } = agent.cursorPosition;
   queue?.add({
     name: 'create',
-    args: { thingName: str.value, x, y },
+    args: { thingName: str.value },
   });
 });
 
-const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue, agent }) => {
+const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue }) => {
   const str = stack.pop() as LiteralString;
-  const { x, y } = agent.cursorPosition;
   queue?.add({
     name: 'spawn',
-    args: { agentName: str.value, x, y },
+    args: { agentName: str.value },
   });
 });
 

@@ -83,7 +83,7 @@ export class World {
     return agent;
   }
 
-  create(bodyType: BodyTypeName, area: Area, position?: Vector) {
+  create(bodyType: ThingTypeName, area: Area, position?: Vector) {
     const BodyTypeCtor = ThingTypeDict[bodyType];
     console.log(bodyType, bodyType, 'ctor', BodyTypeCtor);
     const thing = new Thing(this.counter++, new BodyTypeCtor());

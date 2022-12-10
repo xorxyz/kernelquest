@@ -1,5 +1,5 @@
 import {
-  Interpretation, Interpreter, Compiler, Factor, Dictionary, IExecutionAgent,
+  Interpretation, Interpreter, Compiler, Factor, Dictionary,
 } from '../interpreter';
 import { debug, Queue, Stack } from '../shared';
 import { IAction } from './actions';
@@ -24,8 +24,8 @@ export class Mind {
     this.interpreter = new Interpreter(compiler, this.stack);
   }
 
-  interpret(agent: IExecutionAgent, line: string): Interpretation | Error {
-    const result = this.interpreter.interpret(line, this.queue, agent);
+  interpret(line: string): Interpretation | Error {
+    const result = this.interpreter.interpret(line, this.queue);
 
     debug(`interpret(${line}):`, result);
 
