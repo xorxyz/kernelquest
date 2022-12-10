@@ -14,7 +14,8 @@ import { Thing } from './thing';
 export type ValidActions = (
   'save' | 'load' |
   'noop' | 'wait' |
-  'rotate' | 'face' | 'step' | 'backstep' | 'goto' |
+  'right' | 'left' |
+  'face' | 'step' | 'backstep' | 'goto' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
@@ -81,14 +82,19 @@ export const wait: IActionDefinition<{ duration: number }> = {
   },
 };
 
-export const rotate: IActionDefinition<{ direction: string }> = {
+export const right: IActionDefinition<ActionArguments> = {
   cost: 0,
-  perform({ agent, area }, { direction }) {
-    if (direction === 'left') {
-      agent.facing.direction.rotateLeft();
-    } else {
-      agent.facing.direction.rotateRight();
-    }
+  perform({ agent, area }) {
+    agent.facing.direction.rotateRight();
+    agent.facing.cell = area.cellAt(agent.isLookingAt);
+    return succeed('');
+  },
+};
+
+export const left: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent, area }) {
+    agent.facing.direction.rotateLeft();
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
@@ -443,7 +449,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   load,
   noop,
   wait,
-  rotate,
+  right,
+  left,
   face,
   step,
   backstep,

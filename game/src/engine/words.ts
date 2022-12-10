@@ -13,16 +13,6 @@ const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, queu
   });
 });
 
-// /** @category Words */
-// const create = new Combinator(['create'], ['string'], async ({stack, queue}) => {
-//   const program = stack.pop() as LiteralString;
-
-//   queue?.add({
-//     name: 'create',
-//     args: { name: program.lexeme },
-//   });
-// });
-
 /** @category Words */
 const look = new Combinator(['look'], ['number', 'number'], async ({ stack, queue }) => {
   const y = stack.pop() as LiteralNumber;
@@ -37,6 +27,16 @@ const look = new Combinator(['look'], ['number', 'number'], async ({ stack, queu
 /** @category Words */
 const ls = new Combinator(['ls'], [], async ({ queue }) => {
   queue?.items.unshift({ name: 'ls' });
+});
+
+/** @category Words */
+const right = new Combinator(['right'], [], async ({ queue }) => {
+  queue?.items.unshift({ name: 'right' });
+});
+
+/** @category Words */
+const left = new Combinator(['left'], [], async ({ queue }) => {
+  queue?.items.unshift({ name: 'left' });
 });
 
 /** @category Words */
@@ -66,9 +66,9 @@ const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue, agent
   });
 });
 
-const tell = new Operator(['tell'], ['number', 'string'], async ({ stack, queue, agent }) => {
+const tell = new Operator(['tell'], ['ref', 'string'], async ({ stack, queue }) => {
   const message = stack.pop() as LiteralString;
-  const agentId = stack.pop() as LiteralNumber;
+  const agentId = stack.pop() as LiteralRef;
   queue?.add({
     name: 'tell',
     args: {
@@ -109,5 +109,5 @@ const point = new Operator(['point'], ['number', 'number'], async ({ stack, queu
 });
 
 export default {
-  goto, look, ls, rm, spawn, create, tell, halt, prop, point,
+  goto, look, ls, right, left, rm, spawn, create, tell, halt, prop, point,
 };

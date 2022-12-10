@@ -68,8 +68,10 @@ export const CursorModeHelpText = [
   '<return> toggle between terminal & cursor mode.',
   '<space>  push a ref to the highlighted cell.',
   '<h>      print this help text.',
-  '<r>      rotate. change heading clockwise.',
-  '<s>      step forward.',
+  '<w>      step forward.',
+  '<a>      turn left.',
+  '<s>      step backwards.',
+  '<d>      turn right.',
   '<g>      get something.',
   '<p>      put something down.',
 ];
