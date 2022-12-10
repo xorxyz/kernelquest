@@ -43,12 +43,12 @@ export class LiteralSet extends Literal {
   }
 }
 
-// () -> Pointer
-export class LiteralPointer extends Literal {
-  type = 'pointer';
+// () -> Ref
+export class LiteralRef extends Literal {
+  type = 'ref';
   declare value: number;
   constructor(n: number) {
-    super(`*${n}`, n);
+    super(`&${n}`, n);
   }
 
   toString() {
@@ -70,21 +70,6 @@ export class Quotation extends Literal {
 
   toString() {
     return `[${this.value.map((item) => `${item.toString()}`).join(' ')}]`;
-  }
-}
-
-// () -> Ref
-export class LiteralRef extends LiteralNumber {
-  type = 'ref';
-  vector: Vector;
-  constructor(x: number, y: number) {
-    super((y * 16) + x);
-
-    this.vector = new Vector(x, y);
-  }
-
-  toString() {
-    return `[${this.vector.x} ${this.vector.y} ref]`;
   }
 }
 

@@ -1,7 +1,7 @@
 import { debug } from '../shared';
 import { Interpretation } from './interpreter';
 import { Factor, Literal } from './types';
-import { LiteralNumber, LiteralRef, Quotation } from './literals';
+import { LiteralNumber, Quotation } from './literals';
 import { Operator } from './operators';
 
 export class Combinator extends Operator {}
@@ -108,33 +108,12 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
   interpretation.run({ stack, agent });
 });
 
-export const ref = new Operator(['ref'], ['number', 'number'], ({ stack }) => {
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
-  stack.push(new LiteralRef(x.value, y.value));
-});
-
-export const struct = new Operator(['struct'], ['ref', 'number', 'number'], ({ stack }) => {
-  stack.pop() as LiteralNumber;
-  stack.pop() as LiteralNumber;
-  const c = stack.pop() as LiteralRef;
-
-  stack.push(new LiteralRef(c.vector.x, c.vector.y));
-});
-
-export const route = new Operator(['route'], ['ref', 'ref'], ({ stack }) => {
-  stack.pop() as LiteralRef;
-  const b = stack.pop() as LiteralRef;
-  stack.push(new LiteralRef(b.vector.x, b.vector.y));
-});
-
 const combinators = {};
 
 [
   concat, cons, unit,
   i, dip,
   map, ifte,
-  ref, struct, route,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {
     combinators[alias] = combinator;
