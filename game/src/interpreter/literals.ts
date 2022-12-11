@@ -65,6 +65,7 @@ export class Quotation extends Literal {
   declare value: Term;
   constructor(term?: Term) {
     super('[]', term || []);
+    this.lexeme = this.toString();
   }
 
   add(factor: Factor) {

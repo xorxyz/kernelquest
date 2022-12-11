@@ -75,20 +75,27 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const newQuotation = new Quotation();
-  newQuotation.value = list.value
-    .map((factor) => {
-      const q = new Quotation();
-      q.add(factor);
-      program.value.forEach((f) => q.add(f));
-      return q;
-    })
-    .flatMap((v) => [v, i]);
+  const result = new Quotation();
+
+  result.value.push(new Quotation());
+  list.value.forEach((f) => {
+    const q = new Quotation();
+    q.value.push(f.value);
+    program.value.forEach((pf) => q.value.push(pf));
+    result.value.push(q);
+
+    result.value.push(i);
+    result.value.push(new Quotation());
+    result.value.push(cons);
+    result.value.push(concat);
+  });
+
+  debug('map result:', result);
 
   queue?.add({
     name: 'exec',
     args: {
-      text: newQuotation.toString().slice(1, -1),
+      text: result.toString().slice(1, -1),
     },
   });
 });
