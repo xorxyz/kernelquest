@@ -20,6 +20,9 @@ export class LiteralNumber extends Literal {
   constructor(n: number) {
     super(String(n), n);
   }
+  toString() {
+    return `${String(this.value)}`;
+  }
 }
 
 // () -> String

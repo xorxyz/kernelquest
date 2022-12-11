@@ -20,6 +20,7 @@ export class Compiler {
     ...syscalls,
   };
   level = 0;
+  quotations = [];
 
   constructor(dict?: Dictionary) {
     this.dict = {
@@ -45,10 +46,29 @@ export class Compiler {
     return term;
   }
 
+  getInnerQuotation(level: number, quotation: Quotation) {
+    const quotations = (quotation.value || [])
+      .filter((f) => f instanceof Quotation) as Array<Quotation>;
+    const indexOfLast = quotations.length - 1;
+    const nextQuotation = quotations[indexOfLast];
+    if (!nextQuotation) return quotation;
+    if (level === 0) return nextQuotation;
+    const nextLevel = level - 1;
+    return this.getInnerQuotation(nextLevel, nextQuotation);
+  }
+
   parseToken(term: Array<Factor>, token: Token): Term {
     if (!token.lexeme) return term;
 
-    const previous = term[term.length - 1];
+    debug('parseToken(), term:', term);
+
+    let previous = term[term.length - 1];
+
+    if (this.level > 0 && previous && previous instanceof Quotation) {
+      previous = this.getInnerQuotation(this.level, previous);
+    }
+
+    debug('parseToken(), previous factor:', previous);
     let factor: Factor | undefined;
 
     if (Object.keys(this.dict).includes(token.lexeme)) {

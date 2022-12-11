@@ -41,7 +41,7 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   stack.push(next);
 });
 
-export const i = new Combinator(['i', 'exec'], ['quotation'], ({ stack, queue }) => {
+export const i = new Combinator(['i'], ['quotation'], ({ stack, queue }) => {
   const program = stack.pop() as Quotation;
 
   debug('program:', program);
@@ -71,23 +71,26 @@ export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack 
   }
 });
 
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack }) => {
+export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, queue }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const interpretation = new Interpretation(program.value);
-  const results = new Quotation();
+  const newQuotation = new Quotation();
+  newQuotation.value = list.value
+    .map((factor) => {
+      const q = new Quotation();
+      q.add(factor);
+      program.value.forEach((f) => q.add(f));
+      return q;
+    })
+    .flatMap((v) => [v, i]);
 
-  list.value.forEach((factor) => {
-    stack.push(factor);
-    interpretation.run({ stack });
-    const result = stack.pop();
-    if (result) {
-      results.add(result);
-    }
+  queue?.add({
+    name: 'exec',
+    args: {
+      text: newQuotation.toString().slice(1, -1),
+    },
   });
-
-  stack.push(results);
 });
 
 // [C] [B] [A] -> B || A

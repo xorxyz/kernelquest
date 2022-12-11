@@ -60,7 +60,9 @@ export class Interpreter {
         dict: this.compiler.dict,
       });
 
-      return term.map((t) => t.lexeme).join(' ');
+      debug('stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));
+
+      return term.map((t) => t.toString()).join(' ');
     } catch (err) {
       return err as Error;
     }
