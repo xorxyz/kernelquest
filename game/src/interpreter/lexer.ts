@@ -38,7 +38,7 @@ const keywords = {
 export class Token {
   type: TokenType;
   lexeme: string;
-  literal?: object;
+  literal?: any;
   line: number;
 
   constructor(type: TokenType, lexeme: string, literal: any, line: number) {
@@ -147,7 +147,7 @@ export class Scanner {
   }
 
   private ref() {
-    while (this.peek() !== ' ' && !this.isAtEnd()) {
+    while (this.peek() !== ' ' && this.peek() !== ']' && !this.isAtEnd()) {
       this.next();
     }
 

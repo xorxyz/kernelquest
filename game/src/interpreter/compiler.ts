@@ -64,8 +64,8 @@ export class Compiler {
       switch (token.type) {
         case TokenType.STRING:
           if (this.level > 0 && previous instanceof Quotation) {
-            debug('adding token to quotation');
-            previous.add(new LiteralString(token.lexeme));
+            debug('adding token to quotation', token);
+            previous.add(new LiteralString(token.literal));
           } else {
             debug('adding string to term');
             factor = new LiteralString(token.literal as unknown as string);
