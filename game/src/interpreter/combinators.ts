@@ -41,16 +41,16 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   stack.push(next);
 });
 
-export const i = new Combinator(['i'], ['quotation'], ({ stack, queue }) => {
+export const i = new Combinator(['i'], ['quotation'], ({ stack, queue, dict }) => {
   const program = stack.pop() as Quotation;
 
-  debug('program:', program);
-
-  queue?.add({
-    name: 'exec',
-    args: {
-      text: program.toString().slice(1, -1),
-    },
+  program.value.forEach((factor) => {
+    factor.validate(stack);
+    factor.execute({
+      queue,
+      stack,
+      dict,
+    });
   });
 });
 
@@ -71,32 +71,26 @@ export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack 
   }
 });
 
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, queue }) => {
+export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, queue, dict }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const result = new Quotation();
-
-  result.value.push(new Quotation());
-  list.value.forEach((f) => {
+  const programs = list.value.map((f) => {
     const q = new Quotation();
-    q.value.push(f.value);
-    program.value.forEach((pf) => q.value.push(pf));
-    result.value.push(q);
-
-    result.value.push(i);
-    result.value.push(new Quotation());
-    result.value.push(cons);
-    result.value.push(concat);
+    q.value.push(f);
+    program.value.forEach((x) => q.value.push(x));
+    return q;
   });
 
-  debug('map result:', result);
-
-  queue?.add({
-    name: 'exec',
-    args: {
-      text: result.toString().slice(1, -1),
-    },
+  programs.forEach((p) => {
+    p.value.forEach((factor) => {
+      factor.validate(stack);
+      factor.execute({
+        queue,
+        stack,
+        dict,
+      });
+    });
   });
 });
 
