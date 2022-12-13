@@ -4,7 +4,13 @@ import { Dictionary } from './compiler';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
 
+export interface IRuntime {
+  pause: () => void
+  unpause: () => void
+}
+
 export interface IExecutionArguments {
+  runtime: IRuntime,
   stack: Stack<Factor>,
   queue?: Queue<any>,
   dict?: Dictionary,

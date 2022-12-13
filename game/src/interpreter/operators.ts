@@ -1,6 +1,6 @@
 import { debug, Stack } from '../shared';
 import { ExecuteFn, Factor, Literal } from './types';
-import { LiteralNumber, LiteralString } from './literals';
+import { LiteralNumber, LiteralString, LiteralTruth } from './literals';
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -145,9 +145,28 @@ export const typeOf = new Operator(['typeof'], ['any'], ({ stack }) => {
   }
 });
 
+export const equals = new Operator(['=='], ['any', 'any'], ({ stack }) => {
+  const a = stack.pop() as Factor;
+  const b = stack.pop() as Factor;
+
+  const result = new LiteralTruth(a.type === b.type && a.value === b.value);
+
+  stack.push(result);
+});
+
+export const notEquals = new Operator(['!='], ['any', 'any'], ({ stack }) => {
+  const a = stack.pop() as Factor;
+  const b = stack.pop() as Factor;
+
+  const result = new LiteralTruth(a.type !== b.type || a.value !== b.value);
+
+  stack.push(result);
+});
+
 const operators = {};
 
 [
+  equals, notEquals,
   sum, difference, product, division,
   dup, dupd, pop, popd,
   swap, swapd, cat, clear, typeOf,

@@ -152,8 +152,6 @@ export class Engine {
   tryPerforming(action: IAction, agent: Agent, area: Area): IActionResult {
     const actionDefinition = actions[action.name];
 
-    debug(action, agent, area);
-
     if (!this.authorize) return fail('Not enough stamina.');
 
     const context = {

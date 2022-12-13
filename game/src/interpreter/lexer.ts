@@ -18,6 +18,7 @@ export enum TokenType {
   MINUS = '-',
   STAR = '*',
   SLASH = '/',
+  EXCLAMATION_EQUAL = '!=',
   EQUAL_EQUAL = '==',
   IDENTIFIER = 'identifier',
   STRING = 'string',
@@ -202,6 +203,13 @@ export class Scanner {
         this.addToken(TokenType.RIGHT_BRACKET, char);
         break;
       case TokenType.SEMICOLON: this.addToken(TokenType.SEMICOLON, char); break;
+      case '!':
+        if (this.match('=')) {
+          this.addToken(TokenType.EXCLAMATION_EQUAL, char);
+        } else {
+          throw new Error('single \'!\' is illegal');
+        }
+        break;
       case '=':
         if (this.match('=')) {
           this.addToken(TokenType.EQUAL_EQUAL, char);

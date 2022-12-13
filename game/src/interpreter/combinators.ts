@@ -41,7 +41,9 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   stack.push(next);
 });
 
-export const i = new Combinator(['i'], ['quotation'], ({ stack, queue, dict }) => {
+export const i = new Combinator(['i'], ['quotation'], ({
+  stack, queue, dict, runtime,
+}) => {
   const program = stack.pop() as Quotation;
 
   program.value.forEach((factor) => {
@@ -50,19 +52,20 @@ export const i = new Combinator(['i'], ['quotation'], ({ stack, queue, dict }) =
       queue,
       stack,
       dict,
+      runtime,
     });
   });
 });
 
 // [B] [A] -> A [B]
-export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack }) => {
+export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack, runtime }) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
 
   const interpretation = new Interpretation(a.value);
 
   try {
-    interpretation.run({ stack });
+    interpretation.run({ stack, runtime });
     stack.push(b);
   } catch (err) {
     stack.push(a);
@@ -71,7 +74,9 @@ export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack 
   }
 });
 
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, queue, dict }) => {
+export const map = new Combinator(['map'], ['quotation', 'quotation'], ({
+  stack, queue, dict, runtime,
+}) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
@@ -89,19 +94,48 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
         queue,
         stack,
         dict,
+        runtime,
       });
     });
   });
 });
 
+export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({
+  stack, queue, dict, runtime,
+}) => {
+  const program = stack.pop() as Quotation;
+  const list = stack.pop() as Quotation;
+
+  const result = new Quotation();
+
+  list.value.forEach((listItem) => {
+    stack.push(listItem);
+
+    program.value.forEach((f) => {
+      f.validate(stack);
+      f.execute({
+        stack,
+        dict,
+        queue,
+        runtime,
+      });
+    });
+
+    const shouldKeep = stack.pop();
+    if (shouldKeep?.value) result.value.push(listItem);
+  });
+
+  stack.push(result);
+});
+
 // [C] [B] [A] -> B || A
-export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack }) => {
+export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, runtime }) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
   const c = stack.pop() as Quotation;
 
   const test = new Interpretation(c.value);
-  test.run({ stack });
+  test.run({ stack, runtime });
   const tested = stack.pop();
   debug('result of test:', tested);
 
@@ -110,7 +144,7 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
     : a.value;
 
   const interpretation = new Interpretation(term);
-  interpretation.run({ stack });
+  interpretation.run({ stack, runtime });
 });
 
 const combinators = {};
@@ -118,7 +152,7 @@ const combinators = {};
 [
   concat, cons, unit,
   i, dip,
-  map, ifte,
+  map, filter, ifte,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {
     combinators[alias] = combinator;

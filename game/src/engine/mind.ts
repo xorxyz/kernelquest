@@ -25,6 +25,10 @@ export class Mind {
     this.interpreter = new Interpreter(this.compiler, this.stack);
   }
 
+  get runtime() {
+    return this.interpreter.runtime;
+  }
+
   interpret(line: string): string | Error {
     const result = this.interpreter.step(line, this.queue);
 

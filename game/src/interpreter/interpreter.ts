@@ -35,12 +35,33 @@ export class Interpretation {
 }
 
 export class Interpreter {
+  private paused = false;
   private stack: Stack<Factor>;
   private compiler: Compiler;
+  readonly runtime = {
+    pause: this.pause.bind(this),
+    unpause: this.unpause.bind(this),
+    isPaused: this.isPaused.bind(this),
+  };
 
   constructor(compiler: Compiler, stack?: Stack<Factor>) {
     this.compiler = compiler;
     this.stack = stack || new Stack();
+  }
+
+  isPaused() {
+    debug('isPaused()', this.paused);
+    return this.paused;
+  }
+
+  unpause() {
+    debug('unpause()');
+    this.paused = false;
+  }
+
+  pause() {
+    debug('pause()');
+    this.paused = true;
   }
 
   step(line: string, queue: Queue<IAction>) {
@@ -48,6 +69,11 @@ export class Interpreter {
       debug('interpreter.step', line);
       const term = this.compiler.compile(line);
       debug('term is', term);
+
+      if (this.isPaused()) {
+        return term.map((t) => t.toString()).join(' ');
+      }
+
       const factor = term.shift();
 
       if (!factor) return '';
@@ -58,6 +84,7 @@ export class Interpreter {
         queue,
         stack: this.stack,
         dict: this.compiler.dict,
+        runtime: this.runtime,
       });
 
       debug('stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));

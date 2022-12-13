@@ -116,6 +116,14 @@ const point = new Operator(['point'], ['number', 'number'], async ({ stack, queu
   });
 });
 
+const me = new Operator(['me'], [], ({ queue, runtime }) => {
+  console.log(runtime);
+  runtime.pause();
+  queue?.add({
+    name: 'me',
+  });
+});
+
 export default {
-  goto, look, ls, step, backstep, right, left, rm, spawn, create, tell, halt, prop, point,
+  goto, look, ls, step, backstep, right, left, rm, spawn, create, tell, halt, prop, point, me,
 };

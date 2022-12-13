@@ -1,6 +1,6 @@
 import { debug, Vector } from '../shared';
 import {
-  Interpretation, LiteralRef, LiteralString, LiteralTruth,
+  Interpretation, LiteralRef, LiteralString, LiteralTruth, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
@@ -20,7 +20,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point'
+  'prop' | 'point' | 'me'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -220,10 +220,15 @@ export const goto: IActionDefinition<{ x: number, y: number }> = {
 
 export const ls: IActionDefinition<{}> = {
   cost: 0,
-  perform({ area }) {
-    const msg = area.list()
+  perform({ area, agent }) {
+    const agents = area.list();
+    const msg = agents
       .map((x) => `&${x.id} ${x.type.name}`)
       .join(', ');
+
+    const refs = agents.map((a) => new LiteralRef(a.id));
+
+    agent.mind.stack.push(new Quotation(refs));
 
     return succeed(msg);
   },
@@ -339,6 +344,14 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
+    if (agent.mind.runtime.isPaused()) {
+      agent.mind.queue.add({
+        name: 'exec',
+        args: { text },
+      });
+      return fail('');
+    }
+
     const result = agent.mind.interpret(text);
 
     if (result instanceof Error) {
@@ -457,6 +470,17 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
   },
 };
 
+export const me: IActionDefinition<{ id: number }> = {
+  cost: 0,
+  perform({ agent }) {
+    debug('me()');
+    agent.mind.stack.push(new LiteralRef(agent.id));
+    agent.mind.runtime.unpause();
+
+    return succeed('');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -481,6 +505,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   halt,
   prop,
   point,
+  me,
 };
 
 export function succeed(msg: string): IActionResult {
