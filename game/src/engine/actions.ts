@@ -1,6 +1,6 @@
 import { debug, Vector } from '../shared';
 import {
-  Interpretation, LiteralRef, LiteralString, LiteralTruth, Quotation,
+  LiteralRef, LiteralString, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
@@ -344,14 +344,6 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-    if (agent.mind.runtime.isPaused()) {
-      agent.mind.queue.add({
-        name: 'exec',
-        args: { text },
-      });
-      return fail('');
-    }
-
     const result = agent.mind.interpret(text);
 
     if (result instanceof Error) {
@@ -369,7 +361,7 @@ export const exec: IActionDefinition<{ text: string }> = {
         });
       }
 
-      return succeed('');
+      return succeed(`${agent.mind.stack.map((f) => f.toString()).join(' ')}`);
     }
 
     return fail('Unhandled Exception.');
@@ -473,9 +465,7 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
 export const me: IActionDefinition<{ id: number }> = {
   cost: 0,
   perform({ agent }) {
-    debug('me()');
     agent.mind.stack.push(new LiteralRef(agent.id));
-    agent.mind.runtime.unpause();
 
     return succeed('');
   },

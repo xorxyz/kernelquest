@@ -20,12 +20,8 @@ export const cons = new Combinator(['cons'], ['any', 'quotation'], ({ stack }) =
 
   const next = new Quotation();
 
-  console.log(a);
-  console.log(b);
-
   next.add(a);
   b.value.forEach((factor) => {
-    debug('factor', factor);
     next.add(factor);
   });
 
@@ -41,117 +37,66 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   stack.push(next);
 });
 
-export const i = new Combinator(['i'], ['quotation'], ({
-  stack, queue, dict, runtime,
-}) => {
+export const i = new Combinator(['i'], ['quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
 
-  program.value.forEach((factor) => {
-    factor.validate(stack);
-    factor.execute({
-      queue,
-      stack,
-      dict,
-      runtime,
-    });
-  });
+  exec(program.toString().slice(1, -1));
 });
 
-// [B] [A] -> A [B]
-export const dip = new Combinator(['dip'], ['quotation', 'quotation'], ({ stack, runtime }) => {
-  const a = stack.pop() as Quotation;
-  const b = stack.pop() as Quotation;
-
-  const interpretation = new Interpretation(a.value);
-
-  try {
-    interpretation.run({ stack, runtime });
-    stack.push(b);
-  } catch (err) {
-    stack.push(a);
-    stack.push(b);
-    throw err;
-  }
-});
-
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({
-  stack, queue, dict, runtime,
-}) => {
+export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const programs = list.value.map((f) => {
-    const q = new Quotation();
-    q.value.push(f);
-    program.value.forEach((x) => q.value.push(x));
-    return q;
-  });
+  const programs = list.value.map((f) => new Quotation([f, ...program.value]));
 
-  programs.forEach((p) => {
-    p.value.forEach((factor) => {
-      factor.validate(stack);
-      factor.execute({
-        queue,
-        stack,
-        dict,
-        runtime,
-      });
-    });
-  });
+  exec(programs.map((p) => p.toString().slice(1, -1)).join(' '));
 });
 
-export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({
-  stack, queue, dict, runtime,
-}) => {
+export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const result = new Quotation();
+  stack.push(new Quotation());
 
-  list.value.forEach((listItem) => {
-    stack.push(listItem);
+  const programs = list.value.map((f) => new Quotation([
+    f,
+    ...program.value,
+    new Quotation(),
+    cons,
+    new Quotation([new Quotation([f])]),
+    new Quotation([new Quotation()]),
+    ifte,
+    concat,
+  ]));
 
-    program.value.forEach((f) => {
-      f.validate(stack);
-      f.execute({
-        stack,
-        dict,
-        queue,
-        runtime,
-      });
-    });
+  console.log('filter:', programs.map((p) => p.toString().slice(1, -1)).join(' '));
 
-    const shouldKeep = stack.pop();
-    if (shouldKeep?.value) result.value.push(listItem);
-  });
-
-  stack.push(result);
+  exec(programs.map((p) => p.toString().slice(1, -1)).join(' '));
 });
 
 // [C] [B] [A] -> B || A
-export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, runtime }) => {
+export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, exec }) => {
   const a = stack.pop() as Quotation;
   const b = stack.pop() as Quotation;
   const c = stack.pop() as Quotation;
 
-  const test = new Interpretation(c.value);
-  test.run({ stack, runtime });
-  const tested = stack.pop();
-  debug('result of test:', tested);
+  exec(c.toString().slice(1, -1), () => {
+    const tested = stack.pop();
 
-  const term = tested && tested.value
-    ? b.value
-    : a.value;
+    debug('result of test:', tested);
+    const selectedProgram = tested && tested.value
+      ? b
+      : a;
 
-  const interpretation = new Interpretation(term);
-  interpretation.run({ stack, runtime });
+    exec(selectedProgram.toString().slice(1, -1));
+  });
 });
 
 const combinators = {};
 
 [
   concat, cons, unit,
-  i, dip,
+  i,
   map, filter, ifte,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {

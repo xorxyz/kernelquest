@@ -20,7 +20,7 @@ export class Operator extends Factor {
     if (this.signature.length > stack.length) {
       debug(this.signature.length, stack.length);
       throw new Error(
-        `missing operand(s), expected [${this.signature.join(' ')}]`,
+        `${this.aliases[0]}: missing operand(s), expected [${this.signature.join(' ')}]`,
       );
     }
 
@@ -29,13 +29,12 @@ export class Operator extends Factor {
     args.forEach((arg: Factor, i) => {
       const type = this.signature[i];
       if (!(arg instanceof Literal)) {
-        throw new Error('arg not instanceof Literal');
+        throw new Error(`${this.aliases[0]}: arg not instanceof Literal`);
       }
       if (type !== 'any' && arg.type !== type) {
-        throw new Error(
-          'signature doesn\'t match stack type. \n'
-          + `expected: '${type}' got: '${arg.type}' at arg ${i}`,
-        );
+        throw new Error(`${this.aliases[0]}:`
+          + 'signature doesn\'t match stack type. \n'
+          + `expected: '${type}' got: '${arg.type}' at arg ${i}`);
       }
     });
   }

@@ -1,19 +1,16 @@
 /* eslint-disable no-underscore-dangle */
-import { Vector, Queue, Stack } from '../shared';
+import { IAction } from '../engine';
+import { Stack } from '../shared';
 import { Dictionary } from './compiler';
+import { Quotation } from './literals';
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
 
-export interface IRuntime {
-  pause: () => void
-  unpause: () => void
-}
-
 export interface IExecutionArguments {
-  runtime: IRuntime,
   stack: Stack<Factor>,
-  queue?: Queue<any>,
-  dict?: Dictionary,
+  dict: Dictionary,
+  syscall: (action: IAction, callback?: (done: () => void) => void) => void
+  exec: (text: string, callback?: (done: () => void) => void) => void
 }
 
 export type ExecuteFn = (args: IExecutionArguments) => void

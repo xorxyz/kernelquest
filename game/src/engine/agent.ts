@@ -91,11 +91,12 @@ export class Agent extends Body {
   public experience = 0;
   public logs: Array<AgentLog> = [
     { tick: 0, message: 'Use \'help\' for more commands.' },
-    { tick: 0, message: '' },
-    { tick: 0, message: '' },
-    { tick: 0, message: '' },
-    { tick: 0, message: '' },
-    { tick: 0, message: '' },
+    { tick: 0, message: ' ' },
+    { tick: 0, message: ' ' },
+    { tick: 0, message: ' ' },
+    { tick: 0, message: ' ' },
+    { tick: 0, message: ' ' },
+    { tick: 0, message: ' ' },
   ];
 
   public view: Array<string> = [];
@@ -178,7 +179,7 @@ export class Agent extends Body {
       capability.run(this, tick);
     });
 
-    const action = this.mind.queue.next();
+    const action = this.mind.decide();
 
     return action;
   }

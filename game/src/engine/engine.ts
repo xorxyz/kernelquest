@@ -170,10 +170,12 @@ export class Engine {
     if (action) {
       const result = this.tryPerforming(action, agent, area);
 
-      agent.remember({
-        tick: agent.mind.tick,
-        message: result.message,
-      });
+      if (result.message) {
+        agent.remember({
+          tick: agent.mind.tick,
+          message: result.message,
+        });
+      }
 
       if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
         this.history.push({

@@ -116,10 +116,8 @@ const point = new Operator(['point'], ['number', 'number'], async ({ stack, queu
   });
 });
 
-const me = new Operator(['me'], [], ({ queue, runtime }) => {
-  console.log(runtime);
-  runtime.pause();
-  queue?.add({
+const me = new Operator(['me'], [], ({ syscall }) => {
+  syscall({
     name: 'me',
   });
 });

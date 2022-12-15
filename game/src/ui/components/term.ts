@@ -18,7 +18,10 @@ export class Output extends UiComponent {
   render({ agent }: VirtualTerminal) {
     const logs = agent.logs.reduce((arr, log) => {
       const lines = formatLines(log.message);
-      lines.forEach((line) => arr.push(line));
+      lines.forEach((line) => {
+        if (!line) return;
+        arr.push(line);
+      });
       return arr;
     }, [] as Array<string>);
 
@@ -26,8 +29,7 @@ export class Output extends UiComponent {
       `┌${'─'.padEnd(LINE_LENGTH - 2, '─')}┐`,
       ...logs
         .slice(-N_OF_LINES)
-        .map((line) =>
-          `│ ${(line || '').padEnd(LINE_LENGTH - 4)} │`),
+        .map((line) => `│ ${(line || '').padEnd(LINE_LENGTH - 4)} │`),
     ];
   }
 }

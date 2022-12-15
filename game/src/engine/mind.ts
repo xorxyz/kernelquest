@@ -22,15 +22,21 @@ export class Mind {
   constructor(words?: Dictionary) {
     this.compiler = new Compiler(words);
 
-    this.interpreter = new Interpreter(this.compiler, this.stack);
+    this.interpreter = new Interpreter(this.compiler, this.stack, this.queue);
   }
 
-  get runtime() {
-    return this.interpreter.runtime;
+  decide() {
+    if (this.queue.peek()) {
+      return this.queue.next();
+    }
+    this.interpreter.next();
+    return {
+      name: 'noop',
+    };
   }
 
   interpret(line: string): string | Error {
-    const result = this.interpreter.step(line, this.queue);
+    const result = this.interpreter.step(line);
 
     debug(`interpret(${line}):`, result);
 
