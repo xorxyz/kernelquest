@@ -1,7 +1,6 @@
 import { debug } from '../shared';
-import { Interpretation } from './interpreter';
 import { Factor, Literal } from './types';
-import { Quotation } from './literals';
+import { LiteralTruth, Quotation } from './literals';
 import { Operator } from './operators';
 
 export class Combinator extends Operator {}
@@ -56,23 +55,38 @@ export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ 
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  stack.push(new Quotation());
+  const results = new Quotation();
 
-  const programs = list.value.map((f) => new Quotation([
-    f,
-    ...program.value,
-    new Quotation(),
-    cons,
-    new Quotation([new Quotation([f])]),
-    new Quotation([new Quotation()]),
-    ifte,
-    concat,
-  ]));
+  console.log('filtering:', list.toString(), program.toString());
 
-  console.log('filter:', programs.map((p) => p.toString().slice(1, -1)).join(' '));
+  const fns = list.value.map((item) => (done: () => void) => {
+    stack.push(item);
+    console.log(`executing: ${program.toString()}`, 'with stack:', stack.map((f) => f.toString()));
+    exec(program.dequote(), () => {
+      const v = stack.pop();
+      console.log('top of stack', v);
+      if (v instanceof LiteralTruth && v.value === true) {
+        results.add(item);
+      }
+      done();
+    });
+  });
 
-  exec(programs.map((p) => p.toString().slice(1, -1)).join(' '));
+  runSeries(fns, () => {
+    stack.push(results);
+  });
 });
+
+function runSeries(arr: Array<(cb: () => void) => void>, callback: () => void) {
+  if (!arr.length) {
+    callback();
+    return;
+  }
+
+  const next = arr.shift() as (cb) => void;
+
+  next(() => runSeries(arr, callback));
+}
 
 // [C] [B] [A] -> B || A
 export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, exec }) => {

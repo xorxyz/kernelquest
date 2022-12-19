@@ -1,4 +1,3 @@
-import { Vector } from '../shared';
 import { Factor, Literal, Term } from './types';
 
 // () -> Truth
@@ -73,7 +72,11 @@ export class Quotation extends Literal {
   }
 
   toString() {
-    return `[${this.value.map((factor) => factor.toString()).join(' ')}]`;
+    return `[${this.dequote()}]`;
+  }
+
+  dequote() {
+    return this.value.map((factor) => factor.toString()).join(' ');
   }
 }
 

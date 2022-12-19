@@ -104,7 +104,7 @@ export class Interpreter {
       factor.validate(this.stack);
       factor.execute(this.runtime);
 
-      debug('stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));
+      debug('finished executing factor:', factor.toString(), 'stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));
 
       return term.map((t) => t.toString()).join(' ');
     } catch (err) {
