@@ -4,10 +4,11 @@
  */
 
 import { IAction } from '../engine';
-import { debug, Stack } from '../shared';
+import { debug, LINE_LENGTH, Stack } from '../shared';
 import { Factor, Term } from './types';
 
 export class Interpreter {
+  index = 0;
   stack: Stack<Factor> = new Stack();
   term: Term = [];
 
@@ -17,11 +18,22 @@ export class Interpreter {
 
   subinterpreter: Interpreter | null = null;
 
+  get stackStr() {
+    return this.subinterpreter
+      ? this.subinterpreter.stackStr
+      : ` ${this.index}: [${this.stack.toString().padEnd(LINE_LENGTH - 8).slice(-(LINE_LENGTH - 8))}]`;
+  }
+
   interpret(term: Term) {
     // if I'm already working on some term, create a sub interpreter
     if (this.isBusy()) {
-      debug(`creating subinterpreter to run '${term.map((f) => f.toString()).join(' ')}'`);
+      if (this.subinterpreter) {
+        this.subinterpreter.interpret(term);
+        return;
+      }
+      debug(`${this.index}) creating subinterpreter to run '${term.map((f) => f.toString()).join(' ')}'`);
       const next = new Interpreter();
+      next.index = this.index + 1;
       next.interpret(term);
       this.subinterpreter = next;
       return;
@@ -43,32 +55,34 @@ export class Interpreter {
         return;
       }
       // if it's done, get the results back on top of this stack, and get rid of the sub
-      debug('came back with', this.subinterpreter.stack.arr.map((x) => x.toString()).join(' '));
+      debug(`${this.index}) came back with`, this.subinterpreter.stack.toString());
       this.subinterpreter.stack.arr.forEach((f) => {
         this.stack.push(f);
       });
+      debug(`stack: ${this.stackStr}`);
       this.subinterpreter = null;
     }
 
     if (this.action) {
-      debug('interpreter.step(): waiting for sysret, skipping', this.action.name);
+      debug(`${this.index}) interpreter.step(): waiting for sysret, skipping`, this.action.name);
       return;
     }
 
     const factor = this.term.shift();
 
     if (!factor) {
-      debug('interpreter.step(): term is now empty, skipping');
+      debug(`${this.index}) interpreter.step(): term is now empty, skipping`);
       return;
     }
 
     factor.validate(this.stack);
-    debug(`running '${factor.toString()}'`);
+    debug(`${this.index}) running '${factor.toString()}'`);
     factor.execute({
       stack: this.stack,
       syscall: this.syscall.bind(this),
       exec: this.exec.bind(this),
     });
+    debug(`stack: ${this.stackStr}`);
   }
 
   sysret(factor: Factor) {
@@ -77,7 +91,7 @@ export class Interpreter {
     interpreter.stack.push(factor);
     interpreter.waiting = false;
     if (interpreter.callback) {
-      debug('calling callback');
+      debug(`${this.index}) calling callback`);
       interpreter.callback();
       interpreter.callback = null;
     }

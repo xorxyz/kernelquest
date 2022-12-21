@@ -1,4 +1,4 @@
-import { Vector } from '../shared';
+import { debug, Vector } from '../shared';
 import {
   LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
@@ -476,10 +476,9 @@ export const think: IActionDefinition<ActionArguments> = {
   perform({ agent }) {
     try {
       agent.mind.interpreter.step();
-      const stack = agent.mind.stack.map((f) => f.toString()).join(' ');
-      const term = agent.mind.interpreter.term.map((f) => f.toString()).join(' ');
-      return succeed(`${stack} : ${term}`);
+      return succeed('');
     } catch (err) {
+      debug((err as Error).message);
       return fail((err as Error).message);
     }
   },

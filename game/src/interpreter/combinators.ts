@@ -66,11 +66,10 @@ export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ 
         item,
         ...program.value,
       ]),
-      new Quotation([item]),
-      new Quotation([]),
+      new Quotation([new Quotation([item])]),
+      new Quotation([new Quotation()]),
       ifte,
-      swap,
-      cons,
+      concat,
     ]),
   ]);
 });

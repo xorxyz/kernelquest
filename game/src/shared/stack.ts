@@ -1,3 +1,5 @@
+import { Factor } from '../interpreter';
+
 export class Stack<T> {
   arr = [] as Array<T>;
 
@@ -44,5 +46,9 @@ export class Stack<T> {
 
   peekN(n: number): T | null {
     return this.arr[this.arr.length - 1 - n] || null;
+  }
+
+  toString() {
+    return this.arr.map((f) => (f instanceof Factor ? f.toString() : JSON.stringify(f))).join(' ');
   }
 }

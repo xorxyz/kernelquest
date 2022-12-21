@@ -9,7 +9,6 @@ import {
   actions, fail, IAction, IActionDefinition, IActionResult,
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
-import { Operator } from '../interpreter';
 
 export type SendFn = (str: string) => void
 
