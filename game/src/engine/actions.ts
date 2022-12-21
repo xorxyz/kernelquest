@@ -20,7 +20,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me' | 'define'
+  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -148,6 +148,7 @@ export const step: IActionDefinition<{}> = {
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = area.cellAt(agent.isLookingAt);
+      agent.mind.interpreter.step();
       return succeed('');
     }
 
@@ -222,15 +223,11 @@ export const ls: IActionDefinition<{}> = {
   cost: 0,
   perform({ area, agent }) {
     const agents = area.list();
-    const msg = agents
-      .map((x) => `&${x.id} ${x.type.name}`)
-      .join(', ');
-
     const refs = agents.map((a) => new LiteralRef(a.id));
 
-    agent.mind.sysret(new Quotation(refs));
+    agent.mind.interpreter.sysret(new Quotation(refs));
 
-    return succeed(msg);
+    return succeed('');
   },
 };
 
@@ -344,9 +341,15 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-    agent.mind.interpret(text);
+    try {
+      const term = agent.mind.compiler.compile(text);
 
-    return succeed(`Executing '${text}'`);
+      agent.mind.interpreter.interpret(term);
+
+      return succeed('');
+    } catch (err) {
+      return fail((err as Error).message);
+    }
   },
 };
 
@@ -422,7 +425,7 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
 
     const litStr = new LiteralString(String(propValue));
 
-    agent.mind.sysret(litStr);
+    agent.mind.interpreter.sysret(litStr);
 
     return succeed('');
   },
@@ -434,11 +437,11 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
     const cell = area.cellAt(new Vector(x, y));
 
     if (!cell || !cell.slot) {
-      agent.mind.sysret(new LiteralRef(0));
+      agent.mind.interpreter.sysret(new LiteralRef(0));
       return fail('');
     }
 
-    agent.mind.sysret(new LiteralRef(cell.slot.id));
+    agent.mind.interpreter.sysret(new LiteralRef(cell.slot.id));
 
     return succeed('');
   },
@@ -447,7 +450,7 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
 export const me: IActionDefinition<{ id: number }> = {
   cost: 0,
   perform({ agent }) {
-    agent.mind.sysret(new LiteralRef(agent.id));
+    agent.mind.interpreter.sysret(new LiteralRef(agent.id));
 
     return succeed('');
   },
@@ -463,6 +466,34 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
     agent.dict[name] = new Operator([name], [], (that) => {
       that.exec(agent.mind.compile(program));
     });
+
+    return succeed('');
+  },
+};
+
+export const think: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent }) {
+    try {
+      agent.mind.interpreter.step();
+      const stack = agent.mind.stack.map((f) => f.toString()).join(' ');
+      const term = agent.mind.interpreter.term.map((f) => f.toString()).join(' ');
+      return succeed(`${stack} : ${term}`);
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+};
+
+export const clear: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent }) {
+    const { tick } = agent.mind;
+
+    agent.logs = new Array(7).fill(0).map(() => ({
+      tick,
+      message: ' ',
+    }));
 
     return succeed('');
   },
@@ -494,6 +525,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   point,
   me,
   define,
+  think,
+  clear,
 };
 
 export function succeed(msg: string): IActionResult {

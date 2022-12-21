@@ -2,26 +2,11 @@
 import { IAction } from '../engine';
 import { Stack } from '../shared';
 
-export type Continuation = (done: () => void) => void
-
-export type InterpretFn = (term: Term, continuation?: ExecuteFn) => void
-
-export type SyscallFn = (action: IAction, continuation?: ExecuteFn) => void
-
-export type ExecuteFactorFn = () => void
-
-export interface Interpretation {
+export interface ExecuteArgs {
   stack: Stack<Factor>
-  term: Term
-  continuation?: ExecuteFn
+  syscall: (action: IAction) => void
+  exec: (term: Term, callback?: () => void) => void
 }
-
-export interface ExecuteArgs extends Interpretation {
-  exec: InterpretFn
-  syscall: SyscallFn
-}
-
-export type ExecuteFn = () => void
 
 export abstract class Factor {
   type: string;

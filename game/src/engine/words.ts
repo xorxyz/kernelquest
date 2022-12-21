@@ -1,7 +1,6 @@
 import {
   Combinator, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
-import syscalls from '../interpreter/syscalls';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, syscall }) => {

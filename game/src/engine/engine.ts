@@ -177,7 +177,7 @@ export class Engine {
         });
       }
 
-      if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
+      if (!['save', 'load', 'exit', 'exec', 'think'].includes(action.name)) {
         this.history.push({
           action,
           tick: this.cycle,

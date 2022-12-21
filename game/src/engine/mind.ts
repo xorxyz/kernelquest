@@ -1,5 +1,5 @@
 import {
-  Interpreter, Compiler, Factor, Dictionary,
+  Interpreter, Compiler, Factor, Dictionary, Quotation,
 } from '../interpreter';
 import { Queue, Stack } from '../shared';
 import { IAction } from './actions';
@@ -12,47 +12,42 @@ export interface Observation {
 
 /** @category Mind */
 export class Mind {
-  public tick = 0;
-  public memory: Array<Observation> = [];
-  public queue: Queue<IAction> = new Queue<IAction>();
-  private compiler: Compiler;
-  private interpreter: Interpreter;
+  tick = 0;
+  memory: Array<Observation> = [];
+  queue: Queue<IAction> = new Queue<IAction>();
+  compiler: Compiler;
+  interpreter: Interpreter;
 
   constructor(words?: Dictionary) {
     this.compiler = new Compiler(words);
     this.interpreter = new Interpreter();
   }
 
-  get stack(): Stack<Factor> {
-    return this.interpreter.currentInterpretation.stack;
-  }
-
-  sysret(factor: Factor) {
-    this.interpreter.sysret(factor);
-  }
-
-  decide(): IAction | null {
-    const next = this.interpreter.action
-      ? this.interpreter.handleSyscall()
-      : this.queue.next();
-
-    if (next) return next;
-
-    this.interpreter.step();
-
-    return null;
-  }
-
-  interpret(line: string) {
-    const term = this.compiler.compile(line);
-    this.interpreter.exec(term);
-  }
-
-  compile(line: string) {
-    return this.compiler.compile(line);
+  get stack() {
+    return this.interpreter.stack;
   }
 
   update(tick) {
     this.tick = tick;
+  }
+
+  decide(): IAction {
+    const syscall = this.interpreter.takeAction();
+    if (syscall) {
+      return syscall;
+    }
+
+    const next = this.queue.next();
+    if (next) return next;
+
+    if (this.interpreter.isBusy()) {
+      return {
+        name: 'think',
+      };
+    }
+
+    return {
+      name: 'noop',
+    };
   }
 }

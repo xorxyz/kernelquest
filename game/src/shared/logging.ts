@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 
-export const debug = console.log.bind(console, '[debug]:');
+const log = console.log.bind(console);
+
+export const debug = (...args) => {
+  log('[debug]:', ...args);
+};
 
 export const info = console.info.bind(console);
 

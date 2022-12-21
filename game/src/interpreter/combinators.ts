@@ -1,7 +1,7 @@
 import { debug } from '../shared';
-import { Factor, Literal } from './types';
+import { Factor, Literal, Term } from './types';
 import { LiteralTruth, Quotation } from './literals';
-import { Operator, swap } from './operators';
+import { choice, Operator, swap } from './operators';
 import { runSeries } from '../shared/async';
 
 export class Combinator extends Operator {}
@@ -18,14 +18,9 @@ export const cons = new Combinator(['cons'], ['any', 'quotation'], ({ stack }) =
   const b = stack.pop() as Quotation;
   const a = stack.pop() as Literal;
 
-  const next = new Quotation();
+  b.add(a);
 
-  next.add(a);
-  b.value.forEach((factor) => {
-    next.add(factor);
-  });
-
-  stack.push(next);
+  stack.push(b);
 });
 
 // a -> [a]
@@ -47,35 +42,37 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  stack.push(new Quotation());
+  const p: Term = [];
 
-  const programs = list.value.map((f) => (done) => {
-    exec([f, ...program.value, swap, cons], done);
+  p.push(new Quotation());
+  list.value.forEach((f) => {
+    p.push(f);
+    program.value.forEach((v) => p.push(v));
+    p.push(swap);
+    p.push(cons);
   });
 
-  runSeries(programs);
+  exec(p);
 });
 
 export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const results = new Quotation();
-
-  const fns = list.value.map((item) => (done: () => void) => {
-    stack.push(item);
-    exec(program.value, () => {
-      const v = stack.pop();
-      if (v instanceof LiteralTruth && v.value === true) {
-        results.add(item);
-      }
-      done();
-    });
-  });
-
-  runSeries(fns, () => {
-    stack.push(results);
-  });
+  exec([
+    new Quotation(),
+    ...list.value.flatMap((item) => [
+      new Quotation([
+        item,
+        ...program.value,
+      ]),
+      new Quotation([item]),
+      new Quotation([]),
+      ifte,
+      swap,
+      cons,
+    ]),
+  ]);
 });
 
 // [C] [B] [A] -> B || A
@@ -84,16 +81,14 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
   const leftOption = stack.pop() as Quotation;
   const test = stack.pop() as Quotation;
 
-  exec(test.value, () => {
-    const testResult = stack.pop();
-
-    debug('result of test:', testResult);
-    const selectedProgram = testResult && testResult.value
-      ? leftOption
-      : rightOption;
-
-    exec(selectedProgram.value);
-  });
+  exec([
+    test,
+    i,
+    leftOption,
+    rightOption,
+    choice,
+    i,
+  ]);
 });
 
 const combinators = {};

@@ -3,6 +3,7 @@ import {
   ExecuteArgs, Factor, Literal,
 } from './types';
 import { LiteralNumber, LiteralString, LiteralTruth } from './literals';
+import syscalls from './syscalls';
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -137,8 +138,9 @@ export const cat = new Operator(['cat'], ['string', 'string'], ({ stack }) => {
   stack.push(new LiteralString(a.value + b.value));
 });
 
-export const clear = new Operator(['clear'], [], ({ stack }) => {
+export const clear = new Operator(['clear'], [], ({ stack, syscall }) => {
   stack.popN(stack.length);
+  syscall({ name: 'clear' });
 });
 
 export const typeOf = new Operator(['typeof'], ['any'], ({ stack }) => {
@@ -168,6 +170,18 @@ export const notEquals = new Operator(['!='], ['any', 'any'], ({ stack }) => {
   stack.push(result);
 });
 
+export const choice = new Operator(['choice'], ['truth', 'any', 'any'], ({ stack }) => {
+  const right = stack.pop() as Factor;
+  const left = stack.pop() as Factor;
+  const truth = stack.pop() as LiteralTruth;
+
+  if (truth.value) {
+    stack.push(left);
+  } else {
+    stack.push(right);
+  }
+});
+
 const operators = {};
 
 [
@@ -175,6 +189,7 @@ const operators = {};
   sum, difference, product, division,
   dup, dupd, pop, popd,
   swap, swapd, cat, clear, typeOf,
+  choice,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;
