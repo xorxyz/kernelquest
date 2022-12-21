@@ -1,7 +1,7 @@
 import {
-  Interpretation, Interpreter, Compiler, Factor, Dictionary,
+  Interpreter, Compiler, Factor, Dictionary,
 } from '../interpreter';
-import { debug, Queue, Stack } from '../shared';
+import { Queue, Stack } from '../shared';
 import { IAction } from './actions';
 
 /** @category Mind */
@@ -15,32 +15,41 @@ export class Mind {
   public tick = 0;
   public memory: Array<Observation> = [];
   public queue: Queue<IAction> = new Queue<IAction>();
-  public stack: Stack<Factor> = new Stack();
   private compiler: Compiler;
   private interpreter: Interpreter;
 
   constructor(words?: Dictionary) {
     this.compiler = new Compiler(words);
-
-    this.interpreter = new Interpreter(this.compiler, this.stack, this.queue);
+    this.interpreter = new Interpreter();
   }
 
-  decide() {
-    if (this.queue.peek()) {
-      return this.queue.next();
-    }
-    this.interpreter.next();
-    return {
-      name: 'noop',
-    };
+  get stack(): Stack<Factor> {
+    return this.interpreter.currentInterpretation.stack;
   }
 
-  interpret(line: string): string | Error {
-    const result = this.interpreter.step(line);
+  sysret(factor: Factor) {
+    this.interpreter.sysret(factor);
+  }
 
-    debug(`interpret(${line}):`, result);
+  decide(): IAction | null {
+    const next = this.interpreter.action
+      ? this.interpreter.handleSyscall()
+      : this.queue.next();
 
-    return result;
+    if (next) return next;
+
+    this.interpreter.step();
+
+    return null;
+  }
+
+  interpret(line: string) {
+    const term = this.compiler.compile(line);
+    this.interpreter.exec(term);
+  }
+
+  compile(line: string) {
+    return this.compiler.compile(line);
   }
 
   update(tick) {

@@ -167,7 +167,7 @@ export class Engine {
   processTurn(area: Area, agent: Agent) {
     const action = agent.takeTurn(this.cycle, area);
 
-    if (action) {
+    if (action && action.name !== 'noop') {
       const result = this.tryPerforming(action, agent, area);
 
       if (result.message) {

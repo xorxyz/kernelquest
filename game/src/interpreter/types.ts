@@ -1,43 +1,45 @@
 /* eslint-disable no-underscore-dangle */
 import { IAction } from '../engine';
 import { Stack } from '../shared';
-import { Dictionary } from './compiler';
-import { Quotation } from './literals';
 
-// https://en.wikipedia.org/wiki/Term_logic#Term
+export type Continuation = (done: () => void) => void
 
-export interface IExecutionArguments {
-  stack: Stack<Factor>,
-  dict: Dictionary,
-  syscall: (action: IAction, callback?: (done: () => void) => void) => void
-  exec: (text: string, callback?: (done: () => void) => void) => void
+export type InterpretFn = (term: Term, continuation?: ExecuteFn) => void
+
+export type SyscallFn = (action: IAction, continuation?: ExecuteFn) => void
+
+export type ExecuteFactorFn = () => void
+
+export interface Interpretation {
+  stack: Stack<Factor>
+  term: Term
+  continuation?: ExecuteFn
 }
 
-export type ExecuteFn = (args: IExecutionArguments) => void
+export interface ExecuteArgs extends Interpretation {
+  exec: InterpretFn
+  syscall: SyscallFn
+}
+
+export type ExecuteFn = () => void
 
 export abstract class Factor {
   type: string;
   lexeme: string;
-  value?: any;
+  value?: unknown;
   constructor(lexeme: string) {
     this.lexeme = lexeme;
   }
 
   abstract validate(stack: Stack<Factor>)
-  abstract execute(args: IExecutionArguments)
+  abstract execute(args: ExecuteArgs)
   abstract toString (): string
-  _validate(stack: Stack<Factor>) {
-    this.validate(stack);
-  }
-  _execute(args: IExecutionArguments) {
-    this.execute(args);
-  }
 }
 
 export class Literal extends Factor {
-  value: any;
+  value: unknown;
 
-  constructor(lexeme: string, value?: any) {
+  constructor(lexeme: string, value?: unknown) {
     super(lexeme);
 
     this.value = value;
@@ -56,6 +58,7 @@ export class Literal extends Factor {
   }
 }
 
+// https://en.wikipedia.org/wiki/Term_logic#Term
 export type Term = Array<Factor>;
 
 export type List = Array<Literal>;

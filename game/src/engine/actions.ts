@@ -1,6 +1,6 @@
-import { debug, Vector } from '../shared';
+import { Vector } from '../shared';
 import {
-  LiteralRef, LiteralString, Quotation,
+  LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
@@ -20,7 +20,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me'
+  'prop' | 'point' | 'me' | 'define'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -228,7 +228,7 @@ export const ls: IActionDefinition<{}> = {
 
     const refs = agents.map((a) => new LiteralRef(a.id));
 
-    agent.mind.stack.push(new Quotation(refs));
+    agent.mind.sysret(new Quotation(refs));
 
     return succeed(msg);
   },
@@ -344,27 +344,9 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-    const result = agent.mind.interpret(text);
+    agent.mind.interpret(text);
 
-    if (result instanceof Error) {
-      debug('result.message', result.message);
-      return fail(result.message);
-    }
-
-    if (typeof result === 'string') {
-      if (result) {
-        agent.mind.queue.add({
-          name: 'exec',
-          args: {
-            text: result,
-          },
-        });
-      }
-
-      return succeed(`${agent.mind.stack.map((f) => f.toString()).join(' ')}`);
-    }
-
-    return fail('Unhandled Exception.');
+    return succeed(`Executing '${text}'`);
   },
 };
 
@@ -440,7 +422,7 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
 
     const litStr = new LiteralString(String(propValue));
 
-    agent.mind.stack.push(litStr);
+    agent.mind.sysret(litStr);
 
     return succeed('');
   },
@@ -452,11 +434,11 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
     const cell = area.cellAt(new Vector(x, y));
 
     if (!cell || !cell.slot) {
-      agent.mind.stack.push(new LiteralRef(0));
+      agent.mind.sysret(new LiteralRef(0));
       return fail('');
     }
 
-    agent.mind.stack.push(new LiteralRef(cell.slot.id));
+    agent.mind.sysret(new LiteralRef(cell.slot.id));
 
     return succeed('');
   },
@@ -465,7 +447,22 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
 export const me: IActionDefinition<{ id: number }> = {
   cost: 0,
   perform({ agent }) {
-    agent.mind.stack.push(new LiteralRef(agent.id));
+    agent.mind.sysret(new LiteralRef(agent.id));
+
+    return succeed('');
+  },
+};
+
+export const define: IActionDefinition<{ name: string, program: string}> = {
+  cost: 0,
+  perform({ agent }, { name, program }) {
+    if (agent.dict[name]) {
+      return fail(`The word '${name}' already exists.`);
+    }
+
+    agent.dict[name] = new Operator([name], [], (that) => {
+      that.exec(agent.mind.compile(program));
+    });
 
     return succeed('');
   },
@@ -496,6 +493,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   prop,
   point,
   me,
+  define,
 };
 
 export function succeed(msg: string): IActionResult {

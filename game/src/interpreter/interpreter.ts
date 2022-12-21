@@ -4,130 +4,133 @@
  */
 
 import { IAction } from '../engine';
-import { debug, Queue, Stack } from '../shared';
-import { Compiler } from './compiler';
-import { Quotation } from './literals';
+import { debug, Stack } from '../shared';
 import {
-  Factor, IExecutionArguments, Term,
+  ExecuteFn, Factor, Interpretation, Term,
 } from './types';
 
-export class Interpretation {
-  public term: Term;
-  public stack: Stack<Factor>;
+export class Interpreter {
+  public action: IAction | null = null;
+  private baseInterpretation: Interpretation;
+  private interpretations: Stack<Interpretation> = new Stack();
+  private waiting = false;
+  private continuation: ExecuteFn | null;
 
-  constructor(term: Term) {
-    this.term = term;
+  constructor() {
+    this.baseInterpretation = {
+      stack: new Stack(),
+      term: [],
+    };
   }
 
-  run(execArgs: IExecutionArguments): Interpretation | Error {
-    this.stack = execArgs.stack;
-    for (let i = 0; i < this.term.length; i++) {
-      const factor = this.term[i];
-      try {
-        factor.validate(execArgs.stack);
-        factor.execute(execArgs);
-      } catch (err) {
-        return err as Error;
+  get currentInterpretation(): Interpretation {
+    const index = this.interpretations.length - 1;
+    const interpretation = this.interpretations.peekN(index);
+    return interpretation || this.baseInterpretation;
+  }
+
+  handleSyscall() {
+    const { action } = this;
+
+    this.action = null;
+
+    return action;
+  }
+
+  syscall(action: IAction, continuation?: ExecuteFn) {
+    this.action = action;
+    this.continuation = continuation || null;
+    this.waiting = true;
+  }
+
+  sysret(factor: Factor) {
+    const { continuation } = this;
+
+    this.waiting = false;
+    this.continuation = null;
+
+    this.currentInterpretation?.stack.push(factor);
+    if (continuation) continuation();
+  }
+
+  exec(term: Term) {
+    if (this.waiting) {
+      debug('exec(): waiting, skip');
+      return;
+    }
+    debug('exec:', term);
+
+    term.forEach((f) => this.currentInterpretation.term.push(f));
+  }
+
+  asyncExec(term: Term, continuation?: ExecuteFn) {
+    if (this.waiting) {
+      debug('asyncExec(): waiting, skip');
+      return;
+    }
+    debug('asyncExec:', term);
+
+    this.interpretations.push({
+      stack: new Stack(),
+      term,
+      continuation,
+    });
+  }
+
+  step() {
+    if (this.waiting) {
+      debug('step(): waiting, skip');
+      return;
+    }
+    const interpretation = this.currentInterpretation;
+    const factor = interpretation.term.shift();
+    if (!factor) return;
+
+    debug('step:', factor);
+
+    factor.validate(interpretation.stack);
+    factor.execute({
+      ...interpretation,
+      exec: this.asyncExec.bind(this),
+      syscall: this.syscall.bind(this),
+    });
+
+    const termIsEmpty = !interpretation.term.length;
+
+    if (termIsEmpty) {
+      debug('termIsEmpty.');
+      if (interpretation.continuation) {
+        debug('running contination.');
+        interpretation.continuation({
+          ...interpretation,
+          exec: this.asyncExec.bind(this),
+          syscall: this.syscall.bind(this),
+        });
       }
     }
-
-    return this;
   }
 }
 
-export class Interpreter {
-  private paused = false;
-  private stack: Stack<Factor>;
-  private queue: Queue<IAction>;
-  private compiler: Compiler;
-  private runtime: IExecutionArguments;
-  private continuations: Stack<(done: () => void) => void> = new Stack();
+// export class Interpretation {
+//   public term: Term;
+//   public stack: Stack<Factor>;
 
-  constructor(compiler: Compiler, stack: Stack<Factor>, queue: Queue<IAction>) {
-    this.compiler = compiler;
-    this.stack = stack;
-    this.queue = queue;
-    this.runtime = {
-      stack: this.stack,
-      dict: this.compiler.dict,
-      syscall: this.syscall.bind(this),
-      exec: this.exec.bind(this),
-    };
-  }
+//   constructor(term: Term) {
+//     this.term = term;
+//   }
 
-  get isPaused() {
-    return this.paused;
-  }
+//   run(execArgs: IExecutionArguments): Interpretation | Error {
+//     this.stack = execArgs.stack;
+//     for (let i = 0; i < this.term.length; i++) {
+//       const factor = this.term[i];
+//       try {
+//         factor.validate(execArgs.stack);
+//         factor.execute(execArgs);
+//       } catch (err) {
+//         return err as Error;
+//       }
+//     }
 
-  pause() {
-    this.paused = true;
-  }
-
-  unpause() {
-    this.paused = false;
-  }
-
-  exec(text: string, callback?: (done: () => void) => void) {
-    const action = {
-      name: 'exec',
-      args: { text },
-    };
-
-    this.syscall(action, callback);
-  }
-
-  syscall(action: IAction, callback?: (done: () => void) => void) {
-    this.continuations.push(callback || ((d) => { d(); }));
-    this.queue.add(action);
-    this.pause();
-  }
-
-  next() {
-    const continuation = this.continuations.pop();
-
-    if (continuation) {
-      continuation(this.unpause.bind(this));
-    }
-  }
-
-  step(line: string) {
-    try {
-      debug('interpreter.step', line);
-      const term = this.compiler.compile(line);
-      debug('term is', term);
-
-      const factor = term.shift();
-
-      if (!factor) return '';
-      debug('factor is', factor);
-
-      factor.validate(this.stack);
-      factor.execute(this.runtime);
-
-      debug('finished executing factor:', factor.toString(), 'stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));
-
-      return term.map((t) => t.toString()).join(' ');
-    } catch (err) {
-      return err as Error;
-    }
-  }
-
-  // interpret(line: string, queue: Queue<IAction>): Interpretation | Error {
-  //   let term;
-
-  //   try {
-  //     term = this.compiler.compile(line);
-  //   } catch (err) {
-  //     return err as Error;
-  //   }
-
-  //   const interpretation = new Interpretation(term);
-  //   const result = interpretation.run({
-  //     queue,
-  //     stack: this.stack,
-  //     dict: this.compiler.dict,
-  //   });
-
-  //   return result;
-  // }
-}
+//     return this;
+//   }
+// }

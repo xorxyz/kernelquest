@@ -1,83 +1,84 @@
 import {
-  Combinator, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
+  Combinator, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
+import syscalls from '../interpreter/syscalls';
 
 /** @category Words */
-const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, queue }) => {
+const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, syscall }) => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
 
-  queue?.add({
+  syscall({
     name: 'goto',
     args: { x: x.value, y: y.value },
   });
 });
 
 /** @category Words */
-const look = new Combinator(['look'], ['number', 'number'], async ({ stack, queue }) => {
+const look = new Combinator(['look'], ['number', 'number'], async ({ stack, syscall }) => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
 
-  queue?.items.unshift({
+  syscall({
     name: 'look',
     args: { x: x.value, y: y.value },
   });
 });
 
 /** @category Words */
-const ls = new Combinator(['ls'], [], async ({ queue }) => {
-  queue?.items.unshift({ name: 'ls' });
+const ls = new Combinator(['ls'], [], async ({ syscall }) => {
+  syscall({ name: 'ls' });
 });
 
 /** @category Words */
-const step = new Combinator(['step'], [], async ({ queue }) => {
-  queue?.items.unshift({ name: 'step' });
+const step = new Combinator(['step'], [], async ({ syscall }) => {
+  syscall({ name: 'step' });
 });
 
 /** @category Words */
-const backstep = new Combinator(['backstep'], [], async ({ queue }) => {
-  queue?.items.unshift({ name: 'backstep' });
+const backstep = new Combinator(['backstep'], [], async ({ syscall }) => {
+  syscall({ name: 'backstep' });
 });
 
 /** @category Words */
-const right = new Combinator(['right'], [], async ({ queue }) => {
-  queue?.items.unshift({ name: 'right' });
+const right = new Combinator(['right'], [], async ({ syscall }) => {
+  syscall({ name: 'right' });
 });
 
 /** @category Words */
-const left = new Combinator(['left'], [], async ({ queue }) => {
-  queue?.items.unshift({ name: 'left' });
+const left = new Combinator(['left'], [], async ({ syscall }) => {
+  syscall({ name: 'left' });
 });
 
 /** @category Words */
-const rm = new Combinator(['rm'], ['ref'], async ({ stack, queue }) => {
+const rm = new Combinator(['rm'], ['ref'], async ({ stack, syscall }) => {
   const ref = stack.pop() as LiteralRef;
-  queue?.items.unshift({
+  syscall({
     name: 'rm',
     args: { id: ref.value },
   });
 });
 
-const create = new Combinator(['create'], ['string'], async ({ stack, queue }) => {
+const create = new Combinator(['create'], ['string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
-  queue?.add({
+  syscall({
     name: 'create',
     args: { thingName: str.value },
   });
 });
 
-const spawn = new Combinator(['spawn'], ['string'], async ({ stack, queue }) => {
+const spawn = new Combinator(['spawn'], ['string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
-  queue?.add({
+  syscall({
     name: 'spawn',
     args: { agentName: str.value },
   });
 });
 
-const tell = new Operator(['tell'], ['ref', 'quotation'], async ({ stack, queue }) => {
+const tell = new Operator(['tell'], ['ref', 'quotation'], async ({ stack, syscall }) => {
   const message = stack.pop() as Quotation;
   const agentId = stack.pop() as LiteralRef;
-  queue?.add({
+  syscall({
     name: 'tell',
     args: {
       agentId: agentId.value,
@@ -86,16 +87,16 @@ const tell = new Operator(['tell'], ['ref', 'quotation'], async ({ stack, queue 
   });
 });
 
-const halt = new Operator(['halt'], [], async ({ queue }) => {
-  queue?.add({
+const halt = new Operator(['halt'], [], async ({ syscall }) => {
+  syscall({
     name: 'halt',
   });
 });
 
-const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, queue }) => {
+const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, syscall }) => {
   const propName = stack.pop() as LiteralString;
   const ref = stack.pop() as LiteralRef;
-  queue?.add({
+  syscall({
     name: 'prop',
     args: {
       id: ref.value,
@@ -104,10 +105,10 @@ const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, queue }) 
   });
 });
 
-const point = new Operator(['point'], ['number', 'number'], async ({ stack, queue }) => {
+const point = new Operator(['point'], ['number', 'number'], async ({ stack, syscall }) => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
-  queue?.add({
+  syscall({
     name: 'point',
     args: {
       x: x.value,
@@ -122,6 +123,34 @@ const me = new Operator(['me'], [], ({ syscall }) => {
   });
 });
 
+const define = new Operator(['define'], ['string', 'quotation'], ({ stack, syscall }) => {
+  const program = stack.pop() as Quotation;
+  const name = stack.pop() as LiteralString;
+
+  syscall({
+    name: 'define',
+    args: {
+      name: name.value,
+      term: program.toString(),
+    },
+  });
+});
+
 export default {
-  goto, look, ls, step, backstep, right, left, rm, spawn, create, tell, halt, prop, point, me,
+  goto,
+  look,
+  ls,
+  step,
+  backstep,
+  right,
+  left,
+  rm,
+  spawn,
+  create,
+  tell,
+  halt,
+  prop,
+  point,
+  me,
+  define,
 };

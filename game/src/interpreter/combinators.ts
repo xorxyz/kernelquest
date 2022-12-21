@@ -1,7 +1,8 @@
 import { debug } from '../shared';
 import { Factor, Literal } from './types';
 import { LiteralTruth, Quotation } from './literals';
-import { Operator } from './operators';
+import { Operator, swap } from './operators';
+import { runSeries } from '../shared/async';
 
 export class Combinator extends Operator {}
 
@@ -39,16 +40,20 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
 export const i = new Combinator(['i'], ['quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
 
-  exec(program.toString().slice(1, -1));
+  exec(program.value);
 });
 
 export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const programs = list.value.map((f) => new Quotation([f, ...program.value]));
+  stack.push(new Quotation());
 
-  exec(programs.map((p) => p.toString().slice(1, -1)).join(' '));
+  const programs = list.value.map((f) => (done) => {
+    exec([f, ...program.value, swap, cons], done);
+  });
+
+  runSeries(programs);
 });
 
 export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ stack, exec }) => {
@@ -57,14 +62,10 @@ export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ 
 
   const results = new Quotation();
 
-  console.log('filtering:', list.toString(), program.toString());
-
   const fns = list.value.map((item) => (done: () => void) => {
     stack.push(item);
-    console.log(`executing: ${program.toString()}`, 'with stack:', stack.map((f) => f.toString()));
-    exec(program.dequote(), () => {
+    exec(program.value, () => {
       const v = stack.pop();
-      console.log('top of stack', v);
       if (v instanceof LiteralTruth && v.value === true) {
         results.add(item);
       }
@@ -77,32 +78,21 @@ export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ 
   });
 });
 
-function runSeries(arr: Array<(cb: () => void) => void>, callback: () => void) {
-  if (!arr.length) {
-    callback();
-    return;
-  }
-
-  const next = arr.shift() as (cb) => void;
-
-  next(() => runSeries(arr, callback));
-}
-
 // [C] [B] [A] -> B || A
 export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotation'], ({ stack, exec }) => {
-  const a = stack.pop() as Quotation;
-  const b = stack.pop() as Quotation;
-  const c = stack.pop() as Quotation;
+  const rightOption = stack.pop() as Quotation;
+  const leftOption = stack.pop() as Quotation;
+  const test = stack.pop() as Quotation;
 
-  exec(c.toString().slice(1, -1), () => {
-    const tested = stack.pop();
+  exec(test.value, () => {
+    const testResult = stack.pop();
 
-    debug('result of test:', tested);
-    const selectedProgram = tested && tested.value
-      ? b
-      : a;
+    debug('result of test:', testResult);
+    const selectedProgram = testResult && testResult.value
+      ? leftOption
+      : rightOption;
 
-    exec(selectedProgram.toString().slice(1, -1));
+    exec(selectedProgram.value);
   });
 });
 

@@ -1,13 +1,19 @@
 import { debug, Stack } from '../shared';
-import { ExecuteFn, Factor, Literal } from './types';
+import {
+  ExecuteArgs, Factor, Literal,
+} from './types';
 import { LiteralNumber, LiteralString, LiteralTruth } from './literals';
 
 export class Operator extends Factor {
   signature: Array<string>;
-  execute: ExecuteFn;
+  execute: (args: ExecuteArgs) => unknown;
   aliases: Array<string>;
 
-  constructor(aliases: Array<string>, signature: Array<string>, execute: ExecuteFn) {
+  constructor(
+    aliases: Array<string>,
+    signature: Array<string>,
+    execute: (args: ExecuteArgs) => unknown,
+  ) {
     super(aliases[0]);
     this.signature = signature;
     this.execute = execute;
