@@ -42,17 +42,16 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
   const program = stack.pop() as Quotation;
   const list = stack.pop() as Quotation;
 
-  const p: Term = [];
-
-  p.push(new Quotation());
-  list.value.forEach((f) => {
-    p.push(f);
-    program.value.forEach((v) => p.push(v));
-    p.push(swap);
-    p.push(cons);
-  });
-
-  exec(p);
+  exec([
+    new Quotation(),
+    ...list.value.flatMap((f) => [
+      f,
+      ...program.value,
+      new Quotation(),
+      cons,
+      concat,
+    ]),
+  ]);
 });
 
 export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ stack, exec }) => {

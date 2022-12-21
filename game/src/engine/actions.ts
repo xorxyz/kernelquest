@@ -464,7 +464,7 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
     }
 
     agent.dict[name] = new Operator([name], [], (that) => {
-      that.exec(agent.mind.compile(program));
+      that.exec(agent.mind.compiler.compile(program));
     });
 
     return succeed('');

@@ -4,7 +4,7 @@ import {
 import { UiComponent } from './component';
 import { VirtualTerminal } from './pty';
 
-const CLEAR_RATE = CLOCK_MS_DELAY;
+const CLEAR_RATE = CLOCK_MS_DELAY / 2;
 
 /** @category View */
 export abstract class View {
