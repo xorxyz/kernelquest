@@ -82,7 +82,6 @@ export class Agent extends Body {
   public flashing = true;
   public isWaitingUntil: null | number = null;
   public halted = false;
-  public dict = {};
   public facing: IFacing = {
     direction: new Direction(SOUTH),
     cell: null,

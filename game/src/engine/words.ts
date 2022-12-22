@@ -130,7 +130,7 @@ const define = new Operator(['define'], ['string', 'quotation'], ({ stack, sysca
     name: 'define',
     args: {
       name: name.value,
-      term: program.toString(),
+      program: program.dequote(),
     },
   });
 });

@@ -20,8 +20,8 @@ export class Interpreter {
 
   get stackStr() {
     return this.subinterpreter
-      ? this.subinterpreter.stackStr
-      : ` ${this.index}: [${this.stack.toString().padEnd(LINE_LENGTH - 8).slice(-(LINE_LENGTH - 8))}]`;
+      ? `${this.stack.toString()} [ ${this.subinterpreter.stackStr} ]`
+      : this.stack.toString();
   }
 
   interpret(term: Term) {
@@ -64,14 +64,12 @@ export class Interpreter {
     }
 
     if (this.action) {
-      debug(`${this.index}) interpreter.step(): waiting for sysret, skipping`, this.action.name);
       return;
     }
 
     const factor = this.term.shift();
 
     if (!factor) {
-      debug(`${this.index}) interpreter.step(): term is now empty, skipping`);
       return;
     }
 
@@ -105,6 +103,12 @@ export class Interpreter {
     interpreter.action = null;
 
     return action;
+  }
+
+  isWaiting() {
+    return this.subinterpreter
+      ? this.subinterpreter.isWaiting()
+      : this.waiting;
   }
 
   private syscall(action: IAction) {

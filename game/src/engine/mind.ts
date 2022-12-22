@@ -40,11 +40,25 @@ export class Mind {
     const next = this.queue.next();
     if (next) return next;
 
-    if (this.interpreter.isBusy()) {
+    while (this.interpreter.isBusy() && !this.interpreter.isWaiting()) {
+      this.interpreter.step();
+    }
+
+    if (this.interpreter.isWaiting()) {
       return {
         name: 'think',
       };
     }
+
+    // if (this.interpreter.isBusy()) {
+    //   while (!this.interpreter.isWaiting()) {
+    //     this.interpreter.step();
+    //   }
+
+    //   return {
+    //     name: 'think',
+    //   };
+    // }
 
     return {
       name: 'noop',

@@ -459,15 +459,15 @@ export const me: IActionDefinition<{ id: number }> = {
 export const define: IActionDefinition<{ name: string, program: string}> = {
   cost: 0,
   perform({ agent }, { name, program }) {
-    if (agent.dict[name]) {
+    if (agent.mind.compiler.dict[name]) {
       return fail(`The word '${name}' already exists.`);
     }
 
-    agent.dict[name] = new Operator([name], [], (that) => {
+    agent.mind.compiler.dict[name] = new Operator([name], [], (that) => {
       that.exec(agent.mind.compiler.compile(program));
     });
 
-    return succeed('');
+    return succeed(`Defined [${program}] as '${name}'`);
   },
 };
 
