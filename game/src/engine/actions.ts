@@ -1,5 +1,6 @@
 import { debug, Vector } from '../shared';
 import {
+  LiteralNumber,
   LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
@@ -8,7 +9,7 @@ import { AgentTypeName, ThingTypeName, World } from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
-import { Glyph } from './cell';
+import { Cell, Glyph } from './cell';
 import { Thing } from './thing';
 
 export type ValidActions = (
@@ -20,7 +21,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear'
+  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -116,8 +117,29 @@ export const face: IActionDefinition<{ x: number, y: number }> = {
 
 export const step: IActionDefinition<{}> = {
   cost: 0,
-  perform({ agent, area }) {
+  perform({ agent, area, world }) {
     const target = area.cellAt(agent.isLookingAt);
+
+    if (!target) {
+      const { direction } = agent.facing;
+      const nextAreaPosition = area.position.clone().add(direction.value);
+      const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
+
+      if (nextArea) {
+        const nextPosition = agent.position.clone();
+        if (direction.value.x === 1) nextPosition.setX(0);
+        if (direction.value.x === -1) nextPosition.setX(15);
+        if (direction.value.y === 1) nextPosition.setY(0);
+        if (direction.value.y === -1) nextPosition.setY(9);
+        if (nextArea.cellAt(nextPosition)?.slot) {
+          return fail('There is something blocking the way.');
+        }
+        area.remove(agent);
+        agent.position.copy(nextPosition);
+        nextArea.put(agent);
+        return succeed('');
+      }
+    }
 
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
@@ -325,11 +347,15 @@ export const rm: IActionDefinition<{ id: number }> = {
   perform({ agent, area }, { id }) {
     const body = area.findBodyById(id);
 
-    if (body) {
+    if (body && !(body instanceof Cell)) {
       if (body.id === agent.id) {
+        agent.mind.interpreter.sysret(new LiteralRef(0));
         return fail('Cannot remove self.');
       }
+
+      const cell = area.cellAt(body.position) as Cell;
       area.remove(body);
+      agent.mind.interpreter.sysret(new LiteralRef(cell.id));
       return succeed(`Removed ${body.name}.`);
     }
 
@@ -352,25 +378,30 @@ export const exec: IActionDefinition<{ text: string }> = {
   },
 };
 
-export const create: IActionDefinition<{ thingName: ThingTypeName }> = {
+export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y: number }> = {
   cost: 0,
-  perform({ world, area, agent }, { thingName }) {
+  perform({ world, area, agent }, { thingName, x, y }) {
     try {
-      const thing = world.create(thingName, area, agent.cursorPosition);
-      return succeed(`Created a ${thingName} at ${thing.position.label}`);
+      const position = new Vector(x, y);
+      const thing = world.create(thingName, area, position);
+      agent.mind.interpreter.sysret(new LiteralRef(thing.id));
+      return succeed(`Created a ${thingName} at ${position.label}`);
     } catch (err) {
+      agent.mind.interpreter.sysret(new LiteralRef(0));
       return fail(`Can't create a '${thingName}'`);
     }
   },
 };
 
-export const spawn: IActionDefinition<{ agentName: AgentTypeName }> = {
+export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
   cost: 0,
-  perform({ world, area, agent }, { agentName }) {
-    if (area.cellAt(agent.cursorPosition)?.slot) return fail('There is already something here');
+  perform({ world, area }, { agentName, x, y }) {
+    const position = new Vector(x, y);
+    if (area.cellAt(position)?.slot) return fail('There is already something here');
+
     try {
-      const newAgent = world.spawn(agentName, area, agent.cursorPosition);
-      return succeed(`Created a ${agentName} at ${newAgent.position.label}`);
+      world.spawn(agentName, area, position);
+      return succeed(`Created a ${agentName} at ${position.label}`);
     } catch (err) {
       return fail(`Can't spawn a '${agentName}'`);
     }
@@ -507,6 +538,21 @@ export const clear: IActionDefinition<ActionArguments> = {
   },
 };
 
+export const xy: IActionDefinition<{ refId: number }> = {
+  cost: 0,
+  perform({ area, agent }, { refId }) {
+    const referenced = area.findBodyById(refId);
+    if (referenced) {
+      agent.mind.interpreter.sysret(new Quotation([
+        new LiteralNumber(referenced.position.x),
+        new LiteralNumber(referenced.position.y),
+      ]));
+      return succeed('');
+    }
+    return fail(`There is no agent with ref id ${refId}`);
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -535,6 +581,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   define,
   think,
   clear,
+  xy,
 };
 
 export function succeed(msg: string): IActionResult {

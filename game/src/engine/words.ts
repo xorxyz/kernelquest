@@ -1,5 +1,5 @@
 import {
-  Combinator, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
+  Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
 
 /** @category Words */
@@ -58,19 +58,23 @@ const rm = new Combinator(['rm'], ['ref'], async ({ stack, syscall }) => {
   });
 });
 
-const create = new Combinator(['create'], ['string'], async ({ stack, syscall }) => {
+const create = new Combinator(['create'], ['number', 'number', 'string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
+  const y = stack.pop() as LiteralNumber;
+  const x = stack.pop() as LiteralNumber;
   syscall({
     name: 'create',
-    args: { thingName: str.value },
+    args: { thingName: str.value, x: x.value, y: y.value },
   });
 });
 
-const spawn = new Combinator(['spawn'], ['string'], async ({ stack, syscall }) => {
+const spawn = new Combinator(['spawn'], ['number', 'number', 'string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
+  const y = stack.pop() as LiteralNumber;
+  const x = stack.pop() as LiteralNumber;
   syscall({
     name: 'spawn',
-    args: { agentName: str.value },
+    args: { agentName: str.value, x: x.value, y: y.value },
   });
 });
 
@@ -135,6 +139,26 @@ const define = new Operator(['define'], ['string', 'quotation'], ({ stack, sysca
   });
 });
 
+const xy = new Operator(['xy'], ['ref'], ({ stack, syscall }) => {
+  const ref = stack.pop() as LiteralRef;
+  syscall({
+    name: 'xy',
+    args: {
+      refId: ref.value,
+    },
+  });
+});
+
+const stackFn = new Operator(['stack'], [], ({ stack }) => {
+  const quotation = new Quotation();
+
+  stack.popN(stack.length).forEach((f) => {
+    quotation.add(f as Factor);
+  });
+
+  stack.push(quotation);
+});
+
 export default {
   goto,
   look,
@@ -152,4 +176,6 @@ export default {
   point,
   me,
   define,
+  xy,
+  stack: stackFn,
 };

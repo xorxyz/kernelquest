@@ -99,6 +99,7 @@ export class Agent extends Body {
   ];
 
   public view: Array<string> = [];
+  public pwd: string;
 
   constructor(id: number, type: AgentType, words?: Dictionary) {
     super(id, type);

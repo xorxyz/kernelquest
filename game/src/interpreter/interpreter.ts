@@ -34,6 +34,9 @@ export class Interpreter {
       debug(`${this.index}) creating subinterpreter to run '${term.map((f) => f.toString()).join(' ')}'`);
       const next = new Interpreter();
       next.index = this.index + 1;
+      (this.stack.popN(this.stack.length) as Array<Factor>).forEach((f) => {
+        next.stack.push(f);
+      });
       next.interpret(term);
       this.subinterpreter = next;
       return;

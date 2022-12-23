@@ -58,7 +58,11 @@ export class Engine {
 
   reset() {
     this.clock.reset();
-    this.world = new World();
+    this.world = new World([
+      new Area(0, 1),
+      new Area(1, 0),
+      new Area(1, 1),
+    ]);
     if (this.tty) {
       this.tty.agent = this.world.hero;
     } else {
@@ -127,6 +131,8 @@ export class Engine {
     // TODO: Ensure agents exist
     // and make this more robust
 
+    debug('Agents:', this.world.agents);
+
     data.history.forEach((event) => {
       this.cycle = event.tick;
       const agent = [...this.world.agents].find((a) => a.id === event.agentId) as Agent;
@@ -149,6 +155,7 @@ export class Engine {
   }
 
   tryPerforming(action: IAction, agent: Agent, area: Area): IActionResult {
+    debug('tryPerforming:', agent.id, action.name, area.id);
     const actionDefinition = actions[action.name];
 
     if (!this.authorize) return fail('Not enough stamina.');

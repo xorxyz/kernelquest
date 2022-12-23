@@ -47,6 +47,10 @@ export class Area {
   private rows: Array<Array<Cell>> = new Array(AREA_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Area) => void;
 
+  get id() {
+    return this.position.label;
+  }
+
   get secondsLeft() {
     return this.timeLimit - this.seconds;
   }
@@ -94,7 +98,7 @@ export class Area {
   }
 
   has(agent: Agent): boolean {
-    return this.cells.some((cell) => cell.slot === agent);
+    return this.cells.some((cell) => cell.slot instanceof Agent && cell.slot.id === agent.id);
   }
 
   put(entity: Agent | Thing, position?: Vector) {
@@ -110,6 +114,7 @@ export class Area {
       this.agents.add(entity);
 
       entity.facing.cell = this.cellAt(entity.isLookingAt);
+      entity.pwd = this.id;
     }
 
     if (entity instanceof Thing) {
@@ -202,7 +207,13 @@ export class Area {
     return thing || null;
   }
 
-  findBodyById(id:number): Agent | Thing | null {
-    return this.findAgentById(id) || this.findThingById(id);
+  findCellById(cellId: number): Cell | null {
+    const cell = this.cells.find((c) => c.id === cellId);
+
+    return cell || null;
+  }
+
+  findBodyById(id:number): Agent | Thing | Cell | null {
+    return this.findAgentById(id) || this.findThingById(id) || this.findCellById(id);
   }
 }

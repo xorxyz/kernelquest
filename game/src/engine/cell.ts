@@ -32,7 +32,7 @@ export class Cell {
   }
 
   get id() {
-    return this.position.y * 16 + this.position.x;
+    return 1 + this.position.y * 16 + this.position.x;
   }
 
   public get isBlocked() {
