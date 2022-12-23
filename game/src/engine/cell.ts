@@ -1,3 +1,4 @@
+import { LiteralRef } from '../interpreter';
 import {
   Vector, EMPTY_CELL_CHARS, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from '../shared';
@@ -28,6 +29,10 @@ export class Cell {
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
+  }
+
+  get id() {
+    return this.position.y * 16 + this.position.x;
   }
 
   public get isBlocked() {

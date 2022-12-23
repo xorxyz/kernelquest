@@ -148,7 +148,6 @@ export const step: IActionDefinition<{}> = {
       target.put(agent);
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = area.cellAt(agent.isLookingAt);
-      agent.mind.interpreter.step();
       return succeed('');
     }
 
@@ -436,9 +435,14 @@ export const point: IActionDefinition<{ x: number, y: number }> = {
   perform({ agent, area }, { x, y }) {
     const cell = area.cellAt(new Vector(x, y));
 
-    if (!cell || !cell.slot) {
+    if (!cell) {
       agent.mind.interpreter.sysret(new LiteralRef(0));
       return fail('');
+    }
+
+    if (!cell.slot) {
+      agent.mind.interpreter.sysret(new LiteralRef(cell.id));
+      return succeed('');
     }
 
     agent.mind.interpreter.sysret(new LiteralRef(cell.slot.id));
@@ -475,6 +479,11 @@ export const think: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ agent }) {
     try {
+      // step through program until you reach as syscall
+      while (agent.mind.interpreter.isBusy() && !agent.mind.interpreter.isWaiting()) {
+        agent.mind.interpreter.step();
+      }
+      // execute the syscall
       agent.mind.interpreter.step();
       return succeed('');
     } catch (err) {

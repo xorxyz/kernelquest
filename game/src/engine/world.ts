@@ -68,7 +68,7 @@ export class World {
   public origin = new Area(0, 0);
   public creator: Agent;
   public hero: Agent;
-  public counter = 1;
+  public counter = 1 + 159;
 
   constructor(areas: Array<Area> = []) {
     this.areas = [this.origin, ...areas];
