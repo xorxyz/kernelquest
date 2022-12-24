@@ -21,7 +21,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy'
+  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -447,7 +447,17 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
       return fail(`Cannot find &${id}`);
     }
 
-    const propValue = target[propName];
+    const props = {
+      name: (body) => body.name,
+      xy: (body) => body.position.label,
+      type: (body) => body.type.name,
+    };
+
+    const fn = props[propName];
+
+    const propValue = fn
+      ? fn(target)
+      : undefined;
 
     if (typeof propValue === 'undefined') {
       return fail(`Cannot find prop ${propName} on &${id} (${target.type.name})`);
@@ -499,7 +509,12 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
     }
 
     agent.mind.compiler.dict[name] = new Operator([name], [], (that) => {
-      that.exec(agent.mind.compiler.compile(program));
+      that.syscall({
+        name: 'exec',
+        args: {
+          text: program,
+        },
+      });
     });
 
     return succeed(`Defined [${program}] as '${name}'`);
@@ -553,6 +568,39 @@ export const xy: IActionDefinition<{ refId: number }> = {
   },
 };
 
+export const facing: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent }) {
+    const { cell } = agent.facing;
+
+    if (!cell) {
+      agent.mind.interpreter.sysret(new LiteralRef(0));
+      return fail('');
+    }
+
+    const thing = agent.facing.cell?.slot;
+
+    if (!thing) {
+      agent.mind.interpreter.sysret(new LiteralRef(cell.id));
+      return succeed('');
+    }
+
+    agent.mind.interpreter.sysret(new LiteralRef(thing.id));
+    return succeed('');
+  },
+};
+
+export const del: IActionDefinition<{ word: string }> = {
+  cost: 0,
+  perform({ agent }, { word }) {
+    if (agent.mind.compiler.dict[word]) {
+      delete agent.mind.compiler.dict[word];
+      return succeed(`Deleted the word '${word}'`);
+    }
+    return fail(`Word '${word}' does not exist`);
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -582,6 +630,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   think,
   clear,
   xy,
+  facing,
+  del,
 };
 
 export function succeed(msg: string): IActionResult {

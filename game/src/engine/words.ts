@@ -1,6 +1,7 @@
 import {
   Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
+import syscalls from '../interpreter/syscalls';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, syscall }) => {
@@ -159,6 +160,34 @@ const stackFn = new Operator(['stack'], [], ({ stack }) => {
   stack.push(quotation);
 });
 
+const facing = new Operator(['facing'], [], ({ syscall }) => {
+  syscall({
+    name: 'facing',
+  });
+});
+
+const get = new Operator(['get'], [], ({ syscall }) => {
+  syscall({
+    name: 'get',
+  });
+});
+
+const put = new Operator(['put'], [], ({ syscall }) => {
+  syscall({
+    name: 'put',
+  });
+});
+
+const del = new Operator(['del'], ['string'], ({ stack, syscall }) => {
+  const word = stack.pop() as LiteralString;
+  syscall({
+    name: 'del',
+    args: {
+      word: word.value,
+    },
+  });
+});
+
 export default {
   goto,
   look,
@@ -178,4 +207,8 @@ export default {
   define,
   xy,
   stack: stackFn,
+  facing,
+  get,
+  put,
+  del,
 };

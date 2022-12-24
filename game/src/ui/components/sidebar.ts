@@ -13,7 +13,7 @@ export class Sidebar extends UiComponent {
       `│  Job: ${(`${agent.type.glyph?.value} ${agent.type.name}`).padEnd(11)} │`,
       `│ Hand: ${(agent.hand?.label || nothing(11)).padEnd(11)} │`,
       `│ Eyes: ${(agent.eyes?.type.name || nothing(11)).padEnd(11)} │`,
-      `│ Feet: ${(`[${agent.position.label} ref]`).padEnd(11)} │`,
+      `│ Feet: ${(`${agent.pwd} ${agent.position.label}`).padEnd(11)} │`,
       '│                   │',
       '│ Inventory:        │',
       `│  1. ${nothing(0)}      │`,

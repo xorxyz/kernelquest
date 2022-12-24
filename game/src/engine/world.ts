@@ -22,14 +22,18 @@ export interface Position {
   facing: IFacing
 }
 
-export type AgentTypeName = (
-  'king' | 'dragon' |
-  'wind' | 'water' | 'earth' | 'fire' |
-  'fairy' | 'elf' | 'wizard' | 'sheep' | 'bug' | 'man' | 'spirit'
-)
-export type ThingTypeName = (
-  'tree' | 'wall' | 'door' | 'flag' | 'crown' | 'key' | 'shield' | 'skull' | 'book'
-)
+const agentTypeNames = [
+  'king', 'dragon',
+  'wind', 'water', 'earth', 'fire',
+  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
+] as const;
+
+const thingTypeNames = [
+  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book',
+];
+
+export type AgentTypeName = typeof agentTypeNames[number]
+export type ThingTypeName = typeof thingTypeNames[number]
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   king: King,
@@ -88,7 +92,6 @@ export class World {
 
   create(bodyType: ThingTypeName, area: Area, position?: Vector) {
     const BodyTypeCtor = ThingTypeDict[bodyType];
-    console.log(bodyType, bodyType, 'ctor', BodyTypeCtor);
     const thing = new Thing(this.counter++, new BodyTypeCtor());
     this.things.add(thing);
     area.put(thing, position);

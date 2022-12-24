@@ -115,6 +115,7 @@ export class Interpreter {
   }
 
   private syscall(action: IAction) {
+    debug('running syscall:', action);
     this.action = action;
     this.waiting = true;
   }
