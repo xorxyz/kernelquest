@@ -38,7 +38,12 @@ export class Engine {
     this.clock = new Clock(opts.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
 
-    this.reset();
+    if (process.env.NODE_ENV === 'production') {
+      this.reset();
+    } else {
+      this.selectSaveFile(0);
+      this.load();
+    }
   }
 
   async init() {

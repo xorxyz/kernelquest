@@ -33,17 +33,18 @@ export class Operator extends Factor {
 
     const args = stack.slice(-this.signature.length);
 
-    args.forEach((arg: Factor, i) => {
-      const type = this.signature[i];
+    for (const arg of args) {
+      const i = args.findIndex((a) => a === arg);
+      const types = this.signature[i].split('|');
       if (!(arg instanceof Literal)) {
         throw new Error(`${this.aliases[0]}: arg not instanceof Literal`);
       }
-      if (type !== 'any' && arg.type !== type) {
+      if (!types.includes('any') && !types.includes(arg.type)) {
         throw new Error(`${this.aliases[0]}:`
-          + 'signature doesn\'t match stack type. \n'
-          + `expected: '${type}' got: '${arg.type}' at arg ${i}`);
+          + 'signature doesn\'t match stack type. '
+          + `expected: '${this.signature.join(', ')}' got: '${arg.type}' at arg ${i}`);
       }
-    });
+    }
   }
 
   toString() {

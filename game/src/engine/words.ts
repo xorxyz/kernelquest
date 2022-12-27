@@ -188,6 +188,36 @@ const del = new Operator(['del'], ['string'], ({ stack, syscall }) => {
   });
 });
 
+const puts = new Operator(['puts'], ['string'], ({ stack, syscall }) => {
+  const str = stack.pop() as LiteralString;
+  syscall({
+    name: 'puts',
+    args: {
+      message: str.value,
+    },
+  });
+});
+
+const say = new Operator(['say'], ['string'], ({ stack, syscall }) => {
+  const str = stack.pop() as LiteralString;
+  syscall({
+    name: 'puts',
+    args: {
+      message: str.value,
+    },
+  });
+});
+
+const hi = new Operator(['hi'], ['ref'], ({ stack, syscall }) => {
+  const ref = stack.pop() as LiteralRef;
+  syscall({
+    name: 'hi',
+    args: {
+      agentId: ref.value,
+    },
+  });
+});
+
 export default {
   goto,
   look,
@@ -211,4 +241,7 @@ export default {
   get,
   put,
   del,
+  puts,
+  say,
+  hi,
 };

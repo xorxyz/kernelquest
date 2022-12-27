@@ -21,7 +21,8 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del'
+  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
+  'say' | 'hi'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -417,8 +418,6 @@ export const tell: IActionDefinition<{ agentId: number, message: string }> = {
       return fail(`Could not find an agent with id ${agentId}`);
     }
 
-    console.log('message:', message);
-
     targetAgent.mind.queue.add({
       name: 'exec',
       args: {
@@ -544,6 +543,7 @@ export const clear: IActionDefinition<ActionArguments> = {
   perform({ agent }) {
     const { tick } = agent.mind;
 
+    agent.mind.stack.popN(agent.mind.stack.length);
     agent.logs = new Array(7).fill(0).map(() => ({
       tick,
       message: ' ',
@@ -601,6 +601,49 @@ export const del: IActionDefinition<{ word: string }> = {
   },
 };
 
+export const puts: IActionDefinition<{ message: string }> = {
+  cost: 0,
+  perform(_, { message }) {
+    return succeed(message);
+  },
+};
+
+export const say: IActionDefinition<{ message: string }> = {
+  cost: 0,
+  perform({ area }, { message }) {
+    [...area.agents].forEach((a) => {
+      message.split('\n').forEach((m) => {
+        a.logs.push({
+          message: m,
+          tick: a.mind.tick,
+        });
+      });
+    });
+
+    return succeed('');
+  },
+};
+
+export const hi: IActionDefinition<{ agentId: number }> = {
+  cost: 0,
+  perform({ area }, { agentId }) {
+    const target = area.findAgentById(agentId);
+
+    if (target) {
+      target.mind.queue.add({
+        name: 'say',
+        args: {
+          message: target.mind.pullDialog(),
+        },
+      });
+
+      return succeed('');
+    }
+
+    return fail(`No agent with id ${agentId}`);
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -632,6 +675,9 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   xy,
   facing,
   del,
+  puts,
+  say,
+  hi,
 };
 
 export function succeed(msg: string): IActionResult {

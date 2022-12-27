@@ -1,16 +1,32 @@
-import { debug } from '../shared';
-import { Factor, Literal, Term } from './types';
-import { LiteralTruth, Quotation } from './literals';
-import { choice, Operator, swap } from './operators';
-import { runSeries } from '../shared/async';
+import { Factor, Literal } from './types';
+import { LiteralString, Quotation } from './literals';
+import { choice, Operator } from './operators';
 
 export class Combinator extends Operator {}
 
-export const concat = new Combinator(['concat'], ['quotation', 'quotation'], ({ stack }) => {
-  const a = stack.pop() as Quotation;
-  const b = stack.pop() as Quotation;
+export const concat = new Combinator(['concat'], ['string|quotation', 'string|quotation'], ({ stack, syscall }) => {
+  const b = stack.pop() as Factor;
+  const a = stack.pop() as Factor;
 
-  stack.push(new Quotation(b.value.concat(a.value)));
+  if (a instanceof LiteralString && b instanceof LiteralString) {
+    stack.push(new LiteralString(a.value.concat(b.value)));
+    return;
+  }
+
+  if (a instanceof Quotation && b instanceof Quotation) {
+    stack.push(new Quotation(a.value.concat(b.value)));
+    return;
+  }
+
+  stack.push(a);
+  stack.push(b);
+
+  syscall({
+    name: 'puts',
+    args: {
+      message: 'concat: args should be two strings or two quotations',
+    },
+  });
 });
 
 // [b] [a] -> [[b] a]

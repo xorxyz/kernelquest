@@ -50,4 +50,8 @@ export class Mind {
       name: 'noop',
     };
   }
+
+  pullDialog() {
+    return 'Man: Hi! My name is Adam.\nWhat is your name?\n';
+  }
 }

@@ -153,10 +153,10 @@ export class Scanner {
     }
 
     const text = this.source.substring(this.start + 1, this.current);
-    const n = Number(text);
+    const n = Number(`0x${text}`);
 
     if (Number.isNaN(n)) {
-      throw new Error('Ref should be a positive number');
+      throw new Error('Ref should be a hex string');
     }
 
     this.addToken(TokenType.REF, n);

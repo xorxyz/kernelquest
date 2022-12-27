@@ -21,13 +21,6 @@ export class Spirit extends Hero {
   weight = 1;
 }
 
-/** @category Agent */
-export class Man extends Hero {
-  name = 'man';
-  glyph = new Glyph('👨');
-  weight = 1;
-}
-
 /** @category Agents */
 export class King extends Hero {
   name = 'king';
@@ -88,6 +81,13 @@ export class Elf extends Hero {
 export class Wizard extends Hero {
   name = 'wizard';
   glyph = new Glyph('🧙');
+}
+
+/** @category Agent */
+export class Man extends Friend {
+  name = 'man';
+  glyph = new Glyph('👨');
+  weight = 1;
 }
 
 /** @category Agents */

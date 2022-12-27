@@ -41,7 +41,9 @@ export class VirtualTerminal {
     this.events = engine.events;
     this.send = send;
     this.engine = engine;
-    this.view = new IntroScreen(this);
+    this.view = process.env.NODE_ENV === 'production'
+      ? new IntroScreen(this)
+      : new GameScreen();
     this.state = {
       termMode: false,
       prompt: '$ ',
@@ -167,16 +169,16 @@ export class VirtualTerminal {
         this.switchModes();
         break;
       case (Keys.CTRL_ARROW_UP):
-        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 0));
+        this.agent.jumpCursor(new Vector(0, -1));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        this.agent.cursorPosition.copy(new Vector(15, this.agent.cursorPosition.y));
+        this.agent.jumpCursor(new Vector(1, 0));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 9));
+        this.agent.jumpCursor(new Vector(0, 1));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        this.agent.cursorPosition.copy(new Vector(0, this.agent.cursorPosition.y));
+        this.agent.jumpCursor(new Vector(-1, 0));
         break;
       case (Keys.ARROW_UP):
         this.agent.moveCursor(new Vector(0, -1));

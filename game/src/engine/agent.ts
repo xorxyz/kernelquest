@@ -1,6 +1,6 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style, debug,
 } from '../shared';
 import { Dictionary } from '../interpreter';
 import { Capability } from './capabilities';
@@ -101,6 +101,8 @@ export class Agent extends Body {
   public view: Array<string> = [];
   public pwd: string;
 
+  private area: Area;
+
   constructor(id: number, type: AgentType, words?: Dictionary) {
     super(id, type);
 
@@ -164,6 +166,9 @@ export class Agent extends Body {
   }
 
   takeTurn(tick: number, area: Area): IAction | null {
+    // Not ideal, but useful to query from inside the pty
+    this.area = area;
+
     this.see(area);
     this.mind.update(tick);
 
@@ -233,11 +238,27 @@ export class Agent extends Body {
     }
   }
 
-  halt() {
-    this.halted = true;
+  /* ctrl + arrow keys: jump to after the next thing and stop at edges */
+  jumpCursor(direction: Vector) {
+    const nextPosition = this.cursorPosition.clone().add(direction);
+
+    let cell = this.area.cellAt(nextPosition);
+    let foundSomething;
+
+    while (cell) {
+      if (foundSomething && !cell.slot) {
+        this.cursorPosition.copy(nextPosition);
+        return;
+      }
+      foundSomething = cell.slot;
+      nextPosition.add(direction);
+      cell = this.area.cellAt(nextPosition);
+    }
+
+    this.cursorPosition.copy(nextPosition.sub(direction));
   }
 
-  tell() {
-
+  halt() {
+    this.halted = true;
   }
 }

@@ -77,3 +77,9 @@ export class Book extends BodyType {
   name = 'book';
   glyph = new Glyph('📕');
 }
+
+/** @category Things */
+export class Scroll extends BodyType {
+  name = 'scroll';
+  glyph = new Glyph('📜');
+}
