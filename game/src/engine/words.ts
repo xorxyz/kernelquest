@@ -218,6 +218,18 @@ const hi = new Operator(['hi'], ['ref'], ({ stack, syscall }) => {
   });
 });
 
+const pick = new Operator(['pick'], ['ref', 'number'], ({ stack, syscall }) => {
+  const choiceId = stack.pop() as LiteralNumber;
+  const agentId = stack.pop() as LiteralRef;
+  syscall({
+    name: 'pick',
+    args: {
+      agentId: agentId.value,
+      choiceId: choiceId.value,
+    },
+  });
+});
+
 export default {
   goto,
   look,
@@ -244,4 +256,5 @@ export default {
   puts,
   say,
   hi,
+  pick,
 };

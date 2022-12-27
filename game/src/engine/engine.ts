@@ -1,5 +1,6 @@
 /* eslint-disable no-var */
 import { EventEmitter } from 'events';
+import { Story } from 'inkjs/engine/Story';
 import { Clock, CLOCK_MS_DELAY, debug } from '../shared';
 import { VirtualTerminal } from '../ui';
 import { World } from './world';
@@ -9,6 +10,7 @@ import {
   actions, fail, IAction, IActionDefinition, IActionResult,
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
+import { story } from './story';
 
 export type SendFn = (str: string) => void
 
@@ -32,11 +34,13 @@ export class Engine {
   private initiated = false;
   private saveGameId: SaveGameId;
   readonly clock: Clock;
+  story: Story;
 
   constructor(opts: EngineOptions) {
     this.opts = opts;
     this.clock = new Clock(opts.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
+    this.story = story;
 
     if (process.env.NODE_ENV === 'production') {
       this.reset();

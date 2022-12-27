@@ -6,7 +6,7 @@ import {
   Bug, Dragon, Earth, Elf, Fairy, Fire, King, Man, Sheep, Spirit, Water, Wind, Wizard,
 } from './agents';
 import {
-  Book, Crown, Door, Flag, Key, Shield, Skull, Tree, Wall,
+  Book, Crown, Door, Flag, Grass, Key, Shield, Skull, Tree, Wall,
 } from './things';
 import words from './words';
 
@@ -29,7 +29,7 @@ const agentTypeNames = [
 ] as const;
 
 const thingTypeNames = [
-  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book',
+  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
 ];
 
 export type AgentTypeName = typeof agentTypeNames[number]
@@ -61,6 +61,7 @@ export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
   shield: Shield,
   skull: Skull,
   book: Book,
+  grass: Grass,
 };
 
 /** @category World */

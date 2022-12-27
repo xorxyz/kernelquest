@@ -22,7 +22,7 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi'
+  'say' | 'hi' | 'pick'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -626,18 +626,68 @@ export const say: IActionDefinition<{ message: string }> = {
 
 export const hi: IActionDefinition<{ agentId: number }> = {
   cost: 0,
-  perform({ area }, { agentId }) {
+  perform({ area, engine }, { agentId }) {
     const target = area.findAgentById(agentId);
 
     if (target) {
-      target.mind.queue.add({
-        name: 'say',
-        args: {
-          message: target.mind.pullDialog(),
-        },
-      });
+      while (engine.story.canContinue) {
+        const message = engine.story.Continue() || '';
+        target.mind.queue.add({
+          name: 'say',
+          args: {
+            message,
+          },
+        });
+      }
+
+      if (engine.story.currentChoices.length) {
+        target.mind.queue.add({
+          name: 'say',
+          args: {
+            message: engine.story.currentChoices.map((c) => `${c.index}) ${c.text}`).join('\n'),
+          },
+        });
+      }
 
       return succeed('');
+    }
+
+    return fail(`No agent with id ${agentId}`);
+  },
+};
+
+export const pick: IActionDefinition<{ agentId: number, choiceId: number }> = {
+  cost: 0,
+  perform({ area, engine }, { agentId, choiceId }) {
+    const target = area.findAgentById(agentId);
+
+    if (target) {
+      if (engine.story.currentChoices.length > choiceId) {
+        engine.story.ChooseChoiceIndex(choiceId);
+
+        while (engine.story.canContinue) {
+          const message = engine.story.Continue() || '';
+          target.mind.queue.add({
+            name: 'say',
+            args: {
+              message,
+            },
+          });
+        }
+
+        if (engine.story.currentChoices.length) {
+          target.mind.queue.add({
+            name: 'say',
+            args: {
+              message: engine.story.currentChoices.map((c) => `${c.index}) ${c.text}`).join('\n'),
+            },
+          });
+        }
+
+        return succeed('');
+      }
+
+      return fail(`No choice with id ${choiceId}`);
     }
 
     return fail(`No agent with id ${agentId}`);
@@ -678,6 +728,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   puts,
   say,
   hi,
+  pick,
 };
 
 export function succeed(msg: string): IActionResult {

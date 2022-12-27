@@ -10,3 +10,8 @@ declare global {
     load: LoadFn
   };
 }
+
+declare module '*.ink' {
+  const value: string;
+  export default value;
+}

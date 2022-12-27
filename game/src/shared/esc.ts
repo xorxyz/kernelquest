@@ -6,8 +6,8 @@ export const esc = (str: string) => `${ESC}${str}`;
 export const Colors = {
   Bg: {
     Black: '[40m',
-    Gray: '[0;100m',
-    White: '[47m',
+    Gray: '[48;5;248m',
+    White: '[107m',
     Red: '[41m',
     Green: '[42m',
     Blue: '[044m',
@@ -57,9 +57,9 @@ export const Cursor = {
 };
 
 export const AnsiRegex = new RegExp([
-  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;' +
-  '[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;'
+  + '[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
   '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))',
 ].join('|'), 'g');
 
-export const stripAnsi = (s: String) => s.replace(AnsiRegex, '');
+export const stripAnsi = (s: string) => s.replace(AnsiRegex, '');
