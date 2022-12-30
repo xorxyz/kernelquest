@@ -1,7 +1,13 @@
 import * as Inkjs from 'inkjs';
-import data from '../assets/dialogue/hello-world.ink';
+import helloworld from '../assets/dialogue/hello-world.ink';
+import bookshelf from '../assets/books/bookshelf.ink';
 
-const story = new Inkjs.Compiler(data).Compile();
+const files = [
+  helloworld,
+  bookshelf,
+];
+
+const story = new Inkjs.Compiler(files.join('\n')).Compile();
 
 export {
   story,

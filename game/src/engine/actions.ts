@@ -22,7 +22,7 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'pick' | 'talk'
+  'say' | 'hi' | 'pick' | 'talk' | 'read'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -703,6 +703,26 @@ export const talk: IActionDefinition<ActionArguments> = {
   },
 };
 
+export const read: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent, engine }) {
+    const thing = agent.hand;
+    if (thing) {
+      engine.story.ChoosePathString('example_book');
+      if (engine.story.canContinue) {
+        engine.story.Continue();
+        engine.tty.talking = true;
+      } else {
+        return fail('Could not find content for this book.');
+      }
+
+      return succeed('');
+    }
+
+    return fail('You are not holding a book.');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -738,6 +758,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   say,
   hi,
   talk,
+  read,
 };
 
 export function succeed(msg: string): IActionResult {

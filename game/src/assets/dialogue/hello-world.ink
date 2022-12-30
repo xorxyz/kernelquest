@@ -1,13 +1,14 @@
 // Test file for dialogue
 
-// INCLUDE lib.ink
+// INCLUDE ../books/bookshelf.ink
 
 -> intro
 
 == intro ==
 MAN: Hey there. I'm just some man. <>
-Don't mind me! I'll just stand over here and wait for you to say something. <>
-Don't worry, I'm not in a hurry! <>
+Don't mind me! I'll just stand over here and wait for you to say something.
+
+MAN: Don't worry, I'm not in a hurry! <>
 Besides, it's so nice outside.
 
 +   "No problem!"[], you reply. 
@@ -22,6 +23,6 @@ Besides, it's so nice outside.
 == happy ==
 MAN: That's nice of you to say! You made my day.
 
-*   ["See you around."] The man waves at you as you leave.
++   ["See you around."] The man waves at you as you leave.
 
 -> END

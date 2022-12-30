@@ -230,6 +230,12 @@ const pick = new Operator(['pick'], ['ref', 'number'], ({ stack, syscall }) => {
   });
 });
 
+const read = new Operator(['read'], [], ({ stack, syscall }) => {
+  syscall({
+    name: 'read',
+  });
+});
+
 export default {
   goto,
   look,
@@ -257,4 +263,5 @@ export default {
   say,
   hi,
   pick,
+  read,
 };

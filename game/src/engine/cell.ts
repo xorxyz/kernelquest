@@ -1,4 +1,3 @@
-import { LiteralRef } from '../interpreter';
 import {
   Vector, EMPTY_CELL_CHARS, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from '../shared';
