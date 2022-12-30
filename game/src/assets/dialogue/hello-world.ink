@@ -5,9 +5,12 @@
 -> intro
 
 == intro ==
-He says: "Hello, world." # these are tags
+MAN: Hey there. I'm just a man. Don't mind me! # these are tags
 
-*   "Interesting[."]", you reply. -> intro
-+   "I love the world[."], you say. -> intro
+*   "No problem!["]!", you reply. -> intro
+*   "Who cares[?"], you say. -> intro
+*   "Goodbye."
+*   ->
+    And you don't have anything else to add.
 
 -> END

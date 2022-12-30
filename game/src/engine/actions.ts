@@ -22,7 +22,7 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'pick'
+  'say' | 'hi' | 'pick' | 'talk'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -118,7 +118,9 @@ export const face: IActionDefinition<{ x: number, y: number }> = {
 
 export const step: IActionDefinition<{}> = {
   cost: 0,
-  perform({ agent, area, world }) {
+  perform({
+    agent, area, world, engine,
+  }) {
     const target = area.cellAt(agent.isLookingAt);
 
     if (!target) {
@@ -133,6 +135,9 @@ export const step: IActionDefinition<{}> = {
         if (direction.value.y === 1) nextPosition.setY(0);
         if (direction.value.y === -1) nextPosition.setY(9);
         if (nextArea.cellAt(nextPosition)?.slot) {
+          if (engine.world.hero.id === agent.id) {
+            engine.events.emit('sound:fail');
+          }
           return fail('There is something blocking the way.');
         }
         area.remove(agent);
@@ -172,6 +177,24 @@ export const step: IActionDefinition<{}> = {
       agent.position.add(agent.facing.direction.value);
       agent.facing.cell = area.cellAt(agent.isLookingAt);
       return succeed('');
+    }
+
+    if (target?.slot?.type.name === 'door') {
+      const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
+      if (next && !next.slot) {
+        console.log('its a door and theres a free cell after');
+        area.cellAt(agent.position)?.take();
+        next.put(agent);
+        agent.position.add(agent.facing.direction.value);
+        agent.position.add(agent.facing.direction.value);
+        agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+        return succeed('');
+      }
+    }
+
+    if (engine.world.hero.id === agent.id) {
+      engine.events.emit('sound:fail');
     }
 
     return fail('');
@@ -694,6 +717,25 @@ export const pick: IActionDefinition<{ agentId: number, choiceId: number }> = {
   },
 };
 
+export const talk: IActionDefinition<ActionArguments> = {
+  cost: 0,
+  perform({ agent, area, engine }) {
+    const targetId = agent.facing.cell?.slot?.id;
+    if (targetId) {
+      const target = area.findAgentById(targetId);
+
+      if (target) {
+        engine.story.ContinueMaximally();
+        engine.tty.talking = true;
+
+        return succeed('');
+      }
+    }
+
+    return fail('There is no one here to talk to.');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -729,6 +771,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   say,
   hi,
   pick,
+  talk,
 };
 
 export function succeed(msg: string): IActionResult {

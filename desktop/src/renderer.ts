@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
   if (!terminalEl) throw new Error('Cant find the element.');
 
+  const audioEl = document.querySelector('#audio-player') as HTMLAudioElement;
+  if (!audioEl) throw new Error('Cant find audio player element');
+
   const engine = new Engine({
     send: (str) => term.write(str),
   });
@@ -26,6 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   await engine.init();
 
   engine.start();
+
+  engine.events.on('sound:fail', () => {
+    audioEl.currentTime = 0;
+    audioEl.play();
+  });
 
   global.engine = engine;
 });

@@ -10,7 +10,6 @@ import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
-import { Navbar } from './components/navbar';
 
 /** @category PTY */
 export interface IVirtalTerminalState {
@@ -31,6 +30,7 @@ export class VirtualTerminal {
   public send: SendFn;
   public menuIsOpen = false;
   public engine: Engine;
+  public talking = false;
 
   public paused = true;
 
@@ -85,28 +85,7 @@ export class VirtualTerminal {
   }
 
   handleInput(str) {
-    if (this.view instanceof GameScreen) {
-      if (this.menuIsOpen) {
-        if (str === Keys.ESCAPE) {
-          this.menuIsOpen = false;
-          (this.view.components.navbar as Navbar).visible = false;
-          this.clear();
-        } else {
-          (this.view.components.navbar as Navbar).handleInput(str, this);
-        }
-      } else if (str === Keys.ESCAPE) {
-        this.menuIsOpen = true;
-        (this.view.components.navbar as Navbar).visible = true;
-      } else if (this.state.termMode) {
-        this.handleTerminalInput(str);
-      } else {
-        const action = this.getActionForKey(str);
-
-        if (action) this.agent.schedule(action);
-      }
-    } else {
-      this.view.handleInput(str, this);
-    }
+    this.view.handleInput(str, this);
 
     this.render(this.agent.mind.tick);
   }
@@ -212,6 +191,9 @@ export class VirtualTerminal {
         break;
       case (Keys.LOWER_D):
         action = { name: 'right' };
+        break;
+      case (Keys.LOWER_T):
+        action = { name: 'talk' };
         break;
       case (Keys.SPACE):
         action = {

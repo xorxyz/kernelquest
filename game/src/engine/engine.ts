@@ -29,7 +29,7 @@ export class Engine {
   public elapsed = 0;
   public history: Array<HistoryEvent> = [];
   public saveGames: SaveGameDict;
-  private tty: VirtualTerminal;
+  public tty: VirtualTerminal;
   private opts: EngineOptions;
   private initiated = false;
   private saveGameId: SaveGameId;
