@@ -6,13 +6,9 @@ import { N_OF_LINES, UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
 
 function formatLines(str: string): Array<string> {
-  const maxSize = LINE_LENGTH - 4;
-  const yardstick = new RegExp(`.{${maxSize}}`, 'g'); // /.{10}/g;
+  const yardstick = /[^\s]+.{1,56}(?:\s|$)/g; // /.{10}/g;
   // default to the full string if it's shorter than the yardstick
   const pieces = str.match(yardstick) || [str];
-  const accumulated = (pieces.length * maxSize);
-  const modulo = str.length % accumulated;
-  if (modulo) pieces.push(str.slice(accumulated));
   return pieces;
 }
 
@@ -38,7 +34,9 @@ export class DialogueBox extends UiComponent {
   next(pty:VirtualTerminal) {
     const next = pty.engine.story.Continue();
     console.log('next:', next);
-    this.currentText.push(next || '');
+    next?.split('\n').forEach((str) => {
+      this.currentText.push(str);
+    });
     console.log(this.currentText);
   }
 
@@ -90,22 +88,29 @@ export class DialogueBox extends UiComponent {
     }
 
     const content = this.currentText.length
-      ? this.currentText.join('')
-      : pty.engine.story.currentText || '';
+      ? this.currentText
+      : pty.engine.story.currentText?.split('\n') || [];
 
     const choices = (this.options.map((c) => (this.selected === c.index
       ? `${esc(Style.Invert)}  * ${c.text.padEnd(LINE_LENGTH - 8, ' ')}${esc(Style.Reset)}`
       : `  * ${c.text.padEnd(LINE_LENGTH - 8)}`
     )));
 
-    const formatted = content.split('\n')
+    const formatted = content
       .flatMap((l) => formatLines(l))
-      .filter((x) => x);
+      .reduce(
+        (prev, curr, i) => ((!prev[i - 1] && !curr) ? prev : [...prev, curr]),
+        [] as string[],
+      );
+
+    if (formatted[formatted.length - 1] === '') {
+      formatted.pop();
+    }
 
     const logs = formatted
       .map((l) => l.padEnd(LINE_LENGTH - 4, ' '))
       .slice(-(8 - choices.length))
-      .concat(['\n'])
+      .concat(formatted[formatted.length - 1] === '' ? [] : [''.padEnd(LINE_LENGTH - 4, ' ')])
       .concat(choices)
       .concat(new Array(Math.max((8 - choices.length - formatted.length), 0)).fill('').map((l) => l.padEnd(LINE_LENGTH - 4, ' ')));
 

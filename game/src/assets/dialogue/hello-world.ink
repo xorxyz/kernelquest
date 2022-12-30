@@ -5,15 +5,17 @@
 -> intro
 
 == intro ==
-MAN: Hey there. I'm just some man. Don't mind me! I'll just stand over here and wait for you to say something.
-Don't worry, I'm not in a hurry!
+MAN: Hey there. I'm just some man. <>
+Don't mind me! I'll just stand over here and wait for you to say something. <>
+Don't worry, I'm not in a hurry! <>
+Besides, it's so nice outside.
 
 +   "No problem!"[], you reply. 
     -> happy
 +   "Who cares?"[], you say.
     -> intro
 +   ["Goodbye."]
-    You don't have much to say to this man.
+    You don't have much to say to this man. <>
     You decide to leave him alone and walk away. 
     -> END
 
