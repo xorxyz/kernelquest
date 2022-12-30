@@ -21,13 +21,6 @@ export class Spirit extends Hero {
   weight = 1;
 }
 
-/** @category Agent */
-export class Man extends Hero {
-  name = 'man';
-  glyph = new Glyph('👨');
-  weight = 1;
-}
-
 /** @category Agents */
 export class King extends Hero {
   name = 'king';
@@ -40,6 +33,14 @@ export class Dragon extends Foe {
   name = 'dragon';
   glyph = new Glyph('🐉');
   weight = 1;
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Stars extends Element {
+  name = 'stars';
+  glyph = new Glyph('✨');
+  weight = 0;
   capabilities = [];
 }
 
@@ -90,6 +91,27 @@ export class Wizard extends Hero {
   glyph = new Glyph('🧙');
 }
 
+/** @category Agent */
+export class Child extends Friend {
+  name = 'child';
+  glyph = new Glyph('🧒');
+  weight = 1;
+}
+
+/** @category Agent */
+export class Man extends Friend {
+  name = 'man';
+  glyph = new Glyph('👨');
+  weight = 1;
+}
+
+/** @category Agent */
+export class Ancestor extends Friend {
+  name = 'ancestor';
+  glyph = new Glyph('👴');
+  weight = 1;
+}
+
 /** @category Agents */
 export class Sheep extends Friend {
   name = 'sheep';
@@ -106,9 +128,86 @@ export class Bug extends Foe {
 }
 
 /** @category Agents */
-export class Microbe extends Foe {
-  name = 'microbe';
-  glyph = new Glyph('🦠');
+export class Demon extends Foe {
+  name = 'demon';
+  glyph = new Glyph('👿');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Snake extends Foe {
+  name = 'snake';
+  glyph = new Glyph('🐍');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Goblin extends Foe {
+  name = 'goblin';
+  glyph = new Glyph('👺');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Ogre extends Foe {
+  name = 'ogre';
+  glyph = new Glyph('👹');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Spider extends Foe {
+  name = 'spider';
+  glyph = new Glyph('🕷️');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Wolf extends Foe {
+  name = 'wolf';
+  glyph = new Glyph('🐺');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Ghost extends Foe {
+  name = 'ghost';
+  glyph = new Glyph('👻');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Rat extends Foe {
+  name = 'rat';
+  glyph = new Glyph('🐀');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Bat extends Foe {
+  name = 'bat';
+  glyph = new Glyph('🦇');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Owl extends Friend {
+  name = 'owl';
+  glyph = new Glyph('🦉');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Deer extends Friend {
+  name = 'deer';
+  glyph = new Glyph('🦌');
+  capabilities = [];
+}
+
+/** @category Agents */
+export class Snail extends Friend {
+  name = 'snail';
+  glyph = new Glyph('🐌');
   capabilities = [];
 }
 

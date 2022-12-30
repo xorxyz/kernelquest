@@ -3,10 +3,21 @@ import { Area } from './area';
 import { BodyType, Thing } from './thing';
 import { Agent, AgentType, IFacing } from './agent';
 import {
-  Bug, Dragon, Earth, Elf, Fairy, Fire, King, Man, Sheep, Spirit, Water, Wind, Wizard,
+  Ancestor,
+  Bat,
+  Bug, Child, Deer, Demon, Dragon,
+  Earth, Elf, Fairy, Fire, Ghost, Goblin, King, Man,
+  Ogre, Owl, Rat, Sheep, Snail, Snake, Spider, Spirit, Stars, Water, Wind, Wizard, Wolf,
 } from './agents';
 import {
-  Book, Crown, Door, Flag, Key, Shield, Skull, Tree, Wall,
+  Axe,
+  Bag,
+  Bomb,
+  Book,
+  Boot,
+  Bow,
+  Candle, Castle, Crown, Door, Flag, Fruit, Grass,
+  Key, Map, Mountain, River, Shield, Skull, Tree, Village, Wall,
 } from './things';
 import words from './words';
 
@@ -22,18 +33,29 @@ export interface Position {
   facing: IFacing
 }
 
-export type AgentTypeName = (
-  'king' | 'dragon' |
-  'wind' | 'water' | 'earth' | 'fire' |
-  'fairy' | 'elf' | 'wizard' | 'sheep' | 'bug' | 'man' | 'spirit'
-)
-export type ThingTypeName = (
-  'tree' | 'wall' | 'door' | 'flag' | 'crown' | 'key' | 'shield' | 'skull' | 'book'
-)
+const agentTypeNames = [
+  'king', 'dragon',
+  'stars',
+  'wind', 'water', 'earth', 'fire',
+  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
+  'owl', 'deer', 'snail',
+  'child', 'ancestor', 'demon',
+  'snake', 'goblin', 'ogre', 'spider', 'wolf', 'ghost', 'rat', 'bat',
+] as const;
+
+const thingTypeNames = [
+  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
+  'mountain', 'fruit', 'castle', 'village', 'candle', 'axe', 'bomb', 'bow', 'bag',
+  'boot', 'bag', 'map',
+];
+
+export type AgentTypeName = typeof agentTypeNames[number]
+export type ThingTypeName = typeof thingTypeNames[number]
 
 export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   king: King,
   dragon: Dragon,
+  stars: Stars,
   wind: Wind,
   water: Water,
   earth: Earth,
@@ -45,6 +67,20 @@ export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
   bug: Bug,
   man: Man,
   spirit: Spirit,
+  owl: Owl,
+  deer: Deer,
+  snail: Snail,
+  child: Child,
+  ancestor: Ancestor,
+  demon: Demon,
+  snake: Snake,
+  goblin: Goblin,
+  ogre: Ogre,
+  spider: Spider,
+  wolf: Wolf,
+  ghost: Ghost,
+  rat: Rat,
+  bat: Bat,
 };
 
 export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
@@ -57,6 +93,20 @@ export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
   shield: Shield,
   skull: Skull,
   book: Book,
+  grass: Grass,
+  river: River,
+  mountain: Mountain,
+  fruit: Fruit,
+  castle: Castle,
+  village: Village,
+  candle: Candle,
+  axe: Axe,
+  bomb: Bomb,
+  bow: Bow,
+  bat: Bat,
+  boot: Boot,
+  bag: Bag,
+  map: Map,
 };
 
 /** @category World */
@@ -68,7 +118,9 @@ export class World {
   public origin = new Area(0, 0);
   public creator: Agent;
   public hero: Agent;
-  public counter = 1;
+
+  // id 0 is null, 1-160 is for cells
+  public counter = 1 + 160;
 
   constructor(areas: Array<Area> = []) {
     this.areas = [this.origin, ...areas];
@@ -86,7 +138,6 @@ export class World {
 
   create(bodyType: ThingTypeName, area: Area, position?: Vector) {
     const BodyTypeCtor = ThingTypeDict[bodyType];
-    console.log(bodyType, bodyType, 'ctor', BodyTypeCtor);
     const thing = new Thing(this.counter++, new BodyTypeCtor());
     this.things.add(thing);
     area.put(thing, position);

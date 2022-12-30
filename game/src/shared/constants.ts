@@ -1,6 +1,6 @@
 import { Rectangle, Vector } from './math';
 
-export const CLOCK_MS_DELAY = 120;
+export const CLOCK_MS_DELAY = 15;
 
 export const AREA_WIDTH = 16;
 export const AREA_HEIGHT = 10;
@@ -55,6 +55,7 @@ export const Keys = {
   LOWER_P: '70',
   LOWER_R: '72',
   LOWER_S: '73',
+  LOWER_T: '74',
   LOWER_W: '77',
 };
 

@@ -4,130 +4,135 @@
  */
 
 import { IAction } from '../engine';
-import { debug, Queue, Stack } from '../shared';
-import { Compiler } from './compiler';
-import { Quotation } from './literals';
-import {
-  Factor, IExecutionArguments, Term,
-} from './types';
+import { debug, LINE_LENGTH, Stack } from '../shared';
+import { Factor, Term } from './types';
 
-export class Interpretation {
-  public term: Term;
-  public stack: Stack<Factor>;
+export class Interpreter {
+  index = 0;
+  stack: Stack<Factor> = new Stack();
+  term: Term = [];
 
-  constructor(term: Term) {
+  action: IAction | null = null;
+  callback: (() => void) | null = null;
+  waiting = false;
+
+  subinterpreter: Interpreter | null = null;
+
+  get stackStr() {
+    return this.subinterpreter
+      ? `${this.stack.toString()} [ ${this.subinterpreter.stackStr} ]`
+      : this.stack.toString();
+  }
+
+  interpret(term: Term) {
+    // if I'm already working on some term, create a sub interpreter
+    if (this.isBusy()) {
+      if (this.subinterpreter) {
+        this.subinterpreter.interpret(term);
+        return;
+      }
+      debug(`${this.index}) creating subinterpreter to run '${term.map((f) => f.toString()).join(' ')}'`);
+      const next = new Interpreter();
+      next.index = this.index + 1;
+      (this.stack.popN(this.stack.length) as Array<Factor>).forEach((f) => {
+        next.stack.push(f);
+      });
+      next.interpret(term);
+      this.subinterpreter = next;
+      return;
+    }
+
     this.term = term;
   }
 
-  run(execArgs: IExecutionArguments): Interpretation | Error {
-    this.stack = execArgs.stack;
-    for (let i = 0; i < this.term.length; i++) {
-      const factor = this.term[i];
-      try {
-        factor.validate(execArgs.stack);
-        factor.execute(execArgs);
-      } catch (err) {
-        return err as Error;
+  isBusy() {
+    return (this.term && this.term.length);
+  }
+
+  step() {
+    // prioritize subinterpreters
+    if (this.subinterpreter) {
+      // if the subinterpreter still has work to do, let it step instead
+      if (this.subinterpreter.term.length) {
+        this.subinterpreter.step();
+        return;
       }
+      // if it's done, get the results back on top of this stack, and get rid of the sub
+      debug(`${this.index}) came back with`, this.subinterpreter.stack.toString());
+      this.subinterpreter.stack.arr.forEach((f) => {
+        this.stack.push(f);
+      });
+      debug(`stack: ${this.stackStr}`);
+      this.subinterpreter = null;
     }
 
-    return this;
-  }
-}
+    if (this.action) {
+      return;
+    }
 
-export class Interpreter {
-  private paused = false;
-  private stack: Stack<Factor>;
-  private queue: Queue<IAction>;
-  private compiler: Compiler;
-  private runtime: IExecutionArguments;
-  private continuations: Stack<(done: () => void) => void> = new Stack();
+    const factor = this.term.shift();
 
-  constructor(compiler: Compiler, stack: Stack<Factor>, queue: Queue<IAction>) {
-    this.compiler = compiler;
-    this.stack = stack;
-    this.queue = queue;
-    this.runtime = {
+    if (!factor) {
+      return;
+    }
+
+    factor.validate(this.stack);
+    debug(`${this.index}) running '${factor.toString()}'`);
+    factor.execute({
       stack: this.stack,
-      dict: this.compiler.dict,
       syscall: this.syscall.bind(this),
       exec: this.exec.bind(this),
-    };
+    });
+    debug(`stack: ${this.stackStr}`);
   }
 
-  get isPaused() {
-    return this.paused;
+  sysret(factor: Factor) {
+    const interpreter = this.findCurrentInterpreter();
+
+    interpreter.stack.push(factor);
+    interpreter.waiting = false;
+    if (interpreter.callback) {
+      debug(`${this.index}) calling callback`);
+      interpreter.callback();
+      interpreter.callback = null;
+    }
   }
 
-  pause() {
-    this.paused = true;
+  takeAction() {
+    const interpreter = this.findCurrentInterpreter();
+
+    const { action } = interpreter;
+
+    interpreter.action = null;
+
+    return action;
   }
 
-  unpause() {
-    this.paused = false;
+  isWaiting() {
+    return this.subinterpreter
+      ? this.subinterpreter.isWaiting()
+      : this.waiting;
   }
 
-  exec(text: string, callback?: (done: () => void) => void) {
-    const action = {
+  private syscall(action: IAction) {
+    debug('running syscall:', action);
+    this.action = action;
+    this.waiting = true;
+  }
+
+  private findCurrentInterpreter(): Interpreter {
+    return this.subinterpreter
+      ? this.subinterpreter.findCurrentInterpreter()
+      : this;
+  }
+
+  private exec(term: Term, callback?: () => void) {
+    this.callback = callback || null;
+    this.syscall({
       name: 'exec',
-      args: { text },
-    };
-
-    this.syscall(action, callback);
+      args: {
+        text: term.map((f) => f.toString()).join(' '),
+      },
+    });
   }
-
-  syscall(action: IAction, callback?: (done: () => void) => void) {
-    this.continuations.push(callback || ((d) => { d(); }));
-    this.queue.add(action);
-    this.pause();
-  }
-
-  next() {
-    const continuation = this.continuations.pop();
-
-    if (continuation) {
-      continuation(this.unpause.bind(this));
-    }
-  }
-
-  step(line: string) {
-    try {
-      debug('interpreter.step', line);
-      const term = this.compiler.compile(line);
-      debug('term is', term);
-
-      const factor = term.shift();
-
-      if (!factor) return '';
-      debug('factor is', factor);
-
-      factor.validate(this.stack);
-      factor.execute(this.runtime);
-
-      debug('finished executing factor:', factor.toString(), 'stack:', JSON.stringify(this.stack.arr.map((a) => a.value)));
-
-      return term.map((t) => t.toString()).join(' ');
-    } catch (err) {
-      return err as Error;
-    }
-  }
-
-  // interpret(line: string, queue: Queue<IAction>): Interpretation | Error {
-  //   let term;
-
-  //   try {
-  //     term = this.compiler.compile(line);
-  //   } catch (err) {
-  //     return err as Error;
-  //   }
-
-  //   const interpretation = new Interpretation(term);
-  //   const result = interpretation.run({
-  //     queue,
-  //     stack: this.stack,
-  //     dict: this.compiler.dict,
-  //   });
-
-  //   return result;
-  // }
 }

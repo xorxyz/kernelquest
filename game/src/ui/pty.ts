@@ -10,7 +10,6 @@ import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
-import { Navbar } from './components/navbar';
 
 /** @category PTY */
 export interface IVirtalTerminalState {
@@ -31,6 +30,7 @@ export class VirtualTerminal {
   public send: SendFn;
   public menuIsOpen = false;
   public engine: Engine;
+  public talking = false;
 
   public paused = true;
 
@@ -41,7 +41,9 @@ export class VirtualTerminal {
     this.events = engine.events;
     this.send = send;
     this.engine = engine;
-    this.view = new IntroScreen(this);
+    this.view = process.env.NODE_ENV === 'production'
+      ? new IntroScreen(this)
+      : new GameScreen();
     this.state = {
       termMode: false,
       prompt: '$ ',
@@ -83,28 +85,7 @@ export class VirtualTerminal {
   }
 
   handleInput(str) {
-    if (this.view instanceof GameScreen) {
-      if (this.menuIsOpen) {
-        if (str === Keys.ESCAPE) {
-          this.menuIsOpen = false;
-          (this.view.components.navbar as Navbar).visible = false;
-          this.clear();
-        } else {
-          (this.view.components.navbar as Navbar).handleInput(str, this);
-        }
-      } else if (str === Keys.ESCAPE) {
-        this.menuIsOpen = true;
-        (this.view.components.navbar as Navbar).visible = true;
-      } else if (this.state.termMode) {
-        this.handleTerminalInput(str);
-      } else {
-        const action = this.getActionForKey(str);
-
-        if (action) this.agent.schedule(action);
-      }
-    } else {
-      this.view.handleInput(str, this);
-    }
+    this.view.handleInput(str, this);
 
     this.render(this.agent.mind.tick);
   }
@@ -167,16 +148,16 @@ export class VirtualTerminal {
         this.switchModes();
         break;
       case (Keys.CTRL_ARROW_UP):
-        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 0));
+        this.agent.jumpCursor(new Vector(0, -1));
         break;
       case (Keys.CTRL_ARROW_RIGHT):
-        this.agent.cursorPosition.copy(new Vector(15, this.agent.cursorPosition.y));
+        this.agent.jumpCursor(new Vector(1, 0));
         break;
       case (Keys.CTRL_ARROW_DOWN):
-        this.agent.cursorPosition.copy(new Vector(this.agent.cursorPosition.x, 9));
+        this.agent.jumpCursor(new Vector(0, 1));
         break;
       case (Keys.CTRL_ARROW_LEFT):
-        this.agent.cursorPosition.copy(new Vector(0, this.agent.cursorPosition.y));
+        this.agent.jumpCursor(new Vector(-1, 0));
         break;
       case (Keys.ARROW_UP):
         this.agent.moveCursor(new Vector(0, -1));
@@ -210,6 +191,9 @@ export class VirtualTerminal {
         break;
       case (Keys.LOWER_D):
         action = { name: 'right' };
+        break;
+      case (Keys.LOWER_T):
+        action = { name: 'talk' };
         break;
       case (Keys.SPACE):
         action = {

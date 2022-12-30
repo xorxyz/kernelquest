@@ -10,7 +10,8 @@
   "author": "Jonathan Dupré <hello@jonathandupre.com>",
   "license": "MIT",
   "dependencies": {
-    "events": "^3.3.0"
+    "events": "^3.3.0",
+    "inkjs": "^2.2.0"
   },
   "devDependencies": {
     "@types/events": "^3.0.0"

@@ -1,5 +1,6 @@
 /* eslint-disable no-var */
 import { EventEmitter } from 'events';
+import { Story } from 'inkjs/engine/Story';
 import { Clock, CLOCK_MS_DELAY, debug } from '../shared';
 import { VirtualTerminal } from '../ui';
 import { World } from './world';
@@ -9,7 +10,7 @@ import {
   actions, fail, IAction, IActionDefinition, IActionResult,
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
-import { Operator } from '../interpreter';
+import { story } from './story';
 
 export type SendFn = (str: string) => void
 
@@ -28,18 +29,25 @@ export class Engine {
   public elapsed = 0;
   public history: Array<HistoryEvent> = [];
   public saveGames: SaveGameDict;
-  private tty: VirtualTerminal;
+  public tty: VirtualTerminal;
   private opts: EngineOptions;
   private initiated = false;
   private saveGameId: SaveGameId;
   readonly clock: Clock;
+  story: Story;
 
   constructor(opts: EngineOptions) {
     this.opts = opts;
     this.clock = new Clock(opts.rate || CLOCK_MS_DELAY);
     this.clock.on('tick', this.update.bind(this));
+    this.story = story;
 
-    this.reset();
+    if (process.env.NODE_ENV === 'production') {
+      this.reset();
+    } else {
+      this.selectSaveFile(0);
+      this.load();
+    }
   }
 
   async init() {
@@ -59,7 +67,11 @@ export class Engine {
 
   reset() {
     this.clock.reset();
-    this.world = new World();
+    this.world = new World([
+      new Area(0, 1),
+      new Area(1, 0),
+      new Area(1, 1),
+    ]);
     if (this.tty) {
       this.tty.agent = this.world.hero;
     } else {
@@ -128,6 +140,8 @@ export class Engine {
     // TODO: Ensure agents exist
     // and make this more robust
 
+    debug('Agents:', this.world.agents);
+
     data.history.forEach((event) => {
       this.cycle = event.tick;
       const agent = [...this.world.agents].find((a) => a.id === event.agentId) as Agent;
@@ -150,6 +164,7 @@ export class Engine {
   }
 
   tryPerforming(action: IAction, agent: Agent, area: Area): IActionResult {
+    // debug('tryPerforming:', agent.id, action.name, area.id);
     const actionDefinition = actions[action.name];
 
     if (!this.authorize) return fail('Not enough stamina.');
@@ -167,7 +182,7 @@ export class Engine {
   processTurn(area: Area, agent: Agent) {
     const action = agent.takeTurn(this.cycle, area);
 
-    if (action) {
+    if (action && action.name !== 'noop') {
       const result = this.tryPerforming(action, agent, area);
 
       if (result.message) {
@@ -177,7 +192,7 @@ export class Engine {
         });
       }
 
-      if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
+      if (!['save', 'load', 'exit', 'exec', 'think'].includes(action.name)) {
         this.history.push({
           action,
           tick: this.cycle,

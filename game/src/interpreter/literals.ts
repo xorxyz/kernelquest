@@ -50,7 +50,7 @@ export class LiteralRef extends Literal {
   type = 'ref';
   declare value: number;
   constructor(n: number) {
-    super(`&${n}`, n);
+    super(`&${n.toString(16)}`, n);
   }
 
   toString() {

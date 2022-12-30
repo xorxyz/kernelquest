@@ -1,13 +1,16 @@
 import { LINE_LENGTH } from '../../shared';
-import { Factor } from '../../interpreter';
 import { UiComponent } from '../component';
 import { VirtualTerminal } from '../pty';
 
 /** @category Components */
 export class StackPane extends UiComponent {
   render({ agent }: VirtualTerminal) {
+    const isWaiting = agent.mind.interpreter.isBusy() || agent.mind.interpreter.subinterpreter;
+    const frame = agent.mind.tick % 2 === 0 ? '⏳' : '⌛';
+    const icon = isWaiting ? frame : '  ';
+
     return [
-      `  [ ${agent.mind.stack.arr.map((factor: Factor) => factor.toString()).join(' ').padEnd(LINE_LENGTH - 8)} ]`,
+      `${icon}[ ${agent.mind.interpreter.stackStr.padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
     ];
   }
 }

@@ -1,7 +1,7 @@
 import {
-  Interpretation, Interpreter, Compiler, Factor, Dictionary,
+  Interpreter, Compiler, Factor, Dictionary, Quotation,
 } from '../interpreter';
-import { debug, Queue, Stack } from '../shared';
+import { Queue, Stack } from '../shared';
 import { IAction } from './actions';
 
 /** @category Mind */
@@ -12,38 +12,46 @@ export interface Observation {
 
 /** @category Mind */
 export class Mind {
-  public tick = 0;
-  public memory: Array<Observation> = [];
-  public queue: Queue<IAction> = new Queue<IAction>();
-  public stack: Stack<Factor> = new Stack();
-  private compiler: Compiler;
-  private interpreter: Interpreter;
+  tick = 0;
+  memory: Array<Observation> = [];
+  queue: Queue<IAction> = new Queue<IAction>();
+  compiler: Compiler;
+  interpreter: Interpreter;
 
   constructor(words?: Dictionary) {
     this.compiler = new Compiler(words);
-
-    this.interpreter = new Interpreter(this.compiler, this.stack, this.queue);
+    this.interpreter = new Interpreter();
   }
 
-  decide() {
-    if (this.queue.peek()) {
-      return this.queue.next();
+  get stack() {
+    return this.interpreter.stack;
+  }
+
+  update(tick) {
+    this.tick = tick;
+  }
+
+  decide(): IAction {
+    const syscall = this.interpreter.takeAction();
+    if (syscall) {
+      return syscall;
     }
-    this.interpreter.next();
+
+    const next = this.queue.next();
+    if (next) return next;
+
+    if (this.interpreter.isWaiting() || this.interpreter.isBusy()) {
+      return {
+        name: 'think',
+      };
+    }
+
     return {
       name: 'noop',
     };
   }
 
-  interpret(line: string): string | Error {
-    const result = this.interpreter.step(line);
-
-    debug(`interpret(${line}):`, result);
-
-    return result;
-  }
-
-  update(tick) {
-    this.tick = tick;
+  pullDialog() {
+    return 'Man: Hi! My name is Adam.\nWhat is your name?\n';
   }
 }

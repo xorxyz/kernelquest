@@ -1,6 +1,13 @@
-const isDev = true;
+/* eslint-disable no-console */
 
-export const debug = (...x) => { if (isDev) { console.log(...x); } };
+const log = console.log.bind(console);
+
+export const debug = (...args) => {
+  log('[debug]:', ...args);
+};
+
 export const info = console.info.bind(console);
+
 export const warn = console.warn.bind(console);
+
 export const error = console.error.bind(console);
