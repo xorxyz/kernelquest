@@ -16,9 +16,9 @@ export class Sidebar extends UiComponent {
       `│ Feet: ${(`[${agent.pwd}] [${agent.position.label}]`).padEnd(11)} │`,
       '│                   │',
       '│ Inventory:        │',
-      `│  1. ${nothing(0)}      │`,
-      `│  2. ${nothing(0)}      │`,
-      `│  3. ${nothing(0)}      │`,
+      `│  1. ${(agent.inventory.peekN(0)?.label || nothing(0)).padEnd(14)}│`,
+      `│  2. ${(agent.inventory.peekN(1)?.label || nothing(0)).padEnd(14)}│`,
+      `│  3. ${(agent.inventory.peekN(2)?.label || nothing(0)).padEnd(14)}│`,
       '│                   │',
       '└───────────────────┘',
     ];

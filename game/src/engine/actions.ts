@@ -296,7 +296,7 @@ export const get: IActionDefinition<{}> = {
       return fail('There\'s nothing here.');
     }
 
-    if (agent.hand) {
+    if (agent.hand && agent.inventory.length >= 3) {
       return fail('You hands are full.');
     }
 
@@ -310,25 +310,13 @@ export const get: IActionDefinition<{}> = {
       return fail('');
     }
 
-    const thing = agent.get();
-
-    if (thing) {
-      if (thing instanceof Thing) {
-        thing.owner = agent;
-
-        if (thing.type instanceof Crown) {
-          area.capturedCrowns.add(thing);
-        }
-
-        if (thing.type instanceof Flag) {
-          area.capturedFlags.add(thing);
-        }
-      }
-
-      return succeed(`You get the ${thing.name}.`);
+    if (agent.hand) {
+      agent.inventory.push(agent.hand);
     }
 
-    return fail('');
+    const thing = agent.get() as Thing;
+
+    return succeed(`You get the ${thing.name}.`);
   },
 };
 

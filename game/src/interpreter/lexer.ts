@@ -140,7 +140,7 @@ export class Scanner {
   }
 
   private identifier() {
-    while (isAlphaNumeric(this.peek())) this.next();
+    while (isAlphaNumeric(this.peek()) || this.peek() === '_') this.next();
 
     const text = this.source.substring(this.start, this.current);
     const type = keywords[text] || TokenType.IDENTIFIER;

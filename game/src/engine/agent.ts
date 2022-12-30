@@ -1,6 +1,6 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style, debug,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style, debug, Stack,
 } from '../shared';
 import { Dictionary } from '../interpreter';
 import { Capability } from './capabilities';
@@ -73,7 +73,7 @@ export class Agent extends Body {
   public name = 'anon';
   declare public type: AgentType;
   public mind: Mind;
-  public hand: Agent | Thing | null = null;
+  public hand: Thing | null = null;
   public eyes: Agent | Thing | null = null;
   public hp = new HP(10);
   public sp = new SP(0, 10);
@@ -97,6 +97,7 @@ export class Agent extends Body {
     { tick: 0, message: ' ' },
     { tick: 0, message: ' ' },
   ];
+  public inventory: Stack<Thing> = new Stack();
 
   public view: Array<string> = [];
   public pwd: string;
@@ -140,9 +141,11 @@ export class Agent extends Body {
   }
 
   get(): Agent | Thing | null {
-    if (this.hand || !this.facing.cell) return this.hand || null;
+    if (!this.facing.cell) return null;
+    if (!(this.facing.cell.slot instanceof Thing)) return null;
 
-    this.hand = this.facing.cell.take();
+    this.hand = this.facing.cell.take() as Thing;
+    this.hand.owner = this;
 
     return this.hand;
   }

@@ -1,8 +1,11 @@
-import { debug, Stack } from '../shared';
+/* eslint-disable camelcase */
+import { debug, Stack, Vector } from '../shared';
 import {
   ExecuteArgs, Factor, Literal,
 } from './types';
-import { LiteralNumber, LiteralString, LiteralTruth } from './literals';
+import {
+  LiteralNumber, LiteralString, LiteralTruth, Quotation,
+} from './literals';
 import syscalls from './syscalls';
 
 export class Operator extends Factor {
@@ -183,6 +186,44 @@ export const choice = new Operator(['choice'], ['truth', 'any', 'any'], ({ stack
   }
 });
 
+function testBinaryVector(a: Quotation, b: Quotation) {
+  const test = (q) => q.value.length === 2 && q.value.every((v) => v.type === 'number');
+  if (!test(a)) throw new Error(`[A] (${a.toString()}) is not a valid vector`);
+  if (!test(b)) throw new Error(`[B] (${b.toString()}) is not a valid vector`);
+}
+
+const vector_add = new Operator(['vector_add'], ['quotation', 'quotation'], ({ stack }) => {
+  const b = stack.pop() as Quotation;
+  const a = stack.pop() as Quotation;
+
+  testBinaryVector(a, b);
+
+  const vectorA = new Vector(a.value[0].value as number, a.value[1].value as number);
+  const vectorB = new Vector(b.value[0].value as number, b.value[1].value as number);
+  const result = vectorA.add(vectorB);
+
+  stack.push(new Quotation([
+    new LiteralNumber(result.x),
+    new LiteralNumber(result.y),
+  ]));
+});
+
+const vector_sub = new Operator(['vector_sub'], ['quotation', 'quotation'], ({ stack }) => {
+  const b = stack.pop() as Quotation;
+  const a = stack.pop() as Quotation;
+
+  testBinaryVector(a, b);
+
+  const vectorA = new Vector(a.value[0].value as number, a.value[1].value as number);
+  const vectorB = new Vector(b.value[0].value as number, b.value[1].value as number);
+  const result = vectorA.sub(vectorB);
+
+  stack.push(new Quotation([
+    new LiteralNumber(result.x),
+    new LiteralNumber(result.y),
+  ]));
+});
+
 const operators = {};
 
 [
@@ -191,6 +232,7 @@ const operators = {};
   dup, dupd, pop, popd,
   swap, swapd, cat, clear, typeOf,
   choice,
+  vector_add, vector_sub,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

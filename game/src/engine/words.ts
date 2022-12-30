@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
 } from '../interpreter';
