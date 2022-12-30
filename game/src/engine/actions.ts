@@ -679,44 +679,6 @@ export const hi: IActionDefinition<{ agentId: number }> = {
   },
 };
 
-export const pick: IActionDefinition<{ agentId: number, choiceId: number }> = {
-  cost: 0,
-  perform({ area, engine }, { agentId, choiceId }) {
-    const target = area.findAgentById(agentId);
-
-    if (target) {
-      if (engine.story.currentChoices.length > choiceId) {
-        engine.story.ChooseChoiceIndex(choiceId);
-
-        while (engine.story.canContinue) {
-          const message = engine.story.Continue() || '';
-          target.mind.queue.add({
-            name: 'say',
-            args: {
-              message,
-            },
-          });
-        }
-
-        if (engine.story.currentChoices.length) {
-          target.mind.queue.add({
-            name: 'say',
-            args: {
-              message: engine.story.currentChoices.map((c) => `${c.index}) ${c.text}`).join('\n'),
-            },
-          });
-        }
-
-        return succeed('');
-      }
-
-      return fail(`No choice with id ${choiceId}`);
-    }
-
-    return fail(`No agent with id ${agentId}`);
-  },
-};
-
 export const talk: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ agent, area, engine }) {
@@ -725,8 +687,13 @@ export const talk: IActionDefinition<ActionArguments> = {
       const target = area.findAgentById(targetId);
 
       if (target) {
-        engine.story.ContinueMaximally();
-        engine.tty.talking = true;
+        engine.story.ChoosePathString('intro');
+        if (engine.story.canContinue) {
+          engine.story.Continue();
+          engine.tty.talking = true;
+        } else {
+          return fail('');
+        }
 
         return succeed('');
       }
@@ -770,7 +737,6 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   puts,
   say,
   hi,
-  pick,
   talk,
 };
 

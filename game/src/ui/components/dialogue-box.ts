@@ -19,12 +19,15 @@ function formatLines(str: string): Array<string> {
 /** @category Components */
 export class DialogueBox extends UiComponent {
   selected = 0;
+  currentText: string[] = [];
   options: Choice[] = [];
   up() {
+    if (!this.options.length) return;
     if (this.selected === 0) return;
     this.selected--;
   }
   down() {
+    if (!this.options.length) return;
     if (this.selected === this.options.length - 1) return;
     this.selected++;
   }
@@ -32,44 +35,79 @@ export class DialogueBox extends UiComponent {
     const selected = this.options[this.selected];
     return selected;
   }
+  next(pty:VirtualTerminal) {
+    const next = pty.engine.story.Continue();
+    console.log('next:', next);
+    this.currentText.push(next || '');
+    console.log(this.currentText);
+  }
+
+  reset() {
+    this.currentText = [];
+    this.options = [];
+    this.selected = 0;
+  }
+
   handleInput(str: string, pty: VirtualTerminal) {
     if (str === Keys.ARROW_UP) this.up();
     if (str === Keys.ARROW_DOWN) this.down();
     if (str === Keys.ENTER) {
-      const selected = this.select();
-      this.selected = 0;
-      console.log(selected.index);
-      if (selected.index === this.options.length - 1 || !pty.engine.story.canContinue) {
-        pty.talking = false;
-        console.log('done');
+      // Pull more text
+      if (pty.engine.story.canContinue) {
+        console.log('can continue');
+        this.next(pty);
         return;
       }
-      pty.engine.story.ChooseChoiceIndex(selected.index);
+
+      // Pull options
+      if (!this.options.length && pty.engine.story.currentChoices.length) {
+        console.log('need options');
+        this.options = pty.engine.story.currentChoices;
+        return;
+      }
+
+      // Select an option
+      if (this.options.length) {
+        console.log('select an option');
+        const selected = this.select();
+        pty.engine.story.ChooseChoiceIndex(selected.index);
+
+        this.reset();
+
+        this.next(pty);
+        return;
+      }
+
+      // Finish
+      console.log('we are done');
+      this.reset();
+      pty.talking = false;
     }
   }
-  render({ engine }: VirtualTerminal) {
-    if (!engine.tty.talking) {
+  render(pty: VirtualTerminal) {
+    if (!pty.talking) {
       return [''];
     }
-    this.options = engine.story.currentChoices;
 
-    const content = engine.story.currentText?.split('\n').concat([' '.padEnd(LINE_LENGTH - 4, ' ')]) || [];
+    const content = this.currentText.length
+      ? this.currentText.join('')
+      : pty.engine.story.currentText || '';
+
     const choices = (this.options.map((c) => (this.selected === c.index
       ? `${esc(Style.Invert)}  * ${c.text.padEnd(LINE_LENGTH - 8, ' ')}${esc(Style.Reset)}`
       : `  * ${c.text.padEnd(LINE_LENGTH - 8)}`
     )));
 
-    const logs = content.reduce((arr, log) => {
-      const lines = formatLines(log);
-      lines.forEach((line) => {
-        if (!line) return;
-        arr.push(line);
-      });
-      return arr;
-    }, [] as Array<string>)
+    const formatted = content.split('\n')
+      .flatMap((l) => formatLines(l))
+      .filter((x) => x);
+
+    const logs = formatted
       .map((l) => l.padEnd(LINE_LENGTH - 4, ' '))
+      .slice(-(8 - choices.length))
+      .concat(['\n'])
       .concat(choices)
-      .concat(Array(4).fill(0).map(() => ''.padEnd(LINE_LENGTH - 4, ' ')));
+      .concat(new Array(Math.max((8 - choices.length - formatted.length), 0)).fill('').map((l) => l.padEnd(LINE_LENGTH - 4, ' ')));
 
     return [
       `╔${'═'.padEnd(LINE_LENGTH - 2, '═')}╗`,
