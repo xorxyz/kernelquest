@@ -11,19 +11,9 @@ import {
   widechar_wcwidth,
   widechar_widened_in_9,
 } from './widechar_width';
-
-// "🛡".codePointAt(0)
-const dingbatEmojis = [
-  9968,   // ⛰
-  127788, // 🌬
-  127960, // 🏘
-  127963, // 🏛
-  128367, // 🕯
-  128375, // 🕷
-  128506, // 🗺
-  128737, // 🛡
-  128477, // 🗝
-]
+import {
+  dingbatEmojis
+} from '../src/shared/dingbat';
 
 const UnicodeV14 = /** @class */ (function () {
   function UnicodeV14(this: any) {

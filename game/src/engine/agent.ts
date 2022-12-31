@@ -31,6 +31,10 @@ export class GP extends Points {}
 export abstract class AgentType extends BodyType {
   public weight = 10;
   public capabilities: Array<Capability> = [];
+
+  get label() {
+    return `${this.glyph.value} ${this.name}`;
+  }
 }
 
 /** @category Agent */
