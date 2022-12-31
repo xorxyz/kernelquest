@@ -1,11 +1,12 @@
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import literals, {
-  LiteralNumber, LiteralRef, LiteralString, Quotation,
+  LiteralNumber, LiteralRef, LiteralString, LiteralVector, Quotation,
 } from './literals';
 import operators, { Operator } from './operators';
 import combinators from './combinators';
 import syscalls from './syscalls';
+import { Vector } from '../shared';
 
 export type Dictionary = Record<string, Factor>
 
@@ -83,13 +84,23 @@ export class Compiler {
     }
 
     if (token.type === TokenType.RIGHT_BRACKET) {
+      let closingQuotation: Quotation | LiteralVector = this.quotations[this.level];
+
+      // Parse the quotation as a LiteralVector if it's a list of 2 numbers
+      if (closingQuotation.value.length === 2) {
+        const [x, y] = closingQuotation.value.map((item) => item.value);
+        if (typeof x === 'number' && typeof y === 'number') {
+          closingQuotation = new LiteralVector(new Vector(x, y));
+        }
+      }
+
       if (this.level === 1) {
-        factors.push(this.quotations[this.level]);
+        factors.push(closingQuotation);
       } else {
         if (!this.quotations[this.level - 1]) {
           throw new Error(']: Unbalanced brackets.');
         }
-        this.quotations[this.level - 1].value.push(this.quotations[this.level]);
+        this.quotations[this.level - 1].value.push(closingQuotation);
       }
       this.level -= 1;
       return factors;
@@ -111,4 +122,8 @@ export class Compiler {
 
     throw new Error(`'${token.lexeme}' is not a recognized word.`);
   }
+}
+
+function isVector(q: Quotation) {
+  return q.value.length === 2 && q.value.every((v) => v.type === 'number');
 }

@@ -1,3 +1,4 @@
+import { Vector } from '../shared';
 import { Factor, Literal, Term } from './types';
 
 // () -> Truth
@@ -69,6 +70,26 @@ export class Quotation extends Literal {
 
   add(factor: Factor) {
     this.value.push(factor);
+  }
+
+  toString() {
+    return `[${this.dequote()}]`;
+  }
+
+  dequote() {
+    return this.value.map((factor) => factor.toString()).join(' ');
+  }
+}
+
+export class LiteralVector extends Quotation {
+  type = 'vector';
+  declare value: [LiteralNumber, LiteralNumber];
+  vector: Vector;
+  constructor(v: Vector) {
+    super([new LiteralNumber(v.x), new LiteralNumber(v.y)]);
+    console.log(v);
+    this.lexeme = this.toString();
+    this.vector = v.clone();
   }
 
   toString() {

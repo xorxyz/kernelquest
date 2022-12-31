@@ -4,7 +4,7 @@ import {
   ExecuteArgs, Factor, Literal,
 } from './types';
 import {
-  LiteralNumber, LiteralString, LiteralTruth, Quotation,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralVector, Quotation,
 } from './literals';
 import syscalls from './syscalls';
 
@@ -186,42 +186,22 @@ export const choice = new Operator(['choice'], ['truth', 'any', 'any'], ({ stack
   }
 });
 
-function testBinaryVector(a: Quotation, b: Quotation) {
-  const test = (q) => q.value.length === 2 && q.value.every((v) => v.type === 'number');
-  if (!test(a)) throw new Error(`[A] (${a.toString()}) is not a valid vector`);
-  if (!test(b)) throw new Error(`[B] (${b.toString()}) is not a valid vector`);
-}
+const vector_add = new Operator(['vector_add'], ['vector', 'vector'], ({ stack }) => {
+  const b = stack.pop() as LiteralVector;
+  const a = stack.pop() as LiteralVector;
 
-const vector_add = new Operator(['vector_add'], ['quotation', 'quotation'], ({ stack }) => {
-  const b = stack.pop() as Quotation;
-  const a = stack.pop() as Quotation;
+  const result = a.vector.clone().add(b.vector);
 
-  testBinaryVector(a, b);
-
-  const vectorA = new Vector(a.value[0].value as number, a.value[1].value as number);
-  const vectorB = new Vector(b.value[0].value as number, b.value[1].value as number);
-  const result = vectorA.add(vectorB);
-
-  stack.push(new Quotation([
-    new LiteralNumber(result.x),
-    new LiteralNumber(result.y),
-  ]));
+  stack.push(new LiteralVector(result));
 });
 
-const vector_sub = new Operator(['vector_sub'], ['quotation', 'quotation'], ({ stack }) => {
-  const b = stack.pop() as Quotation;
-  const a = stack.pop() as Quotation;
+const vector_sub = new Operator(['vector_sub'], ['vector', 'vector'], ({ stack }) => {
+  const b = stack.pop() as LiteralVector;
+  const a = stack.pop() as LiteralVector;
 
-  testBinaryVector(a, b);
+  const result = a.vector.clone().sub(b.vector);
 
-  const vectorA = new Vector(a.value[0].value as number, a.value[1].value as number);
-  const vectorB = new Vector(b.value[0].value as number, b.value[1].value as number);
-  const result = vectorA.sub(vectorB);
-
-  stack.push(new Quotation([
-    new LiteralNumber(result.x),
-    new LiteralNumber(result.y),
-  ]));
+  stack.push(new LiteralVector(result));
 });
 
 const operators = {};
