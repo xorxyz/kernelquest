@@ -10,9 +10,6 @@ export class LiteralTruth extends Literal {
   }
 }
 
-const t = new LiteralTruth(true);
-const f = new LiteralTruth(false);
-
 // () -> Number
 export class LiteralNumber extends Literal {
   type = 'number';
@@ -81,23 +78,44 @@ export class Quotation extends Literal {
   }
 }
 
+export type List = (
+  Array<LiteralTruth> |
+  Array<LiteralNumber> |
+  Array<LiteralString> |
+  Array<LiteralRef>
+)
+
+const literalTypes = ['truth', 'number', 'string', 'ref'];
+
+export class LiteralList extends Quotation {
+  type = 'list';
+  declare value: List;
+  constructor(term: List) {
+    super(term);
+    this.lexeme = this.toString();
+  }
+
+  static isList(term: Term) {
+    const types = term.map((item) => item.type);
+    return (
+      types.every((t) => literalTypes.includes(t))
+      && new Set(term.map((item) => item.type)).size === 1
+    );
+  }
+}
+
 export class LiteralVector extends Quotation {
   type = 'vector';
   declare value: [LiteralNumber, LiteralNumber];
   vector: Vector;
   constructor(v: Vector) {
     super([new LiteralNumber(v.x), new LiteralNumber(v.y)]);
-    console.log(v);
     this.lexeme = this.toString();
     this.vector = v.clone();
   }
 
-  toString() {
-    return `[${this.dequote()}]`;
-  }
-
-  dequote() {
-    return this.value.map((factor) => factor.toString()).join(' ');
+  static isVector(term: Term) {
+    return term.length === 2 && term.every((item) => typeof item.value === 'number');
   }
 }
 
@@ -113,11 +131,3 @@ export class LiteralTerm extends Literal {
     return `${this.value}`;
   }
 }
-
-const literals = {};
-
-[t, f].forEach((literal) => {
-  literals[literal.lexeme] = literal;
-});
-
-export default literals;

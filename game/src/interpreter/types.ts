@@ -45,5 +45,3 @@ export class Literal extends Factor {
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
 export type Term = Array<Factor>;
-
-export type List = Array<Literal>;

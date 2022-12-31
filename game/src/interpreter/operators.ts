@@ -39,6 +39,9 @@ export class Operator extends Factor {
     for (const arg of args) {
       const i = args.findIndex((a) => a === arg);
       const types = this.signature[i].split('|');
+      if (types.includes('quotation')) {
+        types.push('list', 'vector');
+      }
       if (!(arg instanceof Literal)) {
         throw new Error(`${this.aliases[0]}: arg not instanceof Literal`);
       }

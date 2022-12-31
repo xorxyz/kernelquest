@@ -1,7 +1,9 @@
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
-import literals, {
-  LiteralNumber, LiteralRef, LiteralString, LiteralVector, Quotation,
+import {
+  List,
+  LiteralList,
+  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, LiteralVector, Quotation,
 } from './literals';
 import operators, { Operator } from './operators';
 import combinators from './combinators';
@@ -14,7 +16,8 @@ export class Compiler {
   private scanner = new Scanner();
   tokens: Array<Token>;
   dict: Dictionary = {
-    ...literals,
+    true: new LiteralTruth(true),
+    false: new LiteralTruth(false),
     ...operators,
     ...combinators,
     ...syscalls,
@@ -84,14 +87,17 @@ export class Compiler {
     }
 
     if (token.type === TokenType.RIGHT_BRACKET) {
-      let closingQuotation: Quotation | LiteralVector = this.quotations[this.level];
+      let closingQuotation: Quotation | LiteralList | LiteralVector = this.quotations[this.level];
+
+      // Parse the quotation as a LiteralList if all its items are of the same type
+      if (LiteralList.isList(closingQuotation.value)) {
+        closingQuotation = new LiteralList(closingQuotation.value as List);
+      }
 
       // Parse the quotation as a LiteralVector if it's a list of 2 numbers
-      if (closingQuotation.value.length === 2) {
-        const [x, y] = closingQuotation.value.map((item) => item.value);
-        if (typeof x === 'number' && typeof y === 'number') {
-          closingQuotation = new LiteralVector(new Vector(x, y));
-        }
+      if (LiteralVector.isVector(closingQuotation.value)) {
+        const [x, y] = closingQuotation.value.map((item) => item.value) as [number, number];
+        closingQuotation = new LiteralVector(new Vector(x, y));
       }
 
       if (this.level === 1) {
@@ -122,8 +128,4 @@ export class Compiler {
 
     throw new Error(`'${token.lexeme}' is not a recognized word.`);
   }
-}
-
-function isVector(q: Quotation) {
-  return q.value.length === 2 && q.value.every((v) => v.type === 'number');
 }
