@@ -1,8 +1,11 @@
 /* eslint-disable camelcase */
 import {
-  Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, Operator, Quotation,
+  Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import syscalls from '../interpreter/syscalls';
+import {
+  East, North, South, West,
+} from '../shared';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, syscall }) => {
@@ -110,11 +113,11 @@ const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, syscall }
   });
 });
 
-const point = new Operator(['point'], ['number', 'number'], async ({ stack, syscall }) => {
+const that = new Operator(['that'], ['number', 'number'], async ({ stack, syscall }) => {
   const y = stack.pop() as LiteralNumber;
   const x = stack.pop() as LiteralNumber;
   syscall({
-    name: 'point',
+    name: 'that',
     args: {
       x: x.value,
       y: y.value,
@@ -159,6 +162,15 @@ const stackFn = new Operator(['stack'], [], ({ stack }) => {
   });
 
   stack.push(quotation);
+});
+
+const face = new Operator(['face'], ['vector'], ({ stack, syscall }) => {
+  const { x, y } = (stack.pop() as LiteralVector).vector;
+
+  syscall({
+    name: 'face',
+    args: { x, y },
+  });
 });
 
 const facing = new Operator(['facing'], [], ({ syscall }) => {
@@ -237,6 +249,35 @@ const read = new Operator(['read'], [], ({ stack, syscall }) => {
   });
 });
 
+const claim = new Operator(['claim'], ['vector', 'vector'], ({ stack, exec }) => {
+  const size = stack.pop() as LiteralVector;
+  const position = stack.pop() as LiteralVector;
+
+  exec([
+    position.value[0],
+    position.value[1],
+    goto,
+  ], () => {
+    console.log('done!');
+  });
+});
+
+const north = new Operator(['north'], [], ({ stack }) => {
+  stack.push(new LiteralVector(new North()));
+});
+
+const east = new Operator(['east'], [], ({ stack }) => {
+  stack.push(new LiteralVector(new East()));
+});
+
+const south = new Operator(['south'], [], ({ stack }) => {
+  stack.push(new LiteralVector(new South()));
+});
+
+const west = new Operator(['west'], [], ({ stack }) => {
+  stack.push(new LiteralVector(new West()));
+});
+
 export default {
   goto,
   look,
@@ -251,11 +292,12 @@ export default {
   tell,
   halt,
   prop,
-  point,
+  that,
   me,
   define,
   xy,
   stack: stackFn,
+  face,
   facing,
   get,
   put,
@@ -265,4 +307,9 @@ export default {
   hi,
   pick,
   read,
+  claim,
+  north,
+  east,
+  south,
+  west,
 };

@@ -197,7 +197,7 @@ export class VirtualTerminal {
         break;
       case (Keys.SPACE):
         action = {
-          name: 'point',
+          name: 'that',
           args: {
             x: this.agent.cursorPosition.x,
             y: this.agent.cursorPosition.y,

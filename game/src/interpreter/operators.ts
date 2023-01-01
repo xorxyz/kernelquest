@@ -1,12 +1,11 @@
 /* eslint-disable camelcase */
-import { debug, Stack, Vector } from '../shared';
+import { debug, Stack } from '../shared';
 import {
   ExecuteArgs, Factor, Literal,
 } from './types';
 import {
-  LiteralNumber, LiteralString, LiteralTruth, LiteralVector, Quotation,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralVector,
 } from './literals';
-import syscalls from './syscalls';
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -151,19 +150,24 @@ export const clear = new Operator(['clear'], [], ({ stack, syscall }) => {
 });
 
 export const typeOf = new Operator(['typeof'], ['any'], ({ stack }) => {
-  const a = stack.pop();
+  const a = stack.pop() as Factor;
 
-  if (a) {
-    stack.push(a);
-    stack.push(new LiteralString(a.type));
-  }
+  stack.push(new LiteralString(a.type));
 });
 
 export const equals = new Operator(['=='], ['any', 'any'], ({ stack }) => {
   const a = stack.pop() as Factor;
   const b = stack.pop() as Factor;
 
-  const result = new LiteralTruth(a.type === b.type && a.value === b.value);
+  if (a.type !== b.type) {
+    return stack.push(new LiteralTruth(false));
+  }
+
+  if (a instanceof LiteralVector && b instanceof LiteralVector) {
+    return stack.push(new LiteralTruth(a.vector.equals(b.vector)));
+  }
+
+  const result = new LiteralTruth(a.value === b.value);
 
   stack.push(result);
 });
@@ -172,7 +176,17 @@ export const notEquals = new Operator(['!='], ['any', 'any'], ({ stack }) => {
   const a = stack.pop() as Factor;
   const b = stack.pop() as Factor;
 
-  const result = new LiteralTruth(a.type !== b.type || a.value !== b.value);
+  if (a.type !== b.type) {
+    stack.push(new LiteralTruth(false));
+    return;
+  }
+
+  if (a instanceof LiteralVector && b instanceof LiteralVector) {
+    stack.push(new LiteralTruth(!a.vector.equals(b.vector)));
+    return;
+  }
+
+  const result = new LiteralTruth(a.value !== b.value);
 
   stack.push(result);
 });

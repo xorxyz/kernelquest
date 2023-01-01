@@ -1,7 +1,7 @@
-import { debug, Vector } from '../shared';
+import { bounds, debug, Vector } from '../shared';
 import {
   LiteralNumber,
-  LiteralRef, LiteralString, Operator, Quotation,
+  LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { Crown, Flag } from './things';
@@ -21,7 +21,7 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'point' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
+  'prop' | 'that' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'pick' | 'talk' | 'read'
 )
 
@@ -458,9 +458,10 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
     }
 
     const props = {
-      name: (body) => body.name,
-      xy: (body) => body.position.label,
-      type: (body) => body.type.name,
+      id: (body) => new LiteralRef(body.id),
+      name: (body) => new LiteralString(body.name || body.id),
+      xy: (body) => new LiteralVector(body.position),
+      type: (body) => new LiteralString(body.type?.name || 'cell'),
     };
 
     const fn = props[propName];
@@ -470,18 +471,16 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
       : undefined;
 
     if (typeof propValue === 'undefined') {
-      return fail(`Cannot find prop ${propName} on &${id} (${target.type.name})`);
+      return fail(`Cannot find prop ${propName} on &${id}`);
     }
 
-    const litStr = new LiteralString(String(propValue));
-
-    agent.mind.interpreter.sysret(litStr);
+    agent.mind.interpreter.sysret(propValue);
 
     return succeed('');
   },
 };
 
-export const point: IActionDefinition<{ x: number, y: number }> = {
+export const that: IActionDefinition<{ x: number, y: number }> = {
   cost: 0,
   perform({ agent, area }, { x, y }) {
     const cell = area.cellAt(new Vector(x, y));
@@ -518,8 +517,8 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
       return fail(`The word '${name}' already exists.`);
     }
 
-    agent.mind.compiler.dict[name] = new Operator([name], [], (that) => {
-      that.syscall({
+    agent.mind.compiler.dict[name] = new Operator([name], [], (x) => {
+      x.syscall({
         name: 'exec',
         args: {
           text: program,
@@ -569,10 +568,7 @@ export const xy: IActionDefinition<{ refId: number }> = {
   perform({ area, agent }, { refId }) {
     const referenced = area.findBodyById(refId);
     if (referenced) {
-      agent.mind.interpreter.sysret(new Quotation([
-        new LiteralNumber(referenced.position.x),
-        new LiteralNumber(referenced.position.y),
-      ]));
+      agent.mind.interpreter.sysret(new LiteralVector(referenced.position));
       return succeed('');
     }
     return fail(`There is no agent with ref id ${refId}`);
@@ -582,21 +578,10 @@ export const xy: IActionDefinition<{ refId: number }> = {
 export const facing: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ agent }) {
-    const { cell } = agent.facing;
+    agent.mind.interpreter.sysret(
+      new LiteralVector(agent.facing.direction.value),
+    );
 
-    if (!cell) {
-      agent.mind.interpreter.sysret(new LiteralRef(0));
-      return fail('');
-    }
-
-    const thing = agent.facing.cell?.slot;
-
-    if (!thing) {
-      agent.mind.interpreter.sysret(new LiteralRef(cell.id));
-      return succeed('');
-    }
-
-    agent.mind.interpreter.sysret(new LiteralRef(thing.id));
     return succeed('');
   },
 };
@@ -734,7 +719,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   tell,
   halt,
   prop,
-  point,
+  that,
   me,
   define,
   think,
