@@ -38,6 +38,12 @@ export class Interpreter {
     return this.subinterpreter ? this.subinterpreter : this;
   }
 
+  get label() {
+    return this.subinterpreter
+      ? `${this.stack.toString()} ${this.subinterpreter.label}`
+      : this.stack.toString();
+  }
+
   isHalted() {
     return this.current.halted;
   }

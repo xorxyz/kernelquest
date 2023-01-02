@@ -58,16 +58,32 @@ export const map = new Combinator(['map'], ['list', 'quotation'], ({ stack, exec
   const program = stack.pop() as Quotation;
   const list = stack.pop() as LiteralList;
 
-  exec([
-    new LiteralList([]),
-    ...list.value.flatMap((f) => [
-      f,
-      ...program.value,
-      new Quotation(),
-      cons,
-      concat,
-    ]),
-  ]);
+  const results = new LiteralList([]);
+
+  runSeries(list.value.map((item, i) => (done) => {
+    const p = Quotation.from([item, ...program.value]);
+    exec(p.value, () => {
+      const result = stack.pop();
+      if (!(result instanceof Factor)) {
+        throw new Error('filter: result of mapping function should be a factor');
+      }
+      results.add(result);
+      done();
+    });
+  }), () => {
+    console.log('map: done!');
+    stack.push(results);
+  });
+  // exec([
+  //   new LiteralList([]),
+  //   ...list.value.flatMap((f) => [
+  //     f,
+  //     ...program.value,
+  //     new Quotation(),
+  //     cons,
+  //     concat,
+  //   ]),
+  // ]);
 });
 
 export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack, exec }) => {

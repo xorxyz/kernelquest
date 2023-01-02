@@ -82,7 +82,7 @@ export class Quotation extends Literal {
   }
 
   add(factor: Factor) {
-    this.value.unshift(factor);
+    this.value.push(factor);
   }
 
   toString() {

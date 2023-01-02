@@ -6,10 +6,10 @@ import { VirtualTerminal } from '../pty';
 export class StackPane extends UiComponent {
   render({ agent }: VirtualTerminal) {
     const frame = agent.mind.tick % 2 === 0 ? '⏳' : '⌛';
-    const icon = agent.mind.interpreter.isDone() ? '  ' : frame;
+    const icon = agent.mind.interpreter.isDone() ? ' ' : frame;
 
     return [
-      `${icon} ${agent.mind.interpreter.current.level}) [ ${agent.mind.interpreter.current.stack.toString().padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
+      `${icon} [ ${agent.mind.interpreter.label.padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
     ];
   }
 }
