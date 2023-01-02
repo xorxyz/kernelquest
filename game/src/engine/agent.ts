@@ -191,9 +191,11 @@ export class Agent extends Body {
       capability.run(this, tick);
     });
 
-    const action = this.mind.decide();
+    const action = this.mind.queue.next();
 
-    return action;
+    if (action) return action;
+
+    return this.mind.interpreter.current.syscalls.next() || { name: 'noop' };
   }
 
   isFacing(vector: Vector) {

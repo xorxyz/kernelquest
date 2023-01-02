@@ -60,9 +60,25 @@ export class LiteralRef extends Literal {
 export class Quotation extends Literal {
   type = 'quotation';
   declare value: Term;
+
   constructor(term?: Term) {
     super('[]', term || []);
     this.lexeme = this.toString();
+  }
+
+  static from(term: Term): Quotation | LiteralList | LiteralVector {
+    // Parse the quotation as a LiteralList if all its items are of the same type
+    if (LiteralList.isList(term)) {
+      return new LiteralList(term as List);
+    }
+
+    // Parse the quotation as a LiteralVector if it's a list of 2 numbers
+    if (LiteralVector.isVector(term)) {
+      const [x, y] = term.map((item) => item.value) as [number, number];
+      return new LiteralVector(new Vector(x, y));
+    }
+
+    return new Quotation(term);
   }
 
   add(factor: Factor) {

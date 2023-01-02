@@ -1,5 +1,6 @@
 import { bounds, debug, Vector } from '../shared';
 import {
+  LiteralList,
   LiteralNumber,
   LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
@@ -270,7 +271,7 @@ export const ls: IActionDefinition<{}> = {
     const agents = area.list();
     const refs = agents.map((a) => new LiteralRef(a.id));
 
-    agent.mind.interpreter.sysret(new Quotation(refs));
+    agent.mind.interpreter.sysret(new LiteralList(refs));
 
     return succeed('');
   },
@@ -381,7 +382,7 @@ export const exec: IActionDefinition<{ text: string }> = {
     try {
       const term = agent.mind.compiler.compile(text);
 
-      agent.mind.interpreter.interpret(term);
+      agent.mind.interpreter.update(term);
 
       return succeed('');
     } catch (err) {
@@ -532,19 +533,21 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
 
 export const think: IActionDefinition<ActionArguments> = {
   cost: 0,
-  perform({ agent }) {
-    try {
-      // step through program until you reach as syscall
-      while (agent.mind.interpreter.isBusy() && !agent.mind.interpreter.isWaiting()) {
-        agent.mind.interpreter.step();
-      }
-      // execute the syscall
-      agent.mind.interpreter.step();
-      return succeed('');
-    } catch (err) {
-      debug((err as Error).message);
-      return fail((err as Error).message);
-    }
+  perform() {
+    return fail('think: deprecated action');
+    // try {
+    //   // step through program until you reach as syscall
+    //   while (!agent.mind.interpreter.isHalted() && !agent.mind.interpreter.isDone()) {
+    //     agent.mind.interpreter.step();
+    //   }
+
+    //   // // execute the syscall
+    //   // agent.mind.interpreter.step();
+    //   return succeed('');
+    // } catch (err) {
+    //   debug((err as Error).message);
+    //   return fail((err as Error).message);
+    // }
   },
 };
 
@@ -558,6 +561,8 @@ export const clear: IActionDefinition<ActionArguments> = {
       tick,
       message: ' ',
     }));
+
+    agent.mind.interpreter.sysret();
 
     return succeed('');
   },

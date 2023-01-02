@@ -1,10 +1,9 @@
 /* eslint-disable camelcase */
 import {
-  Combinator, Factor, i, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  Combinator, Factor, List, LiteralList, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
-import syscalls from '../interpreter/syscalls';
 import {
-  East, North, South, West,
+  East, North, South, Vector, West,
 } from '../shared';
 
 /** @category Words */
@@ -155,11 +154,20 @@ const xy = new Operator(['xy'], ['ref'], ({ stack, syscall }) => {
 });
 
 const stackFn = new Operator(['stack'], [], ({ stack }) => {
-  const quotation = new Quotation();
+  let quotation = new Quotation();
 
   stack.popN(stack.length).forEach((f) => {
     quotation.add(f as Factor);
   });
+
+  if (LiteralList.isList(quotation.value)) {
+    quotation = new LiteralList(quotation.value as List);
+  }
+
+  if (LiteralVector.isVector(quotation.value)) {
+    const [x, y] = quotation.value.map((item) => item.value) as [number, number];
+    quotation = new LiteralVector(new Vector(x, y));
+  }
 
   stack.push(quotation);
 });

@@ -41,6 +41,9 @@ export class Operator extends Factor {
       if (types.includes('quotation')) {
         types.push('list', 'vector');
       }
+      if (types.includes('list')) {
+        types.push('vector');
+      }
       if (!(arg instanceof Literal)) {
         throw new Error(`${this.aliases[0]}: arg not instanceof Literal`);
       }

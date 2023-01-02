@@ -1,6 +1,9 @@
 import { Factor, Literal } from './types';
-import { LiteralString, Quotation } from './literals';
+import {
+  LiteralList, LiteralString, LiteralTruth, Quotation,
+} from './literals';
 import { choice, Operator } from './operators';
+import { runSeries } from '../shared/async';
 
 export class Combinator extends Operator {}
 
@@ -14,19 +17,14 @@ export const concat = new Combinator(['concat'], ['string|quotation', 'string|qu
   }
 
   if (a instanceof Quotation && b instanceof Quotation) {
-    stack.push(new Quotation(a.value.concat(b.value)));
+    stack.push(Quotation.from(a.value.concat(b.value)));
     return;
   }
 
   stack.push(a);
   stack.push(b);
 
-  syscall({
-    name: 'puts',
-    args: {
-      message: 'concat: args should be two strings or two quotations',
-    },
-  });
+  throw new Error('concat: args should be two strings or two quotations');
 });
 
 // [b] [a] -> [[b] a]
@@ -36,7 +34,7 @@ export const cons = new Combinator(['cons'], ['any', 'quotation'], ({ stack }) =
 
   b.add(a);
 
-  stack.push(b);
+  stack.push(Quotation.from(b.value));
 });
 
 // a -> [a]
@@ -45,21 +43,23 @@ export const unit = new Combinator(['unit'], ['any'], ({ stack }) => {
   const next = new Quotation();
 
   next.add(a);
-  stack.push(next);
+  stack.push(Quotation.from(next.value));
 });
 
 export const i = new Combinator(['i'], ['quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
 
-  exec(program.value);
+  exec(program.value, () => {
+    console.log('i: done');
+  });
 });
 
-export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack, exec }) => {
+export const map = new Combinator(['map'], ['list', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
-  const list = stack.pop() as Quotation;
+  const list = stack.pop() as LiteralList;
 
   exec([
-    new Quotation(),
+    new LiteralList([]),
     ...list.value.flatMap((f) => [
       f,
       ...program.value,
@@ -70,23 +70,43 @@ export const map = new Combinator(['map'], ['quotation', 'quotation'], ({ stack,
   ]);
 });
 
-export const filter = new Combinator(['filter'], ['quotation', 'quotation'], ({ stack, exec }) => {
+export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
-  const list = stack.pop() as Quotation;
+  const list = stack.pop() as LiteralList;
 
-  exec([
-    new Quotation(),
-    ...list.value.flatMap((item) => [
-      new Quotation([
-        item,
-        ...program.value,
-      ]),
-      new Quotation([new Quotation([item])]),
-      new Quotation([new Quotation()]),
-      ifte,
-      concat,
-    ]),
-  ]);
+  const results = new LiteralList([]);
+
+  runSeries(list.value.map((item, i) => (done) => {
+    console.log(`filter: running ${i}`);
+    const p = Quotation.from([item, ...program.value]);
+    exec(p.value, () => {
+      const result = stack.pop();
+      if (!(result instanceof LiteralTruth)) {
+        throw new Error('filter: result of test should be a truth value');
+      }
+      if (result.value === true) {
+        results.add(item);
+      }
+      done();
+    });
+  }), () => {
+    console.log('filter: done!');
+    stack.push(results);
+  });
+
+  // exec([
+  //   new LiteralList([]),
+  //   ...list.value.flatMap((item) => [
+  //     new Quotation([
+  //       item,
+  //       ...program.value,
+  //     ]),
+  //     new Quotation([new Quotation([item])]),
+  //     new Quotation([new Quotation()]),
+  //     ifte,
+  //     concat,
+  //   ]),
+  // ]);
 });
 
 // [C] [B] [A] -> B || A
@@ -105,12 +125,37 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
   ]);
 });
 
+// Until [T] is true, run [P]
+export const until = new Combinator(['until'], ['quotation', 'quotation'], ({ stack, exec }) => {
+  const program = stack.pop() as Quotation;
+  const test = stack.pop() as Quotation;
+
+  recurse();
+
+  function recurse() {
+    exec(test.value, () => {
+      const tested = stack.pop();
+
+      if (!(tested instanceof LiteralTruth)) {
+        throw new Error('until: test should return a truth value');
+      }
+
+      if (tested.value === false) {
+        exec(program.value);
+      } else {
+        recurse();
+      }
+    });
+  }
+});
+
 const combinators = {};
 
 [
   concat, cons, unit,
   i,
   map, filter, ifte,
+  until,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {
     combinators[alias] = combinator;

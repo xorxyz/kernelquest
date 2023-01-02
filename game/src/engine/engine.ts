@@ -192,11 +192,20 @@ export class Engine {
         });
       }
 
-      if (!['save', 'load', 'exit', 'exec', 'think'].includes(action.name)) {
+      if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
         this.history.push({
           action,
           tick: this.cycle,
           agentId: agent.id,
+        });
+      }
+    } else {
+      try {
+        agent.mind.think();
+      } catch (err) {
+        agent.remember({
+          tick: agent.mind.tick,
+          message: (err as Error).message,
         });
       }
     }

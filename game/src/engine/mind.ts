@@ -1,6 +1,9 @@
 import {
-  Interpreter, Compiler, Factor, Dictionary, Quotation,
+  Compiler, Factor, Dictionary, Quotation,
 } from '../interpreter';
+import {
+  Interpreter,
+} from '../interpreter/interpreter2';
 import { Queue, Stack } from '../shared';
 import { IAction } from './actions';
 
@@ -31,27 +34,44 @@ export class Mind {
     this.tick = tick;
   }
 
-  decide(): IAction {
-    const syscall = this.interpreter.takeAction();
-    if (syscall) {
-      return syscall;
+  think() {
+    // step through program until you reach a syscall or there is nothing left to evaluate
+    while (!this.interpreter.isHalted() && !this.interpreter.isDone()) {
+      this.interpreter.step();
     }
-
-    const next = this.queue.next();
-    if (next) return next;
-
-    if (this.interpreter.isWaiting() || this.interpreter.isBusy()) {
-      return {
-        name: 'think',
-      };
-    }
-
-    return {
-      name: 'noop',
-    };
   }
 
-  pullDialog() {
-    return 'Man: Hi! My name is Adam.\nWhat is your name?\n';
-  }
+  // decide(): IAction {
+  //   const syscall = this.interpreter.current.syscalls.next();
+  //   if (syscall) {
+  //     return syscall;
+  //   }
+
+  //   const next = this.queue.next();
+  //   if (next) return next;
+
+  //   return {
+  //     name: 'think',
+  //   };
+  // }
+
+  // decide(): IAction {
+  //   const syscall = this.interpreter.takeAction();
+  //   if (syscall) {
+  //     return syscall;
+  //   }
+
+  //   const next = this.queue.next();
+  //   if (next) return next;
+
+  //   if (this.interpreter.isWaiting() || this.interpreter.isBusy()) {
+  //     return {
+  //       name: 'think',
+  //     };
+  //   }
+
+  //   return {
+  //     name: 'noop',
+  //   };
+  // }
 }

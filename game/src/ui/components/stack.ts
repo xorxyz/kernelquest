@@ -5,12 +5,11 @@ import { VirtualTerminal } from '../pty';
 /** @category Components */
 export class StackPane extends UiComponent {
   render({ agent }: VirtualTerminal) {
-    const isWaiting = agent.mind.interpreter.isBusy() || agent.mind.interpreter.subinterpreter;
     const frame = agent.mind.tick % 2 === 0 ? '⏳' : '⌛';
-    const icon = isWaiting ? frame : '  ';
+    const icon = agent.mind.interpreter.isDone() ? '  ' : frame;
 
     return [
-      `${icon}[ ${agent.mind.interpreter.stackStr.padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
+      `${icon} ${agent.mind.interpreter.current.level}) [ ${agent.mind.interpreter.current.stack.toString().padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
     ];
   }
 }

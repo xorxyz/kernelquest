@@ -44,4 +44,8 @@ export class Literal extends Factor {
 }
 
 // https://en.wikipedia.org/wiki/Term_logic#Term
-export type Term = Array<Factor>;
+export class Term extends Array<Factor> {
+  toString() {
+    return this.map((f) => f.toString()).join(' ');
+  }
+}

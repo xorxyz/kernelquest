@@ -87,18 +87,7 @@ export class Compiler {
     }
 
     if (token.type === TokenType.RIGHT_BRACKET) {
-      let closingQuotation: Quotation | LiteralList | LiteralVector = this.quotations[this.level];
-
-      // Parse the quotation as a LiteralList if all its items are of the same type
-      if (LiteralList.isList(closingQuotation.value)) {
-        closingQuotation = new LiteralList(closingQuotation.value as List);
-      }
-
-      // Parse the quotation as a LiteralVector if it's a list of 2 numbers
-      if (LiteralVector.isVector(closingQuotation.value)) {
-        const [x, y] = closingQuotation.value.map((item) => item.value) as [number, number];
-        closingQuotation = new LiteralVector(new Vector(x, y));
-      }
+      const closingQuotation = Quotation.from(this.quotations[this.level].value);
 
       if (this.level === 1) {
         factors.push(closingQuotation);
