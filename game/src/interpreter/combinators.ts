@@ -74,16 +74,6 @@ export const map = new Combinator(['map'], ['list', 'quotation'], ({ stack, exec
     console.log('map: done!');
     stack.push(results);
   });
-  // exec([
-  //   new LiteralList([]),
-  //   ...list.value.flatMap((f) => [
-  //     f,
-  //     ...program.value,
-  //     new Quotation(),
-  //     cons,
-  //     concat,
-  //   ]),
-  // ]);
 });
 
 export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack, exec }) => {
@@ -109,20 +99,6 @@ export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack
     console.log('filter: done!');
     stack.push(results);
   });
-
-  // exec([
-  //   new LiteralList([]),
-  //   ...list.value.flatMap((item) => [
-  //     new Quotation([
-  //       item,
-  //       ...program.value,
-  //     ]),
-  //     new Quotation([new Quotation([item])]),
-  //     new Quotation([new Quotation()]),
-  //     ifte,
-  //     concat,
-  //   ]),
-  // ]);
 });
 
 // [C] [B] [A] -> B || A
@@ -131,14 +107,17 @@ export const ifte = new Combinator(['ifte'], ['quotation', 'quotation', 'quotati
   const leftOption = stack.pop() as Quotation;
   const test = stack.pop() as Quotation;
 
-  exec([
-    test,
-    i,
-    leftOption,
-    rightOption,
-    choice,
-    i,
-  ]);
+  exec(test.value, () => {
+    const result = stack.pop();
+    if (!(result instanceof LiteralTruth)) {
+      throw new Error('ifte: test should return a literal truth');
+    }
+    if (result.value === true) {
+      stack.push(leftOption);
+    } else {
+      stack.push(rightOption);
+    }
+  });
 });
 
 // Until [T] is true, run [P]

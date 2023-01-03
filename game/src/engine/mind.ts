@@ -1,10 +1,10 @@
 import {
-  Compiler, Factor, Dictionary, Quotation,
+  Compiler, Dictionary,
 } from '../interpreter';
 import {
   Interpreter,
 } from '../interpreter/interpreter2';
-import { Queue, Stack } from '../shared';
+import { Queue } from '../shared';
 import { IAction } from './actions';
 
 /** @category Mind */
@@ -40,38 +40,4 @@ export class Mind {
       this.interpreter.step();
     }
   }
-
-  // decide(): IAction {
-  //   const syscall = this.interpreter.current.syscalls.next();
-  //   if (syscall) {
-  //     return syscall;
-  //   }
-
-  //   const next = this.queue.next();
-  //   if (next) return next;
-
-  //   return {
-  //     name: 'think',
-  //   };
-  // }
-
-  // decide(): IAction {
-  //   const syscall = this.interpreter.takeAction();
-  //   if (syscall) {
-  //     return syscall;
-  //   }
-
-  //   const next = this.queue.next();
-  //   if (next) return next;
-
-  //   if (this.interpreter.isWaiting() || this.interpreter.isBusy()) {
-  //     return {
-  //       name: 'think',
-  //     };
-  //   }
-
-  //   return {
-  //     name: 'noop',
-  //   };
-  // }
 }

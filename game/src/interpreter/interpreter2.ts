@@ -61,14 +61,13 @@ export class Interpreter {
   }
 
   step() {
-    console.log(this.level, 'step');
     // check if there's a deeper level:
     if (this.subinterpreter) {
       // - if it's done, get rid of it after pushing the results onto the current stack
       if (this.subinterpreter.isDone()) {
         console.log('sub is done');
-        const result = this.subinterpreter.stack.pop();
-        if (result) this.stack.push(result);
+        const f = this.subinterpreter.stack.arr.shift();
+        if (f) this.stack.push(f);
 
         const callback = this.subinterpreter.callbacks.next();
 
@@ -101,6 +100,13 @@ export class Interpreter {
         throw err;
       }
     }
+  }
+
+  takeAction() {
+    const action = this.current.syscalls.next();
+    if (!action) return null;
+    this.current.halted = false;
+    return action;
   }
 
   syscall(action: IAction) {

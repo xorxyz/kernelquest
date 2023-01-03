@@ -1,6 +1,7 @@
 import { debug, PriorityQueue, Vector } from '../shared';
 import { Agent, Area, Cell } from '.';
-import { IAction } from './actions';
+import { Factor, LiteralNumber, LiteralVector } from '../interpreter';
+import words from './words';
 
 export class PathFinder {
   destination: Vector;
@@ -102,32 +103,23 @@ export class PathFinder {
     return cells;
   }
 
-  buildPathActions(agent: Agent, path: Array<Cell>): Array<IAction> {
+  buildPathActions(agent: Agent, path: Array<Cell>): Array<Factor> {
     debug('buildPathActions()');
-    const actions: Array<IAction> = [];
+    const actions: Array<Factor> = [];
     const previousDirection = agent.facing.direction.value.clone();
 
     path.reduce((current, next) => {
       const direction = next.position.clone().sub(current.position);
 
       if (!direction.equals(previousDirection)) {
-        actions.push({
-          name: 'face',
-          args: { x: direction.x, y: direction.y },
-        });
-        actions.push({
-          name: 'wait',
-          args: { duration: 2 },
-        });
+        actions.push(...[
+          new LiteralVector(direction),
+          words.face,
+        ]);
       }
 
       previousDirection.copy(direction);
-
-      actions.push({ name: 'step' });
-      actions.push({
-        name: 'wait',
-        args: { duration: 2 },
-      });
+      actions.push(words.step);
 
       return next;
     });

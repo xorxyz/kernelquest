@@ -1,17 +1,17 @@
-import { bounds, debug, Vector } from '../shared';
+import { Vector } from '../shared';
 import {
   LiteralList,
   LiteralNumber,
-  LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  LiteralRef, LiteralString, LiteralVector, Operator,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
-import { Crown, Flag } from './things';
 import { AgentTypeName, ThingTypeName, World } from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
 import { Cell, Glyph } from './cell';
 import { Thing } from './thing';
+import words from './words';
 
 export type ValidActions = (
   'save' | 'load' |
@@ -22,8 +22,8 @@ export type ValidActions = (
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
-  'prop' | 'that' | 'me' | 'define' | 'think' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'pick' | 'talk' | 'read'
+  'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
+  'say' | 'hi' | 'talk' | 'read' | 'claim'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -259,7 +259,11 @@ export const goto: IActionDefinition<{ x: number, y: number }> = {
 
     const actions = pathfinder.buildPathActions(agent, path.reverse());
 
-    actions.forEach((action) => agent.schedule(action));
+    // actions.forEach((action) => agent.schedule(action));
+
+    agent.mind.interpreter.exec(actions, () => {
+      console.log('goto: done!!!');
+    });
 
     return succeed('Found a path to the destination cell.');
   },
@@ -531,26 +535,6 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
   },
 };
 
-export const think: IActionDefinition<ActionArguments> = {
-  cost: 0,
-  perform() {
-    return fail('think: deprecated action');
-    // try {
-    //   // step through program until you reach as syscall
-    //   while (!agent.mind.interpreter.isHalted() && !agent.mind.interpreter.isDone()) {
-    //     agent.mind.interpreter.step();
-    //   }
-
-    //   // // execute the syscall
-    //   // agent.mind.interpreter.step();
-    //   return succeed('');
-    // } catch (err) {
-    //   debug((err as Error).message);
-    //   return fail((err as Error).message);
-    // }
-  },
-};
-
 export const clear: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ agent }) {
@@ -701,6 +685,19 @@ export const read: IActionDefinition<ActionArguments> = {
   },
 };
 
+export const claim: IActionDefinition<{ x: number, y: number, w: number, h: number}> = {
+  cost: 0,
+  perform({ agent }, {
+    x, y, w, h,
+  }) {
+    agent.mind.interpreter.exec([new LiteralVector(new Vector(x, y)), words.goto], () => {
+      console.log('claim: goto done !!!!!!!!!!');
+    });
+
+    return succeed('Claiming...');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -727,7 +724,6 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   that,
   me,
   define,
-  think,
   clear,
   xy,
   facing,
@@ -737,6 +733,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   hi,
   talk,
   read,
+  claim,
 };
 
 export function succeed(msg: string): IActionResult {

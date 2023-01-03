@@ -1,19 +1,22 @@
 /* eslint-disable camelcase */
 import {
-  Combinator, Factor, List, LiteralList, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  Combinator,
+  Factor,
+  List,
+  LiteralList,
+  LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import {
   East, North, South, Vector, West,
 } from '../shared';
 
 /** @category Words */
-const goto = new Combinator(['goto'], ['number', 'number'], async ({ stack, syscall }) => {
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => {
+  const v = stack.pop() as LiteralVector;
 
   syscall({
     name: 'goto',
-    args: { x: x.value, y: y.value },
+    args: { x: v.vector.x, y: v.vector.y },
   });
 });
 
@@ -257,16 +260,18 @@ const read = new Operator(['read'], [], ({ stack, syscall }) => {
   });
 });
 
-const claim = new Operator(['claim'], ['vector', 'vector'], ({ stack, exec }) => {
+const claim = new Operator(['claim'], ['vector', 'vector'], ({ stack, syscall }) => {
   const size = stack.pop() as LiteralVector;
   const position = stack.pop() as LiteralVector;
 
-  exec([
-    position.value[0],
-    position.value[1],
-    goto,
-  ], () => {
-    console.log('done!');
+  syscall({
+    name: 'claim',
+    args: {
+      x: position.vector.x,
+      y: position.vector.y,
+      w: size.vector.x,
+      h: size.vector.y,
+    },
   });
 });
 

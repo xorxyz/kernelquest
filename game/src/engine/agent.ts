@@ -193,9 +193,12 @@ export class Agent extends Body {
 
     const action = this.mind.queue.next();
 
-    if (action) return action;
+    if (action) {
+      console.log('action:', action.name);
+      return action;
+    }
 
-    return this.mind.interpreter.current.syscalls.next() || { name: 'noop' };
+    return this.mind.interpreter.takeAction() || { name: 'noop' };
   }
 
   isFacing(vector: Vector) {
