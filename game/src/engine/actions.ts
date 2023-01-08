@@ -522,12 +522,11 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
       return fail(`The word '${name}' already exists.`);
     }
 
-    agent.mind.compiler.dict[name] = new Operator([name], [], (x) => {
-      x.syscall({
-        name: 'exec',
-        args: {
-          text: program,
-        },
+    agent.mind.compiler.dict[name] = new Operator([name], [], (ctx) => {
+      const compiled = agent.mind.compiler.compile(program);
+      console.log(compiled);
+      compiled.forEach((f) => {
+        agent.mind.interpreter.term.push(f);
       });
     });
 

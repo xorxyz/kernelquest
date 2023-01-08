@@ -87,15 +87,15 @@ export class Quotation extends Literal {
   }
 
   static from(term: Term): Quotation | LiteralList | LiteralVector {
-    // Parse the quotation as a LiteralList if all its items are of the same type
-    if (LiteralList.isList(term)) {
-      return new LiteralList(term as List);
-    }
-
     // Parse the quotation as a LiteralVector if it's a list of 2 numbers
     if (LiteralVector.isVector(term)) {
       const [x, y] = term.map((item) => item.value) as [number, number];
       return new LiteralVector(new Vector(x, y));
+    }
+
+    // Parse the quotation as a LiteralList if all its items are of the same type
+    if (LiteralList.isList(term)) {
+      return new LiteralList(term as List);
     }
 
     return new Quotation(term);
@@ -146,6 +146,10 @@ export class LiteralList extends Quotation {
       && new Set(term.map((item) => item.type)).size === 1
     );
   }
+
+  dup() {
+    return new LiteralList([...this.value.map((f) => f.dup())]);
+  }
 }
 
 export class LiteralVector extends Quotation {
@@ -160,6 +164,10 @@ export class LiteralVector extends Quotation {
 
   static isVector(term: Term) {
     return term.length === 2 && term.every((item) => typeof item.value === 'number');
+  }
+
+  dup() {
+    return new LiteralVector(this.vector.clone());
   }
 }
 
