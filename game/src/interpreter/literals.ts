@@ -8,6 +8,10 @@ export class LiteralTruth extends Literal {
   constructor(value: boolean) {
     super(String(value), value);
   }
+
+  dup() {
+    return new LiteralTruth(this.value);
+  }
 }
 
 // () -> Number
@@ -19,6 +23,10 @@ export class LiteralNumber extends Literal {
   }
   toString() {
     return `${String(this.value)}`;
+  }
+
+  dup() {
+    return new LiteralNumber(this.value);
   }
 }
 
@@ -32,6 +40,10 @@ export class LiteralString extends Literal {
   toString() {
     return `"${String(this.value)}"`;
   }
+
+  dup() {
+    return new LiteralString(this.value);
+  }
 }
 
 // () -> Set
@@ -40,6 +52,10 @@ export class LiteralSet extends Literal {
   value: Set<Literal> = new Set();
   constructor(set: Set<Literal>) {
     super('{}', set);
+  }
+
+  dup() {
+    return new LiteralSet(new Set(...this.value.entries()));
   }
 }
 
@@ -53,6 +69,10 @@ export class LiteralRef extends Literal {
 
   toString() {
     return this.lexeme;
+  }
+
+  dup() {
+    return new LiteralRef(this.value);
   }
 }
 
@@ -85,12 +105,20 @@ export class Quotation extends Literal {
     this.value.push(factor);
   }
 
+  unshift(factor: Factor) {
+    this.value.unshift(factor);
+  }
+
   toString() {
     return `[${this.dequote()}]`;
   }
 
   dequote() {
     return this.value.map((factor) => factor.toString()).join(' ');
+  }
+
+  dup() {
+    return new Quotation([...this.value.map((f) => f.dup())]);
   }
 }
 
@@ -145,5 +173,9 @@ export class LiteralTerm extends Literal {
 
   toString() {
     return `${this.value}`;
+  }
+
+  dup() {
+    return new LiteralTerm(this.value);
   }
 }

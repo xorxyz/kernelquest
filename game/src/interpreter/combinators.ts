@@ -30,9 +30,9 @@ export const concat = new Combinator(['concat'], ['string|quotation', 'string|qu
 // [b] [a] -> [[b] a]
 export const cons = new Combinator(['cons'], ['any', 'quotation'], ({ stack }) => {
   const b = stack.pop() as Quotation;
-  const a = stack.pop() as Literal;
+  const a = stack.pop() as Factor;
 
-  b.add(a);
+  b.unshift(a);
 
   stack.push(Quotation.from(b.value));
 });
@@ -84,8 +84,7 @@ export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack
 
   runSeries(list.value.map((item, i) => (done) => {
     console.log(`filter: running ${i}`);
-    const p = Quotation.from([item, ...program.value]);
-    exec(p.value, () => {
+    exec([item, ...program.value], () => {
       const result = stack.pop();
       if (!(result instanceof LiteralTruth)) {
         throw new Error('filter: result of test should be a truth value');
@@ -99,6 +98,17 @@ export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack
     console.log('filter: done!');
     stack.push(results);
   });
+});
+
+export const reduce = new Combinator(['reduce'], ['list', 'quotation'], ({ stack, exec }) => {
+  const program = stack.pop() as Quotation;
+  const list = stack.pop() as LiteralList;
+
+  if (!list.value.length) return;
+
+  const first = list.value.shift() as Factor;
+
+  exec([first, ...list.value.flatMap((item) => [item, ...program.value])]);
 });
 
 // [C] [B] [A] -> B || A
@@ -128,16 +138,14 @@ export const until = new Combinator(['until'], ['quotation', 'quotation'], ({ st
   recurse();
 
   function recurse() {
-    exec(test.value, () => {
+    exec([...program.value, ...test.value], () => {
       const tested = stack.pop();
 
       if (!(tested instanceof LiteralTruth)) {
         throw new Error('until: test should return a truth value');
       }
 
-      if (tested.value === false) {
-        exec(program.value);
-      } else {
+      if (tested.value !== true) {
         recurse();
       }
     });
@@ -149,7 +157,8 @@ const combinators = {};
 [
   concat, cons, unit,
   i,
-  map, filter, ifte,
+  map, filter, reduce,
+  ifte,
   until,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {

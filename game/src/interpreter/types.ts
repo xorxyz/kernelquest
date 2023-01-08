@@ -16,12 +16,14 @@ export abstract class Factor {
     this.lexeme = lexeme;
   }
 
+  abstract dup()
+
   abstract validate(stack: Stack<Factor>)
   abstract execute(args: ExecuteArgs)
   abstract toString (): string
 }
 
-export class Literal extends Factor {
+export abstract class Literal extends Factor {
   value: unknown;
 
   constructor(lexeme: string, value?: unknown) {

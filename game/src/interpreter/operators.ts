@@ -58,6 +58,10 @@ export class Operator extends Factor {
   toString() {
     return this.lexeme;
   }
+
+  dup() {
+    return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+  }
 }
 
 export const sum = new Operator(['+', 'sum', 'add'], ['number', 'number'], ({ stack }) => {
@@ -93,21 +97,22 @@ export const division = new Operator(['/', 'quotient'], ['number', 'number'], ({
 });
 
 export const dup = new Operator(['dup'], ['any'], ({ stack }) => {
-  const a = stack.pop();
-
-  if (!a) return;
+  const a = stack.pop() as Factor;
+  const b = a.dup();
 
   stack.push(a);
-  stack.push(a);
+  stack.push(b);
 });
 
 export const dupd = new Operator(['dupd'], ['any', 'any'], ({ stack }) => {
-  const a = stack.pop() as Factor;
   const b = stack.pop() as Factor;
+  const a = stack.pop() as Factor;
 
-  stack.push(b);
-  stack.push(b);
+  const aCopy = a.dup();
+
   stack.push(a);
+  stack.push(aCopy);
+  stack.push(b);
 });
 
 export const swap = new Operator(['swap'], ['any', 'any'], ({ stack }) => {
