@@ -25,6 +25,7 @@ export class Cell {
   public position: Vector;
   public slot: Agent | Thing | null = null;
   public buffer: Agent | Thing | null = null;
+  public mark: number | null = null;
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
@@ -83,9 +84,11 @@ export class Cell {
   render(ctx: Area) {
     if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)) {
       return esc(Colors.Bg.Cyan)
-      + esc(Colors.Fg.Black) + (this.slot?.type.glyph.value || Glyph.Empty) + esc(Style.Reset);
+      + esc(Colors.Fg.Black)
+      + (this.slot?.type.glyph.value || this.renderMark() || Glyph.Empty)
+      + esc(Style.Reset);
     }
-    return this.slot?.render() || Glyph.Empty;
+    return this.slot?.render() || this.renderMark() || Glyph.Empty;
   }
 
   isAdjacentTo(cell: Cell) {
@@ -104,5 +107,17 @@ export class Cell {
     const direction = [NORTH, EAST, SOUTH, WEST].find((vector) => vector.equals(diff));
 
     return direction || null;
+  }
+
+  renderMark() {
+    return this.mark?.toString(16).slice(-2).padStart(2, '0');
+  }
+
+  scratch(n: number) {
+    this.mark = n;
+  }
+
+  erase() {
+    this.mark = null;
   }
 }

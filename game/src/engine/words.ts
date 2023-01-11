@@ -291,6 +291,22 @@ const west = new Operator(['west'], [], ({ stack }) => {
   stack.push(new LiteralVector(new West()));
 });
 
+const scratch = new Operator(['scratch'], ['number'], ({ stack, syscall }) => {
+  const n = stack.pop() as LiteralNumber;
+  syscall({
+    name: 'scratch',
+    args: {
+      n: n.value,
+    },
+  });
+});
+
+const erase = new Operator(['erase'], [], ({ stack, syscall }) => {
+  syscall({
+    name: 'erase',
+  });
+});
+
 export default {
   goto,
   look,
@@ -325,4 +341,6 @@ export default {
   east,
   south,
   west,
+  scratch,
+  erase,
 };

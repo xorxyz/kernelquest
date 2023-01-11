@@ -1,7 +1,6 @@
 import { Vector } from '../shared';
 import {
   LiteralList,
-  LiteralNumber,
   LiteralRef, LiteralString, LiteralVector, Operator,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
@@ -23,7 +22,7 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'talk' | 'read' | 'claim'
+  'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -697,6 +696,40 @@ export const claim: IActionDefinition<{ x: number, y: number, w: number, h: numb
   },
 };
 
+export const scratch: IActionDefinition<{ n: number}> = {
+  cost: 0,
+  perform({ agent }, { n }) {
+    const { cell } = agent.facing;
+
+    if (!cell) {
+      return fail('There is no cell here.');
+    }
+
+    cell.scratch(n);
+
+    agent.mind.stack.push(new LiteralRef(cell.id));
+
+    return succeed(`Scratched ${n} at ${cell.position.label}`);
+  },
+};
+
+export const erase: IActionDefinition<{}> = {
+  cost: 0,
+  perform({ agent }) {
+    const { cell } = agent.facing;
+
+    if (!cell) {
+      return fail('There is no cell here.');
+    }
+
+    cell.erase();
+
+    agent.mind.stack.push(new LiteralRef(cell.id));
+
+    return succeed(`Erased ${cell.position.label}`);
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -733,6 +766,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   talk,
   read,
   claim,
+  scratch,
+  erase,
 };
 
 export function succeed(msg: string): IActionResult {
