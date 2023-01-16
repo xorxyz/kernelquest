@@ -47,7 +47,7 @@ export class Stars extends Element {
 /** @category Agents */
 export class Wind extends Element {
   name = 'wind';
-  glyph = new Glyph('🌬️ ');
+  glyph = new Glyph('🌬️');
   weight = 0;
   capabilities = [];
 }

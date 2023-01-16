@@ -25,6 +25,7 @@ export class Area {
   readonly position: Vector;
   readonly timeLimit: number = 700;
 
+  public id: number;
   public name = 'area';
 
   public tick = 0;
@@ -47,10 +48,6 @@ export class Area {
   private rows: Array<Array<Cell>> = new Array(AREA_HEIGHT).fill(0).map(() => []);
   private setupFn?: (this: Area) => void;
 
-  get id() {
-    return this.position.label;
-  }
-
   get secondsLeft() {
     return this.timeLimit - this.seconds;
   }
@@ -70,6 +67,7 @@ export class Area {
   }
 
   constructor(x: number, y: number, setupFn?: (this: Area) => void) {
+    this.id = y * 16 + x;
     this.position = new Vector(x, y);
     this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
       const cellY = Math.floor(i / AREA_WIDTH);
@@ -79,6 +77,8 @@ export class Area {
     });
 
     this.cells.forEach((cell) => this.rows[cell.position.y].push(cell));
+
+    this.cells[0].scratch(this.id);
 
     this.outerRectangle = new Rectangle(this.position, new Vector(AREA_WIDTH, AREA_HEIGHT));
     this.innerRectangle = new Rectangle(

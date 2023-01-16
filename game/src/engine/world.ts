@@ -115,15 +115,17 @@ export class World {
   public areas: Array<Area>;
   public agents: Set<Agent> = new Set();
   public things: Set<Thing> = new Set();
-  public origin = new Area(0, 0);
   public creator: Agent;
   public hero: Agent;
+  public origin: Area;
 
   // id 0 is null, 1-160 is for cells
   public counter = 1 + 160;
 
-  constructor(areas: Array<Area> = []) {
-    this.areas = [this.origin, ...areas];
+  constructor(areas: Array<Area>) {
+    console.log('areas:', areas);
+    this.areas = areas;
+    this.origin = areas[0];
     this.creator = this.spawn('king', this.origin);
     this.hero = this.creator;
   }

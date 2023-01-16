@@ -11,6 +11,7 @@ import {
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
+import { Cell } from './cell';
 
 export type SendFn = (str: string) => void
 
@@ -23,9 +24,10 @@ export interface EngineOptions {
 
 /** @category Engine */
 export class Engine {
+  public world: World;
+
   public events = new EventEmitter();
   public cycle = 0;
-  public world = new World();
   public elapsed = 0;
   public history: Array<HistoryEvent> = [];
   public saveGames: SaveGameDict;
@@ -67,11 +69,13 @@ export class Engine {
 
   reset() {
     this.clock.reset();
-    this.world = new World([
-      new Area(0, 1),
-      new Area(1, 0),
-      new Area(1, 1),
-    ]);
+    this.world = new World(
+      (new Array(10))
+        .fill(0)
+        .flatMap((_, y) => (new Array(16))
+          .fill(0)
+          .map((__, x) => new Area(x, y))),
+    );
     if (this.tty) {
       this.tty.agent = this.world.hero;
     } else {
@@ -135,7 +139,9 @@ export class Engine {
     this.reset();
 
     const data = await global.electron.load(this.saveGameId);
-    const { areas } = this.world;
+
+    console.log('hero is starting in', this.world.hero.area);
+    this.world.hero.area = this.world.origin;
 
     // TODO: Ensure agents exist
     // and make this more robust
@@ -145,7 +151,8 @@ export class Engine {
     data.history.forEach((event) => {
       this.cycle = event.tick;
       const agent = [...this.world.agents].find((a) => a.id === event.agentId) as Agent;
-      const area = areas.find((a) => a.has(agent)) as Area;
+      const { area } = agent;
+      console.log('agent id', agent.id, 'area id', area?.id, 'event', event.action.name, Object.entries(event.action.args || {}).join(', '));
       this.tryPerforming(event.action, agent, area);
     });
 

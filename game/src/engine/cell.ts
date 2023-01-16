@@ -51,6 +51,7 @@ export class Cell {
   /* Empty the cell's slot. */
   clear() {
     this.slot = null;
+    this.erase();
   }
 
   /* Take the thing that's in the cell's slot. */

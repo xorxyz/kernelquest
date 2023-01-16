@@ -106,7 +106,7 @@ export class Agent extends Body {
   public view: Array<string> = [];
   public pwd: string;
 
-  private area: Area;
+  public area: Area;
 
   constructor(id: number, type: AgentType, words?: Dictionary) {
     super(id, type);
