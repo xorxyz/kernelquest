@@ -1,8 +1,10 @@
-import { Literal } from '../interpreter';
 import {
   Colors, esc, Style, Vector,
 } from '../shared';
+import { Area } from './area';
 import { Glyph } from './cell';
+
+const connectors = ['route', 'door'];
 
 /** @category Thing */
 export abstract class BodyType {
@@ -51,6 +53,59 @@ export class Thing extends Body {
     if (rendered) style = rendered;
 
     return style + this.type.glyph.value + esc(Style.Reset);
+  }
+
+  update(area: Area) {
+    if (this.type.name === 'route') {
+      // update glyph
+      const n = area.cellAt(this.position.clone().subY(1));
+      const hasRouteN = connectors.includes(n?.slot?.type.name || '');
+      const s = area.cellAt(this.position.clone().addY(1));
+      const hasRouteS = connectors.includes(s?.slot?.type.name || '');
+      if (hasRouteN && hasRouteS) {
+        this.type.glyph = new Glyph('┃ ');
+      }
+      const w = area.cellAt(this.position.clone().subX(1));
+      const hasRouteW = connectors.includes(w?.slot?.type.name || '');
+      const e = area.cellAt(this.position.clone().addX(1));
+      const hasRouteE = connectors.includes(e?.slot?.type.name || '');
+      if (hasRouteW || hasRouteE) {
+        this.type.glyph = new Glyph('━━');
+      }
+      if (hasRouteN || hasRouteS) {
+        this.type.glyph = new Glyph('┃ ');
+      }
+      if (hasRouteN && hasRouteS && hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('╋━');
+      }
+      if (!hasRouteN && hasRouteS && hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┳━');
+      }
+      if (hasRouteN && hasRouteS && !hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┣━');
+      }
+      if (hasRouteN && hasRouteS && hasRouteW && !hasRouteE) {
+        this.type.glyph = new Glyph('┫ ');
+      }
+      if (hasRouteN && !hasRouteS && hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┻━');
+      }
+      if (hasRouteN && !hasRouteS && hasRouteW && !hasRouteE) {
+        this.type.glyph = new Glyph('┛ ');
+      }
+      if (hasRouteN && !hasRouteS && !hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┗ ');
+      }
+      if (!hasRouteN && hasRouteS && hasRouteW && !hasRouteE) {
+        this.type.glyph = new Glyph('┓ ');
+      }
+      if (!hasRouteN && hasRouteS && !hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┏━');
+      }
+      if (hasRouteN && !hasRouteS && !hasRouteW && hasRouteE) {
+        this.type.glyph = new Glyph('┗━');
+      }
+    }
   }
 
   renderStyle() {

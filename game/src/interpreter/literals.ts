@@ -129,7 +129,7 @@ export type List = (
   Array<LiteralRef>
 )
 
-const literalTypes = ['truth', 'number', 'string', 'ref'];
+const literalTypes = ['truth', 'number', 'string', 'vector', 'ref'];
 
 export class LiteralList extends Quotation {
   type = 'list';
@@ -141,10 +141,7 @@ export class LiteralList extends Quotation {
 
   static isList(term: Term) {
     const types = term.map((item) => item.type);
-    return (
-      types.every((t) => literalTypes.includes(t))
-      && new Set(term.map((item) => item.type)).size === 1
-    );
+    return new Set(types).size === 1 && types.every((t) => literalTypes.includes(t));
   }
 
   dup() {

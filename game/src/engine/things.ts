@@ -153,3 +153,11 @@ export class Map extends BodyType {
   name = 'map';
   glyph = new Glyph('🗺️');
 }
+
+/** @category Things */
+export class Route extends BodyType {
+  name = 'route';
+  glyph = new Glyph('━━');
+  style = esc(Colors.Bg.Black) + esc(Colors.Fg.White);
+  isBlocking = false;
+}

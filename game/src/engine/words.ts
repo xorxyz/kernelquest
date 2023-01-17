@@ -1,14 +1,12 @@
 /* eslint-disable camelcase */
 import {
   Combinator,
-  Factor,
-  List,
-  LiteralList,
   LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import {
   East, North, South, Vector, West,
 } from '../shared';
+import { PathFinder } from './pathfinding';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => {
@@ -21,13 +19,25 @@ const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => 
 });
 
 /** @category Words */
-const look = new Combinator(['look'], ['number', 'number'], async ({ stack, syscall }) => {
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+const path = new Combinator(['path'], ['vector', 'vector'], async ({ stack, syscall }) => {
+  const to = (stack.pop() as LiteralVector).vector;
+  const from = (stack.pop() as LiteralVector).vector;
+
+  syscall({
+    name: 'path',
+    args: {
+      fromX: from.x, fromY: from.y, toX: to.x, toY: to.y,
+    },
+  });
+});
+
+/** @category Words */
+const look = new Combinator(['look'], ['vector'], async ({ stack, syscall }) => {
+  const v = (stack.pop() as LiteralVector).vector;
 
   syscall({
     name: 'look',
-    args: { x: x.value, y: y.value },
+    args: { x: v.x, y: v.y },
   });
 });
 
@@ -65,23 +75,29 @@ const rm = new Combinator(['rm'], ['ref'], async ({ stack, syscall }) => {
   });
 });
 
-const create = new Combinator(['create'], ['number', 'number', 'string'], async ({ stack, syscall }) => {
+const create = new Combinator(['create'], ['vector', 'string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+  const v = (stack.pop() as LiteralVector).vector;
   syscall({
     name: 'create',
-    args: { thingName: str.value, x: x.value, y: y.value },
+    args: {
+      thingName: str.value,
+      x: v.x,
+      y: v.y,
+    },
   });
 });
 
-const spawn = new Combinator(['spawn'], ['number', 'number', 'string'], async ({ stack, syscall }) => {
+const spawn = new Combinator(['spawn'], ['vector', 'string'], async ({ stack, syscall }) => {
   const str = stack.pop() as LiteralString;
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+  const v = (stack.pop() as LiteralVector).vector;
   syscall({
     name: 'spawn',
-    args: { agentName: str.value, x: x.value, y: y.value },
+    args: {
+      agentName: str.value,
+      x: v.x,
+      y: v.y,
+    },
   });
 });
 
@@ -115,14 +131,13 @@ const prop = new Operator(['prop'], ['ref', 'string'], async ({ stack, syscall }
   });
 });
 
-const that = new Operator(['that'], ['number', 'number'], async ({ stack, syscall }) => {
-  const y = stack.pop() as LiteralNumber;
-  const x = stack.pop() as LiteralNumber;
+const that = new Operator(['that'], ['vector'], async ({ stack, syscall }) => {
+  const v = (stack.pop() as LiteralVector).vector;
   syscall({
     name: 'that',
     args: {
-      x: x.value,
-      y: y.value,
+      x: v.x,
+      y: v.y,
     },
   });
 });
@@ -157,22 +172,9 @@ const xy = new Operator(['xy'], ['ref'], ({ stack, syscall }) => {
 });
 
 const stackFn = new Operator(['stack'], [], ({ stack }) => {
-  let quotation = new Quotation();
-
-  stack.popN(stack.length).forEach((f) => {
-    quotation.add(f as Factor);
-  });
-
-  if (LiteralList.isList(quotation.value)) {
-    quotation = new LiteralList(quotation.value as List);
-  }
-
-  if (LiteralVector.isVector(quotation.value)) {
-    const [x, y] = quotation.value.map((item) => item.value) as [number, number];
-    quotation = new LiteralVector(new Vector(x, y));
-  }
-
-  stack.push(quotation);
+  const items = [...stack.arr];
+  stack.clear();
+  stack.push(Quotation.from(items));
 });
 
 const face = new Operator(['face'], ['vector'], ({ stack, syscall }) => {
@@ -242,19 +244,7 @@ const hi = new Operator(['hi'], ['ref'], ({ stack, syscall }) => {
   });
 });
 
-const pick = new Operator(['pick'], ['ref', 'number'], ({ stack, syscall }) => {
-  const choiceId = stack.pop() as LiteralNumber;
-  const agentId = stack.pop() as LiteralRef;
-  syscall({
-    name: 'pick',
-    args: {
-      agentId: agentId.value,
-      choiceId: choiceId.value,
-    },
-  });
-});
-
-const read = new Operator(['read'], [], ({ stack, syscall }) => {
+const read = new Operator(['read'], [], ({ syscall }) => {
   syscall({
     name: 'read',
   });
@@ -301,14 +291,32 @@ const scratch = new Operator(['scratch'], ['number'], ({ stack, syscall }) => {
   });
 });
 
-const erase = new Operator(['erase'], [], ({ stack, syscall }) => {
+const erase = new Operator(['erase'], [], ({ syscall }) => {
   syscall({
     name: 'erase',
   });
 });
 
+const rect = new Operator(['rect'], ['vector', 'vector'], ({ stack }) => {
+  const v2 = (stack.pop() as LiteralVector).vector;
+  const v1 = (stack.pop() as LiteralVector).vector;
+
+  const w = v2.x - v1.x + 1;
+  const h = v2.y - v1.y + 1;
+
+  const t = new Array(w).fill(0).map((_, i) => new Vector(v1.x + i, v1.y));
+  const r = new Array(h - 1).fill(0).map((_, i) => new Vector(v1.x + w - 1, v1.y + 1 + i));
+  const b = new Array(w - 1).fill(0).map((_, i) => new Vector(v2.x - 1 - i, v2.y));
+  const l = new Array(h - 2).fill(0).map((_, i) => new Vector(v2.x - w + 1, v2.y - 1 - i));
+
+  const result = Quotation.from(t.concat(r, b, l).map((v) => new LiteralVector(v)));
+
+  stack.push(result);
+});
+
 export default {
   goto,
+  path,
   look,
   ls,
   step,
@@ -334,7 +342,6 @@ export default {
   puts,
   say,
   hi,
-  pick,
   read,
   claim,
   north,
@@ -343,4 +350,5 @@ export default {
   west,
   scratch,
   erase,
+  rect,
 };

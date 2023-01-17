@@ -14,6 +14,7 @@ export const Colors = {
     Cyan: '[0;106m',
     Purple: '[0;105m',
     Yellow: '[0;103m',
+    Brown: '[0;43m',
   },
   Fg: {
     Black: '[30m',

@@ -95,6 +95,7 @@ export class Area {
   clear() {
     this.cells.forEach((cell) => cell.clear());
     this.agents.clear();
+    this.update();
   }
 
   has(agent: Agent): boolean {
@@ -121,7 +122,13 @@ export class Area {
       this.things.add(entity);
     }
 
+    this.update();
+
     return true;
+  }
+
+  update() {
+    this.things.forEach((t) => t.update(this));
   }
 
   search(str: string) {
@@ -148,6 +155,8 @@ export class Area {
     }
 
     cell.slot = null;
+
+    this.update();
 
     return true;
   }

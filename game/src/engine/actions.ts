@@ -1,7 +1,7 @@
 import { Vector } from '../shared';
 import {
   LiteralList,
-  LiteralRef, LiteralString, LiteralVector, Operator,
+  LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { AgentTypeName, ThingTypeName, World } from './world';
@@ -22,7 +22,7 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase'
+  'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path'
 )
 
 export type ActionArguments = Record<string, boolean | number | string>
@@ -263,6 +263,28 @@ export const goto: IActionDefinition<{ x: number, y: number }> = {
     agent.mind.interpreter.exec(actions, () => {
       console.log('goto: done!!!');
     });
+
+    return succeed('Found a path to the destination cell.');
+  },
+};
+
+export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number, toY: number }> = {
+  cost: 0,
+  perform({ area, agent }, {
+    fromX, fromY, toX, toY,
+  }) {
+    const from = new Vector(fromX, fromY);
+    const pathfinder = new PathFinder(toX, toY);
+
+    if (from.equals(pathfinder.destination)) {
+      return fail('Already here.');
+    }
+
+    const p = pathfinder.findPath(area, from);
+
+    if (!p.length) return fail('Could not find a path.');
+
+    agent.mind.stack.push(Quotation.from(p.map((c) => new LiteralRef(c.id))));
 
     return succeed('Found a path to the destination cell.');
   },
@@ -741,6 +763,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   step,
   backstep,
   goto,
+  path,
   ls,
   look,
   get,

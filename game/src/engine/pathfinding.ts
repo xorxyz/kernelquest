@@ -1,6 +1,8 @@
-import { debug, PriorityQueue, Vector } from '../shared';
+import {
+  debug, PriorityQueue, Vector, Direction, South,
+} from '../shared';
 import { Agent, Area, Cell } from '.';
-import { Factor, LiteralNumber, LiteralVector } from '../interpreter';
+import { Factor, LiteralVector } from '../interpreter';
 import words from './words';
 
 export class PathFinder {
@@ -20,8 +22,8 @@ export class PathFinder {
     return kv ? kv[0] : null;
   }
 
-  findPath(area: Area, agent: Agent) {
-    const start = area.cellAt(agent.position);
+  findPath(area: Area, from: Vector) {
+    const start = area.cellAt(from);
     const end = area.cellAt(this.destination);
 
     if (!start || !end) {
@@ -32,7 +34,7 @@ export class PathFinder {
     const queue = new PriorityQueue<Cell>();
     const cameFrom: Map<Cell, Cell> = new Map();
     const costSoFar: Map<Cell, number> = new Map();
-    const direction = agent.facing.direction.clone();
+    const direction = new Direction(new South());
     const visited = new Set<Cell>();
 
     let reached = false;

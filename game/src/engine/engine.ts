@@ -47,7 +47,7 @@ export class Engine {
     if (process.env.NODE_ENV === 'production') {
       this.reset();
     } else {
-      this.selectSaveFile(0);
+      this.selectSaveFile(1);
       this.load();
     }
   }
@@ -63,7 +63,6 @@ export class Engine {
       2: two,
     };
 
-    console.log(this.saveGames);
     this.initiated = true;
   }
 
