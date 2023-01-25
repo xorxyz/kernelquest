@@ -56,6 +56,7 @@ export const Keys = {
   LOWER_R: '72',
   LOWER_S: '73',
   LOWER_T: '74',
+  LOWER_U: '75',
   LOWER_W: '77',
 };
 

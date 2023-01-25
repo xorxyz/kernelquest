@@ -11,7 +11,6 @@ import {
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
-import { Cell } from './cell';
 
 export type SendFn = (str: string) => void
 
@@ -30,6 +29,7 @@ export class Engine {
   public cycle = 0;
   public elapsed = 0;
   public history: Array<HistoryEvent> = [];
+  public future: Array<HistoryEvent> = [];
   public saveGames: SaveGameDict;
   public tty: VirtualTerminal;
   private opts: EngineOptions;
@@ -41,7 +41,7 @@ export class Engine {
   constructor(opts: EngineOptions) {
     this.opts = opts;
     this.clock = new Clock(opts.rate || CLOCK_MS_DELAY);
-    this.clock.on('tick', this.update.bind(this));
+    this.clock.on('tick', this.updateIfPending.bind(this));
     this.story = story;
 
     if (process.env.NODE_ENV === 'production') {
@@ -64,6 +64,13 @@ export class Engine {
     };
 
     this.initiated = true;
+  }
+
+  updateIfPending() {
+    if (!this.world.hero.mind.interpreter.isDone() || this.world.hero.mind.queue.size) {
+      console.log('update because pending');
+      this.update();
+    }
   }
 
   reset() {
@@ -91,19 +98,80 @@ export class Engine {
   }
 
   update() {
-    this.events.emit('begin-turn');
     this.cycle++;
 
     this.world.agents.forEach((agent: Agent) => {
-      if (agent.hp.value > 0) {
-        const area = this.world.find(agent);
-        if (!area) return;
-        this.processTurn(area, agent);
-        this.applyVelocity(area, agent);
-      }
+      const area = this.world.find(agent);
+      if (!area) return;
+      this.processTurn(area, agent);
+      this.applyVelocity(area, agent);
     });
 
-    this.events.emit('end-turn');
+    this.tty.render();
+
+    console.log('updated', this.cycle);
+  }
+
+  undo() {
+    const historyEvent = this.history.pop();
+    if (!historyEvent) return;
+
+    this.future.push(historyEvent);
+
+    const actionDefinition = actions[historyEvent.action.name];
+
+    const agent = [...this.world.agents.values()].find((a) => a.id === historyEvent.agentId);
+    if (!agent) {
+      throw new Error(`Undo: Could not find agent ${historyEvent.agentId}`);
+    }
+    const { area } = agent;
+
+    const context = {
+      agent,
+      area,
+      engine: this,
+      world: this.world,
+    };
+
+    actionDefinition.undo(context, historyEvent.action.args);
+
+    this.cycle--;
+
+    agent.see(area);
+    this.tty.render();
+
+    console.log('undo', historyEvent);
+  }
+
+  redo() {
+    const historyEvent = this.future.pop();
+    if (!historyEvent) return;
+
+    this.cycle++;
+
+    const actionDefinition = actions[historyEvent.action.name];
+
+    const agent = [...this.world.agents.values()].find((a) => a.id === historyEvent.agentId);
+    if (!agent) {
+      throw new Error(`Redo: Could not find agent ${historyEvent.agentId}`);
+    }
+    const { area } = agent;
+
+    const context = {
+      agent,
+      area,
+      engine: this,
+      world: this.world,
+    };
+
+    actionDefinition.perform(context, historyEvent.action.args);
+
+    this.history.push(historyEvent);
+
+    agent.see(area);
+    this.tty.render();
+
+    console.log('redo', historyEvent);
   }
 
   async save() {
@@ -216,8 +284,10 @@ export class Engine {
       }
     }
 
+    console.log('done turn', action);
+    agent.see(area);
+
     if (this.cycle % 10 === 0) agent.sp.increase(1);
-    this.events.emit('update', this.cycle);
   }
 
   applyVelocity(area: Area, agent: Agent) {
@@ -242,13 +312,12 @@ export class Engine {
       throw new Error('Engine not initiated. Call \'await engine.init()\' first.');
     }
     this.clock.start();
-    this.events.emit('start', this.cycle);
+    this.update();
     debug('started engine.');
   }
 
   pause() {
     this.clock.pause();
-    this.events.emit('pause', this.cycle);
     debug('paused engine.');
   }
 }

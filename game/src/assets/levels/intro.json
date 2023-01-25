@@ -1,0 +1,1252 @@
+{
+  "name": "Jon",
+  "history": [
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 6,
+          "y": 3
+        }
+      },
+      "tick": 7902,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 9,
+          "y": 6
+        }
+      },
+      "tick": 8049,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 106
+        }
+      },
+      "tick": 8243,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 55
+        }
+      },
+      "tick": 8245,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 6,
+          "y": 3
+        }
+      },
+      "tick": 8648,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 7,
+          "y": 3
+        }
+      },
+      "tick": 8650,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 8,
+          "y": 3
+        }
+      },
+      "tick": 8652,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 9,
+          "y": 3
+        }
+      },
+      "tick": 8654,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 9,
+          "y": 4
+        }
+      },
+      "tick": 8656,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 9,
+          "y": 5
+        }
+      },
+      "tick": 8658,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 9,
+          "y": 6
+        }
+      },
+      "tick": 8660,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 8,
+          "y": 6
+        }
+      },
+      "tick": 8662,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 7,
+          "y": 6
+        }
+      },
+      "tick": 8664,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 6,
+          "y": 6
+        }
+      },
+      "tick": 8666,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 6,
+          "y": 5
+        }
+      },
+      "tick": 8668,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "wall",
+          "x": 6,
+          "y": 4
+        }
+      },
+      "tick": 8670,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 6
+        }
+      },
+      "tick": 8903,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "rm",
+        "args": {
+          "id": 209
+        }
+      },
+      "tick": 8950,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 104
+        }
+      },
+      "tick": 9157,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "door",
+          "x": 7,
+          "y": 6
+        }
+      },
+      "tick": 9159,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 9
+        }
+      },
+      "tick": 9233,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 152
+        }
+      },
+      "tick": 9273,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "door",
+          "x": 7,
+          "y": 9
+        }
+      },
+      "tick": 9275,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 9348,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 9355,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 136
+        }
+      },
+      "tick": 9570,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 120
+        }
+      },
+      "tick": 9572,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "path",
+        "args": {
+          "fromX": 7,
+          "fromY": 7,
+          "toX": 7,
+          "toY": 8
+        }
+      },
+      "tick": 9700,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 10532,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 10546,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 136
+        }
+      },
+      "tick": 10630,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 120
+        }
+      },
+      "tick": 10632,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "path",
+        "args": {
+          "fromX": 7,
+          "fromY": 7,
+          "toX": 7,
+          "toY": 8
+        }
+      },
+      "tick": 10864,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 11017,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 11053,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 11062,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 136
+        }
+      },
+      "tick": 11192,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 120
+        }
+      },
+      "tick": 11194,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "path",
+        "args": {
+          "fromX": 7,
+          "fromY": 7,
+          "toX": 7,
+          "toY": 8
+        }
+      },
+      "tick": 11279,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 11547,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 11700,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 12259,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 12339,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 120
+        }
+      },
+      "tick": 12434,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 12638,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 136
+        }
+      },
+      "tick": 12683,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "route",
+          "x": 7,
+          "y": 8
+        }
+      },
+      "tick": 13105,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "route",
+          "x": 7,
+          "y": 7
+        }
+      },
+      "tick": 13107,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 13203,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 13315,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 73
+        }
+      },
+      "tick": 13828,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "flag",
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 14207,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "tick": 14396,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 0,
+          "y": 2
+        }
+      },
+      "tick": 14414,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 4,
+          "y": 1
+        }
+      },
+      "tick": 14540,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 5,
+          "y": 0
+        }
+      },
+      "tick": 14562,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 1,
+          "y": 5
+        }
+      },
+      "tick": 14941,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 217
+        }
+      },
+      "tick": 15670,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 15672,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 18
+        }
+      },
+      "tick": 15674,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 1,
+          "y": 1
+        }
+      },
+      "tick": 15676,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 33
+        }
+      },
+      "tick": 15678,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 0,
+          "y": 2
+        }
+      },
+      "tick": 15680,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 21
+        }
+      },
+      "tick": 15682,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 4,
+          "y": 1
+        }
+      },
+      "tick": 15684,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 6
+        }
+      },
+      "tick": 15686,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 5,
+          "y": 0
+        }
+      },
+      "tick": 15688,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 82
+        }
+      },
+      "tick": 15690,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "tree",
+          "x": 1,
+          "y": 5
+        }
+      },
+      "tick": 15692,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 15780,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "rm",
+        "args": {
+          "id": 218
+        }
+      },
+      "tick": 15812,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 15858,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 15909,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 15929,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 73
+        }
+      },
+      "tick": 16155,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "flag",
+          "x": 8,
+          "y": 4
+        }
+      },
+      "tick": 16157,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 16694,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 2,
+          "y": 5
+        }
+      },
+      "tick": 16742,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 3,
+          "y": 6
+        }
+      },
+      "tick": 16760,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 1,
+          "y": 7
+        }
+      },
+      "tick": 16819,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 2,
+          "y": 8
+        }
+      },
+      "tick": 16840,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 6,
+          "y": 9
+        }
+      },
+      "tick": 16931,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 8,
+          "y": 9
+        }
+      },
+      "tick": 16958,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 12,
+          "y": 3
+        }
+      },
+      "tick": 17126,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 13,
+          "y": 4
+        }
+      },
+      "tick": 17164,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 11,
+          "y": 5
+        }
+      },
+      "tick": 17204,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "that",
+        "args": {
+          "x": 12,
+          "y": 6
+        }
+      },
+      "tick": 17226,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 83
+        }
+      },
+      "tick": 17571,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 2,
+          "y": 5
+        }
+      },
+      "tick": 17573,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 100
+        }
+      },
+      "tick": 17575,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 3,
+          "y": 6
+        }
+      },
+      "tick": 17577,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 114
+        }
+      },
+      "tick": 17579,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 1,
+          "y": 7
+        }
+      },
+      "tick": 17581,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 131
+        }
+      },
+      "tick": 17583,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 2,
+          "y": 8
+        }
+      },
+      "tick": 17585,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 151
+        }
+      },
+      "tick": 17587,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 6,
+          "y": 9
+        }
+      },
+      "tick": 17589,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 153
+        }
+      },
+      "tick": 17591,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 8,
+          "y": 9
+        }
+      },
+      "tick": 17593,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 61
+        }
+      },
+      "tick": 17595,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 12,
+          "y": 3
+        }
+      },
+      "tick": 17597,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 78
+        }
+      },
+      "tick": 17599,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 13,
+          "y": 4
+        }
+      },
+      "tick": 17601,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 92
+        }
+      },
+      "tick": 17603,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 11,
+          "y": 5
+        }
+      },
+      "tick": 17605,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "xy",
+        "args": {
+          "refId": 109
+        }
+      },
+      "tick": 17607,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "create",
+        "args": {
+          "thingName": "grass",
+          "x": 12,
+          "y": 6
+        }
+      },
+      "tick": 17609,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "clear"
+      },
+      "tick": 17670,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "left"
+      },
+      "tick": 17760,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "step"
+      },
+      "tick": 17773,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "left"
+      },
+      "tick": 17780,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "step"
+      },
+      "tick": 17785,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "step"
+      },
+      "tick": 17789,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "left"
+      },
+      "tick": 17795,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "step"
+      },
+      "tick": 17802,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "step"
+      },
+      "tick": 17807,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "right"
+      },
+      "tick": 17814,
+      "agentId": 161
+    },
+    {
+      "action": {
+        "name": "right"
+      },
+      "tick": 17818,
+      "agentId": 161
+    }
+  ],
+  "stats": {
+    "level": 1,
+    "gold": 0,
+    "time": 1374
+  }
+}

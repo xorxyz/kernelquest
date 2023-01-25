@@ -42,7 +42,10 @@ export interface IActionResult {
 export interface IActionDefinition<T extends ActionArguments> {
   cost: number
   perform (ctx: IActionContext, arg: T): IActionResult
+  undo (ctx: IActionContext, arg: T): IActionResult
 }
+
+const undoNoop = () => succeed('');
 
 export interface IAction {
   name: ValidActions
@@ -55,6 +58,7 @@ export const save: IActionDefinition<ActionArguments> = {
     engine.save();
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const load: IActionDefinition<ActionArguments> = {
@@ -63,6 +67,7 @@ export const load: IActionDefinition<ActionArguments> = {
     engine.load();
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const noop: IActionDefinition<ActionArguments> = {
@@ -70,6 +75,7 @@ export const noop: IActionDefinition<ActionArguments> = {
   perform() {
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const wait: IActionDefinition<{ duration: number }> = {
@@ -82,6 +88,7 @@ export const wait: IActionDefinition<{ duration: number }> = {
     agent.isWaitingUntil = agent.mind.tick + duration;
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const right: IActionDefinition<ActionArguments> = {
@@ -91,6 +98,7 @@ export const right: IActionDefinition<ActionArguments> = {
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const left: IActionDefinition<ActionArguments> = {
@@ -100,6 +108,7 @@ export const left: IActionDefinition<ActionArguments> = {
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const face: IActionDefinition<{ x: number, y: number }> = {
@@ -114,6 +123,7 @@ export const face: IActionDefinition<{ x: number, y: number }> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const step: IActionDefinition<{}> = {
@@ -181,7 +191,7 @@ export const step: IActionDefinition<{}> = {
 
     if (target?.slot?.type.name === 'door') {
       const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
-      if (next && !next.slot) {
+      if (next && (!next.slot || !next.slot.type.isBlocking)) {
         console.log('its a door and theres a free cell after');
         area.cellAt(agent.position)?.take();
         next.put(agent);
@@ -198,6 +208,15 @@ export const step: IActionDefinition<{}> = {
     }
 
     return fail('');
+  },
+  undo({ agent, area }) {
+    area.cellAt(agent.position)?.take();
+    const target = area.cellAt(agent.position.clone().sub(agent.facing.direction.value)) as Cell;
+    target.put(agent);
+    agent.position.sub(agent.facing.direction.value);
+    agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+    return succeed('');
   },
 };
 
@@ -241,6 +260,7 @@ export const backstep: IActionDefinition<{}> = {
 
     return fail('');
   },
+  undo: undoNoop,
 };
 
 export const goto: IActionDefinition<{ x: number, y: number }> = {
@@ -266,6 +286,7 @@ export const goto: IActionDefinition<{ x: number, y: number }> = {
 
     return succeed('Found a path to the destination cell.');
   },
+  undo: undoNoop,
 };
 
 export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number, toY: number }> = {
@@ -288,6 +309,7 @@ export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number
 
     return succeed('Found a path to the destination cell.');
   },
+  undo: undoNoop,
 };
 
 export const ls: IActionDefinition<{}> = {
@@ -300,6 +322,7 @@ export const ls: IActionDefinition<{}> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const look: IActionDefinition<{ x:number, y: number}> = {
@@ -313,6 +336,7 @@ export const look: IActionDefinition<{ x:number, y: number}> = {
       ? succeed(seen.label)
       : fail('Nothing here.');
   },
+  undo: undoNoop,
 };
 
 export const get: IActionDefinition<{}> = {
@@ -344,6 +368,7 @@ export const get: IActionDefinition<{}> = {
 
     return succeed(`You get the ${thing.name}.`);
   },
+  undo: undoNoop,
 };
 
 export const put: IActionDefinition<{}> = {
@@ -357,6 +382,7 @@ export const put: IActionDefinition<{}> = {
       ? succeed(`You put down the ${(target.slot as Thing).name}.`)
       : fail('There\'s already something here.');
   },
+  undo: undoNoop,
 };
 
 export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, toY: number}> = {
@@ -378,6 +404,7 @@ export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, t
 
     return fail('');
   },
+  undo: undoNoop,
 };
 
 export const rm: IActionDefinition<{ id: number }> = {
@@ -399,6 +426,7 @@ export const rm: IActionDefinition<{ id: number }> = {
 
     return fail('Nothing here.');
   },
+  undo: undoNoop,
 };
 
 export const exec: IActionDefinition<{ text: string }> = {
@@ -414,6 +442,7 @@ export const exec: IActionDefinition<{ text: string }> = {
       return fail((err as Error).message);
     }
   },
+  undo: undoNoop,
 };
 
 export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y: number }> = {
@@ -429,6 +458,7 @@ export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y:
       return fail(`Can't create a '${thingName}'`);
     }
   },
+  undo: undoNoop,
 };
 
 export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
@@ -444,6 +474,7 @@ export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: 
       return fail(`Can't spawn a '${agentName}'`);
     }
   },
+  undo: undoNoop,
 };
 
 export const tell: IActionDefinition<{ agentId: number, message: string }> = {
@@ -464,6 +495,7 @@ export const tell: IActionDefinition<{ agentId: number, message: string }> = {
 
     return succeed(`Told ${targetAgent.type.name} #${targetAgent.id}: "${message}".`);
   },
+  undo: undoNoop,
 };
 
 export const halt: IActionDefinition<ActionArguments> = {
@@ -472,6 +504,7 @@ export const halt: IActionDefinition<ActionArguments> = {
     agent.halt();
     return succeed('Halted.');
   },
+  undo: undoNoop,
 };
 
 export const prop: IActionDefinition<{ id: number, propName: string }> = {
@@ -504,6 +537,7 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const that: IActionDefinition<{ x: number, y: number }> = {
@@ -525,6 +559,7 @@ export const that: IActionDefinition<{ x: number, y: number }> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const me: IActionDefinition<{ id: number }> = {
@@ -534,6 +569,7 @@ export const me: IActionDefinition<{ id: number }> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const define: IActionDefinition<{ name: string, program: string}> = {
@@ -553,6 +589,7 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
 
     return succeed(`Defined [${program}] as '${name}'`);
   },
+  undo: undoNoop,
 };
 
 export const clear: IActionDefinition<ActionArguments> = {
@@ -570,6 +607,7 @@ export const clear: IActionDefinition<ActionArguments> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const xy: IActionDefinition<{ refId: number }> = {
@@ -582,6 +620,7 @@ export const xy: IActionDefinition<{ refId: number }> = {
     }
     return fail(`There is no agent with ref id ${refId}`);
   },
+  undo: undoNoop,
 };
 
 export const facing: IActionDefinition<ActionArguments> = {
@@ -593,6 +632,7 @@ export const facing: IActionDefinition<ActionArguments> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const del: IActionDefinition<{ word: string }> = {
@@ -604,6 +644,7 @@ export const del: IActionDefinition<{ word: string }> = {
     }
     return fail(`Word '${word}' does not exist`);
   },
+  undo: undoNoop,
 };
 
 export const puts: IActionDefinition<{ message: string }> = {
@@ -611,6 +652,7 @@ export const puts: IActionDefinition<{ message: string }> = {
   perform(_, { message }) {
     return succeed(message);
   },
+  undo: undoNoop,
 };
 
 export const say: IActionDefinition<{ message: string }> = {
@@ -627,6 +669,7 @@ export const say: IActionDefinition<{ message: string }> = {
 
     return succeed('');
   },
+  undo: undoNoop,
 };
 
 export const hi: IActionDefinition<{ agentId: number }> = {
@@ -659,6 +702,7 @@ export const hi: IActionDefinition<{ agentId: number }> = {
 
     return fail(`No agent with id ${agentId}`);
   },
+  undo: undoNoop,
 };
 
 export const talk: IActionDefinition<ActionArguments> = {
@@ -683,6 +727,7 @@ export const talk: IActionDefinition<ActionArguments> = {
 
     return fail('There is no one here to talk to.');
   },
+  undo: undoNoop,
 };
 
 export const read: IActionDefinition<ActionArguments> = {
@@ -703,6 +748,7 @@ export const read: IActionDefinition<ActionArguments> = {
 
     return fail('You are not holding a book.');
   },
+  undo: undoNoop,
 };
 
 export const claim: IActionDefinition<{ x: number, y: number, w: number, h: number}> = {
@@ -716,6 +762,7 @@ export const claim: IActionDefinition<{ x: number, y: number, w: number, h: numb
 
     return succeed('Claiming...');
   },
+  undo: undoNoop,
 };
 
 export const scratch: IActionDefinition<{ n: number}> = {
@@ -733,6 +780,7 @@ export const scratch: IActionDefinition<{ n: number}> = {
 
     return succeed(`Scratched ${n} at ${cell.position.label}`);
   },
+  undo: undoNoop,
 };
 
 export const erase: IActionDefinition<{}> = {
@@ -750,6 +798,7 @@ export const erase: IActionDefinition<{}> = {
 
     return succeed(`Erased ${cell.position.label}`);
   },
+  undo: undoNoop,
 };
 
 export const actions: Record<ValidActions, IActionDefinition<any>> = {

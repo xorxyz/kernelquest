@@ -33,8 +33,6 @@ export class VirtualTerminal {
   public engine: Engine;
   public talking = false;
 
-  public paused = true;
-
   private timer;
 
   constructor(engine: Engine, send: SendFn) {
@@ -51,18 +49,6 @@ export class VirtualTerminal {
       line: '',
       stdout: CursorModeHelpText,
     };
-
-    this.events.on('pause', (tick) => {
-      this.paused = true;
-      this.render(tick);
-    });
-
-    this.events.on('start', (tick) => {
-      this.paused = false;
-      this.render(tick);
-    });
-
-    this.events.on('update', (tick) => this.render(tick));
   }
 
   disconnect() {
@@ -87,12 +73,11 @@ export class VirtualTerminal {
 
   handleInput(str) {
     this.view.handleInput(str, this);
-
-    this.render(this.agent.mind.tick);
+    this.render();
   }
 
-  render(tick: number) {
-    const output = this.view.compile(this, tick);
+  render() {
+    const output = this.view.compile(this, this.engine.cycle);
 
     this.send(output);
 
@@ -100,7 +85,6 @@ export class VirtualTerminal {
   }
 
   drawCursor() {
-    if (this.paused) return;
     if (!this.agent.isAlive) return;
     if (!this.view.components.prompt || !this.view.components.room) return;
 
@@ -204,6 +188,12 @@ export class VirtualTerminal {
             y: this.agent.cursorPosition.y,
           },
         };
+        break;
+      case (Keys.LOWER_U):
+        this.engine.undo();
+        break;
+      case (Keys.LOWER_I):
+        this.engine.redo();
         break;
       default:
         break;

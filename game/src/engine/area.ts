@@ -186,7 +186,7 @@ export class Area {
   }
 
   findAgentsFacingCell(cell: Cell): Array<Agent> {
-    return Array.from(this.agents).filter((agent) => agent.facing.cell === cell);
+    return Array.from(this.agents).filter((agent) => agent?.facing?.cell?.id === cell.id);
   }
 
   reset() {
