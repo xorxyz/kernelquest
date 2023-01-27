@@ -109,7 +109,7 @@ export class Area {
 
     if (!cell) return false;
 
-    cell.slot = entity;
+    cell.put(entity);
 
     if (entity instanceof Agent) {
       this.agents.add(entity);
@@ -142,6 +142,7 @@ export class Area {
   }
 
   remove(entity: Agent | Thing) {
+    console.log('remove');
     const cell = this.cells.find((c) => c.slot === entity);
 
     if (!cell) { return false; }

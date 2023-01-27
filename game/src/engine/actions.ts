@@ -253,12 +253,13 @@ export const step: IActionDefinition<
       const targetPosition = Vector.from(previousState.position);
       const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
 
-      if (targetArea) {
+      if (previousState.areaId !== undefined) {
         area.remove(agent);
         agent.area = targetArea;
       }
 
-      area.cellAt(previousPosition)?.take();
+      const there = area.cellAt(previousPosition)?.take();
+      console.log('there', there, previousPosition);
       targetArea.put(agent, targetPosition);
       agent.position.copy(targetPosition);
 
@@ -309,31 +310,31 @@ export const backstep: IActionDefinition<{}> = {
   undo: undoNoop,
 };
 
-export const goto: IActionDefinition<{ x: number, y: number }> = {
-  cost: 0,
-  perform({ area, agent }, { x, y }) {
-    const pathfinder = new PathFinder(x, y);
+// export const goto: IActionDefinition<{ x: number, y: number }> = {
+//   cost: 0,
+//   perform({ area, agent }, { x, y }) {
+//     const pathfinder = new PathFinder(x, y);
 
-    if (agent.position.equals(pathfinder.destination)) {
-      return fail('Already here.');
-    }
+//     if (agent.position.equals(pathfinder.destination)) {
+//       return fail('Already here.');
+//     }
 
-    const path = pathfinder.findPath(area, agent);
+//     const path = pathfinder.findPath(area, agent);
 
-    if (!path.length) return fail('Could not find a path.');
+//     if (!path.length) return fail('Could not find a path.');
 
-    const actions = pathfinder.buildPathActions(agent, path.reverse());
+//     const actions = pathfinder.buildPathActions(agent, path.reverse());
 
-    // actions.forEach((action) => agent.schedule(action));
+//     // actions.forEach((action) => agent.schedule(action));
 
-    agent.mind.interpreter.exec(actions, () => {
-      console.log('goto: done!!!');
-    });
+//     agent.mind.interpreter.exec(actions, () => {
+//       console.log('goto: done!!!');
+//     });
 
-    return succeed('Found a path to the destination cell.');
-  },
-  undo: undoNoop,
-};
+//     return succeed('Found a path to the destination cell.');
+//   },
+//   undo: undoNoop,
+// };
 
 export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number, toY: number }> = {
   cost: 0,
@@ -355,7 +356,10 @@ export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number
 
     return succeed('Found a path to the destination cell.');
   },
-  undo: undoNoop,
+  undo({ agent }) {
+    agent.mind.stack.pop();
+    return succeed('');
+  },
 };
 
 export const ls: IActionDefinition<{}> = {
@@ -366,9 +370,12 @@ export const ls: IActionDefinition<{}> = {
 
     agent.mind.interpreter.sysret(new LiteralList(refs));
 
+    return succeed(`Found ${refs.length} things.`);
+  },
+  undo({ agent }) {
+    agent.mind.stack.pop();
     return succeed('');
   },
-  undo: undoNoop,
 };
 
 export const look: IActionDefinition<{ x:number, y: number}> = {
@@ -856,7 +863,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   face,
   step,
   backstep,
-  goto,
+  // goto,
   path,
   ls,
   look,
