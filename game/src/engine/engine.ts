@@ -137,7 +137,7 @@ export class Engine {
 
     this.cycle--;
 
-    agent.see(area);
+    agent.see(agent.area);
     this.tty.render();
 
     console.log('undo', historyEvent);
@@ -286,7 +286,7 @@ export class Engine {
     }
 
     console.log('done turn', action);
-    agent.see(area);
+    agent.see(agent.area);
 
     if (this.cycle % 10 === 0) agent.sp.increase(1);
   }

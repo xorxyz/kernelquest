@@ -50,7 +50,7 @@ export interface IActionDefinition<
   > {
   cost: number
   perform (ctx: IActionContext, arg: T): IActionResult
-  undo (ctx: IActionContext, arg: T, state: Z): IActionResult
+  undo (ctx: IActionContext, arg: T, previousState: Z): IActionResult
 }
 
 const undoNoop = () => succeed('');
@@ -86,19 +86,6 @@ export const noop: IActionDefinition<ActionArguments> = {
   undo: undoNoop,
 };
 
-// export const wait: IActionDefinition<{ duration: number }> = {
-//   cost: 0,
-//   perform({ agent }, { duration }) {
-//     if (agent.isWaitingUntil !== null) {
-//       agent.isWaitingUntil += duration;
-//       return succeed('');
-//     }
-//     agent.isWaitingUntil = agent.mind.tick + duration;
-//     return succeed('');
-//   },
-//   undo: undoNoop,
-// };
-
 export const right: IActionDefinition<ActionArguments> = {
   cost: 0,
   perform({ agent, area }) {
@@ -128,7 +115,7 @@ export const left: IActionDefinition<ActionArguments> = {
 };
 
 export const face: IActionDefinition<
-{ x: number, y: number }, { previousDirection: { x: number, y: number}}> = {
+{ x: number, y: number }, { direction: { x: number, y: number}}> = {
   cost: 0,
   perform({ agent, area }, { x, y }) {
     const direction = new Vector(x, y);
@@ -143,8 +130,8 @@ export const face: IActionDefinition<
       previousDirection: previousDirection.toObject(),
     });
   },
-  undo({ agent, area }, args, state) {
-    const previousDirection = Vector.from(state?.previousDirection);
+  undo({ agent, area }, args, previousState) {
+    const previousDirection = Vector.from(previousState.direction);
     agent.facing.direction.rotateUntil(previousDirection);
     agent.facing.cell = area.cellAt(
       agent.position.clone().add(agent.facing.direction.value),
@@ -156,7 +143,10 @@ export const face: IActionDefinition<
 
 export const step: IActionDefinition<
     ActionArguments,
-    { previousPosition: { x: number, y: number }}
+    {
+      position: { x: number, y: number }
+      areaId?: number
+    }
   > = {
     cost: 0,
     perform({
@@ -165,11 +155,13 @@ export const step: IActionDefinition<
       const target = area.cellAt(agent.isLookingAt);
       const previousPosition = agent.position.clone();
 
+      // Collision with the edge of the area
       if (!target) {
         const { direction } = agent.facing;
         const nextAreaPosition = area.position.clone().add(direction.value);
         const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
 
+        // If there is an adjacent area
         if (nextArea) {
           const nextPosition = agent.position.clone();
           if (direction.value.x === 1) nextPosition.setX(0);
@@ -185,13 +177,16 @@ export const step: IActionDefinition<
           area.remove(agent);
           agent.position.copy(nextPosition);
           nextArea.put(agent);
+          agent.area = nextArea;
 
           return succeed('', {
-            previousPosition: previousPosition.toObject(),
+            position: previousPosition.toObject(),
+            areaId: area.id,
           });
         }
       }
 
+      // Hero collides with enemy
       if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
         agent.hp.decrease(1);
         if (agent.hp.value === 0) {
@@ -202,9 +197,10 @@ export const step: IActionDefinition<
         return fail('');
       }
 
+      // Enemy collides with hero
       if (agent.type instanceof Foe
-      && target?.slot instanceof Agent
-      && target.slot.type instanceof Hero) {
+        && target?.slot instanceof Agent
+        && target.slot.type instanceof Hero) {
         if (target.slot.isAlive) {
           target.slot.hp.decrease(1);
           if (target.slot.hp.value === 0) {
@@ -213,21 +209,23 @@ export const step: IActionDefinition<
             target.slot.velocity.add(agent.facing.direction.value);
           }
           return succeed('', {
-            previousPosition: previousPosition.toObject(),
+            position: previousPosition.toObject(),
           });
         }
       }
 
+      // Normal case, just a step
       if (target && (!target.isBlocked)) {
         area.cellAt(agent.position)?.take();
         target.put(agent);
         agent.position.add(agent.facing.direction.value);
         agent.facing.cell = area.cellAt(agent.isLookingAt);
         return succeed('', {
-          previousPosition: previousPosition.toObject(),
+          position: previousPosition.toObject(),
         });
       }
 
+      // Step through a door
       if (target?.slot?.type.name === 'door') {
         const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
         if (next && (!next.slot || !next.slot.type.isBlocking)) {
@@ -239,7 +237,7 @@ export const step: IActionDefinition<
           agent.facing.cell = area.cellAt(agent.isLookingAt);
 
           return succeed('', {
-            previousPosition: previousPosition.toObject(),
+            position: previousPosition.toObject(),
           });
         }
       }
@@ -250,15 +248,23 @@ export const step: IActionDefinition<
 
       return fail('');
     },
-    undo({ agent, area }, args, state) {
-      const previousPosition = Vector.from(state.previousPosition);
-      const previousCell = area.cellAt(previousPosition) as Cell;
+    undo({ agent, area, world }, args, previousState) {
+      const targetPosition = Vector.from(previousState.position);
 
       area.cellAt(agent.position)?.take();
-      previousCell.put(agent);
+      area.remove(agent);
 
-      agent.position.copy(previousPosition);
-      agent.facing.cell = area.cellAt(agent.isLookingAt);
+      const targetArea = previousState.areaId !== undefined
+        ? world.areas.find((a) => a.id === previousState.areaId) as Area
+        : area;
+
+      const targetCell = targetArea.cellAt(targetPosition) as Cell;
+
+      agent.position.copy(targetPosition);
+      targetArea.put(agent);
+      targetCell.put(agent);
+
+      agent.area = targetArea;
 
       return succeed('');
     },
