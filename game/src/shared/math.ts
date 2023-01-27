@@ -15,6 +15,13 @@ export class Vector {
     this.y = y;
   }
 
+  toObject() {
+    return {
+      x: this.x,
+      y: this.y,
+    };
+  }
+
   /** return a new Vector from the give xy object */
   static from(obj: { x: number, y: number }) {
     return new Vector(obj.x, obj.y);

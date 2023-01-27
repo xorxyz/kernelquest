@@ -14,7 +14,7 @@ import words from './words';
 
 export type ValidActions = (
   'save' | 'load' |
-  'noop' | 'wait' |
+  'noop' |
   'right' | 'left' |
   'face' | 'step' | 'backstep' | 'goto' |
   'ls' | 'look' |
@@ -25,7 +25,11 @@ export type ValidActions = (
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path'
 )
 
-export type ActionArguments = Record<string, boolean | number | string>
+export type SerializableType = boolean | number | string
+
+export type ActionArguments = Record<string, SerializableType>
+
+export type HistoryEventState = Record<string, SerializableType | Record<string, SerializableType>>
 
 export interface IActionContext {
   world: World
@@ -37,12 +41,16 @@ export interface IActionContext {
 export interface IActionResult {
   status: 'success' | 'failure'
   message: string
+  state?: HistoryEventState
 }
 
-export interface IActionDefinition<T extends ActionArguments> {
+export interface IActionDefinition<
+    T extends ActionArguments = ActionArguments,
+    Z extends HistoryEventState = HistoryEventState
+  > {
   cost: number
   perform (ctx: IActionContext, arg: T): IActionResult
-  undo (ctx: IActionContext, arg: T): IActionResult
+  undo (ctx: IActionContext, arg: T, state: Z): IActionResult
 }
 
 const undoNoop = () => succeed('');
@@ -78,18 +86,18 @@ export const noop: IActionDefinition<ActionArguments> = {
   undo: undoNoop,
 };
 
-export const wait: IActionDefinition<{ duration: number }> = {
-  cost: 0,
-  perform({ agent }, { duration }) {
-    if (agent.isWaitingUntil !== null) {
-      agent.isWaitingUntil += duration;
-      return succeed('');
-    }
-    agent.isWaitingUntil = agent.mind.tick + duration;
-    return succeed('');
-  },
-  undo: undoNoop,
-};
+// export const wait: IActionDefinition<{ duration: number }> = {
+//   cost: 0,
+//   perform({ agent }, { duration }) {
+//     if (agent.isWaitingUntil !== null) {
+//       agent.isWaitingUntil += duration;
+//       return succeed('');
+//     }
+//     agent.isWaitingUntil = agent.mind.tick + duration;
+//     return succeed('');
+//   },
+//   undo: undoNoop,
+// };
 
 export const right: IActionDefinition<ActionArguments> = {
   cost: 0,
@@ -98,7 +106,11 @@ export const right: IActionDefinition<ActionArguments> = {
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
-  undo: undoNoop,
+  undo({ agent, area }) {
+    agent.facing.direction.rotateLeft();
+    agent.facing.cell = area.cellAt(agent.isLookingAt);
+    return succeed('');
+  },
 };
 
 export const left: IActionDefinition<ActionArguments> = {
@@ -108,117 +120,149 @@ export const left: IActionDefinition<ActionArguments> = {
     agent.facing.cell = area.cellAt(agent.isLookingAt);
     return succeed('');
   },
-  undo: undoNoop,
+  undo({ agent, area }) {
+    agent.facing.direction.rotateRight();
+    agent.facing.cell = area.cellAt(agent.isLookingAt);
+    return succeed('');
+  },
 };
 
-export const face: IActionDefinition<{ x: number, y: number }> = {
+export const face: IActionDefinition<
+{ x: number, y: number }, { previousDirection: { x: number, y: number}}> = {
   cost: 0,
   perform({ agent, area }, { x, y }) {
     const direction = new Vector(x, y);
+    const previousDirection = agent.facing.direction.value;
 
     agent.facing.direction.rotateUntil(direction);
     agent.facing.cell = area.cellAt(
       agent.position.clone().add(agent.facing.direction.value),
     );
 
+    return succeed('', {
+      previousDirection: previousDirection.toObject(),
+    });
+  },
+  undo({ agent, area }, args, state) {
+    const previousDirection = Vector.from(state?.previousDirection);
+    agent.facing.direction.rotateUntil(previousDirection);
+    agent.facing.cell = area.cellAt(
+      agent.position.clone().add(agent.facing.direction.value),
+    );
+
     return succeed('');
   },
-  undo: undoNoop,
 };
 
-export const step: IActionDefinition<{}> = {
-  cost: 0,
-  perform({
-    agent, area, world, engine,
-  }) {
-    const target = area.cellAt(agent.isLookingAt);
+export const step: IActionDefinition<
+    ActionArguments,
+    { previousPosition: { x: number, y: number }}
+  > = {
+    cost: 0,
+    perform({
+      agent, area, world, engine,
+    }) {
+      const target = area.cellAt(agent.isLookingAt);
+      const previousPosition = agent.position.clone();
 
-    if (!target) {
-      const { direction } = agent.facing;
-      const nextAreaPosition = area.position.clone().add(direction.value);
-      const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
+      if (!target) {
+        const { direction } = agent.facing;
+        const nextAreaPosition = area.position.clone().add(direction.value);
+        const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
 
-      if (nextArea) {
-        const nextPosition = agent.position.clone();
-        if (direction.value.x === 1) nextPosition.setX(0);
-        if (direction.value.x === -1) nextPosition.setX(15);
-        if (direction.value.y === 1) nextPosition.setY(0);
-        if (direction.value.y === -1) nextPosition.setY(9);
-        if (nextArea.cellAt(nextPosition)?.slot) {
-          if (engine.world.hero.id === agent.id) {
-            engine.events.emit('sound:fail');
+        if (nextArea) {
+          const nextPosition = agent.position.clone();
+          if (direction.value.x === 1) nextPosition.setX(0);
+          if (direction.value.x === -1) nextPosition.setX(15);
+          if (direction.value.y === 1) nextPosition.setY(0);
+          if (direction.value.y === -1) nextPosition.setY(9);
+          if (nextArea.cellAt(nextPosition)?.slot) {
+            if (engine.world.hero.id === agent.id) {
+              engine.events.emit('sound:fail');
+            }
+            return fail('There is something blocking the way.');
           }
-          return fail('There is something blocking the way.');
+          area.remove(agent);
+          agent.position.copy(nextPosition);
+          nextArea.put(agent);
+
+          return succeed('', {
+            previousPosition: previousPosition.toObject(),
+          });
         }
-        area.remove(agent);
-        agent.position.copy(nextPosition);
-        nextArea.put(agent);
-        return succeed('');
       }
-    }
 
-    if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
-      agent.hp.decrease(1);
-      if (agent.hp.value === 0) {
+      if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
+        agent.hp.decrease(1);
+        if (agent.hp.value === 0) {
         // TODO: Handle death of agent
-      } else {
-        agent.velocity.sub(agent.facing.direction.value);
+        } else {
+          agent.velocity.sub(agent.facing.direction.value);
+        }
+        return fail('');
       }
-      return fail('');
-    }
 
-    if (agent.type instanceof Foe
+      if (agent.type instanceof Foe
       && target?.slot instanceof Agent
       && target.slot.type instanceof Hero) {
-      if (target.slot.isAlive) {
-        target.slot.hp.decrease(1);
-        if (target.slot.hp.value === 0) {
-          target.slot.type.glyph = new Glyph('☠️ ');
-        } else {
-          target.slot.velocity.add(agent.facing.direction.value);
+        if (target.slot.isAlive) {
+          target.slot.hp.decrease(1);
+          if (target.slot.hp.value === 0) {
+            target.slot.type.glyph = new Glyph('☠️ ');
+          } else {
+            target.slot.velocity.add(agent.facing.direction.value);
+          }
+          return succeed('', {
+            previousPosition: previousPosition.toObject(),
+          });
         }
-        return succeed('');
       }
-    }
 
-    if (target && (!target.isBlocked)) {
-      area.cellAt(agent.position)?.take();
-      target.put(agent);
-      agent.position.add(agent.facing.direction.value);
-      agent.facing.cell = area.cellAt(agent.isLookingAt);
-      return succeed('');
-    }
-
-    if (target?.slot?.type.name === 'door') {
-      const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
-      if (next && (!next.slot || !next.slot.type.isBlocking)) {
-        console.log('its a door and theres a free cell after');
+      if (target && (!target.isBlocked)) {
         area.cellAt(agent.position)?.take();
-        next.put(agent);
-        agent.position.add(agent.facing.direction.value);
+        target.put(agent);
         agent.position.add(agent.facing.direction.value);
         agent.facing.cell = area.cellAt(agent.isLookingAt);
-
-        return succeed('');
+        return succeed('', {
+          previousPosition: previousPosition.toObject(),
+        });
       }
-    }
 
-    if (engine.world.hero.id === agent.id) {
-      engine.events.emit('sound:fail');
-    }
+      if (target?.slot?.type.name === 'door') {
+        const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
+        if (next && (!next.slot || !next.slot.type.isBlocking)) {
+          console.log('its a door and theres a free cell after');
+          area.cellAt(agent.position)?.take();
+          next.put(agent);
+          agent.position.add(agent.facing.direction.value);
+          agent.position.add(agent.facing.direction.value);
+          agent.facing.cell = area.cellAt(agent.isLookingAt);
 
-    return fail('');
-  },
-  undo({ agent, area }) {
-    area.cellAt(agent.position)?.take();
-    const target = area.cellAt(agent.position.clone().sub(agent.facing.direction.value)) as Cell;
-    target.put(agent);
-    agent.position.sub(agent.facing.direction.value);
-    agent.facing.cell = area.cellAt(agent.isLookingAt);
+          return succeed('', {
+            previousPosition: previousPosition.toObject(),
+          });
+        }
+      }
 
-    return succeed('');
-  },
-};
+      if (engine.world.hero.id === agent.id) {
+        engine.events.emit('sound:fail');
+      }
+
+      return fail('');
+    },
+    undo({ agent, area }, args, state) {
+      const previousPosition = Vector.from(state.previousPosition);
+      const previousCell = area.cellAt(previousPosition) as Cell;
+
+      area.cellAt(agent.position)?.take();
+      previousCell.put(agent);
+
+      agent.position.copy(previousPosition);
+      agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+      return succeed('');
+    },
+  };
 
 export const backstep: IActionDefinition<{}> = {
   cost: 0,
@@ -805,7 +849,6 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
   noop,
-  wait,
   right,
   left,
   face,
@@ -842,10 +885,11 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   erase,
 };
 
-export function succeed(msg: string): IActionResult {
+export function succeed(msg: string, state?: HistoryEventState): IActionResult {
   return {
     status: 'success',
     message: msg,
+    state,
   };
 }
 

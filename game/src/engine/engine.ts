@@ -133,7 +133,7 @@ export class Engine {
       world: this.world,
     };
 
-    actionDefinition.undo(context, historyEvent.action.args);
+    actionDefinition.undo(context, historyEvent.action.args, historyEvent.state || {});
 
     this.cycle--;
 
@@ -269,6 +269,7 @@ export class Engine {
       if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
         this.history.push({
           action,
+          state: result.state,
           tick: this.cycle,
           agentId: agent.id,
         });

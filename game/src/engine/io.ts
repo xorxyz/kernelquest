@@ -1,9 +1,10 @@
-import { IAction } from './actions';
+import { HistoryEventState, IAction } from './actions';
 
 export interface HistoryEvent {
   tick: number,
   agentId: number,
-  action: IAction
+  action: IAction,
+  state?: HistoryEventState,
 }
 
 export interface SaveFileContents {
