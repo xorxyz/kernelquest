@@ -249,22 +249,18 @@ export const step: IActionDefinition<
       return fail('');
     },
     undo({ agent, area, world }, args, previousState) {
+      const previousPosition = agent.position.clone();
       const targetPosition = Vector.from(previousState.position);
+      const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
 
-      area.cellAt(agent.position)?.take();
-      area.remove(agent);
+      if (targetArea) {
+        area.remove(agent);
+        agent.area = targetArea;
+      }
 
-      const targetArea = previousState.areaId !== undefined
-        ? world.areas.find((a) => a.id === previousState.areaId) as Area
-        : area;
-
-      const targetCell = targetArea.cellAt(targetPosition) as Cell;
-
+      area.cellAt(previousPosition)?.take();
+      targetArea.put(agent, targetPosition);
       agent.position.copy(targetPosition);
-      targetArea.put(agent);
-      targetCell.put(agent);
-
-      agent.area = targetArea;
 
       return succeed('');
     },
