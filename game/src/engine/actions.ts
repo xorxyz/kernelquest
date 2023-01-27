@@ -483,7 +483,11 @@ export const get: IActionDefinition<{}> = {
 
     return succeed(`You get the ${thing.name}.`);
   },
-  undo: undoNoop,
+  undo({ agent }) {
+    agent.drop();
+
+    return succeed('');
+  },
 };
 
 export const put: IActionDefinition<{}> = {
@@ -497,7 +501,11 @@ export const put: IActionDefinition<{}> = {
       ? succeed(`You put down the ${(target.slot as Thing).name}.`)
       : fail('There\'s already something here.');
   },
-  undo: undoNoop,
+  undo({ agent }) {
+    agent.get();
+
+    return succeed('');
+  },
 };
 
 export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, toY: number}> = {
