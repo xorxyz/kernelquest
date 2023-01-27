@@ -4,6 +4,7 @@ export interface HistoryEvent {
   tick: number,
   agentId: number,
   action: IAction,
+  failed?: boolean,
   state?: HistoryEventState,
 }
 

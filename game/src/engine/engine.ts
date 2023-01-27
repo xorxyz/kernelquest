@@ -118,6 +118,8 @@ export class Engine {
 
     this.future.push(historyEvent);
 
+    if (historyEvent.failed) return;
+
     const actionDefinition = actions[historyEvent.action.name];
 
     const agent = [...this.world.agents.values()].find((a) => a.id === historyEvent.agentId);
@@ -267,12 +269,18 @@ export class Engine {
       }
 
       if (!['save', 'load', 'exit', 'exec'].includes(action.name)) {
-        this.history.push({
-          action,
-          state: result.state,
+        const historyEvent: HistoryEvent = {
           tick: this.cycle,
           agentId: agent.id,
-        });
+          action,
+          state: result.state,
+        };
+
+        if (result.status === 'failure') {
+          historyEvent.failed = true;
+        }
+
+        this.history.push(historyEvent);
       }
     } else {
       try {

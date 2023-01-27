@@ -249,6 +249,7 @@ export const step: IActionDefinition<
       return fail('');
     },
     undo({ agent, area, world }, args, previousState) {
+      console.log('previousState:', previousState);
       const previousPosition = agent.position.clone();
       const targetPosition = Vector.from(previousState.position);
       const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
@@ -258,8 +259,7 @@ export const step: IActionDefinition<
         agent.area = targetArea;
       }
 
-      const there = area.cellAt(previousPosition)?.take();
-      console.log('there', there, previousPosition);
+      area.cellAt(previousPosition)?.take();
       targetArea.put(agent, targetPosition);
       agent.position.copy(targetPosition);
 
@@ -267,11 +267,50 @@ export const step: IActionDefinition<
     },
   };
 
-export const backstep: IActionDefinition<{}> = {
+export const backstep: IActionDefinition<
+  ActionArguments,
+  {
+    position: { x: number, y: number }
+    areaId?: number
+  }
+> = {
   cost: 0,
-  perform({ agent, area }) {
+  perform({
+    agent, area, world, engine,
+  }) {
+    const previousPosition = agent.position.clone();
     const oppositeDirection = agent.facing.direction.clone().rotateRight().rotateRight();
     const target = area.cellAt(agent.position.clone().add(oppositeDirection.value));
+
+    // Collision with the edge of the area
+    if (!target) {
+      const nextAreaPosition = area.position.clone().add(oppositeDirection.value);
+      const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
+
+      // If there is an adjacent area
+      if (nextArea) {
+        const nextPosition = agent.position.clone();
+        if (oppositeDirection.value.x === 1) nextPosition.setX(0);
+        if (oppositeDirection.value.x === -1) nextPosition.setX(15);
+        if (oppositeDirection.value.y === 1) nextPosition.setY(0);
+        if (oppositeDirection.value.y === -1) nextPosition.setY(9);
+        if (nextArea.cellAt(nextPosition)?.slot) {
+          if (world.hero.id === agent.id) {
+            engine.events.emit('sound:fail');
+          }
+          return fail('There is something blocking the way.');
+        }
+        area.remove(agent);
+        agent.position.copy(nextPosition);
+        nextArea.put(agent);
+        agent.area = nextArea;
+
+        return succeed('', {
+          position: previousPosition.toObject(),
+          areaId: area.id,
+        });
+      }
+    }
 
     if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
       agent.hp.decrease(1);
@@ -293,7 +332,9 @@ export const backstep: IActionDefinition<{}> = {
         } else {
           target.slot.velocity.add(agent.facing.direction.value);
         }
-        return succeed('');
+        return succeed('', {
+          position: previousPosition.toObject(),
+        });
       }
     }
 
@@ -302,12 +343,33 @@ export const backstep: IActionDefinition<{}> = {
       target.put(agent);
       agent.position.sub(agent.facing.direction.value);
       agent.facing.cell = area.cellAt(agent.isLookingAt);
-      return succeed('');
+      return succeed('', {
+        position: previousPosition.toObject(),
+      });
+    }
+
+    if (engine.world.hero.id === agent.id) {
+      engine.events.emit('sound:fail');
     }
 
     return fail('');
   },
-  undo: undoNoop,
+  undo({ agent, area, world }, args, previousState) {
+    const previousPosition = agent.position.clone();
+    const targetPosition = Vector.from(previousState.position);
+    const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
+
+    if (previousState.areaId !== undefined) {
+      area.remove(agent);
+      agent.area = targetArea;
+    }
+
+    area.cellAt(previousPosition)?.take();
+    targetArea.put(agent, targetPosition);
+    agent.position.copy(targetPosition);
+
+    return succeed('');
+  },
 };
 
 // export const goto: IActionDefinition<{ x: number, y: number }> = {
