@@ -1,6 +1,6 @@
 import { Colors, esc } from '../shared';
 import { Glyph } from './cell';
-import { BodyType } from './thing';
+import { Body, BodyType } from './thing';
 
 /** @category Things */
 export class Tree extends BodyType {
@@ -158,6 +158,13 @@ export class Map extends BodyType {
 export class Route extends BodyType {
   name = 'route';
   glyph = new Glyph('━━');
+  style = esc(Colors.Bg.Black) + esc(Colors.Fg.White);
+  isBlocking = false;
+}
+
+export class ZoneNode extends BodyType {
+  name = 'zone';
+  glyph = new Glyph('██');
   style = esc(Colors.Bg.Black) + esc(Colors.Fg.White);
   isBlocking = false;
 }

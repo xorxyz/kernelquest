@@ -1,6 +1,6 @@
 import { Rectangle, Vector } from './math';
 
-export const CLOCK_MS_DELAY = 15;
+export const CLOCK_MS_DELAY = 30;
 
 export const AREA_WIDTH = 16;
 export const AREA_HEIGHT = 10;
@@ -37,6 +37,7 @@ export const Keys = {
   SHIFT_ARROW_RIGHT: '1b5b313b3243',
   CMD_ARROW_LEFT: '01',
   CMD_ARROW_RIGHT: '05',
+  CTRL_C: '03',
   ARROW_UP: '1b5b41',
   ARROW_DOWN: '1b5b42',
   ARROW_LEFT: '1b5b44',
@@ -53,6 +54,7 @@ export const Keys = {
   LOWER_H: '68',
   LOWER_I: '69',
   LOWER_P: '70',
+  LOWER_Q: '71',
   LOWER_R: '72',
   LOWER_S: '73',
   LOWER_T: '74',
@@ -64,7 +66,7 @@ export const Signals = {
   SIGINT: '03',
 };
 
-export const EMPTY_CELL_CHARS = '➖';
+export const EMPTY_CELL_CHARS = '..';// '➖';
 
 export const CursorModeHelpText = [
   '<return> toggle between terminal & cursor mode.',

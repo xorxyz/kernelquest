@@ -5,9 +5,9 @@ import { VirtualTerminal } from '../pty';
 /** @category Components */
 export class Header extends UiComponent {
   style = esc(Style.Invert);
-  render({ agent, engine }: VirtualTerminal) {
+  render({ engine }: VirtualTerminal) {
     return [(
-      `🏰 Kernel Quest                                                  👑 ${0}/${0}  🚩 ${0}/${0}  ⏳ ${String(engine.cycle).padStart(5, '0')}`
+      `🏰 Kernel Quest                                                  👑 ${0}/${0}  🚩 ${0}/${0}  ⏳ ${engine.cycle.toString(16).padStart(5, ' ')}`
     ).padEnd(SCREEN_WIDTH - 1, ' ')];
   }
 }

@@ -21,10 +21,8 @@ export class RandomWalkCapability extends Capability {
     if (n) {
       forN(n, () => {
         agent.mind.queue.add({ name: 'right' });
-        agent.mind.queue.add({ name: 'wait', args: { duration: 12 } });
       });
     }
     agent.mind.queue.add({ name: 'step' });
-    agent.mind.queue.add({ name: 'wait', args: { duration: 12 } });
   }
 }

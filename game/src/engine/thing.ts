@@ -4,7 +4,7 @@ import {
 import { Area } from './area';
 import { Glyph } from './cell';
 
-const connectors = ['route', 'door'];
+const connectors = ['route', 'door', 'zone'];
 
 /** @category Thing */
 export abstract class BodyType {

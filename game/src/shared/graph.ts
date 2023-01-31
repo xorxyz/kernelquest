@@ -1,16 +1,16 @@
-export interface INode {
-  value: any,
-  edges: Array<INode>
+export interface INode<T> {
+  value: T,
+  edges: Array<INode<T>>
 }
 
-export default class Graph {
-  private nodes: Array<INode> = [];
+export default class Graph<T> {
+  private nodes: Array<INode<T>> = [];
 
-  get values(): Array<INode> {
+  get values(): Array<T> {
     return this.nodes.map((node) => node.value);
   }
 
-  addNode(value: any): ThisType<Graph> {
+  addNode(value: T): ThisType<Graph<T>> {
     this.nodes.push({
       value,
       edges: [],
@@ -19,7 +19,7 @@ export default class Graph {
     return this;
   }
 
-  removeNode(value: any): ThisType<Graph> {
+  removeNode(value: T): ThisType<Graph<T>> {
     const index = this.nodes.findIndex((node) => node.value === value);
 
     this.nodes.splice(index, 1);
@@ -27,11 +27,11 @@ export default class Graph {
     return this;
   }
 
-  find(value: any): INode | undefined {
+  find(value: T): INode<T> | undefined {
     return this.nodes.find((node) => node.value === value);
   }
 
-  addLine(fromValue: any, toValue: any): ThisType<Graph> {
+  addLine(fromValue: T, toValue: T): ThisType<Graph<T>> {
     const fromNode = this.find(fromValue);
     const toNode = this.find(toValue);
 
@@ -40,6 +40,7 @@ export default class Graph {
     }
 
     fromNode.edges.push(toNode);
+    toNode.edges.push(fromNode);
 
     return this;
   }

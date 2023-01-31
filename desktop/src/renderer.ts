@@ -30,10 +30,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   engine.start();
 
-  engine.events.on('sound:fail', () => {
-    audioEl.currentTime = 0;
-    audioEl.play();
-  });
+  registerSoundEvents(engine.events, audioEl);
 
   global.engine = engine;
 });
+
+function registerSoundEvents(bus, el) {
+  const events = [
+    'fail',
+    'step',
+    'rotate',
+  ];
+
+  events.forEach((name) => {
+    bus.on(`sound:${name}`, () => {
+      el.src = `main_window/assets/sounds/${name}.wav`;
+      el.currentTime = 0;
+      el.play();
+    });
+  });
+}

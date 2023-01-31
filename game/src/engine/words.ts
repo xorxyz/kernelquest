@@ -6,7 +6,6 @@ import {
 import {
   East, North, South, Vector, West,
 } from '../shared';
-import { PathFinder } from './pathfinding';
 
 /** @category Words */
 const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => {
@@ -26,7 +25,10 @@ const path = new Combinator(['path'], ['vector', 'vector'], async ({ stack, sysc
   syscall({
     name: 'path',
     args: {
-      fromX: from.x, fromY: from.y, toX: to.x, toY: to.y,
+      fromX: from.x,
+      fromY: from.y,
+      toX: to.x,
+      toY: to.y,
     },
   });
 });
@@ -314,6 +316,12 @@ const rect = new Operator(['rect'], ['vector', 'vector'], ({ stack }) => {
   stack.push(result);
 });
 
+const wait = new Operator(['wait'], [], ({ syscall }) => {
+  syscall({
+    name: 'wait',
+  });
+});
+
 export default {
   goto,
   path,
@@ -351,4 +359,5 @@ export default {
   scratch,
   erase,
   rect,
+  wait,
 };

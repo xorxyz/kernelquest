@@ -8,7 +8,6 @@ import {
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
 import { View } from './view';
-import { GameScreen } from './views/game-screen';
 import { IntroScreen } from './views/intro-screen';
 import { LevelSelectScreen } from './views/level-select-screen';
 
@@ -42,7 +41,7 @@ export class VirtualTerminal {
     this.engine = engine;
     this.view = process.env.NODE_ENV === 'production'
       ? new IntroScreen(this)
-      : new GameScreen();
+      : new LevelSelectScreen();
     this.state = {
       termMode: false,
       prompt: '$ ',
@@ -127,6 +126,10 @@ export class VirtualTerminal {
   getActionForKey(str: string): IAction | null {
     let action: IAction | null = null;
 
+    if (this.agent.waiting && str !== Keys.CTRL_C) {
+      return action;
+    }
+
     switch (str) {
       case (Keys.ESCAPE):
       case (Keys.ENTER):
@@ -182,18 +185,38 @@ export class VirtualTerminal {
         break;
       case (Keys.SPACE):
         action = {
-          name: 'that',
+          name: 'exec',
           args: {
-            x: this.agent.cursorPosition.x,
-            y: this.agent.cursorPosition.y,
+            text: `[${this.agent.cursorPosition.x} ${this.agent.cursorPosition.y}]`,
           },
         };
+        // action = {
+        //   name: 'that',
+        //   args: {
+        //     x: this.agent.cursorPosition.x,
+        //     y: this.agent.cursorPosition.y,
+        //   },
+        // };
         break;
       case (Keys.LOWER_U):
         this.engine.undo();
         break;
       case (Keys.LOWER_I):
         this.engine.redo();
+        break;
+      case (Keys.CTRL_C):
+        if (this.agent.waiting) {
+          this.agent.waiting = false;
+          this.agent.remember({
+            tick: this.agent.mind.tick,
+            message: 'Stopped waiting.',
+          });
+        }
+        break;
+      case (Keys.LOWER_Q):
+        action = {
+          name: 'noop',
+        };
         break;
       default:
         break;

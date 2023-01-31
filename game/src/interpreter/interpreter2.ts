@@ -53,7 +53,7 @@ export class Interpreter {
 
   // No more factors in term and no subinterpreter
   isDone() {
-    return !this.term.length && !this.subinterpreter;
+    return !this.term.length && !this.subinterpreter && !this.syscalls.size;
   }
 
   // update(): gets called when:

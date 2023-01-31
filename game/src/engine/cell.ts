@@ -2,14 +2,14 @@ import {
   Vector, EMPTY_CELL_CHARS, EAST, NORTH, SOUTH, WEST, Colors, esc, Style,
 } from '../shared';
 import { Agent, Foe } from './agent';
-import { Area } from './area';
+import { Area, WorldMap } from './area';
 import { Thing } from './thing';
 
 /** @category Cell */
 export class Glyph {
   private chars: string;
 
-  static Empty = EMPTY_CELL_CHARS;
+  static Empty = esc(Style.Dim) + EMPTY_CELL_CHARS + esc(Style.Reset);
 
   get value() {
     return this.chars;
@@ -46,8 +46,6 @@ export class Cell {
     return this.slot instanceof Agent && this.slot.type instanceof Foe;
   }
 
-  update() {}
-
   /* Empty the cell's slot. */
   clear() {
     this.slot = null;
@@ -83,7 +81,8 @@ export class Cell {
   }
 
   render(ctx: Area) {
-    if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)) {
+    if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)
+    && !(ctx instanceof WorldMap)) {
       return esc(Colors.Bg.Cyan)
       + esc(Colors.Fg.Black)
       + (this.slot?.type.glyph.value || this.renderMark() || Glyph.Empty)

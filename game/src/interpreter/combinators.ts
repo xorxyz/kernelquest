@@ -152,6 +152,12 @@ export const until = new Combinator(['until'], ['quotation', 'quotation'], ({ st
   }
 });
 
+export const reverse = new Combinator(['reverse'], ['quotation'], ({ stack }) => {
+  const q = stack.pop() as Quotation;
+  q.value.reverse();
+  stack.push(q);
+});
+
 const combinators = {};
 
 [
@@ -160,6 +166,7 @@ const combinators = {};
   map, filter, reduce,
   ifte,
   until,
+  reverse,
 ].forEach((combinator) => {
   combinator.aliases.forEach((alias) => {
     combinators[alias] = combinator;

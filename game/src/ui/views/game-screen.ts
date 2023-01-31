@@ -1,7 +1,7 @@
 import { Keys } from '../../shared';
 import { UiComponent } from '../component';
 import {
-  Axis, Header, Input, Message, Output, RoomMap, Sidebar, Stats,
+  Axis, Header, Input, Output, RoomMap, Sidebar, Stats,
 } from '../components';
 import { DialogueBox } from '../components/dialogue-box';
 import { Navbar } from '../components/navbar';

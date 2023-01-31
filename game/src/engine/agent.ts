@@ -102,11 +102,10 @@ export class Agent extends Body {
     { tick: 0, message: ' ' },
   ];
   public inventory: Stack<Thing> = new Stack();
-
   public view: Array<string> = [];
   public pwd: string;
-
   public area: Area;
+  public waiting = false;
 
   constructor(id: number, type: AgentType, words?: Dictionary) {
     super(id, type);
@@ -190,6 +189,12 @@ export class Agent extends Body {
     this.type.capabilities.forEach((capability) => {
       capability.run(this, tick);
     });
+
+    if (this.waiting) {
+      return {
+        name: 'noop',
+      };
+    }
 
     const action = this.mind.queue.next();
 

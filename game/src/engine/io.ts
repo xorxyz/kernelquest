@@ -15,6 +15,10 @@ export interface SaveFileContents {
     gold: number,
     time: number
   },
+  world: {
+    id: number,
+    zoneId: number
+  },
   history: Array<HistoryEvent>
 }
 
@@ -35,6 +39,10 @@ export function createEmptySaveFile(): SaveFileContents {
       level: 0,
       gold: 0,
       time: 0,
+    },
+    world: {
+      id: 0,
+      zoneId: 0,
     },
     history: [],
   };

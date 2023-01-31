@@ -281,6 +281,7 @@ export class Engine {
         }
 
         this.history.push(historyEvent);
+        this.future.length = 0;
       }
     } else {
       try {

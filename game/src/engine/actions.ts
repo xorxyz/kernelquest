@@ -11,6 +11,7 @@ import { Engine } from './engine';
 import { Cell, Glyph } from './cell';
 import { Thing } from './thing';
 import words from './words';
+import { LevelSelectScreen } from '../ui/views/level-select-screen';
 
 export type ValidActions = (
   'save' | 'load' |
@@ -22,7 +23,8 @@ export type ValidActions = (
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
-  'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path'
+  'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
+  'wait'
 )
 
 export type SerializableType = boolean | number | string
@@ -91,6 +93,8 @@ export const right: IActionDefinition<ActionArguments> = {
   perform({ agent, area }) {
     agent.facing.direction.rotateRight();
     agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+    engine.events.emit('sound:rotate');
     return succeed('');
   },
   undo({ agent, area }) {
@@ -105,6 +109,8 @@ export const left: IActionDefinition<ActionArguments> = {
   perform({ agent, area }) {
     agent.facing.direction.rotateLeft();
     agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+    engine.events.emit('sound:rotate');
     return succeed('');
   },
   undo({ agent, area }) {
@@ -179,10 +185,19 @@ export const step: IActionDefinition<
           nextArea.put(agent);
           agent.area = nextArea;
 
+          engine.events.emit('sound:step');
+
           return succeed('', {
             position: previousPosition.toObject(),
             areaId: area.id,
           });
+          // If there is no adjacent area
+        }
+        if (engine.world.hero.id === agent.id) {
+          engine.tty.view = new LevelSelectScreen();
+          engine.tty.clear();
+          engine.tty.render();
+          return succeed('');
         }
       }
 
@@ -208,6 +223,9 @@ export const step: IActionDefinition<
           } else {
             target.slot.velocity.add(agent.facing.direction.value);
           }
+
+          engine.events.emit('sound:step');
+
           return succeed('', {
             position: previousPosition.toObject(),
           });
@@ -220,6 +238,9 @@ export const step: IActionDefinition<
         target.put(agent);
         agent.position.add(agent.facing.direction.value);
         agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+        engine.events.emit('sound:step');
+
         return succeed('', {
           position: previousPosition.toObject(),
         });
@@ -235,6 +256,8 @@ export const step: IActionDefinition<
           agent.position.add(agent.facing.direction.value);
           agent.position.add(agent.facing.direction.value);
           agent.facing.cell = area.cellAt(agent.isLookingAt);
+
+          engine.events.emit('sound:step');
 
           return succeed('', {
             position: previousPosition.toObject(),
@@ -410,11 +433,11 @@ export const path: IActionDefinition<{ fromX: number, fromY: number, toX: number
       return fail('Already here.');
     }
 
-    const p = pathfinder.findPath(area, from);
+    const p = pathfinder.findPath(area, from).reverse();
 
     if (!p.length) return fail('Could not find a path.');
 
-    agent.mind.stack.push(Quotation.from(p.map((c) => new LiteralRef(c.id))));
+    agent.mind.stack.push(Quotation.from(p.map((c) => new LiteralVector(c.position.clone()))));
 
     return succeed('Found a path to the destination cell.');
   },
@@ -565,7 +588,10 @@ export const exec: IActionDefinition<{ text: string }> = {
       return fail((err as Error).message);
     }
   },
-  undo: undoNoop,
+  undo({ engine }, { text }) {
+    engine.tty.send(text);
+    return succeed('');
+  },
 };
 
 export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y: number }> = {
@@ -924,6 +950,20 @@ export const erase: IActionDefinition<{}> = {
   undo: undoNoop,
 };
 
+export const wait: IActionDefinition<{}> = {
+  cost: 0,
+  perform({ agent, engine }) {
+    agent.waiting = true;
+
+    engine.tty.switchModes();
+
+    agent.mind.queue.add({ name: 'noop' });
+
+    return succeed('Waiting. Press <CMD> + <C> to stop.');
+  },
+  undo: undoNoop,
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -962,6 +1002,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   claim,
   scratch,
   erase,
+  wait,
 };
 
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {

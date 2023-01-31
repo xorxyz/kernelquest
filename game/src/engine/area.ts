@@ -10,18 +10,11 @@ import {
 } from '../shared';
 import { Agent } from './agent';
 import { Cell } from './cell';
-import { BodyType, Thing } from './thing';
+import { Thing } from './thing';
 import { Door } from './things';
 
 /** @category Area */
-const CELL_COUNT = AREA_WIDTH * AREA_HEIGHT;
-
-export class AreaBody extends BodyType {}
-
-/** @category Area */
 export class Area {
-  static bounds = new Rectangle(new Vector(0, 0), new Vector(AREA_WIDTH, AREA_HEIGHT));
-
   readonly position: Vector;
   readonly timeLimit: number = 700;
 
@@ -45,8 +38,7 @@ export class Area {
   public agents: Set<Agent> = new Set();
   private things: Set<Thing> = new Set();
   private areas: Set<Area> = new Set();
-  private rows: Array<Array<Cell>> = new Array(AREA_HEIGHT).fill(0).map(() => []);
-  private setupFn?: (this: Area) => void;
+  private rows: Array<Array<Cell>>;
 
   get secondsLeft() {
     return this.timeLimit - this.seconds;
@@ -66,12 +58,13 @@ export class Area {
       .addY(this.size.y - 1);
   }
 
-  constructor(x: number, y: number, setupFn?: (this: Area) => void) {
-    this.id = y * 16 + x;
+  constructor(x: number, y: number, w = AREA_WIDTH, h = AREA_HEIGHT) {
+    this.id = y * w + x;
     this.position = new Vector(x, y);
-    this.cells = new Array(CELL_COUNT).fill(0).map((_, i) => {
-      const cellY = Math.floor(i / AREA_WIDTH);
-      const cellX = i - (AREA_WIDTH * cellY);
+    this.rows = new Array(h).fill(0).map(() => []);
+    this.cells = new Array(w * h).fill(0).map((_, i) => {
+      const cellY = Math.floor(i / w);
+      const cellX = i - (w * cellY);
 
       return new Cell(cellX, cellY);
     });
@@ -80,16 +73,11 @@ export class Area {
 
     this.cells[0].scratch(this.id);
 
-    this.outerRectangle = new Rectangle(this.position, new Vector(AREA_WIDTH, AREA_HEIGHT));
+    this.outerRectangle = new Rectangle(this.position, new Vector(w, h));
     this.innerRectangle = new Rectangle(
       this.outerRectangle.position.clone().addX(1).addY(1),
       this.outerRectangle.size.clone().subX(2).subY(2),
     );
-
-    if (setupFn) {
-      this.setupFn = setupFn;
-      this.setupFn();
-    }
   }
 
   clear() {
@@ -127,6 +115,13 @@ export class Area {
     return true;
   }
 
+  move(agent: Agent, toPosition: Vector) {
+    const cell = this.cellAt(agent.position);
+
+    cell?.take();
+    this.put(agent, toPosition);
+  }
+
   update() {
     this.things.forEach((t) => t.update(this));
   }
@@ -142,7 +137,6 @@ export class Area {
   }
 
   remove(entity: Agent | Thing) {
-    console.log('remove');
     const cell = this.cells.find((c) => c.slot === entity);
 
     if (!cell) { return false; }
@@ -172,8 +166,8 @@ export class Area {
   }
 
   cellAt(position: Vector): Cell | null {
-    if (!Area.bounds.contains(position)) return null;
-    const index = position.y * AREA_WIDTH + position.x;
+    if (!this.outerRectangle.contains(position)) return null;
+    const index = position.y * this.outerRectangle.size.x + position.x;
     return this.cells[index];
   }
 
@@ -192,7 +186,6 @@ export class Area {
 
   reset() {
     this.clear();
-    if (this.setupFn) this.setupFn();
   }
 
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }
@@ -227,3 +220,5 @@ export class Area {
     return this.findAgentById(id) || this.findThingById(id) || this.findCellById(id);
   }
 }
+
+export class WorldMap extends Area {}
