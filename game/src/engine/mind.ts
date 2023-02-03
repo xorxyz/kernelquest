@@ -21,9 +21,9 @@ export class Mind {
   compiler: Compiler;
   interpreter: Interpreter;
 
-  constructor(words?: Dictionary) {
+  constructor(words: Dictionary) {
     this.compiler = new Compiler(words);
-    this.interpreter = new Interpreter();
+    this.interpreter = new Interpreter(this.compiler.dict);
   }
 
   get stack() {

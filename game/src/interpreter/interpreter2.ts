@@ -1,5 +1,7 @@
 import { IAction } from '../engine';
 import { Queue, Stack } from '../shared';
+import { Dictionary } from './compiler';
+import { Operator } from './operators';
 import { Factor, Term } from './types';
 
 // How to use this in the game loop:
@@ -27,6 +29,11 @@ export class Interpreter {
   callbacks: Queue<() => void> = new Queue();
   halted = false;
   subinterpreter: Interpreter | null = null;
+  dict: Dictionary;
+
+  constructor(dict: Dictionary) {
+    this.dict = dict;
+  }
 
   log() {
     // if (!this.term.length) return;
@@ -95,10 +102,12 @@ export class Interpreter {
       const factor = this.term.shift() as Factor;
       try {
         factor.validate(this.stack);
+        console.log('factor:', factor.lexeme);
         factor.execute({
           stack: this.stack,
           syscall: this.syscall.bind(this),
           exec: this.exec.bind(this),
+          dict: this.dict,
         });
         this.log();
       } catch (err) {

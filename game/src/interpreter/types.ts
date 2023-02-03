@@ -1,11 +1,13 @@
 /* eslint-disable no-underscore-dangle */
 import { IAction } from '../engine';
 import { Stack } from '../shared';
+import { Dictionary } from './compiler';
 
 export interface ExecuteArgs {
   stack: Stack<Factor>
   syscall: (action: IAction) => void
   exec: (term: Term, callback?: () => void) => void
+  dict: Dictionary
 }
 
 export abstract class Factor {

@@ -10,6 +10,7 @@ import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { IntroScreen } from './views/intro-screen';
 import { LevelSelectScreen } from './views/level-select-screen';
+import { GameScreen } from './views/game-screen';
 
 /** @category PTY */
 export interface IVirtalTerminalState {
@@ -35,13 +36,13 @@ export class VirtualTerminal {
   private timer;
 
   constructor(engine: Engine, send: SendFn) {
-    this.agent = engine.world.hero;
+    this.agent = engine.hero;
     this.events = engine.events;
     this.send = send;
     this.engine = engine;
     this.view = process.env.NODE_ENV === 'production'
       ? new IntroScreen(this)
-      : new LevelSelectScreen();
+      : new GameScreen();
     this.state = {
       termMode: false,
       prompt: '$ ',

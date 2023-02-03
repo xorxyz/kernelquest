@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { debug, Stack } from '../shared';
 import {
-  ExecuteArgs, Factor, Literal,
+  ExecuteArgs, Factor, Literal, Term,
 } from './types';
 import {
   LiteralNumber, LiteralString, LiteralTruth, LiteralVector,
@@ -62,6 +62,10 @@ export class Operator extends Factor {
   dup() {
     return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
   }
+}
+
+export class UnknownOperator extends Operator {
+  name: string;
 }
 
 export const sum = new Operator(['+', 'sum', 'add'], ['number', 'number'], ({ stack }) => {
@@ -227,6 +231,15 @@ const vector_sub = new Operator(['vector_sub'], ['vector', 'vector'], ({ stack }
   const result = a.vector.clone().sub(b.vector);
 
   stack.push(new LiteralVector(result));
+});
+
+export const createUnknownWord = (name: string) => new UnknownOperator([name], [], (execArgs) => {
+  const word = execArgs.dict[name];
+  if (word) {
+    word.execute(execArgs);
+  } else {
+    throw new Error(`The word ${name} is not defined in the active dictionary.`);
+  }
 });
 
 const operators = {};

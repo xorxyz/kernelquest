@@ -32,4 +32,8 @@ export const rules: Required<ModuleOptions>['rules'] = [
     test: /\.ink$/i,
     type: 'asset/source',
   },
+  {
+    test: /\.joy$/i,
+    type: 'asset/source',
+  },
 ];

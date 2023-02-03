@@ -171,20 +171,9 @@ export class Agent extends Body {
     }
   }
 
-  takeTurn(tick: number, area: Area): IAction | null {
-    // Not ideal, but useful to query from inside the pty
-    this.area = area;
-
-    this.see(area);
+  takeTurn(tick: number): IAction | null {
+    this.see(this.area);
     this.mind.update(tick);
-
-    if (this.isWaitingUntil) {
-      if (this.mind.tick >= this.isWaitingUntil) {
-        this.isWaitingUntil = null;
-      } else {
-        return null;
-      }
-    }
 
     this.type.capabilities.forEach((capability) => {
       capability.run(this, tick);

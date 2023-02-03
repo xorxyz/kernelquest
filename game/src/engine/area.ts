@@ -104,6 +104,7 @@ export class Area {
 
       entity.facing.cell = this.cellAt(entity.isLookingAt);
       entity.pwd = this.id;
+      entity.area = this;
     }
 
     if (entity instanceof Thing) {

@@ -1,14 +1,11 @@
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import {
-  List,
-  LiteralList,
-  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, LiteralVector, Quotation,
+  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, Quotation,
 } from './literals';
-import operators, { Operator } from './operators';
+import operators, { createUnknownWord, Operator } from './operators';
 import combinators from './combinators';
 import syscalls from './syscalls';
-import { Vector } from '../shared';
 
 export type Dictionary = Record<string, Factor>
 
@@ -25,7 +22,7 @@ export class Compiler {
   level = 0;
   quotations: Array<Quotation> = [];
 
-  constructor(dict?: Dictionary) {
+  constructor(dict: Dictionary = {}) {
     this.dict = {
       ...this.dict,
       ...dict,
@@ -105,6 +102,11 @@ export class Compiler {
       return factors;
     }
 
+    if (token.type === TokenType.COMMENT) {
+      console.log(`Comment: #${token.literal}`);
+      return factors;
+    }
+
     if (Object.keys(this.dict).includes(token.lexeme)) {
       const word = this.dict[token.lexeme];
       if (this.level === 0) {
@@ -115,6 +117,15 @@ export class Compiler {
       return factors;
     }
 
-    throw new Error(`'${token.lexeme}' is not a recognized word.`);
+    const unknownWord = createUnknownWord(token.lexeme);
+
+    if (this.level === 0) {
+      factors.push(unknownWord);
+    } else {
+      this.quotations[this.level].value.push(unknownWord);
+    }
+    return factors;
+
+    // throw new Error(`'${token.lexeme}' is not a recognized word.`);
   }
 }

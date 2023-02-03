@@ -78,14 +78,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_LEFT: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.zones
-            .find(pty.engine.world.activeZone)?.edges || [])
+          const edges: Array<INode<Thing>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone.node)?.edges || [])
             .filter((e) => e.value.position.x < fromPosition.x);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone = next;
+            pty.engine.world.activeZone.node = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -94,14 +94,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_RIGHT: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.zones
-            .find(pty.engine.world.activeZone)?.edges || [])
+          const edges: Array<INode<Thing>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone.node)?.edges || [])
             .filter((e) => e.value.position.x > fromPosition.x);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone = next;
+            pty.engine.world.activeZone.node = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -110,14 +110,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_DOWN: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.zones
-            .find(pty.engine.world.activeZone)?.edges || [])
+          const edges: Array<INode<Thing>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone.node)?.edges || [])
             .filter((e) => e.value.position.y > fromPosition.y);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone = next;
+            pty.engine.world.activeZone.node = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -126,14 +126,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_UP: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.zones
-            .find(pty.engine.world.activeZone)?.edges || [])
+          const edges: Array<INode<Thing>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone.node)?.edges || [])
             .filter((e) => e.value.position.y < fromPosition.y);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone = next;
+            pty.engine.world.activeZone.node = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 

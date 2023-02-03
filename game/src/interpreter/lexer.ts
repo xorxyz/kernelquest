@@ -18,11 +18,14 @@ export enum TokenType {
   MINUS = '-',
   STAR = '*',
   SLASH = '/',
+  POUND = '#',
   EXCLAMATION_EQUAL = '!=',
   EQUAL_EQUAL = '==',
   IDENTIFIER = 'identifier',
   STRING = 'string',
   NUMBER = 'number',
+  COMMENT = 'comment',
+  EOL = '\n',
   EOF = '\0',
   QUOTATION = 'quotation',
   ATOM = 'atom',
@@ -131,6 +134,16 @@ export class Scanner {
     this.addToken(TokenType.STRING, quoteless);
   }
 
+  private comment() {
+    while (this.peek() !== TokenType.EOL && this.peek() !== TokenType.EOF && !this.isAtEnd()) {
+      if (this.peek() === '\n') this.line++;
+      this.next();
+    }
+
+    const comment = this.source.substring(this.start + 1, this.current);
+    this.addToken(TokenType.COMMENT, comment);
+  }
+
   private number(negative?: boolean) {
     while (isDigit(this.peek())) this.next();
 
@@ -179,6 +192,7 @@ export class Scanner {
         this.line++;
         break;
       case '"': this.string(); break;
+      case TokenType.POUND: this.comment(); break;
       case TokenType.DOT: this.addToken(TokenType.DOT, char); break;
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, '*'); break;

@@ -113,96 +113,48 @@ export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
 };
 
 export class Zone {
+  public id: number;
   public areas: Set<Area> = new Set();
   public graph: Graph<Area> = new Graph();
   public node: Thing;
+
+  createArea(vector: Vector) {
+    const area = new Area(vector.x, vector.y);
+    this.areas.add(area);
+    return area;
+  }
 }
 
 /** @category World */
 export class World {
+  public id = 0;
   public tick = 0;
   public areas: Array<Area>;
   public agents: Set<Agent> = new Set();
   public things: Set<Thing> = new Set();
   public creator: Agent;
-  public hero: Agent;
-  public origin: Area;
-  public zones: Graph<Thing> = new Graph();
+  public graph: Graph<Thing> = new Graph();
   public worldMap: WorldMap = new WorldMap(0, 0, 32, 16);
   public worldMapCursor: Agent;
-  public activeZone: Thing;
+  public activeZone: Zone;
   public activeArea: Area;
+  public zones: Set<Zone> = new Set();
 
   // id 0 is null, 1-160 is for cells
   public counter = 1 + 160;
 
   constructor(areas: Array<Area>) {
-    console.log('areas:', areas);
-    this.areas = areas;
-    this.origin = areas[0];
-    this.creator = this.spawn('king', this.origin);
-    this.hero = this.creator;
-    this.activeArea = areas[0];
+    const zone0 = new Zone();
+    const area0 = new Area(0, 0);
 
-    this.create('tree', this.worldMap, new Vector(3, 6));
-    this.create('tree', this.worldMap, new Vector(2, 6));
-    this.create('tree', this.worldMap, new Vector(3, 7));
-    const zone1 = this.create('zone', this.worldMap, new Vector(3, 4));
-    this.create('route', this.worldMap, new Vector(4, 4));
-    this.create('route', this.worldMap, new Vector(5, 4));
-    this.create('route', this.worldMap, new Vector(6, 4));
-    const zone2 = this.create('route', this.worldMap, new Vector(7, 4));
-    this.create('route', this.worldMap, new Vector(7, 5));
-    this.create('route', this.worldMap, new Vector(7, 6));
-    this.create('route', this.worldMap, new Vector(7, 7));
-    const zone3 = this.create('zone', this.worldMap, new Vector(7, 8));
-    this.create('route', this.worldMap, new Vector(8, 4));
-    this.create('route', this.worldMap, new Vector(9, 4));
-    this.create('route', this.worldMap, new Vector(10, 4));
-    const zone4 = this.create('zone', this.worldMap, new Vector(11, 4));
-    this.create('route', this.worldMap, new Vector(8, 8));
-    this.create('route', this.worldMap, new Vector(9, 8));
-    this.create('route', this.worldMap, new Vector(10, 8));
-    const zone5 = this.create('route', this.worldMap, new Vector(11, 8));
-    this.create('route', this.worldMap, new Vector(11, 8));
-    this.create('route', this.worldMap, new Vector(11, 9));
-    this.create('route', this.worldMap, new Vector(11, 10));
-    const zone6 = this.create('zone', this.worldMap, new Vector(11, 11));
+    this.zones = new Set();
 
-    this.zones.addNode(zone1);
-    this.zones.addNode(zone2);
-    this.zones.addNode(zone3);
-    this.zones.addNode(zone4);
-    this.zones.addNode(zone5);
-    this.zones.addNode(zone6);
+    this.areas = [area0];
 
-    this.zones.addLine(zone1, zone2);
-    this.zones.addLine(zone2, zone3);
-    this.zones.addLine(zone2, zone4);
-    this.zones.addLine(zone3, zone5);
-    this.zones.addLine(zone5, zone6);
+    this.zones.add(zone0);
 
-    this.activeZone = zone1;
-
-    this.create('river', this.worldMap, new Vector(13, 0));
-    this.create('river', this.worldMap, new Vector(13, 1));
-    this.create('river', this.worldMap, new Vector(13, 2));
-    this.create('river', this.worldMap, new Vector(13, 3));
-    this.create('river', this.worldMap, new Vector(13, 4));
-    this.create('river', this.worldMap, new Vector(13, 5));
-    this.create('river', this.worldMap, new Vector(14, 6));
-    this.create('river', this.worldMap, new Vector(14, 7));
-    this.create('river', this.worldMap, new Vector(14, 8));
-    this.create('river', this.worldMap, new Vector(14, 9));
-    this.create('river', this.worldMap, new Vector(14, 10));
-    this.create('river', this.worldMap, new Vector(14, 11));
-    this.create('river', this.worldMap, new Vector(14, 12));
-    this.create('river', this.worldMap, new Vector(14, 13));
-    this.create('river', this.worldMap, new Vector(15, 14));
-    this.create('river', this.worldMap, new Vector(15, 15));
-
-    this.worldMap.cells[0].erase();
-    this.worldMapCursor = this.spawn('king', this.worldMap, new Vector(3, 4));
+    this.activeZone = zone0;
+    this.activeArea = area0;
   }
 
   spawn(agentType: AgentTypeName, area: Area, position?: Vector) {
@@ -227,5 +179,11 @@ export class World {
 
   clear() {
     this.areas.forEach((area) => area.clear());
+  }
+
+  createZone(vector: Vector) {
+    const zone = new Zone();
+    this.zones.add(zone);
+    return zone;
   }
 }

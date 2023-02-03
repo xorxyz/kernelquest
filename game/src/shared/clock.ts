@@ -13,7 +13,7 @@ export class Clock extends EventEmitter {
   constructor(msDelay: number) {
     super();
 
-    this.stepMsDelay = msDelay / 2;
+    this.updateDelay(msDelay);
   }
 
   get now() {
@@ -46,5 +46,9 @@ export class Clock extends EventEmitter {
     this.emit('pause');
     this.paused = true;
     clearInterval(this.timeoutRef);
+  }
+
+  updateDelay(msDelay: number) {
+    this.stepMsDelay = msDelay / 2;
   }
 }

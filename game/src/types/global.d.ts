@@ -15,3 +15,8 @@ declare module '*.ink' {
   const value: string;
   export default value;
 }
+
+declare module '*.joy' {
+  const value: string;
+  export default value;
+}

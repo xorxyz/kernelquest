@@ -4,7 +4,9 @@ import {
   LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
-import { AgentTypeName, ThingTypeName, World } from './world';
+import {
+  AgentTypeName, ThingTypeName, World,
+} from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
@@ -90,7 +92,7 @@ export const noop: IActionDefinition<ActionArguments> = {
 
 export const right: IActionDefinition<ActionArguments> = {
   cost: 0,
-  perform({ agent, area }) {
+  perform({ agent, area, engine }) {
     agent.facing.direction.rotateRight();
     agent.facing.cell = area.cellAt(agent.isLookingAt);
 
@@ -106,7 +108,7 @@ export const right: IActionDefinition<ActionArguments> = {
 
 export const left: IActionDefinition<ActionArguments> = {
   cost: 0,
-  perform({ agent, area }) {
+  perform({ agent, area, engine }) {
     agent.facing.direction.rotateLeft();
     agent.facing.cell = area.cellAt(agent.isLookingAt);
 
@@ -175,7 +177,7 @@ export const step: IActionDefinition<
           if (direction.value.y === 1) nextPosition.setY(0);
           if (direction.value.y === -1) nextPosition.setY(9);
           if (nextArea.cellAt(nextPosition)?.slot) {
-            if (engine.world.hero.id === agent.id) {
+            if (engine.hero.id === agent.id) {
               engine.events.emit('sound:fail');
             }
             return fail('There is something blocking the way.');
@@ -193,7 +195,7 @@ export const step: IActionDefinition<
           });
           // If there is no adjacent area
         }
-        if (engine.world.hero.id === agent.id) {
+        if (engine.hero.id === agent.id) {
           engine.tty.view = new LevelSelectScreen();
           engine.tty.clear();
           engine.tty.render();
@@ -265,7 +267,7 @@ export const step: IActionDefinition<
         }
       }
 
-      if (engine.world.hero.id === agent.id) {
+      if (engine.hero.id === agent.id) {
         engine.events.emit('sound:fail');
       }
 
@@ -318,7 +320,7 @@ export const backstep: IActionDefinition<
         if (oppositeDirection.value.y === 1) nextPosition.setY(0);
         if (oppositeDirection.value.y === -1) nextPosition.setY(9);
         if (nextArea.cellAt(nextPosition)?.slot) {
-          if (world.hero.id === agent.id) {
+          if (this.hero.id === agent.id) {
             engine.events.emit('sound:fail');
           }
           return fail('There is something blocking the way.');
@@ -371,7 +373,7 @@ export const backstep: IActionDefinition<
       });
     }
 
-    if (engine.world.hero.id === agent.id) {
+    if (engine.hero.id === agent.id) {
       engine.events.emit('sound:fail');
     }
 
@@ -596,9 +598,30 @@ export const exec: IActionDefinition<{ text: string }> = {
 
 export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y: number }> = {
   cost: 0,
-  perform({ world, area, agent }, { thingName, x, y }) {
+  perform({
+    engine, world, area, agent,
+  }, { thingName, x, y }) {
+    const position = new Vector(x, y);
+
+    if (thingName === 'world') {
+      const newWorld = engine.createWorld(position);
+      agent.mind.interpreter.sysret(new LiteralRef(newWorld.id));
+      return succeed(`Created a ${thingName} at ${position.label}`);
+    }
+
+    if (thingName === 'zone') {
+      const newZone = world.createZone(position);
+      agent.mind.interpreter.sysret(new LiteralRef(newZone.id));
+      return succeed(`Created a ${thingName} at ${position.label}`);
+    }
+
+    if (thingName === 'area') {
+      const newArea = world.activeZone.createArea(position);
+      agent.mind.interpreter.sysret(new LiteralRef(newArea.id));
+      return succeed(`Created a ${thingName} at ${position.label}`);
+    }
+
     try {
-      const position = new Vector(x, y);
       const thing = world.create(thingName, area, position);
       agent.mind.interpreter.sysret(new LiteralRef(thing.id));
       return succeed(`Created a ${thingName} at ${position.label}`);
@@ -730,10 +753,8 @@ export const define: IActionDefinition<{ name: string, program: string}> = {
 
     agent.mind.compiler.dict[name] = new Operator([name], [], (ctx) => {
       const compiled = agent.mind.compiler.compile(program);
-      console.log(compiled);
-      compiled.forEach((f) => {
-        agent.mind.interpreter.term.push(f);
-      });
+      console.log('compiled:', compiled);
+      agent.mind.interpreter.term.unshift(...compiled);
     });
 
     return succeed(`Defined [${program}] as '${name}'`);
