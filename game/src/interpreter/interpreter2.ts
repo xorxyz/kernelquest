@@ -102,7 +102,6 @@ export class Interpreter {
       const factor = this.term.shift() as Factor;
       try {
         factor.validate(this.stack);
-        console.log('factor:', factor.lexeme);
         factor.execute({
           stack: this.stack,
           syscall: this.syscall.bind(this),
@@ -112,7 +111,7 @@ export class Interpreter {
         this.log();
       } catch (err) {
         // this.halted = true;
-        console.log('intepreter: error');
+        console.log('intepreter:', err);
         throw err;
       }
     }
@@ -133,7 +132,7 @@ export class Interpreter {
 
   exec(term: Term, callback?: () => void) {
     console.log(`exec: running ${term.toString()}`);
-    this.subinterpreter = new Interpreter();
+    this.subinterpreter = new Interpreter(this.dict);
     this.subinterpreter.level = this.level + 1;
     this.subinterpreter.update(term);
     console.log('sub', this.subinterpreter);

@@ -1,0 +1,191 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "kqj",
+  "scopeName": "source.kqj",
+  "fileTypes": [".kqj"],
+  "patterns": [
+    {
+      "include": "#combinators"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#language_constants"
+    },
+    {
+      "include": "#syscalls"
+    },
+    {
+      "include": "#queries"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#numeric_literals"
+    },
+    {
+      "include": "#operators"
+    }
+  ],
+  "repository": {
+    "combinators": {
+      "name": "entity.name.function.kqj",
+      "match": "\\b(map|filter|cons|unit|i|reduce|reverse)\\b"
+    },
+    "keywords": {
+      "patterns": [{
+        "name": "keyword.control.kqj",
+        "match": "\\b(define|ifte|until)\\b"
+      }]
+    },
+    "strings": {
+      "name": "string.quoted.double.kqj",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.kqj",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "language_constants": {
+      "name": "constant.language.kqj",
+      "match": "\\b(true|false|null)\\b",
+      "comment": "Language Constants"
+    },
+    "syscalls": {
+      "name": "support.function.kqj",
+      "match": "\\b(right|left|step|rm|spawn|create|tell|halt|face|get|put|del|puts|say|hi|claim|scratch|erase|wait)\\b",
+      "comment": "Syscalls"
+    },
+    "queries": {
+      "name": "variable.parameter.kqj",
+      "match": "\\b(that|me|ls|prop|xy|facing|read|rect|path)\\b",
+      "comment": "Queries"
+    },
+    "comments": {
+      "name": "comment.line.number-sign.kqj",
+      "begin": "#",
+      "end": "\\n",
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.kqj",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numeric_literals": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.kqj",
+          "match": "\\b\\d+([Ee][+-]?)\\d+\\b",
+          "comment": "Integer, no fraction, optional exponent",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.exponent.kqj"
+            }
+          }
+        },
+        {
+          "name": "constant.numeric.float.kqj",
+          "match": "\\b\\d+(\\.)\\d+(?:([Ee][+-]?)\\d+)?\\b",
+          "comment": "Integer, fraction, optional exponent",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.decimal.kqj"
+            },
+            "2": {
+              "name": "punctuation.separator.exponent.kqj"
+            }
+          }
+        },
+        {
+          "name": "constant.numeric.integer.kqj",
+          "match": "\\b\\d+\\b",
+          "comment": "Integers"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\b(swap|swapd|dup|dupd|pop|popd|cat|clear|typeof|choice|vector_add|vector_sub)\\b"
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\>\\="
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\<\\="
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\=\\="
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\!\\="
+        },
+        {
+          "name": "keyword.operator.arithmetic.kqj",
+          "match": "\\+"
+        },
+        {
+          "name": "keyword.operator.arithmetic.kqj",
+          "match": "\\-"
+        },
+        {
+          "name": "keyword.operator.arithmetic.kqj",
+          "match": "\\*"
+        },
+        {
+          "name": "keyword.operator.arithmetic.kqj",
+          "match": "\\/"
+        },
+        {
+          "name": "keyword.operator.arithmetic.kqj",
+          "match": "\\%"
+        },
+        {
+          "name": "keyword.operator.logical.kqj",
+          "match": "\\&\\&"
+        },
+        {
+          "name": "keyword.operator.logical.kqj",
+          "match": "\\|\\|"
+        },
+        {
+          "name": "keyword.operator.logical.kqj",
+          "match": "\\!"
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\>"
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\<"
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\?"
+        },
+        {
+          "name": "keyword.operator.kqj",
+          "match": "\\.\\.\\."
+        },
+        {
+          "match": "\\:"
+        }
+      ]
+    }
+  }
+}

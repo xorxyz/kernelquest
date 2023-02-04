@@ -4,6 +4,10 @@
   dupd vector_add rect ["wall" create] map
 ] define
 
+1 1 + 
+2 2 ==
+
+
 [[1 1] [2 3] [4 5]] 
   ["tree" create] map
 

@@ -16,7 +16,7 @@ import { story } from './story';
 import { area0, world0 } from './worlds';
 import { King } from './agents';
 import words from './words';
-import joy from '../assets/worlds/area0.joy';
+import joy from '../assets/worlds/area0.kqj';
 
 export type SendFn = (str: string) => void
 

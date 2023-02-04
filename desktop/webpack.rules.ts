@@ -33,7 +33,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
     type: 'asset/source',
   },
   {
-    test: /\.joy$/i,
+    test: /\.kqj$/i,
     type: 'asset/source',
   },
 ];
