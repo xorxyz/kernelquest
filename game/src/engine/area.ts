@@ -9,40 +9,26 @@ import {
   Direction,
 } from '../shared';
 import { Agent } from './agent';
+import { AgentTypeName } from './agents';
 import { Cell } from './cell';
+import { EntityManager } from './engine';
 import { Thing } from './thing';
-import { Door } from './things';
+import { ThingTypeName } from './things';
 
 /** @category Area */
 export class Area {
-  readonly position: Vector;
-  readonly timeLimit: number = 700;
+  readonly id: number;
 
-  public id: number;
   public name = 'area';
-
-  public tick = 0;
-  public seconds = 0;
-
-  public flags: Set<Thing> = new Set();
-  public capturedFlags: Set<Thing> = new Set();
-
-  public crowns: Set<Thing> = new Set();
-  public capturedCrowns: Set<Thing> = new Set();
-
-  public doors: Set<Door> = new Set();
+  public position = new Vector();
   public outerRectangle: Rectangle;
-
-  private innerRectangle: Rectangle;
-  private cells: Array<Cell>;
+  public innerRectangle: Rectangle;
   public agents: Set<Agent> = new Set();
   private things: Set<Thing> = new Set();
-  private areas: Set<Area> = new Set();
-  private rows: Array<Array<Cell>>;
 
-  get secondsLeft() {
-    return this.timeLimit - this.seconds;
-  }
+  private rows: Array<Array<Cell>>;
+  private cells: Array<Cell>;
+  private entities: EntityManager;
 
   get size() { return this.outerRectangle.size; }
 
@@ -58,9 +44,10 @@ export class Area {
       .addY(this.size.y - 1);
   }
 
-  constructor(x: number, y: number, w = AREA_WIDTH, h = AREA_HEIGHT) {
-    this.id = y * w + x;
-    this.position = new Vector(x, y);
+  constructor(id: number, entities: EntityManager, w = AREA_WIDTH, h = AREA_HEIGHT) {
+    this.id = id;
+    this.entities = entities;
+
     this.rows = new Array(h).fill(0).map(() => []);
     this.cells = new Array(w * h).fill(0).map((_, i) => {
       const cellY = Math.floor(i / w);
@@ -103,7 +90,6 @@ export class Area {
       this.agents.add(entity);
 
       entity.facing.cell = this.cellAt(entity.isLookingAt);
-      entity.pwd = this.id;
       entity.area = this;
     }
 
@@ -160,7 +146,7 @@ export class Area {
   render(rect?: Rectangle): Array<string> {
     return this.rows.map((row) => row
       .map(((cell) => (
-        rect && rect.contains(cell.position) && !this.childrenContain(cell.position)
+        rect && rect.contains(cell.position)
           ? cell.render(this)
           : `${esc(Colors.Bg.Black)}  ${esc(Style.Reset)}`)))
       .join(''));
@@ -191,10 +177,6 @@ export class Area {
 
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }
 
-  childrenContain(vector: Vector) {
-    return Array.from(this.areas).some((area) => area.contains(vector));
-  }
-
   list(): Array<Agent|Thing> {
     return [...this.agents.values(), ...this.things.values()].sort((a, b) => a.id - b.id);
   }
@@ -219,6 +201,20 @@ export class Area {
 
   findBodyById(id:number): Agent | Thing | Cell | null {
     return this.findAgentById(id) || this.findThingById(id) || this.findCellById(id);
+  }
+
+  createAgent(agentType: AgentTypeName, area: Area, position?: Vector) {
+    const agent = this.entities.createAgent(agentType);
+    this.agents.add(agent);
+    area.put(agent, position);
+    return agent;
+  }
+
+  createThing(thingType: ThingTypeName, area: Area, position?: Vector) {
+    const thing = this.entities.createThing(thingType);
+    this.things.add(thing);
+    area.put(thing, position);
+    return thing;
   }
 }
 

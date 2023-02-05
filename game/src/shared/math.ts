@@ -7,7 +7,7 @@ export class Vector {
   y: number;
 
   get label() {
-    return `${this.x.toString(16).toUpperCase()} ${this.y.toString(16).toUpperCase()}`;
+    return `[${this.x.toString(16).toUpperCase()} ${this.y.toString(16).toUpperCase()}]`;
   }
 
   constructor(x = 0, y = 0) {

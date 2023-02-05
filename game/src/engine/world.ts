@@ -1,26 +1,10 @@
 import { Stack, Vector } from '../shared';
-import { Area, WorldMap } from './area';
-import { BodyType, Thing } from './thing';
-import { Agent, AgentType, IFacing } from './agent';
-import {
-  Ancestor,
-  Bat,
-  Bug, Child, Deer, Demon, Dragon,
-  Earth, Elf, Fairy, Fire, Ghost, Goblin, King, Man,
-  Ogre, Owl, Rat, Sheep, Snail, Snake, Spider, Spirit, Stars, Water, Wind, Wizard, Wolf,
-} from './agents';
-import {
-  Axe,
-  Bag,
-  Bomb,
-  Book,
-  Boot,
-  Bow,
-  Candle, Castle, Crown, Door, Flag, Fruit, Grass,
-  Key, Map, Mountain, River, Route, Shield, Skull, Tree, Village, Wall, ZoneNode,
-} from './things';
-import words from './words';
+import { WorldMap } from './area';
+import { Thing } from './thing';
+import { Agent, IFacing } from './agent';
 import Graph from '../shared/graph';
+import { Zone } from './zone';
+import { EntityManager } from './engine';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -34,156 +18,56 @@ export interface Position {
   facing: IFacing
 }
 
-const agentTypeNames = [
-  'king', 'dragon',
-  'stars',
-  'wind', 'water', 'earth', 'fire',
-  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
-  'owl', 'deer', 'snail',
-  'child', 'ancestor', 'demon',
-  'snake', 'goblin', 'ogre', 'spider', 'wolf', 'ghost', 'rat', 'bat',
-] as const;
-
-const thingTypeNames = [
-  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
-  'mountain', 'fruit', 'castle', 'village', 'candle', 'axe', 'bomb', 'bow', 'bag',
-  'boot', 'bag', 'map', 'route', 'zone',
-];
-
-export type AgentTypeName = typeof agentTypeNames[number]
-export type ThingTypeName = typeof thingTypeNames[number]
-
-export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
-  king: King,
-  dragon: Dragon,
-  stars: Stars,
-  wind: Wind,
-  water: Water,
-  earth: Earth,
-  fire: Fire,
-  fairy: Fairy,
-  elf: Elf,
-  wizard: Wizard,
-  sheep: Sheep,
-  bug: Bug,
-  man: Man,
-  spirit: Spirit,
-  owl: Owl,
-  deer: Deer,
-  snail: Snail,
-  child: Child,
-  ancestor: Ancestor,
-  demon: Demon,
-  snake: Snake,
-  goblin: Goblin,
-  ogre: Ogre,
-  spider: Spider,
-  wolf: Wolf,
-  ghost: Ghost,
-  rat: Rat,
-  bat: Bat,
-};
-
-export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
-  tree: Tree,
-  wall: Wall,
-  door: Door,
-  flag: Flag,
-  crown: Crown,
-  key: Key,
-  shield: Shield,
-  skull: Skull,
-  book: Book,
-  grass: Grass,
-  river: River,
-  mountain: Mountain,
-  fruit: Fruit,
-  castle: Castle,
-  village: Village,
-  candle: Candle,
-  axe: Axe,
-  bomb: Bomb,
-  bow: Bow,
-  bat: Bat,
-  boot: Boot,
-  bag: Bag,
-  map: Map,
-  route: Route,
-  zone: ZoneNode,
-};
-
-export class Zone {
-  public id: number;
-  public areas: Set<Area> = new Set();
-  public graph: Graph<Area> = new Graph();
-  public node: Thing;
-
-  createArea(vector: Vector) {
-    const area = new Area(vector.x, vector.y);
-    this.areas.add(area);
-    return area;
-  }
-}
-
 /** @category World */
 export class World {
-  public id = 0;
-  public tick = 0;
-  public areas: Array<Area>;
-  public agents: Set<Agent> = new Set();
-  public things: Set<Thing> = new Set();
-  public creator: Agent;
+  readonly id: number;
+  readonly type = {
+    name: 'world',
+  };
+
   public graph: Graph<Thing> = new Graph();
-  public worldMap: WorldMap = new WorldMap(0, 0, 32, 16);
+  public worldMap: WorldMap;
   public worldMapCursor: Agent;
   public activeZone: Zone;
-  public activeArea: Area;
   public zones: Set<Zone> = new Set();
 
-  // id 0 is null, 1-160 is for cells
-  public counter = 1 + 160;
+  private entities: EntityManager;
 
-  constructor(areas: Array<Area>) {
-    const zone0 = new Zone();
-    const area0 = new Area(0, 0);
+  constructor(id: number, entities: EntityManager) {
+    this.id = id;
+    this.entities = entities;
 
-    this.zones = new Set();
+    const zone: Zone = entities.createZone();
+    this.zones.add(zone);
+    this.activeZone = zone;
 
-    this.areas = [area0];
-
-    this.zones.add(zone0);
-
-    this.activeZone = zone0;
-    this.activeArea = area0;
-  }
-
-  spawn(agentType: AgentTypeName, area: Area, position?: Vector) {
-    const AgentTypeCtor = AgentTypeDict[agentType];
-    const agent = new Agent(this.counter++, new AgentTypeCtor(), words);
-    this.agents.add(agent);
-    area.put(agent, position);
-    return agent;
-  }
-
-  create(bodyType: ThingTypeName, area: Area, position?: Vector) {
-    const BodyTypeCtor = ThingTypeDict[bodyType];
-    const thing = new Thing(this.counter++, new BodyTypeCtor());
-    this.things.add(thing);
-    area.put(thing, position);
-    return thing;
-  }
-
-  find(agent: Agent): Area | null {
-    return this.areas.find((area) => area.has(agent)) || null;
-  }
-
-  clear() {
-    this.areas.forEach((area) => area.clear());
+    this.worldMap = new WorldMap(0, entities, 32, 16);
   }
 
   createZone(vector: Vector) {
-    const zone = new Zone();
+    const existing = this.findZoneAt(vector);
+    if (existing) throw new Error(`There is already a zone at ${vector.label}.`);
+
+    const zone: Zone = this.entities.createZone();
+    zone.position.copy(vector);
     this.zones.add(zone);
     return zone;
+  }
+
+  destroyZone(vector: Vector) {
+    const zone = this.findZoneAt(vector);
+    if (!zone) throw new Error(`There is no area at ${vector.label}.`);
+    this.zones.delete(zone);
+  }
+
+  setActiveZone(vector: Vector) {
+    const zone = this.findZoneAt(vector);
+    if (!zone) throw new Error(`Zone ${vector.label} does not exist.`);
+    this.activeZone = zone;
+    zone.setActiveArea(new Vector());
+  }
+
+  findZoneAt(vector: Vector): Zone | undefined {
+    return [...this.zones].find((zone) => zone.position.equals(vector));
   }
 }

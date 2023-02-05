@@ -1,22 +1,16 @@
-# @signature  position: Vector, size: Vector -> walls: List<Ref>
-# @desc       Builds a house of a size S at a position P
-"build_house" [
+# @signature:  (position: Vector, size: Vector) -> walls: List<Ref>
+# @desc:       Builds a house of a size S at a position P
+"build_house" [ 
   dupd vector_add rect ["wall" create] map
 ] define
 
-1 1 + 
-2 2 ==
-
-
-[[1 1] [2 3] [4 5]] 
-  ["tree" create] map
-
+[[1 1] [2 3] [4 5]] ["tree" create] map
 [6 5] [4 3] build_house
-
 [8 8] that rm xy "door" create
 
-step
+step clear
 
-clear
+# [1 0] "zone" create
 
-"hello world :)" puts
+[0 1] "area" create
+step step step step step step step 

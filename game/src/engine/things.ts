@@ -168,3 +168,38 @@ export class ZoneNode extends BodyType {
   style = esc(Colors.Bg.Black) + esc(Colors.Fg.White);
   isBlocking = false;
 }
+
+const thingTypeNames = [
+  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
+  'mountain', 'fruit', 'castle', 'village', 'candle', 'axe', 'bomb', 'bow', 'bag',
+  'boot', 'bag', 'map', 'route', 'zone',
+];
+
+export type ThingTypeName = typeof thingTypeNames[number]
+
+export const ThingTypeDict: Record<ThingTypeName, new () => BodyType> = {
+  tree: Tree,
+  wall: Wall,
+  door: Door,
+  flag: Flag,
+  crown: Crown,
+  key: Key,
+  shield: Shield,
+  skull: Skull,
+  book: Book,
+  grass: Grass,
+  river: River,
+  mountain: Mountain,
+  fruit: Fruit,
+  castle: Castle,
+  village: Village,
+  candle: Candle,
+  axe: Axe,
+  bomb: Bomb,
+  bow: Bow,
+  boot: Boot,
+  bag: Bag,
+  map: Map,
+  route: Route,
+  zone: ZoneNode,
+};

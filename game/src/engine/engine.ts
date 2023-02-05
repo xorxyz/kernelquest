@@ -5,18 +5,20 @@ import {
   Clock, CLOCK_MS_DELAY, debug, Vector,
 } from '../shared';
 import { VirtualTerminal } from '../ui';
-import { World } from './world';
+import { AgentTypeName, ThingTypeName, World } from './world';
 import { Area } from './area';
-import { Agent } from './agent';
+import { Agent, AgentType } from './agent';
 import {
   actions, fail, IAction, IActionDefinition, IActionResult,
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
-import { area0, world0 } from './worlds';
-import { King } from './agents';
+import { AgentTypeDict, King } from './agents';
 import words from './words';
 import joy from '../assets/worlds/area0.kqj';
+import { Zone } from './zone';
+import { Thing } from './thing';
+import { ThingTypeDict } from './things';
 
 export type SendFn = (str: string) => void
 
@@ -30,8 +32,7 @@ export interface EngineOptions {
 /** @category Engine */
 export class Engine {
   public world: World;
-  public worlds: Set<World> = new Set();
-  public hero = new Agent(0, new King(), words);
+  public hero: Agent;
   public events = new EventEmitter();
   public cycle = 0;
   public elapsed = 0;
@@ -45,17 +46,20 @@ export class Engine {
   readonly clock: Clock;
   story: Story;
 
+  entities = new EntityManager();
+
   constructor(opts: EngineOptions) {
     const clockRate = opts.rate || CLOCK_MS_DELAY;
     this.opts = opts;
     this.clock = new Clock(2);
     this.story = story;
-    this.world = world0;
 
-    this.worlds.add(world0);
-    this.world.agents.add(this.hero);
+    this.world = this.entities.createWorld();
+    this.hero = this.entities.createAgent('king');
 
-    area0.put(this.hero, new Vector(0, 0));
+    this.entities.setHero(this.hero);
+
+    this.world.activeZone.activeArea.put(this.hero, new Vector(0, 0));
 
     this.tty = new VirtualTerminal(this, this.opts.send);
 
@@ -98,20 +102,12 @@ export class Engine {
 
   updateIfPending() {
     if (!this.hero.mind.interpreter.isDone() || this.hero.mind.queue.size) {
-      console.log('update because pending');
       this.update();
     }
   }
 
   reset() {
     this.clock.reset();
-    this.world = new World(
-      (new Array(10))
-        .fill(0)
-        .flatMap((_, y) => (new Array(16))
-          .fill(0)
-          .map((__, x) => new Area(x, y))),
-    );
 
     // this.world.creator = this.world.spawn('king', this.world.areas[0]);
     // this.hero = this.world.creator;
@@ -197,7 +193,7 @@ export class Engine {
   update() {
     this.cycle++;
 
-    this.world.agents.forEach((agent: Agent) => {
+    this.entities.agentList.forEach((agent: Agent) => {
       this.processTurn(agent);
       this.applyVelocity(agent);
     });
@@ -215,7 +211,7 @@ export class Engine {
 
     const actionDefinition = actions[historyEvent.action.name];
 
-    const agent = [...this.world.agents.values()].find((a) => a.id === historyEvent.agentId);
+    const agent = this.entities.agentList.find((a) => a.id === historyEvent.agentId);
     if (!agent) {
       throw new Error(`Undo: Could not find agent ${historyEvent.agentId}`);
     }
@@ -234,8 +230,6 @@ export class Engine {
 
     agent.see(agent.area);
     this.tty.render();
-
-    console.log('undo', historyEvent);
   }
 
   redo() {
@@ -246,7 +240,7 @@ export class Engine {
 
     const actionDefinition = actions[historyEvent.action.name];
 
-    const agent = [...this.world.agents.values()].find((a) => a.id === historyEvent.agentId);
+    const agent = this.entities.agentList.find((a) => a.id === historyEvent.agentId);
     if (!agent) {
       throw new Error(`Redo: Could not find agent ${historyEvent.agentId}`);
     }
@@ -265,12 +259,9 @@ export class Engine {
 
     agent.see(area);
     this.tty.render();
-
-    console.log('redo', historyEvent);
   }
 
   async save() {
-    console.log('saving:', this.history);
     this.pause();
 
     const oldContents = this.saveGames[this.saveGameId];
@@ -309,11 +300,9 @@ export class Engine {
     // TODO: Ensure agents exist
     // and make this more robust
 
-    debug('Agents:', this.world.agents);
-
     data.history.forEach((event) => {
       this.cycle = event.tick;
-      const agent = [...this.world.agents].find((a) => a.id === event.agentId) as Agent;
+      const agent = this.entities.agentList.find((a) => a.id === event.agentId) as Agent;
       this.tryPerforming(event.action, agent);
     });
 
@@ -334,6 +323,8 @@ export class Engine {
     // debug('tryPerforming:', agent.id, action.name, area.id);
     const actionDefinition = actions[action.name];
 
+    if (!actionDefinition) return fail(`Could not find action definition for '${action.name}'. It might not be implemented.`);
+
     if (!this.authorize) return fail('Not enough stamina.');
 
     const context = {
@@ -348,8 +339,6 @@ export class Engine {
 
   processTurn(agent: Agent) {
     const action = agent.takeTurn(this.cycle);
-
-    console.log('action', action);
 
     if (action && action.name !== 'noop') {
       const result = this.tryPerforming(action, agent);
@@ -387,7 +376,6 @@ export class Engine {
       }
     }
 
-    console.log('done turn', action);
     agent.see(agent.area);
 
     if (this.cycle % 10 === 0) agent.sp.increase(1);
@@ -424,9 +412,70 @@ export class Engine {
     debug('paused engine.');
   }
 
-  createWorld(vector: Vector) {
-    const world = new World([]);
+  findEntityById(id:number) {
+    if (this.entities.lastId < id) return undefined;
+
+    return this.entities.entityList.find((entity) => entity.id === id);
+  }
+}
+
+export class EntityManager {
+  public hero;
+
+  // 160 reserved for cells
+  private counter = 1 + 160;
+
+  private worlds: Set<World> = new Set();
+  private zones: Set<Zone> = new Set();
+  private areas: Set<Area> = new Set();
+  private agents: Set<Agent> = new Set();
+  private things: Set<Thing> = new Set();
+
+  get lastId() {
+    return this.counter;
+  }
+
+  get agentList() {
+    return [...this.agents];
+  }
+
+  get entityList() {
+    return [...this.worlds, ...this.zones, ...this.areas, ...this.agents, ...this.things];
+  }
+
+  setHero(hero: Agent) {
+    this.hero = hero;
+  }
+
+  createWorld() {
+    const world = new World(this.counter++, this);
     this.worlds.add(world);
     return world;
+  }
+
+  createZone() {
+    const zone = new Zone(this.counter++, this);
+    this.zones.add(zone);
+    return zone;
+  }
+
+  createArea() {
+    const area = new Area(this.counter++, this);
+    this.areas.add(area);
+    return area;
+  }
+
+  createAgent(agentType: AgentTypeName) {
+    const AgentTypeCtor = AgentTypeDict[agentType];
+    const agent = new Agent(this.counter++, new AgentTypeCtor(), words);
+    this.agents.add(agent);
+    return agent;
+  }
+
+  createThing(thingType: ThingTypeName) {
+    const BodyTypeCtor = ThingTypeDict[thingType];
+    const thing = new Thing(this.counter++, new BodyTypeCtor());
+    this.things.add(thing);
+    return thing;
   }
 }

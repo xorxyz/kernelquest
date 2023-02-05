@@ -220,3 +220,46 @@ export const agents = {
   dragon: Dragon,
   spirit: Spirit,
 };
+
+const agentTypeNames = [
+  'king', 'dragon',
+  'stars',
+  'wind', 'water', 'earth', 'fire',
+  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
+  'owl', 'deer', 'snail',
+  'child', 'ancestor', 'demon',
+  'snake', 'goblin', 'ogre', 'spider', 'wolf', 'ghost', 'rat', 'bat',
+] as const;
+
+export type AgentTypeName = typeof agentTypeNames[number]
+
+export const AgentTypeDict: Record<AgentTypeName, new () => AgentType> = {
+  king: King,
+  dragon: Dragon,
+  stars: Stars,
+  wind: Wind,
+  water: Water,
+  earth: Earth,
+  fire: Fire,
+  fairy: Fairy,
+  elf: Elf,
+  wizard: Wizard,
+  sheep: Sheep,
+  bug: Bug,
+  man: Man,
+  spirit: Spirit,
+  owl: Owl,
+  deer: Deer,
+  snail: Snail,
+  child: Child,
+  ancestor: Ancestor,
+  demon: Demon,
+  snake: Snake,
+  goblin: Goblin,
+  ogre: Ogre,
+  spider: Spider,
+  wolf: Wolf,
+  ghost: Ghost,
+  rat: Rat,
+  bat: Bat,
+};

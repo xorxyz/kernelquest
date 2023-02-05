@@ -22,6 +22,9 @@ export class Glyph {
 
 /** @category Cell */
 export class Cell {
+  readonly type = {
+    name: 'cell',
+  };
   public position: Vector;
   public slot: Agent | Thing | null = null;
   public buffer: Agent | Thing | null = null;

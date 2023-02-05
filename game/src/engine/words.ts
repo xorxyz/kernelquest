@@ -322,6 +322,39 @@ const wait = new Operator(['wait'], [], ({ syscall }) => {
   });
 });
 
+const area = new Operator(['area'], ['vector'], ({ stack, syscall }) => {
+  const position = (stack.pop() as LiteralVector).vector;
+  syscall({
+    name: 'area',
+    args: {
+      x: position.x,
+      y: position.y,
+    },
+  });
+});
+
+const zone = new Operator(['zone'], ['vector'], ({ stack, syscall }) => {
+  const position = (stack.pop() as LiteralVector).vector;
+  syscall({
+    name: 'zone',
+    args: {
+      x: position.x,
+      y: position.y,
+    },
+  });
+});
+
+const world = new Operator(['world'], ['vector'], ({ stack, syscall }) => {
+  const position = (stack.pop() as LiteralVector).vector;
+  syscall({
+    name: 'zone',
+    args: {
+      x: position.x,
+      y: position.y,
+    },
+  });
+});
+
 export default {
   goto,
   path,
@@ -360,4 +393,7 @@ export default {
   erase,
   rect,
   wait,
+  area,
+  zone,
+  world,
 };

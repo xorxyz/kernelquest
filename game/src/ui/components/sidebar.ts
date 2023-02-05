@@ -24,7 +24,7 @@ export class Sidebar extends UiComponent {
       `│  Job: ${padEnd(agent.type.label, 12)}│`,
       `│ Hand: ${padEnd(agent.hand?.label || nothing(12), 12)}│`,
       `│ Eyes: ${padEnd(agent.eyes ? `${agent.eyes?.label}` : nothing(12), 12)}│`,
-      `│ Feet: ${padEnd(`[${agent.pwd}] [${agent.position.label}]`, 12)}│`,
+      `│ Feet: ${padEnd(`${agent.position.label}`, 12)}│`,
       '│                   │',
       '│ Inventory:        │',
       `│  1. ${padEnd(agent.inventory.peekN(0)?.label || nothing(14), 14)}│`,

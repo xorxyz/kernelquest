@@ -4,9 +4,7 @@ import {
   LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
-import {
-  AgentTypeName, ThingTypeName, World,
-} from './world';
+import { World } from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
@@ -14,19 +12,20 @@ import { Cell, Glyph } from './cell';
 import { Thing } from './thing';
 import words from './words';
 import { LevelSelectScreen } from '../ui/views/level-select-screen';
+import { ThingTypeName } from './things';
 
 export type ValidActions = (
   'save' | 'load' |
   'noop' |
   'right' | 'left' |
-  'face' | 'step' | 'backstep' | 'goto' |
+  'face' | 'step' | 'backstep' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
   'exec' | 'create' | 'spawn' |
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
-  'wait'
+  'wait' | 'area'
 )
 
 export type SerializableType = boolean | number | string
@@ -167,7 +166,8 @@ export const step: IActionDefinition<
       if (!target) {
         const { direction } = agent.facing;
         const nextAreaPosition = area.position.clone().add(direction.value);
-        const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
+        const nextArea = [...world.activeZone.areas]
+          .find((a) => a.position.equals(nextAreaPosition));
 
         // If there is an adjacent area
         if (nextArea) {
@@ -182,10 +182,8 @@ export const step: IActionDefinition<
             }
             return fail('There is something blocking the way.');
           }
-          area.remove(agent);
-          agent.position.copy(nextPosition);
-          nextArea.put(agent);
-          agent.area = nextArea;
+          world.activeZone.setActiveArea(nextArea.position);
+          nextArea.move(agent, nextPosition);
 
           engine.events.emit('sound:step');
 
@@ -193,8 +191,9 @@ export const step: IActionDefinition<
             position: previousPosition.toObject(),
             areaId: area.id,
           });
-          // If there is no adjacent area
         }
+
+        // If there is no adjacent area, exit the level
         if (engine.hero.id === agent.id) {
           engine.tty.view = new LevelSelectScreen();
           engine.tty.clear();
@@ -603,31 +602,25 @@ export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y:
   }, { thingName, x, y }) {
     const position = new Vector(x, y);
 
-    if (thingName === 'world') {
-      const newWorld = engine.createWorld(position);
-      agent.mind.interpreter.sysret(new LiteralRef(newWorld.id));
-      return succeed(`Created a ${thingName} at ${position.label}`);
-    }
-
-    if (thingName === 'zone') {
-      const newZone = world.createZone(position);
-      agent.mind.interpreter.sysret(new LiteralRef(newZone.id));
-      return succeed(`Created a ${thingName} at ${position.label}`);
-    }
-
-    if (thingName === 'area') {
-      const newArea = world.activeZone.createArea(position);
-      agent.mind.interpreter.sysret(new LiteralRef(newArea.id));
-      return succeed(`Created a ${thingName} at ${position.label}`);
-    }
-
     try {
-      const thing = world.create(thingName, area, position);
-      agent.mind.interpreter.sysret(new LiteralRef(thing.id));
-      return succeed(`Created a ${thingName} at ${position.label}`);
+      if (thingName === 'world') {
+        const newWorld = engine.entities.createWorld();
+        agent.mind.interpreter.sysret(new LiteralRef(newWorld.id));
+      } else if (thingName === 'zone') {
+        const newZone = world.createZone(position);
+        agent.mind.interpreter.sysret(new LiteralRef(newZone.id));
+      } else if (thingName === 'area') {
+        const newArea = world.activeZone.createArea(position);
+        agent.mind.interpreter.sysret(new LiteralRef(newArea.id));
+      } else {
+        const thing = area.createThing(thingName, area, position);
+        agent.mind.interpreter.sysret(new LiteralRef(thing.id));
+      }
+
+      return succeed(`Created a ${thingName} at ${position.label}.`);
     } catch (err) {
       agent.mind.interpreter.sysret(new LiteralRef(0));
-      return fail(`Can't create a '${thingName}'`);
+      return fail(`Can't create a '${thingName}': ${(err as Error).message}`);
     }
   },
   undo: undoNoop,
@@ -681,8 +674,8 @@ export const halt: IActionDefinition<ActionArguments> = {
 
 export const prop: IActionDefinition<{ id: number, propName: string }> = {
   cost: 0,
-  perform({ agent, area }, { id, propName }) {
-    const target = area.findBodyById(id);
+  perform({ agent, engine }, { id, propName }) {
+    const target = engine.findEntityById(id);
 
     if (!target) {
       return fail(`Cannot find &${id}`);
@@ -692,7 +685,7 @@ export const prop: IActionDefinition<{ id: number, propName: string }> = {
       id: (body) => new LiteralRef(body.id),
       name: (body) => new LiteralString(body.name || body.id),
       xy: (body) => new LiteralVector(body.position),
-      type: (body) => new LiteralString(body.type?.name || 'cell'),
+      type: (body) => new LiteralString(body.type?.name),
     };
 
     const fn = props[propName];
@@ -985,6 +978,57 @@ export const wait: IActionDefinition<{}> = {
   undo: undoNoop,
 };
 
+export const area: IActionDefinition<
+  { x: number, y: number },
+  { previousAreaX: number, previousAreaY: number}
+> = {
+  cost: 0,
+  perform(ctx, { x, y }) {
+    const previous = ctx.area.position.clone();
+    const next = new Vector(x, y);
+    const zone = ctx.world.activeZone;
+    try {
+      zone.setActiveArea(next);
+      return succeed(`Now in area ${next.label}.`, {
+        previousAreaX: previous.x,
+        previousAreaY: previous.y,
+      });
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+  undo(ctx, _, { previousAreaX, previousAreaY }) {
+    ctx.world.activeZone.setActiveArea(new Vector(previousAreaX, previousAreaY));
+
+    return succeed('');
+  },
+};
+
+export const zone: IActionDefinition<
+  { x: number, y: number },
+  { previousZoneX: number, previousZoneY: number }
+> = {
+  cost: 0,
+  perform({ world }, { x, y }) {
+    const previous = world.activeZone.position.clone();
+    const next = new Vector(x, y);
+    try {
+      world.setActiveZone(next);
+      return succeed(`Now in zone ${next.label}.`, {
+        previousZoneX: previous.x,
+        previousZoneY: previous.y,
+      });
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+  undo(ctx, _, { previousZoneX, previousZoneY }) {
+    ctx.world.activeZone.setActiveArea(new Vector(previousZoneX, previousZoneY));
+
+    return succeed('');
+  },
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -1024,6 +1068,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   scratch,
   erase,
   wait,
+  area,
+  zone,
 };
 
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {
