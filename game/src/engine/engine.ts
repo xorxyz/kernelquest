@@ -5,15 +5,15 @@ import {
   Clock, CLOCK_MS_DELAY, debug, Vector,
 } from '../shared';
 import { VirtualTerminal } from '../ui';
-import { AgentTypeName, ThingTypeName, World } from './world';
+import { World } from './world';
 import { Area } from './area';
-import { Agent, AgentType } from './agent';
+import { Agent } from './agent';
 import {
   actions, fail, IAction, IActionDefinition, IActionResult,
 } from './actions';
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
-import { AgentTypeDict, King } from './agents';
+import { AgentTypeDict } from './agents';
 import words from './words';
 import joy from '../assets/worlds/area0.kqj';
 import { Zone } from './zone';
@@ -109,14 +109,6 @@ export class Engine {
   reset() {
     this.clock.reset();
 
-    // this.world.creator = this.world.spawn('king', this.world.areas[0]);
-    // this.hero = this.world.creator;
-    // this.world.activeArea = this.world.areas[0];
-
-    // this.world.create('tree', this.world.worldMap, new Vector(3, 6));
-    // this.world.create('tree', this.world.worldMap, new Vector(2, 6));
-    // this.world.create('tree', this.world.worldMap, new Vector(3, 7));
-    // const zoneNode1 = this.world.create('zone', this.world.worldMap, new Vector(3, 4));
     // this.world.create('route', this.world.worldMap, new Vector(4, 4));
     // this.world.create('route', this.world.worldMap, new Vector(5, 4));
     // this.world.create('route', this.world.worldMap, new Vector(6, 4));
@@ -138,7 +130,6 @@ export class Engine {
     // this.world.create('route', this.world.worldMap, new Vector(11, 10));
     // const zoneNode6 = this.world.create('zone', this.world.worldMap, new Vector(11, 11));
 
-    // this.world.graph.addNode(zoneNode1);
     // this.world.graph.addNode(zoneNode2);
     // this.world.graph.addNode(zoneNode3);
     // this.world.graph.addNode(zoneNode4);

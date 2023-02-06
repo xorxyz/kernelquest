@@ -13,6 +13,7 @@ import { Thing } from './thing';
 import words from './words';
 import { LevelSelectScreen } from '../ui/views/level-select-screen';
 import { ThingTypeName } from './things';
+import { LoadScreen } from '../ui/views/load-screen';
 
 export type ValidActions = (
   'save' | 'load' |
@@ -25,7 +26,7 @@ export type ValidActions = (
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
-  'wait' | 'area'
+  'wait' | 'area' | 'zone'
 )
 
 export type SerializableType = boolean | number | string
@@ -195,9 +196,15 @@ export const step: IActionDefinition<
 
         // If there is no adjacent area, exit the level
         if (engine.hero.id === agent.id) {
-          engine.tty.view = new LevelSelectScreen();
           engine.tty.clear();
-          engine.tty.render();
+          engine.tty.view = new LoadScreen();
+          const term = agent.mind.compiler.compile('');
+          agent.mind.interpreter.exec(term, () => {
+            engine.tty.view = new LevelSelectScreen();
+            engine.tty.clear();
+            engine.tty.render();
+          });
+
           return succeed('');
         }
       }

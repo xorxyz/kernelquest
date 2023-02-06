@@ -21,10 +21,11 @@ export class Zone {
   constructor(id: number, entities: EntityManager) {
     this.id = id;
     this.entities = entities;
+    this.node = entities.createThing('zone');
+    this.activeArea = entities.createArea();
 
-    const area = entities.createArea();
-    this.areas.add(area);
-    this.activeArea = area;
+    this.areas.add(this.activeArea);
+    this.node.position = this.position;
   }
 
   createArea(vector: Vector) {

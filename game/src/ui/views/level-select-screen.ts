@@ -1,5 +1,5 @@
-import { Thing } from '../../engine';
 import { SaveGameId } from '../../engine/io';
+import { Zone } from '../../engine/zone';
 import {
   INode, Keys,
 } from '../../shared';
@@ -9,6 +9,7 @@ import { Navbar } from '../components/navbar';
 import { VirtualTerminal } from '../pty';
 import { View } from '../view';
 import { GameScreen } from './game-screen';
+import { LoadScreen } from './load-screen';
 
 class BorderComponent extends UiComponent {
   handleInput() {
@@ -70,22 +71,30 @@ export class LevelSelectScreen extends View {
       (pty.view.components.navbar as Navbar).visible = true;
     } else {
       switch (str) {
-        case Keys.ENTER:
-          pty.view = new GameScreen();
+        case Keys.ENTER: {
+          const term = pty.agent.mind.compiler.compile(
+            `${pty.engine.world.worldMapCursor.position.label} zone`,
+          );
           pty.clear();
-          pty.render();
+          pty.view = new LoadScreen();
+          pty.agent.mind.interpreter.exec(term, () => {
+            pty.clear();
+            pty.view = new GameScreen();
+            pty.render();
+          });
           break;
+        }
         case Keys.ARROW_LEFT: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.graph
-            .find(pty.engine.world.activeZone.node)?.edges || [])
+          const edges: Array<INode<Zone>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone)?.edges || [])
             .filter((e) => e.value.position.x < fromPosition.x);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone.node = next;
+            pty.engine.world.activeZone = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -93,15 +102,19 @@ export class LevelSelectScreen extends View {
         }
         case Keys.ARROW_RIGHT: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
+          console.log('fromPosition', fromPosition);
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.graph
-            .find(pty.engine.world.activeZone.node)?.edges || [])
+          const edges: Array<INode<Zone>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone)?.edges || [])
             .filter((e) => e.value.position.x > fromPosition.x);
+
+          console.log('edges', edges);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone.node = next;
+            console.log('next', next);
+            pty.engine.world.activeZone = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -110,14 +123,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_DOWN: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.graph
-            .find(pty.engine.world.activeZone.node)?.edges || [])
+          const edges: Array<INode<Zone>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone)?.edges || [])
             .filter((e) => e.value.position.y > fromPosition.y);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone.node = next;
+            pty.engine.world.activeZone = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 
@@ -126,14 +139,14 @@ export class LevelSelectScreen extends View {
         case Keys.ARROW_UP: {
           const fromPosition = pty.engine.world.worldMapCursor.position;
 
-          const edges: Array<INode<Thing>> = (pty.engine.world.graph
-            .find(pty.engine.world.activeZone.node)?.edges || [])
+          const edges: Array<INode<Zone>> = (pty.engine.world.graph
+            .find(pty.engine.world.activeZone)?.edges || [])
             .filter((e) => e.value.position.y < fromPosition.y);
 
           const next = edges[0]?.value;
 
           if (next) {
-            pty.engine.world.activeZone.node = next;
+            pty.engine.world.activeZone = next;
             pty.engine.world.worldMap.move(pty.engine.world.worldMapCursor, next.position);
           }
 

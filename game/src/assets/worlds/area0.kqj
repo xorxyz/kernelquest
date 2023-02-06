@@ -10,7 +10,6 @@
 
 step clear
 
-# [1 0] "zone" create
 
-[0 1] "area" create
-step step step step step step step 
+
+[3 2] "zone" create

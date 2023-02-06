@@ -25,11 +25,11 @@ export class World {
     name: 'world',
   };
 
-  public graph: Graph<Thing> = new Graph();
+  public graph: Graph<Zone> = new Graph();
+  public zones: Set<Zone> = new Set();
+  public activeZone: Zone;
   public worldMap: WorldMap;
   public worldMapCursor: Agent;
-  public activeZone: Zone;
-  public zones: Set<Zone> = new Set();
 
   private entities: EntityManager;
 
@@ -37,11 +37,17 @@ export class World {
     this.id = id;
     this.entities = entities;
 
-    const zone: Zone = entities.createZone();
-    this.zones.add(zone);
-    this.activeZone = zone;
+    this.activeZone = entities.createZone();
+    this.zones.add(this.activeZone);
 
     this.worldMap = new WorldMap(0, entities, 32, 16);
+    this.worldMapCursor = entities.createAgent('king');
+
+    this.activeZone.position.setXY(1, 2);
+
+    this.worldMap.put(this.activeZone.node, this.activeZone.position);
+    this.worldMap.put(this.worldMapCursor, this.activeZone.position);
+    this.graph.addNode(this.activeZone);
   }
 
   createZone(vector: Vector) {
@@ -51,6 +57,12 @@ export class World {
     const zone: Zone = this.entities.createZone();
     zone.position.copy(vector);
     this.zones.add(zone);
+
+    this.graph.addNode(zone);
+    this.worldMap.put(zone.node, vector);
+
+    this.graph.addLine(this.activeZone, zone);
+
     return zone;
   }
 

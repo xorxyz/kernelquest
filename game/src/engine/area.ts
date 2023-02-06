@@ -60,7 +60,7 @@ export class Area {
 
     this.cells[0].scratch(this.id);
 
-    this.outerRectangle = new Rectangle(this.position, new Vector(w, h));
+    this.outerRectangle = new Rectangle(new Vector(0, 0), new Vector(w, h));
     this.innerRectangle = new Rectangle(
       this.outerRectangle.position.clone().addX(1).addY(1),
       this.outerRectangle.size.clone().subX(2).subY(2),
