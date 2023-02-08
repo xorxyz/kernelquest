@@ -279,11 +279,12 @@ export const step: IActionDefinition<
 
       return fail('');
     },
-    undo({ agent, area, world }, args, previousState) {
+    undo({ agent, area, engine }, args, previousState) {
       console.log('previousState:', previousState);
       const previousPosition = agent.position.clone();
       const targetPosition = Vector.from(previousState.position);
-      const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
+      const targetArea = engine.entities.areaList
+        .find((a) => a.id === previousState.areaId) || area;
 
       if (previousState.areaId !== undefined) {
         area.remove(agent);
@@ -306,9 +307,7 @@ export const backstep: IActionDefinition<
   }
 > = {
   cost: 0,
-  perform({
-    agent, area, world, engine,
-  }) {
+  perform({ agent, area, engine }) {
     const previousPosition = agent.position.clone();
     const oppositeDirection = agent.facing.direction.clone().rotateRight().rotateRight();
     const target = area.cellAt(agent.position.clone().add(oppositeDirection.value));
@@ -316,7 +315,7 @@ export const backstep: IActionDefinition<
     // Collision with the edge of the area
     if (!target) {
       const nextAreaPosition = area.position.clone().add(oppositeDirection.value);
-      const nextArea = world.areas.find((a) => a.position.equals(nextAreaPosition));
+      const nextArea = engine.entities.areaList.find((a) => a.position.equals(nextAreaPosition));
 
       // If there is an adjacent area
       if (nextArea) {
@@ -385,14 +384,13 @@ export const backstep: IActionDefinition<
 
     return fail('');
   },
-  undo({ agent, area, world }, args, previousState) {
+  undo({ agent, area, engine }, _, previousState) {
     const previousPosition = agent.position.clone();
     const targetPosition = Vector.from(previousState.position);
-    const targetArea = world.areas.find((a) => a.id === previousState.areaId) || area;
+    const targetArea = engine.entities.areaList.find((a) => a.id === previousState.areaId) || area;
 
     if (previousState.areaId !== undefined) {
       area.remove(agent);
-      agent.area = targetArea;
     }
 
     area.cellAt(previousPosition)?.take();
@@ -620,7 +618,7 @@ export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y:
         const newArea = world.activeZone.createArea(position);
         agent.mind.interpreter.sysret(new LiteralRef(newArea.id));
       } else {
-        const thing = area.createThing(thingName, area, position);
+        const thing = area.create(thingName, position);
         agent.mind.interpreter.sysret(new LiteralRef(thing.id));
       }
 
@@ -782,13 +780,22 @@ export const clear: IActionDefinition<ActionArguments> = {
 
 export const xy: IActionDefinition<{ refId: number }> = {
   cost: 0,
-  perform({ area, agent }, { refId }) {
-    const referenced = area.findBodyById(refId);
+  perform({ agent, world, area }, { refId }) {
+    if (refId > 0 && refId <= 160) {
+      const cell = area.findCellById(refId) as Cell;
+      agent.mind.interpreter.sysret(new LiteralVector(cell.position));
+      return succeed('');
+    }
+
+    const referenced = world.findEntityById(refId);
     if (referenced) {
+      if (referenced instanceof World) {
+        return fail('Worlds don\'t have a position property.');
+      }
       agent.mind.interpreter.sysret(new LiteralVector(referenced.position));
       return succeed('');
     }
-    return fail(`There is no agent with ref id ${refId}`);
+    return fail(`There is no entity with ref id ${refId}`);
   },
   undo: undoNoop,
 };

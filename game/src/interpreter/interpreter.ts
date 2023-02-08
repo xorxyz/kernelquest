@@ -1,138 +1,147 @@
-/*
- * xor's interpreted language
- * manipulate typescript objects with js's reflection capabilities
- */
-
 import { IAction } from '../engine';
-import { debug, LINE_LENGTH, Stack } from '../shared';
+import { Queue, Stack } from '../shared';
+import { Dictionary } from './compiler';
 import { Factor, Term } from './types';
 
+// How to use this in the game loop:
+//
+// Every cycle, try to run as many steps of the interpreter as SP available
+// while (interpreter.term?.length && !interpreter.halted && sp >= 0)
+//   sp--
+//   try
+//     interpreter.step()
+//   catch
+//     if (err instanceof ValidationError)
+//       break
+//     if (err instanceof ExecutionError)
+//       break
+// action = interpreter.syscalls.next()
+// if (action) return action
+// return queue.next()
+
 export class Interpreter {
-  index = 0;
+  level = 0;
   stack: Stack<Factor> = new Stack();
   term: Term = [];
-
-  action: IAction | null = null;
-  callback: (() => void) | null = null;
-  waiting = false;
-
+  logs: Array<string> = [];
+  syscalls: Queue<IAction> = new Queue();
+  callbacks: Queue<() => void> = new Queue();
+  halted = false;
   subinterpreter: Interpreter | null = null;
+  dict: Dictionary;
 
-  get stackStr() {
+  constructor(dict: Dictionary) {
+    this.dict = dict;
+  }
+
+  log() {
+    // if (!this.term.length) return;
+    const stack = this.stack.toString();
+    const term = this.term.map((f) => f.toString()).join(' ');
+    const line = `${this.level}) ${stack}${term ? ` : ${term}` : ''}`;
+    this.logs.push(line);
+    console.log(line);
+  }
+
+  get current(): Interpreter {
+    return this.subinterpreter ? this.subinterpreter : this;
+  }
+
+  get label() {
     return this.subinterpreter
-      ? `${this.stack.toString()} [ ${this.subinterpreter.stackStr} ]`
+      ? `${this.stack.toString()} ${this.subinterpreter.label}`
       : this.stack.toString();
   }
 
-  interpret(term: Term) {
-    // if I'm already working on some term, create a sub interpreter
-    if (this.isBusy()) {
-      if (this.subinterpreter) {
-        this.subinterpreter.interpret(term);
-        return;
-      }
-      debug(`${this.index}) creating subinterpreter to run '${term.map((f) => f.toString()).join(' ')}'`);
-      const next = new Interpreter();
-      next.index = this.index + 1;
-      (this.stack.popN(this.stack.length) as Array<Factor>).forEach((f) => {
-        next.stack.push(f);
-      });
-      next.interpret(term);
-      this.subinterpreter = next;
-      return;
-    }
-
-    this.term = term;
+  isHalted() {
+    return this.current.halted;
   }
 
-  isBusy() {
-    return (this.term && this.term.length);
+  // No more factors in term and no subinterpreter
+  isDone() {
+    return !this.term.length && !this.subinterpreter && !this.syscalls.size;
+  }
+
+  // update(): gets called when:
+  // - user runs a command in the terminal
+  update(term: Term) {
+    this.term = term;
+    this.log();
   }
 
   step() {
-    // prioritize subinterpreters
+    // check if there's a deeper level:
     if (this.subinterpreter) {
-      // if the subinterpreter still has work to do, let it step instead
-      if (this.subinterpreter.term.length) {
-        this.subinterpreter.step();
+      // - if it's done, get rid of it after pushing the results onto the current stack
+      if (this.subinterpreter.isDone()) {
+        console.log(`${this.subinterpreter.level} is done`);
+        const f = this.subinterpreter.stack.arr.shift();
+        console.log('got', f);
+        if (f) this.stack.push(f);
+
+        const callback = this.subinterpreter.callbacks.next();
+
+        if (callback) {
+          console.log(`running ${this.subinterpreter.level}'s callback`);
+          callback();
+          return;
+        }
+        console.log(`clearing ${this.subinterpreter.level}`);
+        this.logs.push(...this.subinterpreter.logs);
+        this.subinterpreter = null;
+        this.log();
         return;
       }
-      // if it's done, get the results back on top of this stack, and get rid of the sub
-      debug(`${this.index}) came back with`, this.subinterpreter.stack.toString());
-      this.subinterpreter.stack.arr.forEach((f) => {
-        this.stack.push(f);
-      });
-      debug(`stack: ${this.stackStr}`);
-      this.subinterpreter = null;
-    }
-
-    if (this.action) {
+      // - otherwise, run the deeper level first
+      this.subinterpreter.step();
       return;
     }
 
-    const factor = this.term.shift();
-
-    if (!factor) {
-      return;
-    }
-
-    factor.validate(this.stack);
-    debug(`${this.index}) running '${factor.toString()}'`);
-    factor.execute({
-      stack: this.stack,
-      syscall: this.syscall.bind(this),
-      exec: this.exec.bind(this),
-    });
-    debug(`stack: ${this.stackStr}`);
-  }
-
-  sysret(factor: Factor) {
-    const interpreter = this.findCurrentInterpreter();
-
-    interpreter.stack.push(factor);
-    interpreter.waiting = false;
-    if (interpreter.callback) {
-      debug(`${this.index}) calling callback`);
-      interpreter.callback();
-      interpreter.callback = null;
+    if (this.term.length) {
+      const factor = this.term.shift() as Factor;
+      try {
+        factor.validate(this.stack);
+        factor.execute({
+          stack: this.stack,
+          syscall: this.syscall.bind(this),
+          exec: this.exec.bind(this),
+          dict: this.dict,
+        });
+        this.log();
+      } catch (err) {
+        // this.halted = true;
+        console.log('intepreter:', err);
+        throw err;
+      }
     }
   }
 
   takeAction() {
-    const interpreter = this.findCurrentInterpreter();
-
-    const { action } = interpreter;
-
-    interpreter.action = null;
-
+    const action = this.current.syscalls.next();
+    if (!action) return null;
+    this.current.halted = false;
     return action;
   }
 
-  isWaiting() {
-    return this.subinterpreter
-      ? this.subinterpreter.isWaiting()
-      : this.waiting;
+  syscall(action: IAction) {
+    console.log('queuing syscall');
+    this.halted = true;
+    this.syscalls.add(action);
   }
 
-  private syscall(action: IAction) {
-    debug('running syscall:', action);
-    this.action = action;
-    this.waiting = true;
+  exec(term: Term, callback?: () => void) {
+    console.log(`exec: running ${term.toString()}`);
+    this.subinterpreter = new Interpreter(this.dict);
+    this.subinterpreter.level = this.level + 1;
+    this.subinterpreter.update(term);
+    console.log('sub', this.subinterpreter);
+    if (callback) {
+      this.subinterpreter.callbacks.add(callback);
+    }
   }
 
-  private findCurrentInterpreter(): Interpreter {
-    return this.subinterpreter
-      ? this.subinterpreter.findCurrentInterpreter()
-      : this;
-  }
-
-  private exec(term: Term, callback?: () => void) {
-    this.callback = callback || null;
-    this.syscall({
-      name: 'exec',
-      args: {
-        text: term.map((f) => f.toString()).join(' '),
-      },
-    });
+  sysret(factor?: Factor) {
+    if (factor) this.current.stack.push(factor);
+    this.current.halted = false;
   }
 }

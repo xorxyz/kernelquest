@@ -79,3 +79,19 @@ export const CursorModeHelpText = [
   '<g>      get something.',
   '<p>      put something down.',
 ];
+
+export const agentTypeNames = [
+  'king', 'dragon',
+  'stars',
+  'wind', 'water', 'earth', 'fire',
+  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
+  'owl', 'deer', 'snail',
+  'child', 'ancestor', 'demon',
+  'snake', 'goblin', 'ogre', 'spider', 'wolf', 'ghost', 'rat', 'bat',
+];
+
+export const thingTypeNames = [
+  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
+  'mountain', 'fruit', 'castle', 'village', 'candle', 'axe', 'bomb', 'bow', 'bag',
+  'boot', 'bag', 'map', 'river', 'route', 'zone',
+];

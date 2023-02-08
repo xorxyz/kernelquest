@@ -1,11 +1,7 @@
-import {
-  Compiler, Dictionary,
-} from '../interpreter';
-import {
-  Interpreter,
-} from '../interpreter/interpreter2';
+import { Compiler, Interpreter } from '../interpreter';
 import { Queue } from '../shared';
 import { IAction } from './actions';
+import words from './words';
 
 /** @category Mind */
 export interface Observation {
@@ -21,7 +17,7 @@ export class Mind {
   compiler: Compiler;
   interpreter: Interpreter;
 
-  constructor(words: Dictionary) {
+  constructor() {
     this.compiler = new Compiler(words);
     this.interpreter = new Interpreter(this.compiler.dict);
   }

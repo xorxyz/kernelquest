@@ -61,7 +61,7 @@
     },
     "syscalls": {
       "name": "support.function.kqj",
-      "match": "\\b(right|left|step|rm|spawn|create|tell|halt|face|get|put|del|puts|say|hi|claim|scratch|erase|wait)\\b",
+      "match": "\\b(right|left|step|rm|spawn|create|tell|halt|face|get|put|del|puts|say|hi|claim|scratch|erase|wait|zone|area)\\b",
       "comment": "Syscalls"
     },
     "queries": {

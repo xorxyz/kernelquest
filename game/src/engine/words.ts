@@ -1,21 +1,20 @@
 /* eslint-disable camelcase */
 import {
-  Combinator,
-  LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  Combinator, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import {
   East, North, South, Vector, West,
 } from '../shared';
 
 /** @category Words */
-const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => {
-  const v = stack.pop() as LiteralVector;
+// const goto = new Combinator(['goto'], ['vector'], async ({ stack, syscall }) => {
+//   const v = stack.pop() as LiteralVector;
 
-  syscall({
-    name: 'goto',
-    args: { x: v.vector.x, y: v.vector.y },
-  });
-});
+//   syscall({
+//     name: 'goto',
+//     args: { x: v.vector.x, y: v.vector.y },
+//   });
+// });
 
 /** @category Words */
 const path = new Combinator(['path'], ['vector', 'vector'], async ({ stack, syscall }) => {
@@ -356,7 +355,7 @@ const world = new Operator(['world'], ['vector'], ({ stack, syscall }) => {
 });
 
 export default {
-  goto,
+  // goto,
   path,
   look,
   ls,

@@ -8,8 +8,11 @@
 [6 5] [4 3] build_house
 [8 8] that rm xy "door" create
 
-step clear
-
-
+clear
 
 [3 2] "zone" create
+
+[1 4] "zone" create
+
+step clear
+

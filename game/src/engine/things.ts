@@ -1,4 +1,4 @@
-import { Colors, esc } from '../shared';
+import { Colors, esc, thingTypeNames } from '../shared';
 import { Glyph } from './cell';
 import { Body, BodyType } from './thing';
 
@@ -168,12 +168,6 @@ export class ZoneNode extends BodyType {
   style = esc(Colors.Bg.Black) + esc(Colors.Fg.White);
   isBlocking = false;
 }
-
-const thingTypeNames = [
-  'tree', 'wall', 'door', 'flag', 'crown', 'key', 'shield', 'skull', 'book', 'grass',
-  'mountain', 'fruit', 'castle', 'village', 'candle', 'axe', 'bomb', 'bow', 'bag',
-  'boot', 'bag', 'map', 'route', 'zone',
-];
 
 export type ThingTypeName = typeof thingTypeNames[number]
 

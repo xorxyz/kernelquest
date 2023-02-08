@@ -7,11 +7,13 @@ import {
   esc,
   Style,
   Direction,
+  agentTypeNames,
+  thingTypeNames,
 } from '../shared';
 import { Agent } from './agent';
 import { AgentTypeName } from './agents';
 import { Cell } from './cell';
-import { EntityManager } from './engine';
+import { EntityManager } from './entities';
 import { Thing } from './thing';
 import { ThingTypeName } from './things';
 
@@ -203,17 +205,29 @@ export class Area {
     return this.findAgentById(id) || this.findThingById(id) || this.findCellById(id);
   }
 
-  createAgent(agentType: AgentTypeName, area: Area, position?: Vector) {
+  create(type: string, position?: Vector) {
+    if (agentTypeNames.includes(type)) {
+      return this.createAgent(type as AgentTypeName, position);
+    }
+
+    if (thingTypeNames.includes(type)) {
+      return this.createThing(type as AgentTypeName, position);
+    }
+
+    throw new Error(`Cannot create '${type}'.`);
+  }
+
+  createAgent(agentType: AgentTypeName, position?: Vector) {
     const agent = this.entities.createAgent(agentType);
     this.agents.add(agent);
-    area.put(agent, position);
+    this.put(agent, position);
     return agent;
   }
 
-  createThing(thingType: ThingTypeName, area: Area, position?: Vector) {
+  createThing(thingType: ThingTypeName, position?: Vector) {
     const thing = this.entities.createThing(thingType);
     this.things.add(thing);
-    area.put(thing, position);
+    this.put(thing, position);
     return thing;
   }
 }

@@ -1,4 +1,4 @@
-import { Colors, esc } from '../shared';
+import { agentTypeNames, Colors, esc } from '../shared';
 import {
   AgentType, Foe, Friend, Glyph, Hero,
 } from '.';
@@ -220,16 +220,6 @@ export const agents = {
   dragon: Dragon,
   spirit: Spirit,
 };
-
-const agentTypeNames = [
-  'king', 'dragon',
-  'stars',
-  'wind', 'water', 'earth', 'fire',
-  'fairy', 'elf', 'wizard', 'sheep', 'bug', 'man', 'spirit',
-  'owl', 'deer', 'snail',
-  'child', 'ancestor', 'demon',
-  'snake', 'goblin', 'ogre', 'spider', 'wolf', 'ghost', 'rat', 'bat',
-] as const;
 
 export type AgentTypeName = typeof agentTypeNames[number]
 

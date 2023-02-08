@@ -4,7 +4,7 @@ import { Thing } from './thing';
 import { Agent, IFacing } from './agent';
 import Graph from '../shared/graph';
 import { Zone } from './zone';
-import { EntityManager } from './engine';
+import { EntityManager } from './entities';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -77,9 +77,14 @@ export class World {
     if (!zone) throw new Error(`Zone ${vector.label} does not exist.`);
     this.activeZone = zone;
     zone.setActiveArea(new Vector());
+    this.worldMap.move(this.worldMapCursor, zone.position);
   }
 
   findZoneAt(vector: Vector): Zone | undefined {
     return [...this.zones].find((zone) => zone.position.equals(vector));
+  }
+
+  findEntityById(id: number) {
+    return this.entities.entityList.find((e) => e.id === id);
   }
 }
