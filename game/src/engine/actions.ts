@@ -22,7 +22,7 @@ export type ValidActions = (
   'face' | 'step' | 'backstep' |
   'ls' | 'look' |
   'get' | 'put' | 'mv' | 'rm' |
-  'exec' | 'create' | 'spawn' |
+  'exec' | 'create' |
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
@@ -49,12 +49,12 @@ export interface IActionResult {
 }
 
 export interface IActionDefinition<
-    T extends ActionArguments = ActionArguments,
-    Z extends HistoryEventState = HistoryEventState
-  > {
+  T extends ActionArguments = ActionArguments,
+  Z extends HistoryEventState = HistoryEventState
+> {
   cost: number
-  perform (ctx: IActionContext, arg: T): IActionResult
-  undo (ctx: IActionContext, arg: T, previousState: Z): IActionResult
+  perform(ctx: IActionContext, arg: T): IActionResult
+  undo(ctx: IActionContext, arg: T, previousState: Z): IActionResult
 }
 
 const undoNoop = () => succeed('');
@@ -123,7 +123,8 @@ export const left: IActionDefinition<ActionArguments> = {
 };
 
 export const face: IActionDefinition<
-{ x: number, y: number }, { direction: { x: number, y: number}}> = {
+  { x: number, y: number },
+  { direction: { x: number, y: number } }> = {
   cost: 0,
   perform({ agent, area }, { x, y }) {
     const direction = new Vector(x, y);
@@ -138,7 +139,7 @@ export const face: IActionDefinition<
       previousDirection: previousDirection.toObject(),
     });
   },
-  undo({ agent, area }, args, previousState) {
+  undo({ agent, area }, _, previousState) {
     const previousDirection = Vector.from(previousState.direction);
     agent.facing.direction.rotateUntil(previousDirection);
     agent.facing.cell = area.cellAt(
@@ -150,100 +151,118 @@ export const face: IActionDefinition<
 };
 
 export const step: IActionDefinition<
-    ActionArguments,
-    {
-      position: { x: number, y: number }
-      areaId?: number
-    }
-  > = {
-    cost: 0,
-    perform({
-      agent, area, world, engine,
-    }) {
-      const target = area.cellAt(agent.isLookingAt);
-      const previousPosition = agent.position.clone();
+  ActionArguments,
+  {
+    position: { x: number, y: number }
+    areaId?: number
+  }
+> = {
+  cost: 0,
+  perform({
+    agent, area, world, engine,
+  }) {
+    const target = area.cellAt(agent.isLookingAt);
+    const previousPosition = agent.position.clone();
 
-      // Collision with the edge of the area
-      if (!target) {
-        const { direction } = agent.facing;
-        const nextAreaPosition = area.position.clone().add(direction.value);
-        const nextArea = [...world.activeZone.areas]
-          .find((a) => a.position.equals(nextAreaPosition));
+    // Collision with the edge of the area
+    if (!target) {
+      const { direction } = agent.facing;
+      const nextAreaPosition = area.position.clone().add(direction.value);
+      const nextArea = [...world.activeZone.areas]
+        .find((a) => a.position.equals(nextAreaPosition));
 
-        // If there is an adjacent area
-        if (nextArea) {
-          const nextPosition = agent.position.clone();
-          if (direction.value.x === 1) nextPosition.setX(0);
-          if (direction.value.x === -1) nextPosition.setX(15);
-          if (direction.value.y === 1) nextPosition.setY(0);
-          if (direction.value.y === -1) nextPosition.setY(9);
-          if (nextArea.cellAt(nextPosition)?.slot) {
-            if (engine.hero.id === agent.id) {
-              engine.events.emit('sound:fail');
-            }
-            return fail('There is something blocking the way.');
+      // If there is an adjacent area
+      if (nextArea) {
+        const nextPosition = agent.position.clone();
+        if (direction.value.x === 1) nextPosition.setX(0);
+        if (direction.value.x === -1) nextPosition.setX(15);
+        if (direction.value.y === 1) nextPosition.setY(0);
+        if (direction.value.y === -1) nextPosition.setY(9);
+        if (nextArea.cellAt(nextPosition)?.slot) {
+          if (engine.hero.id === agent.id) {
+            engine.events.emit('sound:fail');
           }
-          world.activeZone.setActiveArea(nextArea.position);
-          nextArea.move(agent, nextPosition);
-
-          engine.events.emit('sound:step');
-
-          return succeed('', {
-            position: previousPosition.toObject(),
-            areaId: area.id,
-          });
+          return fail('There is something blocking the way.');
         }
+        world.activeZone.setActiveArea(nextArea.position);
+        nextArea.move(agent, nextPosition);
 
-        // If there is no adjacent area, exit the level
-        if (engine.hero.id === agent.id) {
+        engine.events.emit('sound:step');
+
+        return succeed('', {
+          position: previousPosition.toObject(),
+          areaId: area.id,
+        });
+      }
+
+      // If there is no adjacent area, exit the level
+      if (engine.hero.id === agent.id) {
+        engine.tty.clear();
+        engine.tty.view = new LoadScreen();
+        const term = agent.mind.compiler.compile('');
+        agent.mind.interpreter.exec(term, () => {
+          engine.tty.view = new LevelSelectScreen();
           engine.tty.clear();
-          engine.tty.view = new LoadScreen();
-          const term = agent.mind.compiler.compile('');
-          agent.mind.interpreter.exec(term, () => {
-            engine.tty.view = new LevelSelectScreen();
-            engine.tty.clear();
-            engine.tty.render();
-          });
+          engine.tty.render();
+        });
 
-          return succeed('');
-        }
+        return succeed('');
       }
+    }
 
-      // Hero collides with enemy
-      if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
-        agent.hp.decrease(1);
-        if (agent.hp.value === 0) {
+    // Hero collides with enemy
+    if (target?.slot instanceof Agent && target.slot.type instanceof Foe) {
+      agent.hp.decrease(1);
+      if (agent.hp.value === 0) {
         // TODO: Handle death of agent
+      } else {
+        agent.velocity.sub(agent.facing.direction.value);
+      }
+      return fail('');
+    }
+
+    // Enemy collides with hero
+    if (agent.type instanceof Foe
+      && target?.slot instanceof Agent
+      && target.slot.type instanceof Hero) {
+      if (target.slot.isAlive) {
+        target.slot.hp.decrease(1);
+        if (target.slot.hp.value === 0) {
+          target.slot.type.glyph = new Glyph('☠️ ');
         } else {
-          agent.velocity.sub(agent.facing.direction.value);
+          target.slot.velocity.add(agent.facing.direction.value);
         }
-        return fail('');
+
+        engine.events.emit('sound:step');
+
+        return succeed('', {
+          position: previousPosition.toObject(),
+        });
       }
+    }
 
-      // Enemy collides with hero
-      if (agent.type instanceof Foe
-        && target?.slot instanceof Agent
-        && target.slot.type instanceof Hero) {
-        if (target.slot.isAlive) {
-          target.slot.hp.decrease(1);
-          if (target.slot.hp.value === 0) {
-            target.slot.type.glyph = new Glyph('☠️ ');
-          } else {
-            target.slot.velocity.add(agent.facing.direction.value);
-          }
+    // Normal case, just a step
+    if (target && (!target.isBlocked)) {
+      area.cellAt(agent.position)?.take();
+      target.put(agent);
+      agent.position.add(agent.facing.direction.value);
+      agent.facing.cell = area.cellAt(agent.isLookingAt);
 
-          engine.events.emit('sound:step');
+      engine.events.emit('sound:step');
 
-          return succeed('', {
-            position: previousPosition.toObject(),
-          });
-        }
-      }
+      return succeed('', {
+        position: previousPosition.toObject(),
+      });
+    }
 
-      // Normal case, just a step
-      if (target && (!target.isBlocked)) {
+    // Step through a door
+    if (target?.slot?.type.name === 'door') {
+      const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
+      if (next && (!next.slot || !next.slot.type.isBlocking)) {
+        console.log('its a door and theres a free cell after');
         area.cellAt(agent.position)?.take();
-        target.put(agent);
+        next.put(agent);
+        agent.position.add(agent.facing.direction.value);
         agent.position.add(agent.facing.direction.value);
         agent.facing.cell = area.cellAt(agent.isLookingAt);
 
@@ -253,51 +272,33 @@ export const step: IActionDefinition<
           position: previousPosition.toObject(),
         });
       }
+    }
 
-      // Step through a door
-      if (target?.slot?.type.name === 'door') {
-        const next = area.cellAt(target.position.clone().add(agent.facing.direction.value));
-        if (next && (!next.slot || !next.slot.type.isBlocking)) {
-          console.log('its a door and theres a free cell after');
-          area.cellAt(agent.position)?.take();
-          next.put(agent);
-          agent.position.add(agent.facing.direction.value);
-          agent.position.add(agent.facing.direction.value);
-          agent.facing.cell = area.cellAt(agent.isLookingAt);
+    if (engine.hero.id === agent.id) {
+      engine.events.emit('sound:fail');
+    }
 
-          engine.events.emit('sound:step');
+    return fail('');
+  },
+  undo({ agent, area, engine }, _, previousState) {
+    console.log('previousState:', previousState);
+    const previousPosition = agent.position.clone();
+    const targetPosition = Vector.from(previousState.position);
+    const targetArea = engine.entities.areaList
+      .find((a) => a.id === previousState.areaId) || area;
 
-          return succeed('', {
-            position: previousPosition.toObject(),
-          });
-        }
-      }
+    if (previousState.areaId !== undefined) {
+      area.remove(agent);
+      agent.area = targetArea;
+    }
 
-      if (engine.hero.id === agent.id) {
-        engine.events.emit('sound:fail');
-      }
+    area.cellAt(previousPosition)?.take();
+    targetArea.put(agent, targetPosition);
+    agent.position.copy(targetPosition);
 
-      return fail('');
-    },
-    undo({ agent, area, engine }, args, previousState) {
-      console.log('previousState:', previousState);
-      const previousPosition = agent.position.clone();
-      const targetPosition = Vector.from(previousState.position);
-      const targetArea = engine.entities.areaList
-        .find((a) => a.id === previousState.areaId) || area;
-
-      if (previousState.areaId !== undefined) {
-        area.remove(agent);
-        agent.area = targetArea;
-      }
-
-      area.cellAt(previousPosition)?.take();
-      targetArea.put(agent, targetPosition);
-      agent.position.copy(targetPosition);
-
-      return succeed('');
-    },
-  };
+    return succeed('');
+  },
+};
 
 export const backstep: IActionDefinition<
   ActionArguments,
@@ -325,7 +326,7 @@ export const backstep: IActionDefinition<
         if (oppositeDirection.value.y === 1) nextPosition.setY(0);
         if (oppositeDirection.value.y === -1) nextPosition.setY(9);
         if (nextArea.cellAt(nextPosition)?.slot) {
-          if (this.hero.id === agent.id) {
+          if (engine.hero.id === agent.id) {
             engine.events.emit('sound:fail');
           }
           return fail('There is something blocking the way.');
@@ -469,7 +470,7 @@ export const ls: IActionDefinition<{}> = {
   },
 };
 
-export const look: IActionDefinition<{ x:number, y: number}> = {
+export const look: IActionDefinition<{ x: number, y: number }> = {
   cost: 0,
   perform({ area }, { x, y }) {
     const vector = new Vector(x, y);
@@ -485,7 +486,7 @@ export const look: IActionDefinition<{ x:number, y: number}> = {
 
 export const get: IActionDefinition<{}> = {
   cost: 0,
-  perform({ agent, area }) {
+  perform({ agent }) {
     if (!agent.facing.cell || !agent.facing.cell.slot) {
       return fail('There\'s nothing here.');
     }
@@ -495,7 +496,7 @@ export const get: IActionDefinition<{}> = {
     }
 
     if (agent.facing.cell.slot instanceof Agent
-       || (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
+      || (agent.facing.cell.slot instanceof Thing && agent.facing.cell.slot.type.isStatic)) {
       return fail('You can\'t get this.');
     }
 
@@ -537,7 +538,7 @@ export const put: IActionDefinition<{}> = {
   },
 };
 
-export const mv: IActionDefinition<{fromX: number, fromY: number, toX: number, toY: number}> = {
+export const mv: IActionDefinition<{ fromX: number, fromY: number, toX: number, toY: number }> = {
   cost: 0,
   perform({ area }, {
     fromX, fromY, toX, toY,
@@ -631,22 +632,6 @@ export const create: IActionDefinition<{ thingName: ThingTypeName, x: number, y:
   undo: undoNoop,
 };
 
-export const spawn: IActionDefinition<{ agentName: AgentTypeName, x: number, y: number }> = {
-  cost: 0,
-  perform({ world, area }, { agentName, x, y }) {
-    const position = new Vector(x, y);
-    if (area.cellAt(position)?.slot) return fail('There is already something here');
-
-    try {
-      world.spawn(agentName, area, position);
-      return succeed(`Created a ${agentName} at ${position.label}`);
-    } catch (err) {
-      return fail(`Can't spawn a '${agentName}'`);
-    }
-  },
-  undo: undoNoop,
-};
-
 export const tell: IActionDefinition<{ agentId: number, message: string }> = {
   cost: 0,
   perform({ area }, { agentId, message }) {
@@ -663,7 +648,7 @@ export const tell: IActionDefinition<{ agentId: number, message: string }> = {
       },
     });
 
-    return succeed(`Told ${targetAgent.type.name} #${targetAgent.id}: "${message}".`);
+    return succeed(`Told ${targetAgent.type.name} (&${targetAgent.id.toString(16)}): [${message}].`);
   },
   undo: undoNoop,
 };
@@ -742,14 +727,14 @@ export const me: IActionDefinition<{ id: number }> = {
   undo: undoNoop,
 };
 
-export const define: IActionDefinition<{ name: string, program: string}> = {
+export const define: IActionDefinition<{ name: string, program: string }> = {
   cost: 0,
   perform({ agent }, { name, program }) {
     if (agent.mind.compiler.dict[name]) {
       return fail(`The word '${name}' already exists.`);
     }
 
-    agent.mind.compiler.dict[name] = new Operator([name], [], (ctx) => {
+    agent.mind.compiler.dict[name] = new Operator([name], [], () => {
       const compiled = agent.mind.compiler.compile(program);
       console.log('compiled:', compiled);
       agent.mind.interpreter.term.unshift(...compiled);
@@ -928,21 +913,15 @@ export const read: IActionDefinition<ActionArguments> = {
   undo: undoNoop,
 };
 
-export const claim: IActionDefinition<{ x: number, y: number, w: number, h: number}> = {
+export const claim: IActionDefinition<{ x: number, y: number, w: number, h: number }> = {
   cost: 0,
-  perform({ agent }, {
-    x, y, w, h,
-  }) {
-    agent.mind.interpreter.exec([new LiteralVector(new Vector(x, y)), words.goto], () => {
-      console.log('claim: goto done !!!!!!!!!!');
-    });
-
-    return succeed('Claiming...');
+  perform() {
+    return fail('Not implemented.');
   },
   undo: undoNoop,
 };
 
-export const scratch: IActionDefinition<{ n: number}> = {
+export const scratch: IActionDefinition<{ n: number }> = {
   cost: 0,
   perform({ agent }, { n }) {
     const { cell } = agent.facing;
@@ -994,7 +973,7 @@ export const wait: IActionDefinition<{}> = {
 
 export const area: IActionDefinition<
   { x: number, y: number },
-  { previousAreaX: number, previousAreaY: number}
+  { previousAreaX: number, previousAreaY: number }
 > = {
   cost: 0,
   perform(ctx, { x, y }) {
@@ -1062,7 +1041,6 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   rm,
   exec,
   create,
-  spawn,
   tell,
   halt,
   prop,

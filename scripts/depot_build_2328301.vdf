@@ -1,0 +1,11 @@
+"DepotBuildConfig"
+{
+  "DepotId" "2328301"
+
+  "FileMapping"
+  {
+    "LocalPath" "*" // all files from contentroot folder
+    "DepotPath" "." // mapped into the root of the depot
+    "recursive" "1" // include all subfolders
+  }
+}

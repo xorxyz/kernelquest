@@ -15,9 +15,10 @@ export class Box extends UiComponent {
   render() {
     return [
       `${'┌'.padEnd(this.width, '─')}┐`,
-      ...this.lines.map((line) =>
-        `│ ${line} │`),
+      ...this.lines.map((line) => `│ ${line} │`),
       `${'└'.padEnd(this.width, '─')}┘`,
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

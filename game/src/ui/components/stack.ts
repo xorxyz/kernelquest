@@ -12,4 +12,6 @@ export class StackPane extends UiComponent {
       `${icon} [ ${agent.mind.interpreter.label.padEnd(LINE_LENGTH - 7).slice(-(LINE_LENGTH - 7))} ]`,
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

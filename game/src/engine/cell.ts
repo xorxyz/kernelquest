@@ -9,7 +9,7 @@ import { Thing } from './thing';
 export class Glyph {
   private chars: string;
 
-  static Empty = esc(Style.Dim) + EMPTY_CELL_CHARS + esc(Style.Reset);
+  static Empty = EMPTY_CELL_CHARS + esc(Style.Reset);
 
   get value() {
     return this.chars;
@@ -91,7 +91,7 @@ export class Cell {
       + (this.slot?.type.glyph.value || this.renderMark() || Glyph.Empty)
       + esc(Style.Reset);
     }
-    return this.slot?.render() || this.renderMark() || Glyph.Empty;
+    return this.slot?.render() || this.renderMark() || esc(Style.Dim) + Glyph.Empty;
   }
 
   isAdjacentTo(cell: Cell) {

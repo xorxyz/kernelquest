@@ -18,4 +18,6 @@ export class Speech extends UiComponent {
         message.text,
       ].join(''));
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

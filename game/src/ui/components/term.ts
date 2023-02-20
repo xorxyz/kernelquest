@@ -32,6 +32,8 @@ export class Output extends UiComponent {
         .map((line) => `│ ${(line || '').padEnd(LINE_LENGTH - 4)} │`),
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }
 
 /** @category Components */
@@ -44,4 +46,6 @@ export class Input extends UiComponent {
       `└${'─'.padEnd(LINE_LENGTH - 2, '─')}┘`,
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

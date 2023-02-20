@@ -10,11 +10,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": [
+        "node_modules/*"
+      ]
     }
   },
   "extends": "../tsconfig.json",
-	"include": [
-		"src/**/*.ts",
+  "include": [
+    "src/**/*.ts",
   ]
 }

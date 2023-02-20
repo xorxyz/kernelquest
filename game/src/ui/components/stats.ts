@@ -7,9 +7,9 @@ const Points = (bg, n) => {
   const str = `${String(n).padStart(3, ' ')} / 10 `;
 
   return (
-    esc(Style.in(Colors.Fg.Black, bg, str.slice(0, n))) +
-    esc(Style.in(Colors.Fg.White, Colors.Bg.Black, str.slice(n))) +
-    esc(Style.Reset)
+    esc(Style.in(Colors.Fg.Black, bg, str.slice(0, n)))
+    + esc(Style.in(Colors.Fg.White, Colors.Bg.Black, str.slice(n)))
+    + esc(Style.Reset)
   );
 };
 
@@ -33,4 +33,6 @@ export class Stats extends UiComponent {
       `${'└'.padEnd(20, '─')}┘`,
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

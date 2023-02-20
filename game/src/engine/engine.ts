@@ -13,7 +13,7 @@ import {
 import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
 import { EntityManager } from './entities';
-import joy from '../assets/worlds/area0.kqj';
+import joy from '../../assets/worlds/area0.kqj';
 
 export type SendFn = (str: string) => void
 
@@ -398,7 +398,7 @@ export class Engine {
     debug('paused engine.');
   }
 
-  findEntityById(id:number) {
+  findEntityById(id: number) {
     if (this.entities.lastId < id) return undefined;
 
     return this.entities.entityList.find((entity) => entity.id === id);

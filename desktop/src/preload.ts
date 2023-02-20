@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from 'electron';
-import { LoadFn, SaveFn, ExitFn } from 'xor4-game/src/io';
+import { ExitFn, LoadFn, SaveFn } from 'xor4-game/src/engine';
 
 console.log('👋 Hello from preload');
 

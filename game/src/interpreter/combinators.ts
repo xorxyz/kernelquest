@@ -1,13 +1,13 @@
-import { Factor, Literal } from './types';
+import { Factor } from './types';
 import {
   LiteralList, LiteralString, LiteralTruth, Quotation,
 } from './literals';
-import { choice, Operator } from './operators';
+import { Operator } from './operators';
 import { runSeries } from '../shared/async';
 
-export class Combinator extends Operator {}
+export class Combinator extends Operator { }
 
-export const concat = new Combinator(['concat'], ['string|quotation', 'string|quotation'], ({ stack, syscall }) => {
+export const concat = new Combinator(['concat'], ['string|quotation', 'string|quotation'], ({ stack }) => {
   const b = stack.pop() as Factor;
   const a = stack.pop() as Factor;
 
@@ -60,7 +60,7 @@ export const map = new Combinator(['map'], ['list', 'quotation'], ({ stack, exec
 
   const results = new LiteralList([]);
 
-  runSeries(list.value.map((item, i) => (done) => {
+  runSeries(list.value.map((item) => (done) => {
     const p = Quotation.from([item, ...program.value]);
     exec(p.value, () => {
       const result = stack.pop();

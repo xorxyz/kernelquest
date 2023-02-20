@@ -1,16 +1,17 @@
 {
   "name": "xor4-desktop",
-  "productName": "Kernel Quest",
+  "productName": "kernel_quest",
   "private": true,
   "version": "0.0.0",
-  "description": "Electron KQ client",
+  "description": "Kernel Quest Desktop App",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "test": "tsc"
   },
   "keywords": [],
   "author": {

@@ -10,9 +10,9 @@
     "module": "ES2020",
     "moduleResolution": "node",
     "lib": [
-			"es2020",
+      "es2020",
       "dom"
-		],
+    ],
     "declaration": true,
     "strict": true,
     "strictNullChecks": true,
@@ -33,13 +33,14 @@
     "typeRoots": [
       "node_modules/@types",
       "src/types"
-		]
+    ]
   },
-	"include": [
-		"src/**/*.ts",
+  "include": [
+    "src/**/*.d.ts",
+    "assets/**/*",
   ],
-	"exclude": [
+  "exclude": [
     "build",
-    "node_modules"
-	]
+    "node_modules/**/*",
+  ]
 }

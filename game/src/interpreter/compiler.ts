@@ -46,7 +46,7 @@ export class Compiler {
     return term;
   }
 
-  newParseToken(factors: Array<Factor>, token: Token, index: number) {
+  newParseToken(factors: Array<Factor>, token: Token) {
     if (token.type === TokenType.LEFT_BRACKET) {
       this.level += 1;
       this.quotations[this.level] = new Quotation();

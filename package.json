@@ -16,11 +16,6 @@
     "xor4-www": "./www"
   },
   "scripts": {
-    "start": "cd cli && npm start",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix --ext .js,.ts",
-    "build": "parcel build",
-    "postbuild": "cp -r app/public/.well-known dist/",
     "test": "run-s lint tests:* && echo 'All tests ran successfully'",
     "tests:game": "cd game && npm run test"
   },

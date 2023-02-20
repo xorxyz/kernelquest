@@ -115,12 +115,6 @@ export class Area {
     this.things.forEach((t) => t.update(this));
   }
 
-  search(str: string) {
-    const all = [...this.agents, ...this.things, ...this.areas];
-
-    return all.filter((x) => x.name.includes(str));
-  }
-
   find(thing: Agent | Thing): Cell | null {
     return this.cells.find((cell) => cell.slot === thing) || null;
   }
@@ -179,7 +173,7 @@ export class Area {
 
   contains(vector: Vector) { return this.innerRectangle.contains(vector); }
 
-  list(): Array<Agent|Thing> {
+  list(): Array<Agent | Thing> {
     return [...this.agents.values(), ...this.things.values()].sort((a, b) => a.id - b.id);
   }
 
@@ -201,7 +195,7 @@ export class Area {
     return cell || null;
   }
 
-  findBodyById(id:number): Agent | Thing | Cell | null {
+  findBodyById(id: number): Agent | Thing | Cell | null {
     return this.findAgentById(id) || this.findThingById(id) || this.findCellById(id);
   }
 
@@ -232,4 +226,4 @@ export class Area {
   }
 }
 
-export class WorldMap extends Area {}
+export class WorldMap extends Area { }

@@ -1,0 +1,13 @@
+"AppBuild"
+{
+  "AppID" "2328300"
+  "Desc" ""
+
+  "ContentRoot" "..\desktop\out\kernel_quest-win32-x64\" // root content folder, relative to location of this file
+  "BuildOutput" "..\desktop\out\kernel_quest-win32-x64\" // build output folder for build logs and build cache files
+
+  "Depots"
+  {
+    "2328301" "depot_build_2328301.vdf"
+  }
+}

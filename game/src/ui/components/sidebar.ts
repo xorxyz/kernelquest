@@ -34,4 +34,6 @@ export class Sidebar extends UiComponent {
       '└───────────────────┘',
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

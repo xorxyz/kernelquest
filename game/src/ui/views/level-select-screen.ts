@@ -40,7 +40,7 @@ class BorderComponent extends UiComponent {
 }
 
 class WorldMapComponent extends UiComponent {
-  handleInput(str, pty) {
+  handleInput() {
     throw new Error('Not implemented');
   }
   render(tty: VirtualTerminal) {

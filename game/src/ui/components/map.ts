@@ -14,6 +14,8 @@ export class Axis extends UiComponent {
       ...y.slice(0, 10),
     ];
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }
 
 /** @category Components */
@@ -21,4 +23,6 @@ export class RoomMap extends UiComponent {
   render({ agent }: VirtualTerminal) {
     return agent.view;
   }
+
+  handleInput() { throw new Error('Not implemented.'); }
 }

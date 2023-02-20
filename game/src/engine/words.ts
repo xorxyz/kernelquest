@@ -89,19 +89,6 @@ const create = new Combinator(['create'], ['vector', 'string'], async ({ stack, 
   });
 });
 
-const spawn = new Combinator(['spawn'], ['vector', 'string'], async ({ stack, syscall }) => {
-  const str = stack.pop() as LiteralString;
-  const v = (stack.pop() as LiteralVector).vector;
-  syscall({
-    name: 'spawn',
-    args: {
-      agentName: str.value,
-      x: v.x,
-      y: v.y,
-    },
-  });
-});
-
 const tell = new Operator(['tell'], ['ref', 'quotation'], async ({ stack, syscall }) => {
   const message = stack.pop() as Quotation;
   const agentId = stack.pop() as LiteralRef;
@@ -364,7 +351,6 @@ export default {
   right,
   left,
   rm,
-  spawn,
   create,
   tell,
   halt,

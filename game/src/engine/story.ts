@@ -1,6 +1,6 @@
 import * as Inkjs from 'inkjs';
-import helloworld from '../assets/dialogue/hello-world.ink';
-import bookshelf from '../assets/books/bookshelf.ink';
+import helloworld from '../../assets/dialogue/hello-world.ink';
+import bookshelf from '../../assets/books/bookshelf.ink';
 
 const files = [
   helloworld,

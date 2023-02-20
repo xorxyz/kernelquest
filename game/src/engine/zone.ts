@@ -1,7 +1,7 @@
 import { Vector } from '../shared';
 import Graph from '../shared/graph';
 import { Area } from './area';
-import { EntityManager } from './engine';
+import { EntityManager } from './entities';
 import { Thing } from './thing';
 
 export class Zone {

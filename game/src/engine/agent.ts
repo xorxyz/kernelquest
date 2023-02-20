@@ -19,13 +19,13 @@ export const TERMINAL_ACTIONS = [
 ];
 
 /** @category Agent */
-export class HP extends Points {}
+export class HP extends Points { }
 /** @category Agent */
-export class SP extends Points {}
+export class SP extends Points { }
 /** @category Agent */
-export class MP extends Points {}
+export class MP extends Points { }
 /** @category Agent */
-export class GP extends Points {}
+export class GP extends Points { }
 
 /** @category Agent */
 export abstract class AgentType extends BodyType {
@@ -107,10 +107,10 @@ export class Agent extends Body {
   public area: Area;
   public waiting = false;
 
-  constructor(id: number, type: AgentType, words?: Dictionary) {
+  constructor(id: number, type: AgentType) {
     super(id, type);
 
-    this.mind = new Mind(words);
+    this.mind = new Mind();
 
     type.capabilities.forEach((capability) => {
       capability.bootstrap(this);

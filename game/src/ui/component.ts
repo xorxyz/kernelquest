@@ -34,6 +34,8 @@ export abstract class UiComponent {
       .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
       .join('');
   }
+
+  abstract handleInput(str, pty);
 }
 
 class EmptyComponent extends UiComponent {
