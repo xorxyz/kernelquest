@@ -5,18 +5,12 @@
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    }
+    "resolveJsonModule": true
   },
-  "extends": "../tsconfig.json",
+  "extends": "../game/tsconfig.json",
   "include": [
-    "src/**/*.ts",
+    "src/**/*.ts"
   ]
 }

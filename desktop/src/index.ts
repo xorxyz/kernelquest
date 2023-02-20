@@ -84,7 +84,7 @@ app.on('web-contents-created', (event, contents) => {
 });
 
 // Disable creating new windows
-app.on('web-contents-created', (event, contents) => {
+app.on('web-contents-created', (_, contents) => {
   contents.setWindowOpenHandler(() => ({ action: 'deny' }));
 });
 
@@ -94,7 +94,7 @@ ipcMain.on('exit', () => {
 
 type SaveGameId = 0 | 1 | 2
 
-ipcMain.handle('load', async (e, id: SaveGameId): Promise<SaveFileContents> => {
+ipcMain.handle('load', async (_, id: SaveGameId): Promise<SaveFileContents> => {
   const filepath = path.join(app.getPath('userData'), `save-game-${id}.json`);
 
   console.log(`Loading ${filepath}...`);
@@ -120,7 +120,7 @@ ipcMain.handle('load', async (e, id: SaveGameId): Promise<SaveFileContents> => {
   }
 });
 
-ipcMain.handle('save', async (e, id: SaveGameId, history: Array<object>) => {
+ipcMain.handle('save', async (_, id: SaveGameId, history: Array<object>) => {
   const filepath = path.join(app.getPath('userData'), `save-game-${id}.json`);
 
   console.log(`Saving in ${filepath}...`);
