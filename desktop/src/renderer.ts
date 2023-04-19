@@ -3,7 +3,7 @@ import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
 import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
-import { term } from './term';
+import { fitAddon, term } from './term';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   registerSoundEvents(engine.events, audioEl);
 
   global.engine = engine;
+
+  fitAddon.fit();
 });
 
 function registerSoundEvents(bus, el) {

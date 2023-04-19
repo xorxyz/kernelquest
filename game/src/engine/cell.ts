@@ -83,15 +83,15 @@ export class Cell {
     return true;
   }
 
-  render(ctx: Area) {
+  render(ctx: Area, hidden = false) {
     if ((ctx.findAgentsFacingCell(this).filter((agent) => agent.isAlive).length)
-    && !(ctx instanceof WorldMap)) {
-      return esc(Colors.Bg.Cyan)
-      + esc(Colors.Fg.Black)
-      + (this.slot?.type.glyph.value || this.renderMark() || Glyph.Empty)
-      + esc(Style.Reset);
+      && !(ctx instanceof WorldMap)) {
+      return (hidden ? esc(Colors.Bg.DarkCyan) : esc(Colors.Bg.Cyan))
+        + esc(Colors.Fg.Black)
+        + (this.slot?.type.glyph.value || this.renderMark() || Glyph.Empty)
+        + esc(Style.Reset);
     }
-    return this.slot?.render() || this.renderMark() || esc(Style.Dim) + Glyph.Empty;
+    return this.slot?.render(hidden) || this.renderMark() || esc(Colors.Fg.Gray) + Glyph.Empty;
   }
 
   isAdjacentTo(cell: Cell) {

@@ -6,3 +6,4 @@ build
 _deprecated/**/package-lock.json
 .parcel-cache
 yarn-error.log
+scripts/tmp

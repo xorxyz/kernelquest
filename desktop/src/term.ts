@@ -1,6 +1,7 @@
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'xor4-game/src/ui';
 import { Unicode14Addon } from 'xor4-game/vendor/unicode14';
 import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
 
 export const term = new Terminal({
   cols: SCREEN_WIDTH,
@@ -12,15 +13,17 @@ export const term = new Terminal({
     red: '#F92672',
   },
   rendererType: 'dom', // default is canvas
-  fontSize: 20,
+  fontSize: 24,
   cursorBlink: true,
-  cursorWidth: 12,
+  cursorWidth: 15,
   customGlyphs: true,
-  fontFamily: 'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
+  fontFamily: '"JetBrains Mono"',
 });
 
+export const fitAddon = new FitAddon();
 const unicode14Addon = new Unicode14Addon();
 
 term.loadAddon(unicode14Addon);
+term.loadAddon(fitAddon);
 
 term.unicode.activeVersion = '14';

@@ -36,7 +36,7 @@ export abstract class Body {
     return `${this.type.glyph.value} ${this.name}`;
   }
 
-  abstract render()
+  abstract render(hidden?: boolean)
 }
 
 /** @category Thing */
@@ -44,12 +44,12 @@ export class Thing extends Body {
   public owner: Body | null = null;
   public value: string;
 
-  render() {
+  render(hidden = false) {
     let { style } = this.type;
 
     if (!style) style = '';
 
-    const rendered = this.renderStyle();
+    const rendered = this.renderStyle(hidden);
     if (rendered) style = rendered;
 
     return style + this.type.glyph.value + esc(Style.Reset);
@@ -108,7 +108,9 @@ export class Thing extends Body {
     }
   }
 
-  renderStyle() {
+  renderStyle(hidden = false) {
+    if (hidden) return null;
+
     if (!this.owner && !this.type.style) {
       return esc(Colors.Bg.Yellow);
     }

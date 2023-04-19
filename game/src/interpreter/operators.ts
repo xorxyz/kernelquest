@@ -4,6 +4,8 @@ import {
   ExecuteArgs, Factor, Literal, Term,
 } from './types';
 import {
+  LiteralHex,
+  LiteralList,
   LiteralNumber, LiteralString, LiteralTruth, LiteralVector,
 } from './literals';
 
@@ -43,6 +45,9 @@ export class Operator extends Factor {
       }
       if (types.includes('list')) {
         types.push('vector');
+      }
+      if (types.includes('number')) {
+        types.push('hex');
       }
       if (!(arg instanceof Literal)) {
         throw new Error(`${this.aliases[0]}: arg not instanceof Literal`);
@@ -233,6 +238,12 @@ const vector_sub = new Operator(['vector_sub'], ['vector', 'vector'], ({ stack }
   stack.push(new LiteralVector(result));
 });
 
+export const toHex = new Operator(['to_hex'], ['number'], ({ stack }) => {
+  const n = stack.pop() as LiteralNumber;
+
+  stack.push(new LiteralHex(`0x${n.value.toString(16)}`));
+});
+
 export const createUnknownWord = (name: string) => new UnknownOperator([name], [], (execArgs) => {
   const word = execArgs.dict[name];
   if (word) {
@@ -251,6 +262,7 @@ const operators = {};
   swap, swapd, cat, clear, typeOf,
   choice,
   vector_add, vector_sub,
+  toHex,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

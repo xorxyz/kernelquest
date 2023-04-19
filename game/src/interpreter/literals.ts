@@ -184,3 +184,24 @@ export class LiteralTerm extends Literal {
     return new LiteralTerm(this.value);
   }
 }
+
+export class LiteralHex extends LiteralNumber {
+  type = 'hex';
+  declare value: number;
+  constructor(s: string) {
+    super(Number(s));
+    this.lexeme = s;
+  }
+
+  toString() {
+    return this.lexeme;
+  }
+
+  static isHex(s: string) {
+    return !Number.isNaN(Number(s));
+  }
+
+  dup() {
+    return new LiteralHex(this.lexeme);
+  }
+}

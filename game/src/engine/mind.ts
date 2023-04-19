@@ -1,5 +1,7 @@
 import { Compiler, Interpreter } from '../interpreter';
 import { Queue } from '../shared';
+import Graph from '../shared/graph';
+import { Graphv2 } from '../shared/graphv2';
 import { IAction } from './actions';
 import words from './words';
 
@@ -16,6 +18,7 @@ export class Mind {
   queue: Queue<IAction> = new Queue<IAction>();
   compiler: Compiler;
   interpreter: Interpreter;
+  model = new MentalModel();
 
   constructor() {
     this.compiler = new Compiler(words);
@@ -36,4 +39,15 @@ export class Mind {
       this.interpreter.step();
     }
   }
+
+  takeAction() {
+    const action = this.interpreter.current.syscalls.next();
+    if (!action) return null;
+    this.interpreter.current.halted = false;
+    return action;
+  }
+}
+
+class MentalModel {
+  graph = new Graphv2();
 }

@@ -29,6 +29,10 @@ export const rules: Required<ModuleOptions>['rules'] = [
     },
   },
   {
+    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+    type: 'asset/resource',
+  },
+  {
     test: /\.ink$/i,
     type: 'asset/source',
   },

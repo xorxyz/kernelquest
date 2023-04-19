@@ -1,7 +1,8 @@
+import { actions } from '../../engine';
 import { SaveGameId } from '../../engine/io';
 import { Zone } from '../../engine/zone';
 import {
-  INode, Keys,
+  INode, Keys, SOUTH, Vector,
 } from '../../shared';
 import { UiComponent } from '../component';
 import { Header } from '../components';
@@ -10,6 +11,15 @@ import { VirtualTerminal } from '../pty';
 import { View } from '../view';
 import { GameScreen } from './game-screen';
 import { LoadScreen } from './load-screen';
+
+const w = 32;
+const h = 20;
+const vectorMap = new Array(w * h).fill(0).flatMap((_, i) => {
+  const cellY = Math.floor(i / w);
+  const cellX = i - (w * cellY);
+
+  return new Vector(cellX, cellY);
+});
 
 class BorderComponent extends UiComponent {
   handleInput() {
@@ -44,7 +54,7 @@ class WorldMapComponent extends UiComponent {
     throw new Error('Not implemented');
   }
   render(tty: VirtualTerminal) {
-    return tty.engine.world.worldMap.render(tty.engine.world.worldMap.outerRectangle);
+    return tty.engine.world.worldMap.render(vectorMap);
   }
 }
 
@@ -77,11 +87,19 @@ export class LevelSelectScreen extends View {
           );
           pty.clear();
           pty.view = new LoadScreen();
+          actions.face.perform({
+            agent: pty.agent,
+            area: pty.agent.area,
+            engine: pty.engine,
+            world: pty.engine.world,
+          }, SOUTH);
+          pty.agent.area.move(pty.agent, new Vector(0, 0));
           pty.agent.mind.interpreter.exec(term, () => {
             pty.clear();
             pty.view = new GameScreen();
             pty.render();
           });
+          if (pty.state.termMode) pty.switchModes();
           break;
         }
         case Keys.ARROW_LEFT: {

@@ -20,8 +20,8 @@ export class Axis extends UiComponent {
 
 /** @category Components */
 export class RoomMap extends UiComponent {
-  render({ agent }: VirtualTerminal) {
-    return agent.view;
+  render({ rendered }: VirtualTerminal) {
+    return rendered;
   }
 
   handleInput() { throw new Error('Not implemented.'); }

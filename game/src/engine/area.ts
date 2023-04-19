@@ -28,7 +28,7 @@ export class Area {
   public agents: Set<Agent> = new Set();
   private things: Set<Thing> = new Set();
 
-  private rows: Array<Array<Cell>>;
+  public rows: Array<Array<Cell>>;
   private cells: Array<Cell>;
   private entities: EntityManager;
 
@@ -139,12 +139,13 @@ export class Area {
     return true;
   }
 
-  render(rect?: Rectangle): Array<string> {
+  render(coords?: Array<Vector>): Array<string> {
     return this.rows.map((row) => row
       .map(((cell) => (
-        rect && rect.contains(cell.position)
+        coords && coords.some((v) => cell.position.equals(v))
           ? cell.render(this)
-          : `${esc(Colors.Bg.Black)}  ${esc(Style.Reset)}`)))
+          : esc(Style.Dim) + cell.render(this, true))))
+      // : `${esc(Colors.Bg.Black)}  ${esc(Style.Reset)}`)))
       .join(''));
   }
 
@@ -225,5 +226,12 @@ export class Area {
     return thing;
   }
 }
+
+export const emptyAreaCells = new Array(AREA_WIDTH * AREA_HEIGHT).fill(0).flatMap((_, i) => {
+  const cellY = Math.floor(i / AREA_WIDTH);
+  const cellX = i - (AREA_WIDTH * cellY);
+
+  return new Vector(cellX, cellY);
+});
 
 export class WorldMap extends Area { }

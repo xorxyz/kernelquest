@@ -14,6 +14,6 @@ export const rendererConfig: Configuration = {
   },
   plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.ink', '.kqj'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.ink', '.kqj', '.woff2'],
   },
 };

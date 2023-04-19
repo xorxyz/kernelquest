@@ -4,7 +4,7 @@
   "Desc" ""
 
   "ContentRoot" "..\desktop\out\kernel_quest-win32-x64\" // root content folder, relative to location of this file
-  "BuildOutput" "..\desktop\out\kernel_quest-win32-x64\" // build output folder for build logs and build cache files
+  "BuildOutput" ".\tmp\" // build output folder for build logs and build cache files
 
   "Depots"
   {

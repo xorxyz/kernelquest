@@ -6,5 +6,12 @@ body {
 
 #terminal * {
   cursor: default;
-  overflow: hidden; /* Hide scrollbars */
+  overflow: hidden;
+  /* Hide scrollbars */
+  line-height: 1.05em;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("./JetBrainsMono-Medium.woff2") format('woff2');
 }

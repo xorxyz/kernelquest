@@ -1,10 +1,11 @@
 import { Stack, Vector } from '../shared';
-import { WorldMap } from './area';
+import { Area, WorldMap } from './area';
 import { Thing } from './thing';
 import { Agent, IFacing } from './agent';
 import Graph from '../shared/graph';
 import { Zone } from './zone';
 import { EntityManager } from './entities';
+import { Cell } from './cell';
 
 /** @category World */
 export type Memory = Array<Thing>
@@ -12,10 +13,37 @@ export type Memory = Array<Thing>
 /** @category World */
 export type DataStack = Stack<Thing>
 
+export class LocationAddress {
+  readonly n: number;
+  readonly hex: string;
+
+  readonly worldId: number;
+
+  readonly zonePosition: Vector;
+  readonly areaPosition: Vector;
+  readonly cellPosition: Vector;
+
+  constructor(n: number) {
+    this.n = n;
+    this.hex = n.toString(16);
+
+    this.worldId = Number(this.hex.slice(0, 2));
+    this.zonePosition = new Vector(Number(this.hex.slice(2, 3)), Number(this.hex.slice(3, 4)));
+    this.areaPosition = new Vector(Number(this.hex.slice(4, 5)), Number(this.hex.slice(5, 6)));
+    this.cellPosition = new Vector(Number(this.hex.slice(6, 7)), Number(this.hex.slice(7, 8)));
+  }
+}
+
 export interface Position {
   area: Vector,
   cell: Vector,
   facing: IFacing
+}
+
+export interface ZonePort {
+  zone: Zone
+  area: Area
+  cell: Cell
 }
 
 /** @category World */
@@ -61,8 +89,6 @@ export class World {
     this.graph.addNode(zone);
     this.worldMap.put(zone.node, vector);
 
-    this.graph.addLine(this.activeZone, zone);
-
     return zone;
   }
 
@@ -86,5 +112,22 @@ export class World {
 
   findEntityById(id: number) {
     return this.entities.entityList.find((e) => e.id === id);
+  }
+
+  findZoneWithArea(area: Area) {
+    return [...this.zones].find((z) => z.areas.has(area));
+  }
+
+  findCellByAddress(addr: LocationAddress): Cell | null {
+    const zone = this.findZoneAt(addr.zonePosition);
+    if (!zone) return null;
+
+    const area = zone.findAreaAt(addr.areaPosition);
+    if (!area) return null;
+
+    const cell = area.cellAt(addr.cellPosition);
+    if (!cell) return null;
+
+    return cell;
   }
 }

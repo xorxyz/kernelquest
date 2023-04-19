@@ -1,6 +1,7 @@
 import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import {
+  LiteralHex,
   LiteralNumber, LiteralRef, LiteralString, LiteralTruth, Quotation,
 } from './literals';
 import operators, { createUnknownWord, Operator } from './operators';
@@ -59,6 +60,16 @@ export class Compiler {
         factors.push(literalNumber);
       } else {
         this.quotations[this.level].value.push(literalNumber);
+      }
+      return factors;
+    }
+
+    if (token.type === TokenType.HEX) {
+      const literalHex = new LiteralHex(token.literal);
+      if (this.level === 0) {
+        factors.push(literalHex);
+      } else {
+        this.quotations[this.level].value.push(literalHex);
       }
       return factors;
     }

@@ -1,15 +1,14 @@
 import EventEmitter from 'events';
 import {
-  IAction, Agent, Engine, SendFn,
+  IAction, Agent, Engine, SendFn, Area, createCone,
 } from '../engine';
 import {
-  Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug,
+  Cursor, esc, CursorModeHelpText, Screen, Keys, Vector, debug, Style, EAST, WEST, NORTH, SOUTH,
 } from '../shared';
 import { Editor } from './editor';
 import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { IntroScreen } from './views/intro-screen';
-import { LevelSelectScreen } from './views/level-select-screen';
 import { GameScreen } from './views/game-screen';
 
 /** @category PTY */
@@ -32,6 +31,10 @@ export class VirtualTerminal {
   public menuIsOpen = false;
   public engine: Engine;
   public talking = false;
+  public rendered: Array<string> = [];
+  public nextArea: Area | undefined = undefined;
+  public nextPosition: Vector | undefined = undefined;
+  public transitionT = 0;
 
   private timer;
 
@@ -76,7 +79,64 @@ export class VirtualTerminal {
     this.render();
   }
 
+  renderArea(area: Area, fov: Array<Vector>) {
+    return area.rows.map((row) => row.map((cell) => (
+      fov.some((v) => cell.position.equals(v))
+        ? cell.render(area)
+        : esc(Style.Dim) + cell.render(area, true))).join(''));
+  }
+
+  buildScreenView(area1: Area, area2?: Area, t?: number) {
+    let fov = this.agent.sees();
+    if (!area2 || !t || !this.nextPosition) return this.renderArea(area1, fov);
+
+    fov = fov.concat(createCone(this.nextPosition, this.agent.facing.direction));
+
+    return new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((__, x) => {
+      let a = area1;
+      let cx = 0;
+      let cy = 0;
+
+      if (this.agent.facing.direction.value.equals(SOUTH)) {
+        a = y >= 10 - t ? area2 : area1;
+        cx = x;
+        cy = a === area1 ? y + t : Math.abs((10 - t) - y);
+      }
+
+      if (this.agent.facing.direction.value.equals(WEST)) {
+        a = x < t ? area2 : area1;
+        cx = a === area1 ? x - t : (16 - t) + x;
+        cy = y;
+      }
+
+      if (this.agent.facing.direction.value.equals(NORTH)) {
+        a = y < t ? area2 : area1;
+        cx = x;
+        cy = a === area1 ? y - t : (10 - t) + y;
+      }
+
+      if (this.agent.facing.direction.value.equals(EAST)) {
+        a = x >= 16 - t ? area2 : area1;
+        cx = a === area1 ? x + t : Math.abs((16 - t) - x);
+        cy = y;
+      }
+
+      const cell = a.rows[cy][cx];
+
+      return fov.some((v) => cell.position.equals(v))
+        ? cell.render(a)
+        : esc(Style.Dim) + cell.render(a, true);
+    }).join(''));
+  }
+
+  renderScreen() {
+    const rendered = this.buildScreenView(this.agent.area, this.nextArea, this.transitionT);
+    return rendered;
+  }
+
   render() {
+    this.rendered = this.renderScreen();
+
     const output = this.view.compile(this, this.engine.cycle);
 
     this.send(output);
@@ -224,5 +284,34 @@ export class VirtualTerminal {
     }
 
     return action;
+  }
+
+  transition(area: Area, position: Vector) {
+    if (!this.engine.clock.paused) {
+      this.engine.pause();
+      this.nextArea = area;
+      this.nextPosition = position;
+      const interval = setInterval(() => {
+        const duration = (this.agent.facing.direction.value.equals(NORTH)
+          || this.agent.facing.direction.value.equals(SOUTH))
+          ? 10
+          : 16;
+        if (this.transitionT >= duration) {
+          clearInterval(interval);
+          this.transitionT = 0;
+          this.engine.world.activeZone.setActiveArea(area.position);
+          area.move(this.agent, position);
+          this.engine.start();
+          this.engine.events.emit('sound:step');
+        } else {
+          this.transitionT++;
+          this.render();
+        }
+      }, 5);
+    } else {
+      this.engine.world.activeZone.setActiveArea(area.position);
+      area.move(this.agent, position);
+      this.engine.events.emit('sound:step');
+    }
   }
 }

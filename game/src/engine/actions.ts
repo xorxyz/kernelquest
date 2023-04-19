@@ -1,10 +1,12 @@
-import { Vector } from '../shared';
+import {
+  AREA_HEIGHT, AREA_WIDTH, Rectangle, Vector,
+} from '../shared';
 import {
   LiteralList,
   LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
-import { World } from './world';
+import { LocationAddress, World } from './world';
 import { Area } from './area';
 import { Agent, Foe, Hero } from './agent';
 import { Engine } from './engine';
@@ -26,7 +28,7 @@ export type ValidActions = (
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
-  'wait' | 'area' | 'zone'
+  'wait' | 'area' | 'zone' | 'exit' | 'link' | 'world' | 'zone_at' | 'area_at'
 )
 
 export type SerializableType = boolean | number | string
@@ -125,30 +127,30 @@ export const left: IActionDefinition<ActionArguments> = {
 export const face: IActionDefinition<
   { x: number, y: number },
   { direction: { x: number, y: number } }> = {
-  cost: 0,
-  perform({ agent, area }, { x, y }) {
-    const direction = new Vector(x, y);
-    const previousDirection = agent.facing.direction.value;
+    cost: 0,
+    perform({ agent, area }, { x, y }) {
+      const direction = new Vector(x, y);
+      const previousDirection = agent.facing.direction.value;
 
-    agent.facing.direction.rotateUntil(direction);
-    agent.facing.cell = area.cellAt(
-      agent.position.clone().add(agent.facing.direction.value),
-    );
+      agent.facing.direction.rotateUntil(direction);
+      agent.facing.cell = area.cellAt(
+        agent.position.clone().add(agent.facing.direction.value),
+      );
 
-    return succeed('', {
-      previousDirection: previousDirection.toObject(),
-    });
-  },
-  undo({ agent, area }, _, previousState) {
-    const previousDirection = Vector.from(previousState.direction);
-    agent.facing.direction.rotateUntil(previousDirection);
-    agent.facing.cell = area.cellAt(
-      agent.position.clone().add(agent.facing.direction.value),
-    );
+      return succeed('', {
+        previousDirection: previousDirection.toObject(),
+      });
+    },
+    undo({ agent, area }, _, previousState) {
+      const previousDirection = Vector.from(previousState.direction);
+      agent.facing.direction.rotateUntil(previousDirection);
+      agent.facing.cell = area.cellAt(
+        agent.position.clone().add(agent.facing.direction.value),
+      );
 
-    return succeed('');
-  },
-};
+      return succeed('');
+    },
+  };
 
 export const step: IActionDefinition<
   ActionArguments,
@@ -184,29 +186,13 @@ export const step: IActionDefinition<
           }
           return fail('There is something blocking the way.');
         }
-        world.activeZone.setActiveArea(nextArea.position);
-        nextArea.move(agent, nextPosition);
 
-        engine.events.emit('sound:step');
+        engine.tty.transition(nextArea, nextPosition);
 
         return succeed('', {
           position: previousPosition.toObject(),
           areaId: area.id,
         });
-      }
-
-      // If there is no adjacent area, exit the level
-      if (engine.hero.id === agent.id) {
-        engine.tty.clear();
-        engine.tty.view = new LoadScreen();
-        const term = agent.mind.compiler.compile('');
-        agent.mind.interpreter.exec(term, () => {
-          engine.tty.view = new LevelSelectScreen();
-          engine.tty.clear();
-          engine.tty.render();
-        });
-
-        return succeed('');
       }
     }
 
@@ -717,6 +703,23 @@ export const that: IActionDefinition<{ x: number, y: number }> = {
   undo: undoNoop,
 };
 
+export const zoneAt: IActionDefinition<{ x: number, y: number }> = {
+  cost: 0,
+  perform({ agent, world }, { x, y }) {
+    const zone = world.findZoneAt(new Vector(x, y));
+
+    if (!zone) {
+      agent.mind.interpreter.sysret(new LiteralRef(0));
+      return fail('');
+    }
+
+    agent.mind.interpreter.sysret(new LiteralRef(zone.id));
+
+    return succeed('');
+  },
+  undo: undoNoop,
+};
+
 export const me: IActionDefinition<{ id: number }> = {
   cost: 0,
   perform({ agent }) {
@@ -1022,6 +1025,38 @@ export const zone: IActionDefinition<
   },
 };
 
+function isAtBoundary(v: Vector) {
+  return (v.x === 0 || v.x === AREA_WIDTH - 1 || v.y === 0 || v.y === AREA_HEIGHT - 1);
+}
+
+export const exit: IActionDefinition<
+  {},
+  { previousZoneX: number, previousZoneY: number }
+> = {
+  cost: 0,
+  perform({ engine, agent }) {
+    // If there is no adjacent area, exit the level
+    if (engine.hero.id === agent.id) {
+      if (!isAtBoundary(agent.position)) {
+        return fail('You can only exit an area from its boundaries.');
+      }
+      engine.tty.clear();
+      engine.tty.view = new LoadScreen();
+      const term = agent.mind.compiler.compile('');
+      agent.mind.interpreter.exec(term, () => {
+        engine.tty.view = new LevelSelectScreen();
+        engine.tty.clear();
+        engine.tty.render();
+      });
+
+      return succeed('');
+    }
+
+    return fail('');
+  },
+  undo: undoNoop,
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -1062,6 +1097,8 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   wait,
   area,
   zone,
+  exit,
+  zone_at: zoneAt,
 };
 
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {

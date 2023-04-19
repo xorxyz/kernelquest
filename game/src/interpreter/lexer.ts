@@ -19,6 +19,7 @@ export enum TokenType {
   STAR = '*',
   SLASH = '/',
   POUND = '#',
+  ZERO = '0',
   EXCLAMATION_EQUAL = '!=',
   EQUAL_EQUAL = '==',
   IDENTIFIER = 'identifier',
@@ -29,7 +30,8 @@ export enum TokenType {
   EOF = '\0',
   QUOTATION = 'quotation',
   ATOM = 'atom',
-  REF = 'ref'
+  REF = 'ref',
+  HEX = 'hex'
 }
 
 const keywords = {
@@ -175,6 +177,21 @@ export class Scanner {
     this.addToken(TokenType.REF, n);
   }
 
+  private hex() {
+    while (this.peek() !== ' ' && !this.isAtEnd()) {
+      this.next();
+    }
+
+    const text = `0${this.source.substring(this.start + 1, this.current)}`;
+    const n = Number(text);
+
+    if (Number.isNaN(n)) {
+      throw new Error(`Parsing error: ${text} is not a valid hex number.`);
+    }
+
+    this.addToken(TokenType.HEX, text);
+  }
+
   private next() {
     return this.source.charAt(this.current++);
   }
@@ -233,6 +250,10 @@ export class Scanner {
         break;
       default: {
         if (isDigit(char)) {
+          if (this.peek() === 'x') {
+            this.hex();
+            break;
+          }
           this.number();
         } else if (isAlpha(char)) {
           this.identifier();

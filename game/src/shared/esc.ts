@@ -12,6 +12,7 @@ export const Colors = {
     Green: '[42m',
     Blue: '[044m',
     Cyan: '[0;106m',
+    DarkCyan: '[48;5;6m',
     Purple: '[0;105m',
     Yellow: '[0;103m',
     Brown: '[0;43m',
@@ -20,6 +21,7 @@ export const Colors = {
     Black: '[30m',
     White: '[37m',
     Green: '[32m',
+    Gray: '[38;5;248m',
   },
 };
 

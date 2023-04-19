@@ -8,7 +8,7 @@ import { VirtualTerminal } from './pty';
 /** @category Component */
 export const SCREEN_WIDTH = 90;
 /** @category Component */
-export const SCREEN_HEIGHT = 25;
+export const SCREEN_HEIGHT = 26;
 /** @category Component */
 export const N_OF_LINES = 7;
 /** @category Component */

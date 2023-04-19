@@ -8,7 +8,7 @@ import { Body, BodyType, Thing } from './thing';
 import { Cell } from './cell';
 import { Mind } from './mind';
 import { IAction } from './actions';
-import { Area } from './area';
+import { Area, emptyAreaCells } from './area';
 
 export const TERMINAL_ACTIONS = [
   'switch-mode',
@@ -121,10 +121,10 @@ export class Agent extends Body {
     this.logs.push(log);
   }
 
-  render() {
+  render(hidden = false) {
     const glyph = this.hp.value > 0 ? this.type.glyph.value : '💀';
 
-    return this.renderStyle() + glyph + esc(Style.Reset);
+    return this.renderStyle() + (hidden ? esc(Style.Dim) : '') + glyph + esc(Style.Reset);
   }
 
   renderStyle() {
@@ -192,7 +192,7 @@ export class Agent extends Body {
       return action;
     }
 
-    return this.mind.interpreter.takeAction() || { name: 'noop' };
+    return this.mind.takeAction() || { name: 'noop' };
   }
 
   isFacing(vector: Vector) {
@@ -230,16 +230,12 @@ export class Agent extends Body {
     this.eyes = thing;
   }
 
-  sees() {
-    // eslint-disable-next-line prefer-const
-    let x1 = 0; let y1 = 0; let x2 = 16; let y2 = 10;
-
-    const rect = new Rectangle(new Vector(x1, y1), new Vector(x2, y2));
-    return rect;
+  sees(): Array<Vector> {
+    return createCone(this.position, this.facing.direction);
   }
 
   moveCursor(direction: Vector) {
-    if (this.sees().contains(this.cursorPosition.clone().add(direction))) {
+    if (emptyAreaCells.some((v) => v.equals(this.cursorPosition.clone().add(direction)))) {
       this.cursorPosition.add(direction);
     }
   }
@@ -267,4 +263,77 @@ export class Agent extends Body {
   halt() {
     this.halted = true;
   }
+}
+
+export function createCone(position: Vector, direction: Direction): Array<Vector> {
+  const coneWidth = 5;
+  const gap = Math.floor(coneWidth / 2);
+  const angle = 3;
+
+  if (direction.value.y === -1) {
+    const res: Array<Vector> = [];
+    let { y } = position;
+    let i = 0;
+    while (y >= 0) {
+      const n = coneWidth + (angle * i);
+      (new Array(n).fill(0))
+        // eslint-disable-next-line no-loop-func
+        .map((_, idx) => position.clone().setY(y).subX(i + gap - idx))
+        .forEach((v) => res.push(v));
+      res.push(position.clone().setY(y));
+      y--;
+      i++;
+    }
+    return res;
+  }
+  if (direction.value.x === 1) {
+    const res: Array<Vector> = [];
+    let { x } = position;
+    let i = 0;
+    while (x < 16) {
+      const n = coneWidth + (angle * i);
+      (new Array(n).fill(0))
+        // eslint-disable-next-line no-loop-func
+        .map((_, idx) => position.clone().setX(x).subY(i + gap - idx))
+        .forEach((v) => res.push(v));
+      res.push(position.clone().setX(x));
+      x++;
+      i++;
+    }
+    return res;
+  }
+  if (direction.value.y === 1) {
+    const res: Array<Vector> = [];
+    let { y } = position;
+    let i = 0;
+    while (y < 10) {
+      const n = coneWidth + (angle * i);
+      (new Array(n).fill(0))
+        // eslint-disable-next-line no-loop-func
+        .map((_, idx) => position.clone().setY(y).subX(i + gap - idx))
+        .forEach((v) => res.push(v));
+      res.push(position.clone().setY(y));
+      y++;
+      i++;
+    }
+    return res;
+  }
+  if (direction.value.x === -1) {
+    const res: Array<Vector> = [];
+    let { x } = position;
+    let i = 0;
+    while (x >= 0) {
+      const n = coneWidth + (angle * i);
+      (new Array(n).fill(0))
+        // eslint-disable-next-line no-loop-func
+        .map((_, idx) => position.clone().setX(x).subY(i + gap - idx))
+        .forEach((v) => res.push(v));
+      res.push(position.clone().setX(x));
+      x--;
+      i++;
+    }
+    return res;
+  }
+
+  return [position, direction.value];
 }

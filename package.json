@@ -21,6 +21,19 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
+  "contributes": {
+    "languages": [{
+      "id": "kqj",
+      "extensions": [".kqj"],
+      "aliases": ["Kernel Quest Joy", "kqj"],
+      "configuration": "./extension/language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "kqj",
+      "scopeName": "source.kqj",
+      "path": "./extension/syntaxes/kqj.tmLanguage.json"
+    }]
+  },
   "targets": {
     "app": {
       "source": [

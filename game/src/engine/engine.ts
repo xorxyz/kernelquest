@@ -33,6 +33,7 @@ export class Engine {
   public elapsed = 0;
   public history: Array<HistoryEvent> = [];
   public future: Array<HistoryEvent> = [];
+  public lastSavedOn = 0;
   public saveGames: SaveGameDict;
   public tty: VirtualTerminal;
   private opts: EngineOptions;
@@ -41,44 +42,29 @@ export class Engine {
   readonly clock: Clock;
   story: Story;
 
-  entities = new EntityManager();
+  entities: EntityManager;
 
   constructor(opts: EngineOptions) {
     const clockRate = opts.rate || CLOCK_MS_DELAY;
     this.opts = opts;
-    this.clock = new Clock(2);
+    this.clock = new Clock(clockRate);
     this.story = story;
 
-    this.world = this.entities.createWorld();
-    this.hero = this.entities.createAgent('king');
+    // this.hero.mind.queue.add({
+    //   name: 'exec',
+    //   args: {
+    //     text: joy,
+    //   },
+    // });
 
-    this.entities.setHero(this.hero);
-
-    this.world.activeZone.activeArea.put(this.hero, new Vector(0, 0));
-
-    this.tty = new VirtualTerminal(this, this.opts.send);
-
-    this.hero.mind.queue.add({
-      name: 'exec',
-      args: {
-        text: joy,
-      },
-    });
-
-    while (!this.hero.mind.interpreter.isDone() || this.hero.mind.queue.size) {
-      this.update();
-    }
-
-    this.clock.updateDelay(clockRate);
+    // while (!this.hero.mind.interpreter.isDone() || this.hero.mind.queue.size) {
+    //   this.update();
+    // }
 
     this.clock.on('tick', this.updateIfPending.bind(this));
 
-    if (process.env.NODE_ENV === 'production') {
-      this.reset();
-    } else {
-      // this.selectSaveFile(1);
-      // this.load();
-    }
+    this.selectSaveFile(0);
+    this.load();
   }
 
   async init() {
@@ -104,62 +90,15 @@ export class Engine {
   reset() {
     this.clock.reset();
 
-    // this.world.create('route', this.world.worldMap, new Vector(4, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(5, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(6, 4));
-    // const zoneNode2 = this.world.create('route', this.world.worldMap, new Vector(7, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(7, 5));
-    // this.world.create('route', this.world.worldMap, new Vector(7, 6));
-    // this.world.create('route', this.world.worldMap, new Vector(7, 7));
-    // const zoneNode3 = this.world.create('zone', this.world.worldMap, new Vector(7, 8));
-    // this.world.create('route', this.world.worldMap, new Vector(8, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(9, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(10, 4));
-    // const zoneNode4 = this.world.create('zone', this.world.worldMap, new Vector(11, 4));
-    // this.world.create('route', this.world.worldMap, new Vector(8, 8));
-    // this.world.create('route', this.world.worldMap, new Vector(9, 8));
-    // this.world.create('route', this.world.worldMap, new Vector(10, 8));
-    // const zoneNode5 = this.world.create('route', this.world.worldMap, new Vector(11, 8));
-    // this.world.create('route', this.world.worldMap, new Vector(11, 8));
-    // this.world.create('route', this.world.worldMap, new Vector(11, 9));
-    // this.world.create('route', this.world.worldMap, new Vector(11, 10));
-    // const zoneNode6 = this.world.create('zone', this.world.worldMap, new Vector(11, 11));
+    this.entities = new EntityManager();
+    this.world = this.entities.createWorld();
+    this.hero = this.entities.createAgent('king');
 
-    // this.world.graph.addNode(zoneNode2);
-    // this.world.graph.addNode(zoneNode3);
-    // this.world.graph.addNode(zoneNode4);
-    // this.world.graph.addNode(zoneNode5);
-    // this.world.graph.addNode(zoneNode6);
+    this.entities.setHero(this.hero);
 
-    // this.world.graph.addLine(zoneNode1, zoneNode2);
-    // this.world.graph.addLine(zoneNode2, zoneNode3);
-    // this.world.graph.addLine(zoneNode2, zoneNode4);
-    // this.world.graph.addLine(zoneNode3, zoneNode5);
-    // this.world.graph.addLine(zoneNode5, zoneNode6);
+    this.world.activeZone.activeArea.put(this.hero, new Vector(0, 0));
 
-    // this.world.activeZone = new Zone();
-
-    // this.world.activeZone.node = zoneNode1;
-
-    // this.world.create('river', this.world.worldMap, new Vector(13, 0));
-    // this.world.create('river', this.world.worldMap, new Vector(13, 1));
-    // this.world.create('river', this.world.worldMap, new Vector(13, 2));
-    // this.world.create('river', this.world.worldMap, new Vector(13, 3));
-    // this.world.create('river', this.world.worldMap, new Vector(13, 4));
-    // this.world.create('river', this.world.worldMap, new Vector(13, 5));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 6));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 7));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 8));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 9));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 10));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 11));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 12));
-    // this.world.create('river', this.world.worldMap, new Vector(14, 13));
-    // this.world.create('river', this.world.worldMap, new Vector(15, 14));
-    // this.world.create('river', this.world.worldMap, new Vector(15, 15));
-
-    // this.world.worldMap.cells[0].erase();
-    // this.world.worldMapCursor = this.world.spawn('king', this.world.worldMap, new Vector(3, 4));
+    this.tty = new VirtualTerminal(this, this.opts.send);
 
     if (this.tty) {
       this.tty.agent = this.hero;
@@ -274,6 +213,8 @@ export class Engine {
       message: 'Saved.',
     });
 
+    this.lastSavedOn = this.cycle;
+
     this.start();
   }
 
@@ -281,7 +222,11 @@ export class Engine {
     this.pause();
     this.reset();
 
+    console.log(`Loading save game #${this.saveGameId}`);
+
     const data = await global.electron.load(this.saveGameId);
+
+    console.log('Got data:', data);
 
     // TODO: Ensure agents exist
     // and make this more robust
@@ -295,6 +240,7 @@ export class Engine {
     this.hero.name = data.name;
     this.history = data.history;
     this.cycle = data.stats.time;
+    this.lastSavedOn = this.cycle;
 
     this.start();
   }

@@ -17,7 +17,7 @@ export const bounds = new Rectangle(new Vector(0, 0), new Vector(AREA_WIDTH, ARE
 
 export const DB_FILEPATH = '/tmp/xor4-test.txt';
 
-export enum TokenType {}
+export enum TokenType { }
 
 export interface Token {
   type: TokenType
@@ -66,7 +66,7 @@ export const Signals = {
   SIGINT: '03',
 };
 
-export const EMPTY_CELL_CHARS = '..';// '➖';
+export const EMPTY_CELL_CHARS = '. ';// '➖';
 
 export const CursorModeHelpText = [
   '<return> toggle between terminal & cursor mode.',

@@ -333,7 +333,7 @@ const zone = new Operator(['zone'], ['vector'], ({ stack, syscall }) => {
 const world = new Operator(['world'], ['vector'], ({ stack, syscall }) => {
   const position = (stack.pop() as LiteralVector).vector;
   syscall({
-    name: 'zone',
+    name: 'world',
     args: {
       x: position.x,
       y: position.y,
@@ -341,44 +341,92 @@ const world = new Operator(['world'], ['vector'], ({ stack, syscall }) => {
   });
 });
 
+const exit = new Operator(['exit'], [], ({ stack, syscall }) => {
+  syscall({
+    name: 'exit',
+    args: {
+    },
+  });
+});
+
+const zoneAt = new Operator(['zone_at'], ['vector'], async ({ stack, syscall }) => {
+  const v = (stack.pop() as LiteralVector).vector;
+  syscall({
+    name: 'zone_at',
+    args: {
+      x: v.x,
+      y: v.y,
+    },
+  });
+});
+
+const globals = {
+  movement: {
+    step,
+    backstep,
+    right,
+    left,
+    path,
+    face,
+    exit,
+    // goto,
+  },
+  query: {
+    look,
+    ls,
+    prop,
+    facing,
+    that,
+    xy,
+    zone_at: zoneAt,
+  },
+  action: {
+    halt,
+    get,
+    put,
+    claim,
+    wait,
+  },
+  dict: {
+    define,
+    del,
+  },
+  admin: {
+    create,
+    rm,
+    area,
+    zone,
+    world,
+  },
+  io: {
+    say,
+    hi,
+    puts,
+    tell,
+    read,
+    scratch,
+    erase,
+  },
+  struct: {
+    stack: stackFn,
+    rect,
+  },
+  alias: {
+    me,
+    north,
+    east,
+    south,
+    west,
+  },
+};
+
 export default {
-  // goto,
-  path,
-  look,
-  ls,
-  step,
-  backstep,
-  right,
-  left,
-  rm,
-  create,
-  tell,
-  halt,
-  prop,
-  that,
-  me,
-  define,
-  xy,
-  stack: stackFn,
-  face,
-  facing,
-  get,
-  put,
-  del,
-  puts,
-  say,
-  hi,
-  read,
-  claim,
-  north,
-  east,
-  south,
-  west,
-  scratch,
-  erase,
-  rect,
-  wait,
-  area,
-  zone,
-  world,
+  ...globals.admin,
+  ...globals.alias,
+  ...globals.dict,
+  ...globals.io,
+  ...globals.struct,
+  ...globals.movement,
+  ...globals.query,
+  ...globals.action,
 };
