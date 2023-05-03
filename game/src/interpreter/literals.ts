@@ -1,6 +1,10 @@
 import { Vector } from '../shared';
 import { Factor, Literal, Term } from './types';
 
+export const TypeNames = [
+  'truth', 'number', 'hex', 'string', 'quotation', 'list', 'set', 'ref', 'unknown', 'type'
+]
+
 // () -> Truth
 export class LiteralTruth extends Literal {
   type = 'truth';
@@ -122,6 +126,44 @@ export class Quotation extends Literal {
   }
 }
 
+// () -> Unknown
+export class LiteralUnknown extends Literal {
+  type = 'unknown';
+  lexeme = '?';
+  
+  constructor() {
+    super('?');
+  }
+
+  toString() {
+    return this.lexeme;
+  }
+
+  dup() {
+    return new LiteralUnknown();
+  }
+}
+
+// () -> Unknown
+export class LiteralType extends Literal {
+  type = 'type';
+  value = '';
+  label: string
+
+  constructor (lexeme: string, value: string, label: string) {
+    super(lexeme, value)
+    this.label = label;
+  }
+
+  toString() {
+    return this.lexeme;
+  }
+
+  dup() {
+    return new LiteralType(this.lexeme, this.value, this.label);
+  }
+}
+
 export type List = (
   Array<LiteralTruth> |
   Array<LiteralNumber> |
@@ -129,7 +171,7 @@ export type List = (
   Array<LiteralRef>
 )
 
-const literalTypes = ['truth', 'number', 'string', 'vector', 'ref'];
+const literalTypes = ['truth', 'number', 'hex', 'string', 'vector', 'ref', 'unknown'];
 
 export class LiteralList extends Quotation {
   type = 'list';

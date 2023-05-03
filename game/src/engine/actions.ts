@@ -878,6 +878,9 @@ export const talk: IActionDefinition<ActionArguments> = {
       const target = area.findAgentById(targetId);
 
       if (target) {
+        engine.story.BindExternalFunction('exec', (code: string) => {
+          console.log('executing:', code);
+        });
         engine.story.ChoosePathString('intro');
         if (engine.story.canContinue) {
           engine.story.Continue();

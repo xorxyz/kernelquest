@@ -21,19 +21,6 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "app": "dist/index.html",
-  "contributes": {
-    "languages": [{
-      "id": "kqj",
-      "extensions": [".kqj"],
-      "aliases": ["Kernel Quest Joy", "kqj"],
-      "configuration": "./extension/language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "kqj",
-      "scopeName": "source.kqj",
-      "path": "./extension/syntaxes/kqj.tmLanguage.json"
-    }]
-  },
   "targets": {
     "app": {
       "source": [
@@ -48,17 +35,17 @@
   },
   "devDependencies": {
     "@types/events": "^3.0.0",
-    "@types/node": "^17.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
-    "dependency-cruiser": "^11.4.1",
-    "eslint": "^8.6.0",
+    "@types/node": "^17.0.45",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "dependency-cruiser": "^11.18.0",
+    "eslint": "^8.39.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.22.1",
-    "nodemon": "^2.0.15",
+    "eslint-plugin-import": "^2.27.5",
+    "nodemon": "^2.0.22",
     "npm-run-all": "^4.1.5",
-    "typedoc": "^0.22.15",
-    "typescript": "^4.5.4"
+    "typedoc": "^0.22.18",
+    "typescript": "^4.7.4"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,25 @@
+{
+  "name": "kqj-language",
+  "description": "A language server example",
+  "author": "Jonathan Dupré",
+  "license": "UNLICENSED",
+  "version": "0.0.0",
+  "engines": {
+    "vscode": "^1.77.0"
+  },
+  "contributes": {
+    "languages": [{
+      "id": "kqj",
+      "extensions": [".kqj"],
+      "aliases": ["Kernel Quest Joy", "kqj"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "kqj",
+      "scopeName": "source.kqj",
+      "path": "./syntaxes/kqj.tmLanguage.json"
+    }]
+  },
+  "scripts": {
+  }
+}

@@ -1,0 +1,64 @@
+: alice &1 define;
+: bob   &2 define;
+
+: get_x i pop ;
+: get_y i swap pop ;
+
+: my_position [] [[me ? position] query first second] ;
+: my_direction [] [[me ? direction] query first second]
+: xy_in_front [] [my_position my_direction v_add]
+: whats_there [Vector] [? swap [position] cons cons query] ;
+: is_empty [List] [length 0 ==] ;
+
+# predicates
+[
+  [Ref:agent Vector:v position] 
+  [Ref:agent String:j job]
+  [Ref:agent Number:n gold]
+] [predicate] map
+
+# facts
+[
+  [alice [3 4] position]
+  [alice "fairy" job]
+  [alice 5 gold]
+  [bob [3 9] position]
+  [bob "wizard" job]
+  [bob 5 gold]
+] [fact] map
+
+# rules
+[[
+  same_col 
+  [Ref:agent_a Ref:agent_b]
+  [
+    [!=]
+    [[position] cons query i second get_y swap 
+     [position] cons query i second get_y ==]
+  ]
+  [and]
+]] [rule] map
+
+# strategies
+[[
+  [step] # action
+  [
+    [xy_in_front within_bounds]
+    [xy_in_front whats_there is_empty]
+  ] # precondition
+  [me xy_in_front [position] cons cons] # add facts
+  [[me ? position] query i] # remove facts
+]] [strategy] map
+
+# examples
+&1 &2 same_col
+&1 &3 same_col
+[me position] query      # [[&1 [0 0] position]]
+[&3 ? same_col] query    # [[&1 &3 same_col]]
+[? ? same_col] query     # [[&1 &2 same_col] [&1 &3 same_col]]
+
+[? "wizard" job] query   # [[bob "wizard" job]]
+[? 5 gold] query         # [[alice 5 gold] [bob 5 gold]]
+[? ? position] query     # [[alice [3 4] position] [bob [3 9] position]]
+[? [3 ?] position] query # [[alice [3 4] position] [bob [3 9] position]]
+[? bob same_col] query   # [[alice bob same_col]]

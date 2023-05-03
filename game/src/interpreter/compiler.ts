@@ -2,7 +2,7 @@ import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import {
   LiteralHex,
-  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, Quotation,
+  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, LiteralType, LiteralUnknown, Quotation, TypeNames,
 } from './literals';
 import operators, { createUnknownWord, Operator } from './operators';
 import combinators from './combinators';
@@ -115,6 +115,31 @@ export class Compiler {
 
     if (token.type === TokenType.COMMENT) {
       console.log(`Comment: #${token.literal}`);
+      return factors;
+    }
+
+    if (token.type === TokenType.QUESTION_MARK) {
+      const literalUnknown = new LiteralUnknown();
+      if (this.level === 0) {
+        factors.push(literalUnknown);
+      } else {
+        this.quotations[this.level].value.push(literalUnknown);
+      }
+      return factors;
+    }
+
+    if (token.type === TokenType.TYPE) {
+      const parts = token.lexeme.split(':');
+      const lower = parts[0].toLowerCase();
+      if (!TypeNames.includes(lower)) {
+        throw new Error(token.lexeme + 'is not a valid type.')
+      }
+      const literalType = new LiteralType(token.lexeme, lower, parts[1]);
+      if (this.level === 0) {
+        factors.push(literalType);
+      } else {
+        this.quotations[this.level].value.push(literalType);
+      }
       return factors;
     }
 

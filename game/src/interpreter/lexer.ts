@@ -1,9 +1,11 @@
 const AlphaNumeric = /^[a-zA-Z0-9]*$/;
 const Alpha = /^[a-zA-Z]*$/;
 const Digit = /^[0-9]*$/;
+const Capital = /^[A-Z]*$/;
 export const isAlphaNumeric = (str: string) => str.match(AlphaNumeric);
 export const isAlpha = (str: string) => str.match(Alpha);
 export const isDigit = (str: string) => str.match(Digit);
+export const isCapital = (str: string) => str.match(Capital);
 
 // eslint-disable-next-line no-shadow
 export enum TokenType {
@@ -20,6 +22,7 @@ export enum TokenType {
   SLASH = '/',
   POUND = '#',
   ZERO = '0',
+  QUESTION_MARK = '?',
   EXCLAMATION_EQUAL = '!=',
   EQUAL_EQUAL = '==',
   IDENTIFIER = 'identifier',
@@ -31,7 +34,8 @@ export enum TokenType {
   QUOTATION = 'quotation',
   ATOM = 'atom',
   REF = 'ref',
-  HEX = 'hex'
+  HEX = 'hex',
+  TYPE = 'type'
 }
 
 const keywords = {
@@ -177,6 +181,23 @@ export class Scanner {
     this.addToken(TokenType.REF, n);
   }
 
+  private type() {
+    while (this.peek() !== ' ' && this.peek() !== ']' && !this.isAtEnd()) {
+      this.next();
+    }
+
+    const text = this.source.substring(this.start, this.current);
+    const parts = text.split(':')
+
+    console.log(parts)
+
+    if (parts.length > 2 || parts.some(part => !isAlphaNumeric(part))) {
+      throw new Error(`Parsing error: ${text} is not a valid type expression.`)
+    }
+
+    this.addToken(TokenType.TYPE, text);
+  }
+
   private hex() {
     while (this.peek() !== ' ' && !this.isAtEnd()) {
       this.next();
@@ -213,6 +234,7 @@ export class Scanner {
       case TokenType.DOT: this.addToken(TokenType.DOT, char); break;
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, '*'); break;
+      case TokenType.QUESTION_MARK: this.addToken(TokenType.QUESTION_MARK, char); break;
       case '&': this.ref(); break;
       case TokenType.MINUS:
         nextChar = this.peek();
@@ -255,6 +277,8 @@ export class Scanner {
             break;
           }
           this.number();
+        } else if (isCapital(char)) {
+          this.type();
         } else if (isAlpha(char)) {
           this.identifier();
         } else {

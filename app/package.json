@@ -14,28 +14,28 @@
   "license": "MIT",
   "dependencies": {
     "@vue/runtime-core": "^3.2.26",
-    "ethers": "^5.5.2",
+    "ethers": "^5.7.2",
     "events": "^3.3.0",
-    "twemoji": "^13.1.0",
+    "twemoji": "^13.1.1",
     "vue": "^3.2.26",
-    "vue-router": "^4.0.12",
+    "vue-router": "^4.1.6",
     "xor4-game": "0.0.0",
-    "xterm": "^4.15.0",
+    "xterm": "^4.19.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0"
   },
   "devDependencies": {
-    "@parcel/packager-ts": "^2.0.1",
+    "@parcel/packager-ts": "^2.8.3",
     "@parcel/transformer-raw": "^2.0.1",
-    "@parcel/transformer-typescript-types": "^2.0.1",
-    "@parcel/transformer-vue": "^2.0.1",
-    "@parcel/validator-typescript": "^2.0.1",
-    "@types/node": "^17.0.8",
-    "@typescript-eslint/eslint-plugin": "^5.9.0",
-    "@typescript-eslint/parser": "^5.9.1",
-    "eslint": "^8.6.0",
-    "eslint-plugin-vue": "^8.2.0",
-    "parcel": "^2.0.1",
-    "vue-eslint-parser": "^8.0.1"
+    "@parcel/transformer-typescript-types": "^2.8.3",
+    "@parcel/transformer-vue": "^2.8.3",
+    "@parcel/validator-typescript": "^2.8.3",
+    "@types/node": "^17.0.45",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.39.0",
+    "eslint-plugin-vue": "^8.7.1",
+    "parcel": "^2.8.3",
+    "vue-eslint-parser": "^8.3.0"
   }
 }

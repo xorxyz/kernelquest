@@ -79,6 +79,7 @@ export class DialogueBox extends UiComponent {
       // Finish
       console.log('we are done');
       this.reset();
+      pty.engine.story.UnbindExternalFunction('exec');
       pty.talking = false;
     }
   }
