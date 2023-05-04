@@ -2,11 +2,17 @@ import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import {
   LiteralHex,
-  LiteralNumber, LiteralRef, LiteralString, LiteralTruth, LiteralType, LiteralUnknown, Quotation, TypeNames,
+  LiteralNumber, 
+  LiteralRef, 
+  LiteralString, 
+  LiteralTruth, 
+  LiteralType, 
+  LiteralUnknown, 
+  Quotation, 
+  TypeNames,
 } from './literals';
 import operators, { createUnknownWord, Operator } from './operators';
 import combinators from './combinators';
-import syscalls from './syscalls';
 
 export type Dictionary = Record<string, Factor>
 
@@ -18,7 +24,6 @@ export class Compiler {
     false: new LiteralTruth(false),
     ...operators,
     ...combinators,
-    ...syscalls,
   };
   level = 0;
   quotations: Array<Quotation> = [];
@@ -132,7 +137,7 @@ export class Compiler {
       const parts = token.lexeme.split(':');
       const lower = parts[0].toLowerCase();
       if (!TypeNames.includes(lower)) {
-        throw new Error(token.lexeme + 'is not a valid type.')
+        throw new Error(parts[0] + ' is not a valid type.')
       }
       const literalType = new LiteralType(token.lexeme, lower, parts[1]);
       if (this.level === 0) {

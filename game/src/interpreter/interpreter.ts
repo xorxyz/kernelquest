@@ -34,9 +34,14 @@ export class Interpreter {
   halted = false;
   subinterpreter: Interpreter | null = null;
   dict: Dictionary;
+  db = {
+    predicates: {},
+    facts: []
+  }
 
-  constructor(dict: Dictionary) {
+  constructor(dict: Dictionary, db?) {
     this.dict = dict;
+    if (db) this.db = db;
   }
 
   log() {
@@ -111,6 +116,7 @@ export class Interpreter {
           syscall: this.syscall.bind(this),
           exec: this.exec.bind(this),
           dict: this.dict,
+          db: this.db
         });
         this.log();
       } catch (err) {
@@ -129,7 +135,7 @@ export class Interpreter {
 
   exec(term: Term, callback?: () => void) {
     debug(`exec: running ${term.toString()}`);
-    this.subinterpreter = new Interpreter(this.dict);
+    this.subinterpreter = new Interpreter(this.dict, this.db);
     this.subinterpreter.level = this.level + 1;
     this.subinterpreter.update(term);
     debug('sub', this.subinterpreter);

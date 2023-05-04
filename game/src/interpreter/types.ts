@@ -2,12 +2,17 @@
 import { IAction } from '../engine';
 import { Stack } from '../shared';
 import { Dictionary } from './compiler';
+import { LiteralType } from './literals';
 
 export interface ExecuteArgs {
   stack: Stack<Factor>
   syscall: (action: IAction) => void
   exec: (term: Term, callback?: () => void) => void
   dict: Dictionary
+  db: {
+    predicates: Record<string, Array<LiteralType>>
+    facts: Array<Term>
+  }
 }
 
 export abstract class Factor {

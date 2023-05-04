@@ -14,6 +14,7 @@ import { HistoryEvent, SaveGameDict, SaveGameId } from './io';
 import { story } from './story';
 import { EntityManager } from './entities';
 import joy from '../../assets/worlds/area0.kqj';
+import bootstrap from '../../assets/bootstrap.kqj';
 
 export type SendFn = (str: string) => void
 
@@ -49,17 +50,6 @@ export class Engine {
     this.opts = opts;
     this.clock = new Clock(clockRate);
     this.story = story;
-
-    // this.hero.mind.queue.add({
-    //   name: 'exec',
-    //   args: {
-    //     text: joy,
-    //   },
-    // });
-
-    // while (!this.hero.mind.interpreter.isDone() || this.hero.mind.queue.size) {
-    //   this.update();
-    // }
 
     this.clock.on('tick', this.updateIfPending.bind(this));
 
@@ -241,6 +231,17 @@ export class Engine {
     this.history = data.history;
     this.cycle = data.stats.time;
     this.lastSavedOn = this.cycle;
+
+    this.hero.mind.queue.add({
+      name: 'exec',
+      args: {
+        text: bootstrap,
+      },
+    });
+
+    while (!this.hero.mind.interpreter.isDone() || this.hero.mind.queue.size) {
+      this.update();
+    }
 
     this.start();
   }

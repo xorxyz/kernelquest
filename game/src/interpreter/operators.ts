@@ -6,8 +6,9 @@ import {
 import {
   LiteralHex,
   LiteralList,
-  LiteralNumber, LiteralString, LiteralTruth, LiteralVector,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, TypeNames,
 } from './literals';
+import { capitalize } from '../shared/text';
 
 export class Operator extends Factor {
   signature: Array<string>;
@@ -71,6 +72,22 @@ export class Operator extends Factor {
 
 export class UnknownOperator extends Operator {
   name: string;
+}
+
+export class CustomOperator extends Operator {
+  name: string;
+
+  constructor (name: string, signature: Array<string>, term: Term) {
+    super([name], signature, (execArgs) => {
+      this.validate(execArgs.stack);
+
+      term.forEach(factor => {
+        factor.execute(execArgs)
+      });
+    })
+
+    this.name = name;
+  }
 }
 
 export const sum = new Operator(['+', 'sum', 'add'], ['number', 'number'], ({ stack }) => {
@@ -244,6 +261,87 @@ export const toHex = new Operator(['to_hex'], ['number'], ({ stack }) => {
   stack.push(new LiteralHex(`0x${n.value.toString(16)}`));
 });
 
+export const assert = new Operator(['assert'], ['string'], ({ stack, db, dict }) => {
+  const name = stack.pop() as LiteralString;
+  const typeList = [...db.predicates[name.value]].reverse();
+
+  if (!typeList) {
+    throw new Error(`assert: predicate '${name.value}' does not exist.`);
+  }
+
+  typeList.forEach((t, i) => {
+    const f = stack.peekN(i);
+    if (!f || f.type !== t.value) {
+      throw new Error(`assert: type '${t.value}' is missing from the stack.`);
+    }
+  })
+
+  const args = stack.popN(typeList.length).reverse();
+  const term = [...args.filter((x): x is Factor => !!x), dict[name.value]];
+  console.log('term: ', term)
+  db.facts.push(term);
+});
+
+
+export const query = new Operator(['query'], ['quotation'], ({ stack, db, dict }) => {
+  const quotation = stack.pop() as Quotation;
+
+  const f = quotation.value.pop();
+
+  if (!f) {
+    throw new Error('query: quotation is missing a factor');
+  }
+
+  const facts = db.facts
+    .filter(fact => fact.slice(-1)[0].lexeme === f.lexeme)
+    .map(fact => new Quotation(fact))
+    .reverse();
+
+  facts.forEach(f => stack.push(f));
+
+
+  console.log('facts', facts);
+});
+
+export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {
+  const typeList = stack.pop() as LiteralList<LiteralType>;
+  const name = stack.pop() as LiteralString;
+  
+  if (typeList.value.length < 2) {
+    throw new Error(`predicate: expected more than 1 type, got ${typeList.value.length}.`);
+  }
+
+  if (typeList.of !== 'type') {
+    throw new Error(`predicate: expected list of types, got '${typeList.of}'.`);
+  }
+
+  if (dict[name.value]) {
+    throw new Error(`predicate: the word '${name.value}' already exists in the active dictionary.`);
+  }
+
+  db.predicates[name.value] = [...typeList.value]
+
+  dict[name.value] = new CustomOperator(name.value, typeList.value.map((t) => t.value), [name, assert]);
+});
+
+export const is_type = new Operator(['is_type'], ['any', 'type'], ({ stack }) => {
+  const t = stack.pop() as LiteralType;
+  const factor = stack.pop() as Factor;
+
+  console.log(factor, t)
+
+  stack.push(new LiteralTruth(factor.type === t.value))
+});
+
+export const to_type = new Operator(['to_type'], ['string'], ({ stack }) => {
+  const s = stack.pop() as LiteralString;
+  if (!TypeNames.includes(s.value)) {
+    throw new Error(`to_type: '${s.value}' is not a valid type.`)
+  }
+
+  stack.push(new LiteralType(capitalize(s.value), s.value, ''))
+});
+
 export const createUnknownWord = (name: string) => new UnknownOperator([name], [], (execArgs) => {
   const word = execArgs.dict[name];
   if (word) {
@@ -262,7 +360,9 @@ const operators = {};
   swap, swapd, cat, clear, typeOf,
   choice,
   vector_add, vector_sub,
-  toHex,
+  toHex, 
+  is_type, to_type,
+  predicate, assert, query
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

@@ -12,10 +12,15 @@
 
 # predicates
 [
-  [Ref:agent Vector:v position] 
-  [Ref:agent String:j job]
-  [Ref:agent Number:n gold]
+  ["position" [Ref:agent Vector:v]] 
+  ["job" [Ref:agent String:j]]
+  ["gold" [Ref:agent Number:n]]
 ] [predicate] map
+
+# 
+: 
+: position == "position" assert ;
+
 
 # facts
 [

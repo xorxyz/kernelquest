@@ -2,7 +2,17 @@ import { Vector } from '../shared';
 import { Factor, Literal, Term } from './types';
 
 export const TypeNames = [
-  'truth', 'number', 'hex', 'string', 'quotation', 'list', 'set', 'ref', 'unknown', 'type'
+  'truth', 
+  'number', 
+  'hex', 
+  'string', 
+  'list', 
+  'vector', 
+  'quotation', 
+  'set', 
+  'ref', 
+  'unknown', 
+  'type'
 ]
 
 // () -> Truth
@@ -91,6 +101,10 @@ export class Quotation extends Literal {
   }
 
   static from(term: Term): Quotation | LiteralList | LiteralVector {
+    if (term.length === 0) {
+      return new LiteralList([]);
+    }
+
     // Parse the quotation as a LiteralVector if it's a list of 2 numbers
     if (LiteralVector.isVector(term)) {
       const [x, y] = term.map((item) => item.value) as [number, number];
@@ -147,7 +161,7 @@ export class LiteralUnknown extends Literal {
 // () -> Unknown
 export class LiteralType extends Literal {
   type = 'type';
-  value = '';
+  declare value;
   label: string
 
   constructor (lexeme: string, value: string, label: string) {
@@ -164,21 +178,38 @@ export class LiteralType extends Literal {
   }
 }
 
-export type List = (
-  Array<LiteralTruth> |
-  Array<LiteralNumber> |
-  Array<LiteralString> |
-  Array<LiteralRef>
+// () -> Unknown
+export class UndefinedWord extends Literal {
+  type = 'undefined';
+
+  toString() {
+    return this.lexeme;
+  }
+
+  dup() {
+    return new UndefinedWord(this.lexeme);
+  }
+}
+
+export type List<
+  T extends LiteralTruth | LiteralNumber | LiteralHex | LiteralString | LiteralRef
+> = (
+  Array<T>
 )
 
-const literalTypes = ['truth', 'number', 'hex', 'string', 'vector', 'ref', 'unknown'];
+const literalTypes = ['truth', 'number', 'hex', 'string', 'vector', 'ref', 'unknown', 'type'];
 
-export class LiteralList extends Quotation {
+export class LiteralList<
+  T extends LiteralTruth | LiteralNumber | LiteralHex | LiteralString | LiteralRef
+> extends Quotation {
   type = 'list';
-  declare value: List;
-  constructor(term: List) {
+  declare value: List<T>;
+  of: string
+
+  constructor(term: List<T>) {
     super(term);
     this.lexeme = this.toString();
+    this.of = term[0]?.type || 'nothing'
   }
 
   static isList(term: Term) {
