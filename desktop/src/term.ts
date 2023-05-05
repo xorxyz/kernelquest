@@ -7,17 +7,20 @@ export const term = new Terminal({
   cols: SCREEN_WIDTH,
   rows: SCREEN_HEIGHT,
   theme: {
-    background: '#000000',
-    black: '#000000',
+    background: '#111111',
+    black: '#111111',
     green: '#0CFF24',
     red: '#F92672',
   },
   rendererType: 'dom', // default is canvas
   fontSize: 24,
+  letterSpacing: 0,
+  fontWeight: '300',
+  // minimumContrastRatio: 1,
   cursorBlink: true,
   cursorWidth: 15,
   customGlyphs: true,
-  fontFamily: '"JetBrains Mono"',
+  fontFamily: '"KernelQuest"',
 });
 
 export const fitAddon = new FitAddon();

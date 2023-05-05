@@ -307,8 +307,8 @@ export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stac
   const typeList = stack.pop() as LiteralList<LiteralType>;
   const name = stack.pop() as LiteralString;
   
-  if (typeList.value.length < 2) {
-    throw new Error(`predicate: expected more than 1 type, got ${typeList.value.length}.`);
+  if (typeList.value.length < 1) {
+    throw new Error(`predicate: expected at least 1 type, got ${typeList.value.length}.`);
   }
 
   if (typeList.of !== 'type') {

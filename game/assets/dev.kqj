@@ -15,12 +15,8 @@
   ["position" [Ref:agent Vector:v]] 
   ["job" [Ref:agent String:j]]
   ["gold" [Ref:agent Number:n]]
-] [predicate] map
-
-# 
-: 
-: position == "position" assert ;
-
+  ["same_col" [Ref:agent_a Ref:agent_b]]
+] [i predicate] map
 
 # facts
 [
@@ -30,19 +26,17 @@
   [bob [3 9] position]
   [bob "wizard" job]
   [bob 5 gold]
-] [fact] map
+] [i assert] map
 
-# rules
+# deduction rules
 [[
-  same_col 
-  [Ref:agent_a Ref:agent_b]
+  same_col # predicate
   [
     [!=]
     [[position] cons query i second get_y swap 
      [position] cons query i second get_y ==]
-  ]
-  [and]
-]] [rule] map
+  ] # conditions
+]] [i rule] map
 
 # strategies
 [[
@@ -52,7 +46,7 @@
     [xy_in_front whats_there is_empty]
   ] # precondition
   [me xy_in_front [position] cons cons] # add facts
-  [[me ? position] query i] # remove facts
+  [[me ? position]] # remove facts
 ]] [strategy] map
 
 # examples

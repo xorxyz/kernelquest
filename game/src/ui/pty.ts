@@ -10,6 +10,7 @@ import { CELL_WIDTH } from './component';
 import { View } from './view';
 import { IntroScreen } from './views/intro-screen';
 import { GameScreen } from './views/game-screen';
+import { TitleScreen } from './views/title-screen';
 
 /** @category PTY */
 export interface IVirtalTerminalState {
@@ -43,6 +44,7 @@ export class VirtualTerminal {
     this.events = engine.events;
     this.send = send;
     this.engine = engine;
+    // this.view = new IntroScreen(this)
     this.view = process.env.NODE_ENV === 'production'
       ? new IntroScreen(this)
       : new GameScreen();
