@@ -1,0 +1,15 @@
+{
+  "name": "xor4-game",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "rm -r dist && mkdir dist && fantasticon",
+    "test": "tsc --noEmit"
+  },
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
+  "license": "MIT",
+  "dependencies": {
+    "fantasticon": "^2.0.0"
+  }
+}

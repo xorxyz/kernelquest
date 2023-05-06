@@ -4,23 +4,22 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 
 export const term = new Terminal({
-  cols: SCREEN_WIDTH,
+  cols: SCREEN_WIDTH -1,
   rows: SCREEN_HEIGHT,
-  theme: {
-    background: '#111111',
-    black: '#111111',
+  theme: { 
+    background: '#181818',
+    black: '#181818',
     green: '#0CFF24',
-    red: '#F92672',
+    red: '#F92672', 
+    cursor: '#fff',
+    selection: '#fff' 
   },
   rendererType: 'dom', // default is canvas
-  fontSize: 24,
-  letterSpacing: 0,
-  fontWeight: '300',
-  // minimumContrastRatio: 1,
-  cursorBlink: true,
-  cursorWidth: 15,
-  customGlyphs: true,
-  fontFamily: '"KernelQuest"',
+  fontSize: 32,  
+  // letterSpacing: 0,
+  cursorBlink: true, 
+  cursorStyle: 'block',
+  fontFamily: '"KernelQuest", "Emojis"',
 });
 
 export const fitAddon = new FitAddon();

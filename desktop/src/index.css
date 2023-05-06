@@ -1,20 +1,27 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
-  background-color: #333;
+  background-color: #202020;
+}
+
+#terminal {
+  box-shadow: .2ex .2ex rgba(0, 0, 0, 0.05);
+  text-shadow: .2ex .2ex rgba(0, 0, 0, 0.025); 
 }
 
 #terminal * {
   cursor: default;
   overflow: hidden;
-  /* Hide scrollbars */
-  line-height: 1.05em;
+  line-height: 2.3ex;
 }
 
 @font-face {
   font-family: "KernelQuest";
-  src: url("./JetBrainsMono-Medium.woff2") format('woff2');
-  /* src: url("./PixelOperatorMonoHB.woff") format('woff'); */
-  /* src: url("./SuperLegendBoy.woff2") format('woff2'); */
-  /* src: url("./TinyIslanders.woff2") format('woff2'); */
+  src: url("./monogram-extended") format('woff2');
+}
+ 
+@font-face {
+  font-family: "Emojis";
+  src: url("./CustomEmoji") format('woff2');
+  unicode-range: U+1F934;
 }

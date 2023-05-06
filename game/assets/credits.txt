@@ -1,16 +1,3 @@
-Thank you:
-
-
-Family and friends
-
-Katherine Belisle
-Claude Dupré
-Alexandre Monette Martin
-Guillaume Monette Martin
-Mathieu St-Vincent
-Mathieu Rheaume
-
-
-Industry
-
-Jon Ingold and Inkle Studios
+xterm.js  SourceLair
+inkjs     Inkle Studios
+Monogram  datagoblin
