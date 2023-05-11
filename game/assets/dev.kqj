@@ -10,6 +10,14 @@
 : whats_there [Vector] [? swap [position] cons cons query] ;
 : is_empty [List] [length 0 ==] ;
 
+# words
+[
+  ["goto" [Vector:v] [
+    me xy facing vector_add swap path
+    [me xy vector_sub face step] map
+  ]]
+] [i define] map
+
 # predicates
 [
   ["position" [Ref:agent Vector:v]] 
@@ -35,7 +43,7 @@
     [!=]
     [[position] cons query i second get_y swap 
      [position] cons query i second get_y ==]
-  ] # conditions
+  ] # conditions, [i] map [true ==] map
 ]] [i rule] map
 
 # strategies

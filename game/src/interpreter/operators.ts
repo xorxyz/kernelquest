@@ -297,10 +297,11 @@ export const query = new Operator(['query'], ['quotation'], ({ stack, db, dict }
     .map(fact => new Quotation(fact))
     .reverse();
 
-  facts.forEach(f => stack.push(f));
+  const results = new Quotation()
 
+  facts.forEach(f => results.value.push(f));
 
-  console.log('facts', facts);
+  stack.push(results);
 });
 
 export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {

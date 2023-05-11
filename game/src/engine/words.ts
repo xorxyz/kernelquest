@@ -3,7 +3,8 @@ import {
   Combinator, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import {
-  East, North, South, Vector, West,
+  EAST,
+  East, NORTH, North, SOUTH, South, Vector, WEST, West,
 } from '../shared';
 
 /** @category Words */
@@ -166,11 +167,16 @@ const stackFn = new Operator(['stack'], [], ({ stack }) => {
 });
 
 const face = new Operator(['face'], ['vector'], ({ stack, syscall }) => {
-  const { x, y } = (stack.pop() as LiteralVector).vector;
+  const v = (stack.pop() as LiteralVector).vector;
+  const headings = [SOUTH, WEST, NORTH, EAST];
+
+  if (headings.every(heading => !v.equals(heading))) {
+    throw new Error(`face: not a valid heading, got ${v.label}`);
+  }
 
   syscall({
     name: 'face',
-    args: { x, y },
+    args: v.toObject(),
   });
 });
 

@@ -12,7 +12,7 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // app.commandLine.appendSwitch('in-process-gpu');
 
-// app.commandLine.appendSwitch('no-sandbox');
+app.commandLine.appendSwitch('no-sandbox');
 app.commandLine.appendSwitch('disable-gpu-sandbox');
 app.commandLine.appendSwitch('disable-software-rasterizer');
 app.commandLine.appendSwitch('disable-gpu');

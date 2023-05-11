@@ -6,17 +6,18 @@ import { FitAddon } from 'xterm-addon-fit';
 export const term = new Terminal({
   cols: SCREEN_WIDTH -1,
   rows: SCREEN_HEIGHT,
-  theme: { 
+  // letterSpacing: 0,
+  customGlyphs: true, 
+  theme: {
     background: '#181818',
     black: '#181818',
     green: '#0CFF24',
     red: '#F92672', 
     cursor: '#fff',
-    selection: '#fff' 
   },
-  rendererType: 'dom', // default is canvas
-  fontSize: 32,  
-  // letterSpacing: 0,
+  // rendererType: 'dom', // default is canvas
+  fontSize: 32,
+  allowProposedApi: true,
   cursorBlink: true, 
   cursorStyle: 'block',
   fontFamily: '"KernelQuest", "Emojis"',
