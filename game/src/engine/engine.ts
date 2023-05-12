@@ -82,7 +82,7 @@ export class Engine {
 
     this.entities = new EntityManager();
     this.world = this.entities.createWorld();
-    this.hero = this.entities.createAgent('king');
+    this.hero = this.entities.createAgent('wizard');
 
     this.entities.setHero(this.hero);
 

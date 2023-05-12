@@ -6,7 +6,6 @@ import { FitAddon } from 'xterm-addon-fit';
 export const term = new Terminal({
   cols: SCREEN_WIDTH -1,
   rows: SCREEN_HEIGHT,
-  // letterSpacing: 0,
   customGlyphs: true, 
   theme: {
     background: '#181818',

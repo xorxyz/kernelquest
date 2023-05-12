@@ -123,7 +123,7 @@ export class Compiler {
       return factors;
     }
 
-    if (token.type === TokenType.QUESTION_MARK) {
+    if (token.type === TokenType.PERCENT) {
       const literalUnknown = new LiteralUnknown();
       if (this.level === 0) {
         factors.push(literalUnknown);

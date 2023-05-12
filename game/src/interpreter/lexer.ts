@@ -21,6 +21,7 @@ export enum TokenType {
   STAR = '*',
   SLASH = '/',
   POUND = '#',
+  PERCENT = '%',
   ZERO = '0',
   QUESTION_MARK = '?',
   EXCLAMATION_EQUAL = '!=',
@@ -235,6 +236,7 @@ export class Scanner {
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, '*'); break;
       case TokenType.QUESTION_MARK: this.addToken(TokenType.QUESTION_MARK, char); break;
+      case TokenType.PERCENT: this.addToken(TokenType.PERCENT, char); break;
       case '&': this.ref(); break;
       case TokenType.MINUS:
         nextChar = this.peek();

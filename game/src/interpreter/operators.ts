@@ -283,13 +283,13 @@ export const assert = new Operator(['assert'], ['string'], ({ stack, db, dict })
 });
 
 
-export const query = new Operator(['query'], ['quotation'], ({ stack, db, dict }) => {
+export const query = new Operator(['?'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
 
   const f = quotation.value.pop();
 
   if (!f) {
-    throw new Error('query: quotation is missing a factor');
+    throw new Error('query (\'?\') : quotation is missing a factor');
   }
 
   const facts = db.facts

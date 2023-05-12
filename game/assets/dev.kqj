@@ -12,37 +12,59 @@
 
 # words
 [
-  ["goto" [Vector:v] [
-    me xy facing vector_add swap path
-    [me xy vector_sub face step] map
-  ]]
+  [
+    "goto" [Vector:v] [
+      me xy facing vector_add swap path
+      [me xy vector_sub face step] map
+    ]
+  ]
 ] [i define] map
 
 # predicates
+# executing a predicate registers it as a fact
 [
   ["position" [Ref:agent Vector:v]] 
   ["job" [Ref:agent String:j]]
   ["gold" [Ref:agent Number:n]]
   ["same_col" [Ref:agent_a Ref:agent_b]]
+
+  ["names"     [String Ref]] # has name
+  ["like"      [Ref Ref]]    # similar
+  ["in"        [Ref Ref]]    # containment
+  ["after"     [Ref Ref]]      # follows
+  # ["is"        [Ref String]] # attributes
 ] [i predicate] map
 
 # facts
-[
-  [alice [3 4] position]
-  [alice "fairy" job]
-  [alice 5 gold]
-  [bob [3 9] position]
-  [bob "wizard" job]
-  [bob 5 gold]
-] [i assert] map
+alice &3 names
+bob &4 names
+alice bob like
+alice [3 4] position
+alice "fairy" job
+alice 5 gold
+bob [3 9] position
+bob "wizard" job
+bob 5 gold
+
+# queries
+[bob % gold] ? # [[bob 5 gold]]
+[% 5 gold] ?   # [[alice 5 gold] [bob 5 gold]]
+
+[&1 &1 contains] ? # [[&1 &1 contains]] (identity. a thing is self-contained, exists as itself)
+
+# who is in the same room as alice?
+"alice" % name dup        # [&3] [&3] <- alice
+first % swap [in] consd ? # [&3] [&af] <- the room
+first % [in] cons ?       # [&3] [&3 &5 &6] <- everyone in the room
+swap [!=] concat filter   # [&5 &6] <- except alice
 
 # deduction rules
 [[
   same_col # predicate
   [
     [!=]
-    [[position] cons query i second get_y swap 
-     [position] cons query i second get_y ==]
+    [[position] cons ? i second get_y swap 
+     [position] cons ? i second get_y ==]
   ] # conditions, [i] map [true ==] map
 ]] [i rule] map
 
@@ -54,18 +76,18 @@
     [xy_in_front whats_there is_empty]
   ] # precondition
   [me xy_in_front [position] cons cons] # add facts
-  [[me ? position]] # remove facts
+  [[me % position]] # remove facts
 ]] [strategy] map
 
 # examples
 &1 &2 same_col
 &1 &3 same_col
-[me position] query      # [[&1 [0 0] position]]
-[&3 ? same_col] query    # [[&1 &3 same_col]]
-[? ? same_col] query     # [[&1 &2 same_col] [&1 &3 same_col]]
+[me position] ?      # [[&1 [0 0] position]]
+[&3 % same_col] ?    # [[&1 &3 same_col]]
+[% % same_col] ?     # [[&1 &2 same_col] [&1 &3 same_col]]
 
-[? "wizard" job] query   # [[bob "wizard" job]]
-[? 5 gold] query         # [[alice 5 gold] [bob 5 gold]]
-[? ? position] query     # [[alice [3 4] position] [bob [3 9] position]]
-[? [3 ?] position] query # [[alice [3 4] position] [bob [3 9] position]]
-[? bob same_col] query   # [[alice bob same_col]]
+[% "wizard" job] ?   # [[bob "wizard" job]]
+[% 5 gold] ?         # [[alice 5 gold] [bob 5 gold]]
+[% % position] ?     # [[alice [3 4] position] [bob [3 9] position]]
+[% [3 %] position] ? # [[alice [3 4] position] [bob [3 9] position]]
+[% bob same_col] ?   # [[alice bob same_col]]

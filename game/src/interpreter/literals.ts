@@ -143,10 +143,10 @@ export class Quotation extends Literal {
 // () -> Unknown
 export class LiteralUnknown extends Literal {
   type = 'unknown';
-  lexeme = '?';
+  lexeme = '%';
   
   constructor() {
-    super('?');
+    super('%');
   }
 
   toString() {
