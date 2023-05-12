@@ -2,9 +2,12 @@
 
 const log = console.log.bind(console);
 
-export const debug = (...args) => {
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
+export const debug = true ? (...args) => {
   log('[debug]:', ...args);
-};
+}: noop;
 
 export const info = console.info.bind(console);
 

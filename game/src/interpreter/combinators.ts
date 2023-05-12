@@ -4,6 +4,7 @@ import {
 } from './literals';
 import { Operator } from './operators';
 import { runSeries } from '../shared/async';
+import { debug } from '../shared';
 
 export class Combinator extends Operator { }
 
@@ -68,15 +69,15 @@ export const map = new Combinator(['map'], ['list|quotation', 'quotation'], ({ s
         if (!(result instanceof Factor)) {
           throw new Error('filter: result of mapping function should be a factor');
         }
+        debug('Adding result:', result);
         results.add(result);
+        debug('Results:', results.toString());
       }
       done();
     });
   }), () => {
-    console.log('map: done!');
-    if (list.type !== 'quotation') {
-      stack.push(results);
-    }
+    debug('map: done!');
+    stack.push(results);
   });
 });
 
@@ -87,7 +88,7 @@ export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack
   const results = new LiteralList([]);
 
   runSeries(list.value.map((item, i) => (done) => {
-    console.log(`filter: running ${i}`);
+    debug(`filter: running ${i}`);
     exec([item, ...program.value], () => {
       const result = stack.pop();
       if (!(result instanceof LiteralTruth)) {
@@ -99,7 +100,7 @@ export const filter = new Combinator(['filter'], ['list', 'quotation'], ({ stack
       done();
     });
   }), () => {
-    console.log('filter: done!');
+    debug('filter: done!');
     stack.push(results);
   });
 });

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import {
-  Combinator, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  Combinator, Factor, LiteralNumber, LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
 } from '../interpreter';
 import {
   EAST,
@@ -366,6 +366,19 @@ const zoneAt = new Operator(['zone_at'], ['vector'], async ({ stack, syscall }) 
   });
 });
 
+const print = new Operator(['print'], ['any'], async ({ stack, syscall }) => {
+  const f = stack.pop() as Factor;
+  console.log(f)
+  syscall({
+    name: 'print',
+    args: {
+      text: f.type === 'quotation' || f.type === 'list'
+        ? (f as Quotation).value.map(f => f.toString()).join('\n')
+        : f.toString()
+    },
+  });
+});
+
 const globals = {
   movement: {
     step,
@@ -412,6 +425,7 @@ const globals = {
     read,
     scratch,
     erase,
+    print
   },
   struct: {
     stack: stackFn,

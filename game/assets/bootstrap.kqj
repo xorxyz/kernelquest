@@ -4,6 +4,7 @@
   [&1 [0 0]]
   [&2 [1 1]]
   [&3 [2 2]]
-] [i position] map
+] [i position] map pop
 
-[% % position] ?
+"Known positions:" print
+[% % position] ? dup print

@@ -3,29 +3,35 @@ import { Unicode14Addon } from 'xor4-game/vendor/unicode14';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 
-export const term = new Terminal({
-  cols: SCREEN_WIDTH -1,
-  rows: SCREEN_HEIGHT,
-  customGlyphs: true, 
-  theme: {
-    background: '#181818',
-    black: '#181818',
-    green: '#0CFF24',
-    red: '#F92672', 
-    cursor: '#fff',
-  },
-  // rendererType: 'dom', // default is canvas
-  fontSize: 32,
-  allowProposedApi: true,
-  cursorBlink: true, 
-  cursorStyle: 'block',
-  fontFamily: '"KernelQuest", "Emojis"',
-});
-
 export const fitAddon = new FitAddon();
-const unicode14Addon = new Unicode14Addon();
 
-term.loadAddon(unicode14Addon);
-term.loadAddon(fitAddon);
+export function createTerm () {
+  const term = new Terminal({
+    cols: SCREEN_WIDTH -1,
+    rows: SCREEN_HEIGHT,
+    customGlyphs: true, 
+    theme: {
+      background: '#181818',
+      black: '#181818',
+      green: '#0CFF24',
+      red: '#F92672', 
+      cursor: '#fff',
+    },
+    fontSize: 32,
+    // lineHeight: .5,
+    letterSpacing: 1.2,
+    allowProposedApi: true,
+    cursorBlink: true, 
+    cursorStyle: 'block',
+    fontFamily: '"KernelQuest", "Emojis"',
+  });
+  
+  const unicode14Addon = new Unicode14Addon();
+  
+  term.loadAddon(unicode14Addon);
+  term.loadAddon(fitAddon);
+  
+  term.unicode.activeVersion = '14';
 
-term.unicode.activeVersion = '14';
+  return term
+}

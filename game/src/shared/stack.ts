@@ -28,12 +28,12 @@ export class Stack<T> {
   }
 
   /** pop multiple values */
-  popN(n): Array<T | undefined> {
-    const items: Array<T | undefined> = [];
+  popN(n): Array<T> {
+    const items: Array<T> = [];
 
     for (let i = 0; i < n; i++) {
       const item = this.pop();
-      items.push(item);
+      if (item) items.push(item);
     }
 
     return items;

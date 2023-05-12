@@ -3,38 +3,42 @@ import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
 import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
-import { fitAddon, term } from './term';
+import { fitAddon, createTerm } from './term';
 
-document.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('load', async () => {
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
   if (!terminalEl) throw new Error('Cant find the element.');
 
   const audioEl = document.querySelector('#audio-player') as HTMLAudioElement;
   if (!audioEl) throw new Error('Cant find audio player element');
 
+  const term = createTerm();
+
   const engine = new Engine({
     send: (str) => term.write(str),
   });
+
+  await engine.init();
+
+  term.open(terminalEl);
+
+  document.addEventListener('click', () => term.focus());
 
   term.onKey(({ key }) => {
     const input = Buffer.from(key).toString('hex');
     engine.handleInput(input);
   });
 
-  term.open(terminalEl);
   term.focus();
-
-  document.addEventListener('click', () => term.focus());
-
-  await engine.init();
-
-  engine.start();
+  fitAddon.fit();
 
   registerSoundEvents(engine.events, audioEl);
 
-  global.engine = engine;
+  engine.start();
 
-  fitAddon.fit();
+  window.resizeBy(1, 1);
+
+  global.engine = engine;
 });
 
 function registerSoundEvents(bus, el) {

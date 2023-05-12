@@ -1,12 +1,7 @@
 import { IAction } from '../engine';
-import { Queue, Stack } from '../shared';
+import { Queue, Stack, debug } from '../shared';
 import { Dictionary } from './compiler';
 import { Factor, Term } from './types';
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
-// eslint-disable-next-line no-constant-condition, no-console
-const debug = false ? console.log : noop;
 
 // How to use this in the game loop:
 //
@@ -84,7 +79,7 @@ export class Interpreter {
     if (this.subinterpreter) {
       // - if it's done, get rid of it after pushing the results onto the current stack
       if (this.subinterpreter.isDone()) {
-        debug(`${this.subinterpreter.level} is done`);
+        debug(`${this.subinterpreter.level} is done:` + this.subinterpreter.stack.toString());
         const f = this.subinterpreter.stack.arr.shift();
         debug('got', f);
         if (f) this.stack.push(f);

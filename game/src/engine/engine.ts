@@ -243,7 +243,7 @@ export class Engine {
       this.update();
     }
 
-    this.start();
+    // this.start();
   }
 
   authorize(action: IActionDefinition<any>, agent: Agent) {

@@ -28,7 +28,8 @@ export type ValidActions = (
   'tell' | 'halt' |
   'prop' | 'that' | 'me' | 'define' | 'clear' | 'xy' | 'facing' | 'del' | 'puts' |
   'say' | 'hi' | 'talk' | 'read' | 'claim' | 'scratch' | 'erase' | 'path' |
-  'wait' | 'area' | 'zone' | 'exit' | 'link' | 'world' | 'zone_at' | 'area_at'
+  'wait' | 'area' | 'zone' | 'exit' | 'link' | 'world' | 'zone_at' | 'area_at' |
+  'print'
 )
 
 export type SerializableType = boolean | number | string
@@ -1060,6 +1061,23 @@ export const exit: IActionDefinition<
   undo: undoNoop,
 };
 
+export const print: IActionDefinition<
+  { text: string},
+  {}
+> = {
+  cost: 0,
+  perform(ctx, args) {
+    args.text.split('\n').forEach(line => {
+      ctx.engine.hero.logs.push({
+        tick: ctx.engine.hero.mind.tick,
+        message: line,
+      });
+    })
+    return succeed('');
+  },
+  undo: undoNoop,
+};
+
 export const actions: Record<ValidActions, IActionDefinition<any>> = {
   save,
   load,
@@ -1102,6 +1120,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   zone,
   exit,
   zone_at: zoneAt,
+  print
 };
 
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {

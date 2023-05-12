@@ -294,8 +294,7 @@ export const query = new Operator(['?'], ['quotation'], ({ stack, db }) => {
 
   const facts = db.facts
     .filter(fact => fact.slice(-1)[0].lexeme === f.lexeme)
-    .map(fact => new Quotation(fact))
-    .reverse();
+    .map(fact => new Quotation(fact));
 
   const results = new Quotation()
 

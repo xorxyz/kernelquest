@@ -11,9 +11,21 @@ body {
 
 #terminal * {
   cursor: default;
-  overflow: hidden;
-  line-height: 2.3ex;
 }
+
+#terminal div {
+  overflow: hidden;
+}
+
+.terminal span {
+  /* font-variant: text; */
+}
+
+/* .terminal span { */
+  /* text-transform: full-width; */
+  /* letter-spacing: .67ex; */
+  /* line-height: 2.3ex; */
+/* } */
 
 @font-face {
   font-family: "KernelQuest";
@@ -22,7 +34,9 @@ body {
  
 @font-face {
   font-family: "Emojis";
+  src: url("NotoColorEmoji") format("woff2");
+  /* src: url("TwitterColorEmoji-SVGinOT.ttf") format("truetype"); */
+}
+
   /* src: url("./CustomEmoji") format('woff2'); */
   /* unicode-range: U+1F934; */
-  src: url("NotoColorEmoji") format("woff2");
-}
