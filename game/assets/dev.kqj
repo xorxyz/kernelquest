@@ -55,6 +55,9 @@ alice [% in] cons ? first second # room <- the room
 # [ ] if a thing has a name, it's ref should be transformed into that name before output
 # [ ] implement consd
 # [ ] alias 'map' with 'each'
+# [x] implement first 
+# [x] implement second 
+# [x] implement length 
 
 # deduction rules
 [[

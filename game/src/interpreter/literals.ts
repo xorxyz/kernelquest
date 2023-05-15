@@ -140,13 +140,13 @@ export class Quotation extends Literal {
   }
 }
 
-// () -> Unknown
-export class LiteralUnknown extends Literal {
-  type = 'unknown';
-  lexeme = '%';
-  
-  constructor() {
-    super('%');
+export class Variable extends Literal {
+  type = 'variable';
+  name: string;
+
+  constructor (lexeme: string, name: string) {
+    super(lexeme);
+    this.name = name;
   }
 
   toString() {
@@ -154,11 +154,10 @@ export class LiteralUnknown extends Literal {
   }
 
   dup() {
-    return new LiteralUnknown();
+    return new Variable(this.lexeme, this.name);
   }
 }
 
-// () -> Unknown
 export class LiteralType extends Literal {
   type = 'type';
   declare value;
@@ -178,7 +177,6 @@ export class LiteralType extends Literal {
   }
 }
 
-// () -> Unknown
 export class UndefinedWord extends Literal {
   type = 'undefined';
 

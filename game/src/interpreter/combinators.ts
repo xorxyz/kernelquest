@@ -55,7 +55,7 @@ export const i = new Combinator(['i'], ['quotation'], ({ stack, exec }) => {
   });
 });
 
-export const map = new Combinator(['map'], ['list|quotation', 'quotation'], ({ stack, exec }) => {
+export const map = new Combinator(['map', 'each'], ['list|quotation', 'quotation'], ({ stack, exec }) => {
   const program = stack.pop() as Quotation;
   const list = stack.pop() as LiteralList<any>;
 

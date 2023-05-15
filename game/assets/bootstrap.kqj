@@ -2,9 +2,29 @@
 
 [
   [&1 [0 0]]
-  [&2 [1 1]]
-  [&3 [2 2]]
+  [&2 [2 1]]
+  [&3 [4 1]]
 ] [i position] map pop
 
-"Known positions:" print
-[% % position] ? dup print
+# [% % position] ? print
+
+[%p [% 1] position] ? print
+
+
+# ---
+
+# "same_col" [Ref Ref] predicate
+
+# [%x %x same] 
+# []
+# rule
+
+# [%a %b same_col]
+# [[
+#   [%a [%ax %y] position] 
+#   [%b [%bx %y] position]
+#   [[%a %b same] not?] 
+# ] and?]
+# rule
+
+# [&2 %who same_col] ? # [[&2 &3 same_col]]

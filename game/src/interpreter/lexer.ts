@@ -36,7 +36,8 @@ export enum TokenType {
   ATOM = 'atom',
   REF = 'ref',
   HEX = 'hex',
-  TYPE = 'type'
+  TYPE = 'type',
+  VARIABLE = 'variable'
 }
 
 const keywords = {
@@ -188,15 +189,27 @@ export class Scanner {
     }
 
     const text = this.source.substring(this.start, this.current);
-    const parts = text.split(':')
-
-    console.log(parts)
+    const parts = text.split(':');
 
     if (parts.length > 2 || parts.some(part => !isAlphaNumeric(part))) {
       throw new Error(`Parsing error: ${text} is not a valid type expression.`)
     }
 
     this.addToken(TokenType.TYPE, text);
+  }
+
+  private variable() {
+    while (this.peek() !== ' ' && this.peek() !== ']' && !this.isAtEnd()) {
+      this.next();
+    }
+
+    const text = this.source.substring(this.start + 1, this.current);
+
+    if (!text.length && !isAlphaNumeric(text)) {
+      throw new Error(`Parsing error: '${text}' is not a valid pattern variable name.`)
+    }
+
+    this.addToken(TokenType.VARIABLE, text);
   }
 
   private hex() {
@@ -236,7 +249,7 @@ export class Scanner {
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, '*'); break;
       case TokenType.QUESTION_MARK: this.addToken(TokenType.QUESTION_MARK, char); break;
-      case TokenType.PERCENT: this.addToken(TokenType.PERCENT, char); break;
+      case TokenType.PERCENT: this.variable(); break;
       case '&': this.ref(); break;
       case TokenType.MINUS:
         nextChar = this.peek();

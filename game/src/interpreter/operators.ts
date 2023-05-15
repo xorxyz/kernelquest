@@ -6,7 +6,7 @@ import {
 import {
   LiteralHex,
   LiteralList,
-  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, TypeNames,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralUnknown, LiteralVector, Quotation, TypeNames, Variable,
 } from './literals';
 import { capitalize } from '../shared/text';
 
@@ -286,15 +286,51 @@ export const assert = new Operator(['assert'], ['string'], ({ stack, db, dict })
 export const query = new Operator(['?'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
 
-  const f = quotation.value.pop();
+  const predicate = quotation.value.pop();
+  const args = quotation.value;
 
-  if (!f) {
-    throw new Error('query (\'?\') : quotation is missing a factor');
+  if (!predicate) {
+    throw new Error('query (\'?\') : quotation is missing a predicate');
+  }
+
+  const types = db.predicates[predicate.lexeme];
+
+  // check that query matches predicate signature
+  const argumentsMatch = args.every((arg, idx) => {
+    return (
+      arg.type === 'variable' || 
+      types[idx].value === arg.type ||
+      // handles case where vector gets parsed as a quotation because it contains a variable
+      (types[idx].value === 'vector' && 
+       arg.type === 'quotation' && 
+       (arg.value as Array<Factor>)?.some(f => f.type === 'variable')
+      )
+    )
+  })
+
+  if (!argumentsMatch) {
+    throw new Error(`query: provided arguments don\'t match predicate "${predicate.lexeme}"
+      Expected '${types.map(t => t.value).join(',')}', got '${args.map(a => a.type).join(',')}'`)
   }
 
   const facts = db.facts
-    .filter(fact => fact.slice(-1)[0].lexeme === f.lexeme)
-    .map(fact => new Quotation(fact));
+    .filter(term => term.slice(-1)[0].lexeme === predicate.lexeme)
+    .filter(term => args.every((arg, idx) => {
+      if (arg instanceof Quotation) {
+        debug('quotation:', arg)
+        const innerMatch = arg.value.every((innerArg, innerIdx) => {
+          const q = (term[idx].value as Quotation)[innerIdx].value
+          debug('inner', q, innerArg.value);
+          const matches = q === innerArg.value
+          return innerArg instanceof Variable || matches;
+        })
+        return innerMatch;
+      }
+
+      const matches = term[idx].value === arg.value
+      return arg instanceof Variable || matches;
+    }))
+    .map(term => new Quotation(term));
 
   const results = new Quotation()
 
@@ -351,6 +387,33 @@ export const createUnknownWord = (name: string) => new UnknownOperator([name], [
   }
 });
 
+export const length = new Operator(['length'], ['list|quotation'], ({ stack }) => {
+  const quotation = stack.pop() as Quotation;
+
+  stack.push(new LiteralNumber(quotation.value.length));
+});
+
+export const first = new Operator(['first'], ['list|quotation'], ({ stack }) => {
+  const quotation = stack.pop() as Quotation;
+  const value = quotation.value[0]
+
+  if (value) stack.push(value);
+});
+
+export const second = new Operator(['second'], ['list|quotation'], ({ stack }) => {
+  const quotation = stack.pop() as Quotation;
+  const value = quotation.value[1]
+
+  if (value) stack.push(value);
+});
+
+export const third = new Operator(['third'], ['list|quotation'], ({ stack }) => {
+  const quotation = stack.pop() as Quotation;
+  const value = quotation.value[2]
+
+  if (value) stack.push(value);
+});
+
 const operators = {};
 
 [
@@ -362,7 +425,8 @@ const operators = {};
   vector_add, vector_sub,
   toHex, 
   is_type, to_type,
-  predicate, assert, query
+  predicate, assert, query, 
+  length, first, second, third
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

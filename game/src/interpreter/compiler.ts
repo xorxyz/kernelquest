@@ -7,7 +7,7 @@ import {
   LiteralString, 
   LiteralTruth, 
   LiteralType, 
-  LiteralUnknown, 
+  Variable, 
   Quotation, 
   TypeNames,
 } from './literals';
@@ -123,12 +123,12 @@ export class Compiler {
       return factors;
     }
 
-    if (token.type === TokenType.PERCENT) {
-      const literalUnknown = new LiteralUnknown();
+    if (token.type === TokenType.VARIABLE) {
+      const variable = new Variable(token.lexeme, token.literal);
       if (this.level === 0) {
-        factors.push(literalUnknown);
+        factors.push(variable);
       } else {
-        this.quotations[this.level].value.push(literalUnknown);
+        this.quotations[this.level].value.push(variable);
       }
       return factors;
     }
