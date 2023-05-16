@@ -52,12 +52,11 @@ export class Engine {
     this.story = story;
 
     this.clock.on('tick', this.updateIfPending.bind(this));
-
-    this.selectSaveFile(0);
-    this.load();
   }
 
   async init() {
+    this.selectSaveFile(0);
+
     const zero = await global.electron.load(0);
     const one = await global.electron.load(1);
     const two = await global.electron.load(2);

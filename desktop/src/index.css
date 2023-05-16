@@ -29,14 +29,15 @@ body {
 
 @font-face {
   font-family: "KernelQuest";
-  src: url("./monogram-extended") format('woff2');
+  src: url("./JetBrainsMono-Medium") format('woff2');
+  /* src: url("./monogram-extended") format('woff2'); */
 }
  
-@font-face {
+/* @font-face {
   font-family: "Emojis";
   src: url("NotoColorEmoji") format("woff2");
-  /* src: url("TwitterColorEmoji-SVGinOT.ttf") format("truetype"); */
-}
+} */
 
+  /* src: url("TwitterColorEmoji-SVGinOT.ttf") format("truetype"); */
   /* src: url("./CustomEmoji") format('woff2'); */
   /* unicode-range: U+1F934; */

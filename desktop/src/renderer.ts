@@ -13,6 +13,7 @@ window.addEventListener('load', async () => {
   if (!audioEl) throw new Error('Cant find audio player element');
 
   const term = createTerm();
+  term.open(terminalEl);
 
   const engine = new Engine({
     send: (str) => term.write(str),
@@ -20,7 +21,9 @@ window.addEventListener('load', async () => {
 
   await engine.init();
 
-  term.open(terminalEl);
+  await engine.load();
+
+  engine.start();
 
   document.addEventListener('click', () => term.focus());
 
@@ -33,10 +36,6 @@ window.addEventListener('load', async () => {
   fitAddon.fit();
 
   registerSoundEvents(engine.events, audioEl);
-
-  engine.start();
-
-  window.resizeBy(1, 1);
 
   global.engine = engine;
 });

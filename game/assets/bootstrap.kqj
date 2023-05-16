@@ -1,4 +1,11 @@
 "position" [Ref Vector] predicate
+"name" [Ref String] predicate
+
+[
+  [&1 "Alice"]
+  [&2 "Bob"]
+  [&3 "Eve"]
+] [i name] map pop
 
 [
   [&1 [0 0]]
@@ -6,9 +13,17 @@
   [&3 [4 1]]
 ] [i position] map pop
 
-# [% % position] ? print
+[% % position] ? print
 
-[%p [% 1] position] ? print
+[[%p [% 1] position]
+[%p %who name]] and
+
+
+# [
+# [%a [%x %ay] position] 
+# [%b [%x %by] position] 
+# [%a %b same] not?
+# ] and? print
 
 
 # ---

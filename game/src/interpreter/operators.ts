@@ -6,7 +6,7 @@ import {
 import {
   LiteralHex,
   LiteralList,
-  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralUnknown, LiteralVector, Quotation, TypeNames, Variable,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, TypeNames, Variable,
 } from './literals';
 import { capitalize } from '../shared/text';
 
@@ -282,61 +282,16 @@ export const assert = new Operator(['assert'], ['string'], ({ stack, db, dict })
   db.facts.push(term);
 });
 
-
 export const query = new Operator(['?'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
 
-  const predicate = quotation.value.pop();
-  const args = quotation.value;
+  stack.push(db.search(quotation));
+});
 
-  if (!predicate) {
-    throw new Error('query (\'?\') : quotation is missing a predicate');
-  }
+export const and_query = new Operator(['and'], ['quotation'], ({ stack, db }) => {
+  const quotation = stack.pop() as Quotation;
 
-  const types = db.predicates[predicate.lexeme];
-
-  // check that query matches predicate signature
-  const argumentsMatch = args.every((arg, idx) => {
-    return (
-      arg.type === 'variable' || 
-      types[idx].value === arg.type ||
-      // handles case where vector gets parsed as a quotation because it contains a variable
-      (types[idx].value === 'vector' && 
-       arg.type === 'quotation' && 
-       (arg.value as Array<Factor>)?.some(f => f.type === 'variable')
-      )
-    )
-  })
-
-  if (!argumentsMatch) {
-    throw new Error(`query: provided arguments don\'t match predicate "${predicate.lexeme}"
-      Expected '${types.map(t => t.value).join(',')}', got '${args.map(a => a.type).join(',')}'`)
-  }
-
-  const facts = db.facts
-    .filter(term => term.slice(-1)[0].lexeme === predicate.lexeme)
-    .filter(term => args.every((arg, idx) => {
-      if (arg instanceof Quotation) {
-        debug('quotation:', arg)
-        const innerMatch = arg.value.every((innerArg, innerIdx) => {
-          const q = (term[idx].value as Quotation)[innerIdx].value
-          debug('inner', q, innerArg.value);
-          const matches = q === innerArg.value
-          return innerArg instanceof Variable || matches;
-        })
-        return innerMatch;
-      }
-
-      const matches = term[idx].value === arg.value
-      return arg instanceof Variable || matches;
-    }))
-    .map(term => new Quotation(term));
-
-  const results = new Quotation()
-
-  facts.forEach(f => results.value.push(f));
-
-  stack.push(results);
+  stack.push(db.and(quotation));
 });
 
 export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {
@@ -426,7 +381,7 @@ const operators = {};
   toHex, 
   is_type, to_type,
   predicate, assert, query, 
-  length, first, second, third
+  length, first, second, third, and_query
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

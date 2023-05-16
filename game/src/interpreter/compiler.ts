@@ -124,7 +124,7 @@ export class Compiler {
     }
 
     if (token.type === TokenType.VARIABLE) {
-      const variable = new Variable(token.lexeme, token.literal);
+      const variable = new Variable(token.literal);
       if (this.level === 0) {
         factors.push(variable);
       } else {

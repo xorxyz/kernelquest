@@ -7,23 +7,20 @@ export const fitAddon = new FitAddon();
 
 export function createTerm () {
   const term = new Terminal({
-    cols: SCREEN_WIDTH -1,
+    cols: SCREEN_WIDTH,
     rows: SCREEN_HEIGHT,
-    customGlyphs: true, 
+    // customGlyphs: true, 
     theme: {
       background: '#181818',
-      black: '#181818',
+      // black: '#181818',
       green: '#0CFF24',
       red: '#F92672', 
       cursor: '#fff',
     },
-    fontSize: 32,
-    // lineHeight: .5,
-    letterSpacing: 1.2,
+    // fontSize: 32,
     allowProposedApi: true,
     cursorBlink: true, 
-    cursorStyle: 'block',
-    fontFamily: '"KernelQuest", "Emojis"',
+    fontFamily: '"KernelQuest"'
   });
   
   const unicode14Addon = new Unicode14Addon();

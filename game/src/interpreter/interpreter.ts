@@ -1,6 +1,7 @@
 import { IAction } from '../engine';
 import { Queue, Stack, debug } from '../shared';
 import { Dictionary } from './compiler';
+import { Database } from './database';
 import { Factor, Term } from './types';
 
 // How to use this in the game loop:
@@ -29,10 +30,7 @@ export class Interpreter {
   halted = false;
   subinterpreter: Interpreter | null = null;
   dict: Dictionary;
-  db = {
-    predicates: {},
-    facts: []
-  }
+  db = new Database();
 
   constructor(dict: Dictionary, db?) {
     this.dict = dict;

@@ -144,8 +144,8 @@ export class Variable extends Literal {
   type = 'variable';
   name: string;
 
-  constructor (lexeme: string, name: string) {
-    super(lexeme);
+  constructor (name: string) {
+    super(`%${name}`);
     this.name = name;
   }
 
