@@ -145,7 +145,7 @@ export class Variable extends Literal {
   name: string;
 
   constructor (name: string) {
-    super(`%${name}`);
+    super(`?${name}`);
     this.name = name;
   }
 
@@ -154,7 +154,7 @@ export class Variable extends Literal {
   }
 
   dup() {
-    return new Variable(this.lexeme, this.name);
+    return new Variable(this.lexeme);
   }
 }
 

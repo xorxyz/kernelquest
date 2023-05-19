@@ -248,8 +248,8 @@ export class Scanner {
       case TokenType.DOT: this.addToken(TokenType.DOT, char); break;
       case TokenType.PLUS: this.addToken(TokenType.PLUS, char); break;
       case TokenType.STAR: this.addToken(TokenType.STAR, '*'); break;
-      case TokenType.QUESTION_MARK: this.addToken(TokenType.QUESTION_MARK, char); break;
-      case TokenType.PERCENT: this.variable(); break;
+      // case TokenType.QUESTION_MARK: this.addToken(TokenType.QUESTION_MARK, char); break;
+      case TokenType.QUESTION_MARK: this.variable(); break;
       case '&': this.ref(); break;
       case TokenType.MINUS:
         nextChar = this.peek();

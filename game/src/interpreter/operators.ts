@@ -261,58 +261,42 @@ export const toHex = new Operator(['to_hex'], ['number'], ({ stack }) => {
   stack.push(new LiteralHex(`0x${n.value.toString(16)}`));
 });
 
-export const assert = new Operator(['assert'], ['string'], ({ stack, db, dict }) => {
-  const name = stack.pop() as LiteralString;
-  const typeList = [...db.predicates[name.value]].reverse();
-
-  if (!typeList) {
-    throw new Error(`assert: predicate '${name.value}' does not exist.`);
-  }
-
-  typeList.forEach((t, i) => {
-    const f = stack.peekN(i);
-    if (!f || f.type !== t.value) {
-      throw new Error(`assert: type '${t.value}' is missing from the stack.`);
-    }
-  })
-
-  const args = stack.popN(typeList.length).reverse();
-  const term = [...args.filter((x): x is Factor => !!x), dict[name.value]];
-  console.log('term: ', term)
-  db.facts.push(term);
-});
-
-export const query = new Operator(['?'], ['quotation'], ({ stack, db }) => {
+export const assert = new Operator(['assert'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
 
-  stack.push(db.search(quotation));
+  db.assert(quotation.value);
+});
+
+export const query = new Operator(['query'], [], ({ stack, db }) => {
+  const factor = stack.pop();
+  if (!factor) {
+    throw new Error('query: missing a predicate.')
+  }
+  const signature = db.predicates.get(factor.lexeme);
+  if (!signature) {
+    throw new Error(`query: predicate '${factor.lexeme}' is not defined.`)
+  }
+  debug('query:', signature);
+  const args = stack.popN(signature.length);
+  const assertions = db.search([...args, factor]);
+  const result = new Quotation(assertions.map(assertion => new Quotation(assertion.term)));
+
+  stack.push(result);
 });
 
 export const and_query = new Operator(['and'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
 
-  stack.push(db.and(quotation));
+  stack.push(quotation);
 });
 
 export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {
   const typeList = stack.pop() as LiteralList<LiteralType>;
   const name = stack.pop() as LiteralString;
-  
-  if (typeList.value.length < 1) {
-    throw new Error(`predicate: expected at least 1 type, got ${typeList.value.length}.`);
-  }
 
-  if (typeList.of !== 'type') {
-    throw new Error(`predicate: expected list of types, got '${typeList.of}'.`);
-  }
+  db.addPredicate(name.value, [...typeList.value])
 
-  if (dict[name.value]) {
-    throw new Error(`predicate: the word '${name.value}' already exists in the active dictionary.`);
-  }
-
-  db.predicates[name.value] = [...typeList.value]
-
-  dict[name.value] = new CustomOperator(name.value, typeList.value.map((t) => t.value), [name, assert]);
+  dict[name.value] = new CustomOperator(name.value, typeList.value.map((t) => t.value + '|variable'), [name, query]);
 });
 
 export const is_type = new Operator(['is_type'], ['any', 'type'], ({ stack }) => {
