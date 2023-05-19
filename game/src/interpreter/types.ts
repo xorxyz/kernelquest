@@ -3,6 +3,7 @@ import { IAction } from '../engine';
 import { Stack } from '../shared';
 import { Dictionary } from './compiler';
 import { Database } from './database';
+import { Quotation } from './literals';
 
 export interface ExecuteArgs {
   stack: Stack<Factor>

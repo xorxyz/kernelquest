@@ -3,7 +3,7 @@ import {
 } from '../shared';
 import {
   LiteralList,
-  LiteralRef, LiteralString, LiteralVector, Operator, Quotation,
+  LiteralRef, LiteralString, LiteralVector, Operator, Quotation, recursiveMap,
 } from '../interpreter';
 import { PathFinder } from './pathfinding';
 import { LocationAddress, World } from './world';
@@ -577,7 +577,7 @@ export const exec: IActionDefinition<{ text: string }> = {
 
       agent.mind.interpreter.update(term);
 
-      return succeed('');
+      return succeed(`Executing: [${new Quotation(term).dequote()}]`);
     } catch (err) {
       return fail((err as Error).message);
     }

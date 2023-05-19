@@ -1,18 +1,19 @@
 "position" [Ref Vector] predicate
 "name" [Ref String] predicate
 
-[
-  [&1 "Alice"]
-  [&2 "Bob"]
-  [&3 "Eve"]
-] [[name] concat assert] map pop
 
-? ? name
+[&1 "Alice" name] assert
+[&2 "Bob" name] assert
+[&3 "Eve" name] assert
+
+
+# ?who ?n name
 # &2 "Bob" name
 # &3 "Eve" name
 
+# &1 ? name
 
-# % % name
+# ? ? name
 
 # [
 #   [&1 [0 0]]

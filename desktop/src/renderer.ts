@@ -5,15 +5,17 @@ import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
 import { fitAddon, createTerm } from './term';
 
+console.log('PAGE WAS RELOADED')
+
 window.addEventListener('load', async () => {
+  console.log('ON LOAD');
   const terminalEl = document.querySelector('#terminal') as HTMLElement;
   if (!terminalEl) throw new Error('Cant find the element.');
 
   const audioEl = document.querySelector('#audio-player') as HTMLAudioElement;
   if (!audioEl) throw new Error('Cant find audio player element');
 
-  const term = createTerm();
-  term.open(terminalEl);
+  const term = createTerm(terminalEl);
 
   const engine = new Engine({
     send: (str) => term.write(str),
@@ -22,8 +24,6 @@ window.addEventListener('load', async () => {
   await engine.init();
 
   await engine.load();
-
-  engine.start();
 
   document.addEventListener('click', () => term.focus());
 
@@ -38,6 +38,10 @@ window.addEventListener('load', async () => {
   registerSoundEvents(engine.events, audioEl);
 
   global.engine = engine;
+
+  
+
+  // engine.start();
 });
 
 function registerSoundEvents(bus, el) {

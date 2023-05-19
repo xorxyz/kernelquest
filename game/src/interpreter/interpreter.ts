@@ -2,6 +2,8 @@ import { IAction } from '../engine';
 import { Queue, Stack, debug } from '../shared';
 import { Dictionary } from './compiler';
 import { Database } from './database';
+import { recursiveMap } from './literals';
+import { UnknownOperator } from './operators';
 import { Factor, Term } from './types';
 
 // How to use this in the game loop:
@@ -43,7 +45,7 @@ export class Interpreter {
     const term = this.term.map((f) => f.toString()).join(' ');
     const line = `${this.level}) ${stack}${term ? ` : ${term}` : ''}`;
     this.logs.push(line);
-    debug(line);
+    debug('interpreter:', line);
   }
 
   get current(): Interpreter {
@@ -101,8 +103,11 @@ export class Interpreter {
     }
 
     if (this.term.length) {
+      debug('step: term', this.term);
+
       const factor = this.term.shift() as Factor;
       try {
+
         factor.validate(this.stack);
         factor.execute({
           stack: this.stack,

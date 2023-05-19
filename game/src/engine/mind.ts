@@ -1,9 +1,9 @@
-import { Compiler, Interpreter } from '../interpreter';
+import { Compiler, Dictionary, Interpreter, LiteralTruth } from '../interpreter';
+import combinators from '../interpreter/combinators';
+import operators, { Operator } from '../interpreter/operators';
 import { Queue } from '../shared';
-import Graph from '../shared/graph';
 import { Graphv2 } from '../shared/graphv2';
 import { IAction } from './actions';
-import words from './words';
 
 /** @category Mind */
 export interface Observation {
@@ -14,6 +14,7 @@ export interface Observation {
 /** @category Mind */
 export class Mind {
   tick = 0;
+  dict: Dictionary;
   memory: Array<Observation> = [];
   queue: Queue<IAction> = new Queue<IAction>();
   compiler: Compiler;
@@ -21,8 +22,17 @@ export class Mind {
   model = new MentalModel();
 
   constructor() {
-    this.compiler = new Compiler(words);
-    this.interpreter = new Interpreter(this.compiler.dict);
+    this.dict = {
+      ...operators,
+      ...combinators,
+      true: new LiteralTruth(true),
+      false: new LiteralTruth(false),
+      help: new Operator(['help'], [], () => {
+        throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.\n`);
+      }),
+    };
+    this.compiler = new Compiler(this.dict);
+    this.interpreter = new Interpreter(this.dict);
   }
 
   get stack() {
@@ -31,6 +41,13 @@ export class Mind {
 
   update(tick) {
     this.tick = tick;
+  }
+
+  log (message: string) {
+    this.memory.push({
+      message: message,
+      tick: this.tick
+    })
   }
 
   think() {

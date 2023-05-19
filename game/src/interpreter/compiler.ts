@@ -13,29 +13,19 @@ import {
 } from './literals';
 import operators, { createUnknownWord, Operator } from './operators';
 import combinators from './combinators';
+import { debug } from '../shared';
 
 export type Dictionary = Record<string, Factor>
 
 export class Compiler {
   private scanner = new Scanner();
   tokens: Array<Token>;
-  dict: Dictionary = {
-    true: new LiteralTruth(true),
-    false: new LiteralTruth(false),
-    ...operators,
-    ...combinators,
-  };
+  dict: Dictionary;
   level = 0;
   quotations: Array<Quotation> = [];
 
-  constructor(dict: Dictionary = {}) {
-    this.dict = {
-      ...this.dict,
-      ...dict,
-      help: new Operator(['help'], [], () => {
-        throw new Error(`Available words: ${Object.keys(this.dict).sort().join(', ')}.\n`);
-      }),
-    };
+  constructor(dict: Dictionary) {
+    this.dict = dict;
   }
 
   compile(code: string): Term {
@@ -119,7 +109,6 @@ export class Compiler {
     }
 
     if (token.type === TokenType.COMMENT) {
-      console.log(`Comment: #${token.literal}`);
       return factors;
     }
 
@@ -150,13 +139,15 @@ export class Compiler {
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
       const word = this.dict[token.lexeme];
-      if (this.level === 0) {
+      if (this.level === 0) { 
         factors.push(word);
       } else {
         this.quotations[this.level].value.push(word);
       }
       return factors;
     }
+
+    debug('unknown:', token, 'Does dict have name: ', Object.keys(this.dict).filter(str => str === 'name'));
 
     const unknownWord = createUnknownWord(token.lexeme);
 

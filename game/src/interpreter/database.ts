@@ -1,40 +1,79 @@
 import { debug } from "../shared";
-import { LiteralType, Variable } from "./literals";
+import { Variable, recursiveMap, matchTerms } from "./literals";
+import { Predicate } from "./operators";
 import { Factor, Term } from "./types";
-
-export type PredicateMap = Map<string, Array<LiteralType>>
 
 export class Assertion {
   readonly term: Term
-  readonly predicate: string
+  readonly predicate: Predicate
   readonly arguments: Term
   readonly values: Array<any>
 
   constructor (term: Term) {
     this.term = term;
-    this.predicate = term.at(-1)?.lexeme || '';
+    const predicate = term.at(-1);
+
+    debug('assertion', predicate)
+
+    if (!(predicate instanceof Predicate)) {
+      throw new Error('assertion: Could not instantiate, missing a predicate.');
+    }
+    this.predicate = predicate;
     this.arguments = term.slice(0, -1);
+  }
+
+  matches (query: Query) {
+    debug('assertion.matches?', this.arguments, query.arguments);
+    return matchTerms(this.arguments, query.arguments);
   }
 }
 
 export class Query {
   readonly term: Term
-  readonly predicate: string
+  readonly predicate: Predicate
   readonly arguments: Term
+  private variableCount = 0;
 
   constructor (term: Term) {
     this.term = term;
-    this.predicate = term.at(-1)?.lexeme || '';
-    this.arguments = term.slice(0, -1);
+
+    console.log('TERM', term.toString())
+
+    const predicate = term.at(-1);
+
+    if (!(predicate instanceof Predicate)) {
+      throw new Error('query: Could not instantiate, missing a predicate.');
+    }
+
+    this.predicate = predicate;
+    this.arguments = recursiveMap(term.slice(0, -1), (factor) => {
+      // Name unnamed variables by their order of appearance
+      if (factor instanceof Variable && !factor.name) {
+        factor.name = `__${this.variableCount}`;
+        this.variableCount++;
+      }
+      return factor;
+    })
   }
 
-  bind (frame: Frame): Assertion {
-    debug('binding frame to query', frame, this);
-    return new Assertion(this.term.map((factor, index) => {
-      return factor instanceof Variable
-        ? frame.bindings.get(frame.variables[index]) || factor
-        : factor
-    }));
+  answer (frame: Frame): Assertion {
+    debug('Answering query with frame:', frame, this);
+
+    const extendedTerm = recursiveMap(this.term, factor => this.bind(factor, frame))
+
+    return new Assertion(extendedTerm);
+  }
+
+  private bind(factor: Factor, frame: Frame) {
+    if (!(factor instanceof Variable)) return factor;
+
+    const data = frame.bindings.get(factor.name);
+    if (data) return data;
+
+    throw new Error([
+      `Frame could not be mapped to query:`,
+      `binding does not exist for variable '${factor.name}'.`
+    ].join(' '))
   }
 }
 
@@ -64,18 +103,18 @@ export class Frame {
 }
 
 export class Database {
-  readonly predicates: PredicateMap = new Map();
+  readonly predicates: Map<string, Predicate> = new Map();
   readonly assertions: Array<Assertion> = [];
   readonly assertionsByPredicate: Map<string, Array<Assertion>> = new Map();
 
-  addPredicate (predicate: string, types: Array<LiteralType>): boolean {
-    debug('addPredicate:', predicate, types);
-    if (this.predicates.has(predicate)) {
+  addPredicate (predicate: Predicate): boolean {
+    debug('addPredicate:', predicate);
+    if (this.predicates.has(predicate.name)) {
       return false;
     }
 
-    this.predicates.set(predicate, types);
-    this.assertionsByPredicate.set(predicate, []);
+    this.predicates.set(predicate.name, predicate);
+    this.assertionsByPredicate.set(predicate.name, []);
 
     return true;
   }
@@ -83,29 +122,37 @@ export class Database {
   assert (term: Term) {
     const assertion = new Assertion(term);
 
-    if (!this.predicates.has(assertion.predicate)) {
-      throw new Error(`assert: predicate "${assertion.predicate}" is not in the database.`);
+    debug('assert', assertion);
+
+    if (!this.predicates.has(assertion.predicate.name)) {
+      throw new Error(`assert: predicate "${assertion.predicate.lexeme}" is not in the database.`);
     }
 
-    this.assertionsByPredicate.get(assertion.predicate)?.push(assertion);
+    this.assertionsByPredicate.get(assertion.predicate.lexeme)?.push(assertion);
     this.assertions.push(assertion);
   }
 
   search (term: Term): Array<Assertion> {
+    debug('search:', term);
     const query = new Query(term);
 
     debug('search:', query)
 
-    if (!this.predicates.has(query.predicate)) {
+    if (!this.predicates.has(query.predicate.lexeme)) {
       throw new Error(`search: predicate "${query.predicate}" is not in the database.`);
     }
 
-    const indexedAssertions = this.assertionsByPredicate.get(query.predicate) || [];
+    const indexedAssertions = this.assertionsByPredicate.get(query.predicate.lexeme) || [];
+
+    if (!query.arguments.some(arg => arg instanceof Variable)) {
+      debug('search: No variable, searching for direct match...', indexedAssertions);
+      return indexedAssertions.filter(assertion => assertion.matches(query));
+    }
 
     return indexedAssertions
       .map(assertion => this.match(query, assertion, new Frame()))
       .filter((value): value is Frame => !!value)
-      .map(frame => query.bind(frame));
+      .map(frame => query.answer(frame));
   }
 
   // [%who [%x 4] position]                                             (who is at column 4)
@@ -118,7 +165,8 @@ export class Database {
     const matches = query.arguments.every((arg, index) => {
       const data = assertion.arguments[index];
       if (arg instanceof Variable) {
-        return nextFrame.bind(data, arg.name);
+        const name = arg.name ? arg.name : `$${index}`;
+        return nextFrame.bind(data, name);
       }
       return arg.value === data.value;
     });

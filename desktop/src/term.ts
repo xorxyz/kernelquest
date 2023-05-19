@@ -5,7 +5,7 @@ import { FitAddon } from 'xterm-addon-fit';
 
 export const fitAddon = new FitAddon();
 
-export function createTerm () {
+export function createTerm (terminalEl) {
   const term = new Terminal({
     cols: SCREEN_WIDTH,
     rows: SCREEN_HEIGHT,
@@ -29,6 +29,8 @@ export function createTerm () {
   term.loadAddon(fitAddon);
   
   term.unicode.activeVersion = '14';
+
+  term.open(terminalEl);
 
   return term
 }

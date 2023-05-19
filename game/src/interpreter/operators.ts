@@ -6,7 +6,7 @@ import {
 import {
   LiteralHex,
   LiteralList,
-  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, TypeNames, Variable,
+  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, recursiveMap, TypeNames, Variable,
 } from './literals';
 import { capitalize } from '../shared/text';
 
@@ -261,28 +261,60 @@ export const toHex = new Operator(['to_hex'], ['number'], ({ stack }) => {
   stack.push(new LiteralHex(`0x${n.value.toString(16)}`));
 });
 
-export const assert = new Operator(['assert'], ['quotation'], ({ stack, db }) => {
-  const quotation = stack.pop() as Quotation;
+export const assert = new Operator(['assert'], ['quotation'], ({ stack, db, dict }) => {
+  let quotation = stack.pop() as Quotation;
+
+  quotation.value = recursiveMap(quotation.value, ((factor) => {
+    if (factor instanceof UnknownOperator) {
+      const knownOperator = dict[factor.lexeme];
+      debug('knownOperator', knownOperator);
+      if (knownOperator) return knownOperator;
+    }
+    return factor;
+  }));
 
   db.assert(quotation.value);
+
+  // syscall({
+  //   name: 'print',
+  //   args: {
+  //     text: `Added assertion to database: ${quotation.toString()}`
+  //   }
+  // })
 });
 
 export const query = new Operator(['query'], [], ({ stack, db }) => {
   const factor = stack.pop();
+  debug('query: factor', factor);
   if (!factor) {
     throw new Error('query: missing a predicate.')
   }
-  const signature = db.predicates.get(factor.lexeme);
-  if (!signature) {
+  const predicate = db.predicates.get(factor.lexeme);
+  if (!predicate) {
     throw new Error(`query: predicate '${factor.lexeme}' is not defined.`)
   }
-  debug('query:', signature);
-  const args = stack.popN(signature.length);
+  debug('query:', predicate);
+  const args = stack.popN(predicate.signature.length).reverse();
   const assertions = db.search([...args, factor]);
   const result = new Quotation(assertions.map(assertion => new Quotation(assertion.term)));
 
   stack.push(result);
 });
+
+export class Predicate extends Operator {
+  name: string;
+
+  constructor (name: string, signature: Array<string>) {
+    super([name], signature.map(type => `${type}|variable`), (execArgs) => {
+      this.validate(execArgs.stack);
+
+      execArgs.stack.push(this);
+      query.execute(execArgs);
+    })
+
+    this.name = name;
+  }
+}
 
 export const and_query = new Operator(['and'], ['quotation'], ({ stack, db }) => {
   const quotation = stack.pop() as Quotation;
@@ -290,13 +322,28 @@ export const and_query = new Operator(['and'], ['quotation'], ({ stack, db }) =>
   stack.push(quotation);
 });
 
-export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {
+export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db, syscall }) => {
   const typeList = stack.pop() as LiteralList<LiteralType>;
   const name = stack.pop() as LiteralString;
 
-  db.addPredicate(name.value, [...typeList.value])
+  if (dict[name.value]) {
+    throw new Error(`predicate: The word ${name.value} is already in the dictionary.`);
+  }
 
-  dict[name.value] = new CustomOperator(name.value, typeList.value.map((t) => t.value + '|variable'), [name, query]);
+  const predicate = new Predicate(name.value, typeList.value.map(t => t.value));
+  const success = db.addPredicate(predicate);
+
+  if (!success) {
+    throw new Error(`predicate: Predicate '${name.value}' already exists.`);
+  }
+
+  dict[name.value] = predicate;
+  syscall({
+    name: 'print',
+    args: {
+      text: `Defined predicate '${name.value}' with types [${typeList.value.map(t => t.value).join(' ')}]`
+    }
+  })
 });
 
 export const is_type = new Operator(['is_type'], ['any', 'type'], ({ stack }) => {

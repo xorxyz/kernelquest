@@ -9,6 +9,8 @@ export const mainConfig: Configuration = {
    */
   entry: './src/index.ts',
 
+  devtool: 'source-map',
+
   // Put your normal webpack config below here
   module: {
     rules,

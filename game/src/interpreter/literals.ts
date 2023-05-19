@@ -276,3 +276,40 @@ export class LiteralHex extends LiteralNumber {
     return new LiteralHex(this.lexeme);
   }
 }
+
+export function recursiveMapStep (factor: Factor, result: Term, transform: Function) {
+  if (!(factor instanceof Quotation)) {
+    const transformed = transform(factor);
+    result.push(transformed);
+    return;
+  }
+
+  const innerTerm = factor.value;
+  const innerResult = new Term();
+
+  innerTerm.forEach(innerFactor => {
+    recursiveMapStep(innerFactor, innerResult, transform);
+  });
+
+  result.push(new Quotation(innerResult));
+  return;
+}
+
+export function recursiveMap(term: Term, transform: (factor: Factor) => Factor): Term {
+  const result: Term = new Term();
+  
+  term.forEach(factor => recursiveMapStep(factor, result, transform));
+  
+  return result;
+}
+
+export function matchTerms(termA: Term, termB: Term) {
+  return termA.every((fA, index) => {
+    const fB = termB.at(index);
+    if (!fB || fB.type !== fA.type) return false
+    if (fA instanceof Quotation && fB instanceof Quotation) {
+      return matchTerms(fA.value, fB.value)
+    }
+    return fA.value == fB.value;
+  })
+}

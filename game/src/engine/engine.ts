@@ -231,6 +231,8 @@ export class Engine {
     this.cycle = data.stats.time;
     this.lastSavedOn = this.cycle;
 
+    debug('Bootstrap text:', bootstrap);
+
     this.hero.mind.queue.add({
       name: 'exec',
       args: {
