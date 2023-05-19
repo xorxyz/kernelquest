@@ -4,6 +4,7 @@ import 'tachyons/css/tachyons.css';
 import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
 import { fitAddon, createTerm } from './term';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'xor4-game/src/shared';
 
 console.log('PAGE WAS RELOADED')
 
@@ -20,28 +21,21 @@ window.addEventListener('load', async () => {
   const engine = new Engine({
     send: (str) => term.write(str),
   });
-
-  await engine.init();
-
-  await engine.load();
-
-  document.addEventListener('click', () => term.focus());
+  global.engine = engine;
 
   term.onKey(({ key }) => {
     const input = Buffer.from(key).toString('hex');
     engine.handleInput(input);
   });
 
-  term.focus();
-  fitAddon.fit();
+  await engine.init();
+
+  await engine.load();
 
   registerSoundEvents(engine.events, audioEl);
 
-  global.engine = engine;
-
-  
-
-  // engine.start();
+  engine.start();
+  term.focus();
 });
 
 function registerSoundEvents(bus, el) {

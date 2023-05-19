@@ -1,11 +1,23 @@
 "position" [Ref Vector] predicate
 "name" [Ref String] predicate
+"in" [Ref Ref] predicate
 
 
 [&1 "Alice" name] assert
 [&2 "Bob" name] assert
-[&3 "Eve" name] assert
+# [&3 "Eve" name] assert
 
+[&1 [0 9] position] assert
+[&2 [1 9] position] assert
+
+
+[&1 &5 in] assert
+[&2 &6 in] assert
+
+? ? in
+
+# &1 [? ?] position
+# ? [? 9] position [first ?who name first second] each
 
 # ?who ?n name
 # &2 "Bob" name

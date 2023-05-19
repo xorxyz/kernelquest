@@ -181,7 +181,7 @@ export const step: IActionDefinition<
         if (direction.value.x === -1) nextPosition.setX(15);
         if (direction.value.y === 1) nextPosition.setY(0);
         if (direction.value.y === -1) nextPosition.setY(9);
-        if (nextArea.cellAt(nextPosition)?.slot) {
+        if (nextArea.cellAt(nextPosition)?.slot && nextArea.cellAt(nextPosition)?.slot?.type.isBlocking) {
           if (engine.hero.id === agent.id) {
             engine.events.emit('sound:fail');
           }
@@ -577,7 +577,7 @@ export const exec: IActionDefinition<{ text: string }> = {
 
       agent.mind.interpreter.update(term);
 
-      return succeed(`Executing: [${new Quotation(term).dequote()}]`);
+      return succeed('');
     } catch (err) {
       return fail((err as Error).message);
     }

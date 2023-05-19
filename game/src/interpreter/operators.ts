@@ -285,17 +285,17 @@ export const assert = new Operator(['assert'], ['quotation'], ({ stack, db, dict
 
 export const query = new Operator(['query'], [], ({ stack, db }) => {
   const factor = stack.pop();
-  debug('query: factor', factor);
   if (!factor) {
-    throw new Error('query: missing a predicate.')
+    throw new Error('query: missing a predicate.');
   }
   const predicate = db.predicates.get(factor.lexeme);
   if (!predicate) {
-    throw new Error(`query: predicate '${factor.lexeme}' is not defined.`)
+    throw new Error(`query: predicate '${factor.lexeme}' is not defined.`);
   }
-  debug('query:', predicate);
   const args = stack.popN(predicate.signature.length).reverse();
-  const assertions = db.search([...args, factor]);
+  debug('query: args', args)
+  const term = [...args, predicate];
+  const assertions = db.search(term);
   const result = new Quotation(assertions.map(assertion => new Quotation(assertion.term)));
 
   stack.push(result);
@@ -305,14 +305,18 @@ export class Predicate extends Operator {
   name: string;
 
   constructor (name: string, signature: Array<string>) {
-    super([name], signature.map(type => `${type}|variable`), (execArgs) => {
-      this.validate(execArgs.stack);
+    super([name], signature, (execArgs) => {
+      // this.validate(execArgs.stack);
 
       execArgs.stack.push(this);
       query.execute(execArgs);
     })
 
     this.name = name;
+  }
+
+  validate () {
+    return true;
   }
 }
 

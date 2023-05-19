@@ -4,6 +4,7 @@ import operators, { Operator } from '../interpreter/operators';
 import { Queue } from '../shared';
 import { Graphv2 } from '../shared/graphv2';
 import { IAction } from './actions';
+import words from './words';
 
 /** @category Mind */
 export interface Observation {
@@ -25,6 +26,7 @@ export class Mind {
     this.dict = {
       ...operators,
       ...combinators,
+      ...words,
       true: new LiteralTruth(true),
       false: new LiteralTruth(false),
       help: new Operator(['help'], [], () => {

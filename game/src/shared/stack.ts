@@ -28,7 +28,7 @@ export class Stack<T> {
   }
 
   /** pop multiple values */
-  popN(n): Array<T> {
+  popN(n: number): Array<T> {
     const items: Array<T> = [];
 
     for (let i = 0; i < n; i++) {
