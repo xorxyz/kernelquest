@@ -11,6 +11,7 @@ const save: SaveFn = (saveGameId, contents) => ipcRenderer.invoke('save', saveGa
 const load: LoadFn = (saveGameId) => ipcRenderer.invoke('load', saveGameId);
 
 contextBridge.exposeInMainWorld('electron', {
+  getPreloadPath: () => ipcRenderer.sendSync('get-preload-path'),
   exit,
   save,
   load,

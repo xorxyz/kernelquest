@@ -1,8 +1,7 @@
 import {
   Points, Rectangle,
-  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style, debug, Stack,
+  Vector, Direction, EAST, NORTH, SOUTH, WEST, Colors, esc, Style, Stack,
 } from '../shared';
-import { Dictionary } from '../interpreter';
 import { Capability } from './capabilities';
 import { Body, BodyType, Thing } from './thing';
 import { Cell } from './cell';

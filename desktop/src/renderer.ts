@@ -3,10 +3,9 @@ import 'xterm/css/xterm.css';
 import 'tachyons/css/tachyons.css';
 import { Engine } from 'xor4-game/src/engine';
 import { Buffer } from 'buffer';
-import { fitAddon, createTerm } from './term';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'xor4-game/src/shared';
+import { createTerm } from './term';
 
-console.log('PAGE WAS RELOADED')
+console.log('PAGE WAS RELOADED');
 
 window.addEventListener('load', async () => {
   console.log('ON LOAD');
@@ -21,6 +20,7 @@ window.addEventListener('load', async () => {
   const engine = new Engine({
     send: (str) => term.write(str),
   });
+
   global.engine = engine;
 
   term.onKey(({ key }) => {

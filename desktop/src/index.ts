@@ -31,6 +31,10 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+ipcMain.on('get-preload-path', (e) => {
+  e.returnValue = MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY;
+});
+
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -49,10 +53,8 @@ const createWindow = (): void => {
 
   mainWindow.webContents.openDevTools();
 
-
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);// 'chrome://gpu');// MAIN_WINDOW_WEBPACK_ENTRY);
-  
 };
 
 // This method will be called when Electron has finished

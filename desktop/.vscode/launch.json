@@ -5,24 +5,13 @@
 {
 	"version": "0.2.0",
     "configurations": [
-        // {
-        //     "name": "Extension",
-        //     "type": "extensionHost",
-        //     "request": "launch",
-        //     "args": [
-        //         "--extensionDevelopmentPath=${workspaceFolder}"
-        //     ]
-        // },
         {
           "name": "Debug Main Process",
           "type": "node",
           "request": "launch",
           "cwd": "${workspaceFolder}", 
-          "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge",
-        //   "windows": {
-        //     "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-        //   },
-          "args" : ["start", "desktop"],
+          "runtimeExecutable": "npm",
+          "args" : ["run-script", "start"],
           "outputCapture": "std"
         }
     ]

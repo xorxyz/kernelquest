@@ -12,9 +12,7 @@ const config: ForgeConfig = {
   packagerConfig: {},
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({
-
-    }),
+    new MakerSquirrel({}),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({}),

@@ -16,6 +16,13 @@ import { EntityManager } from './entities';
 import joy from '../../assets/worlds/area0.kqj';
 import bootstrap from '../../assets/bootstrap.kqj';
 
+if (import.meta.webpackHot) {
+  debug('HMR is available.');
+  import.meta.webpackHot.accept((err, { moduleId, module }) => {
+    console.log(err, moduleId, module);
+  });
+}
+
 export type SendFn = (str: string) => void
 
 /** @category Engine */
