@@ -1,20 +1,64 @@
-"position" [Ref Vector] predicate
-"name" [Ref String] predicate
-"in" [Ref Ref] predicate
+[
+  ["name" [Ref String]]
+  ["position" [Ref Vector]]
+  ["in" [Ref Ref]]
+  ["has_boss" [String String]]
+] [i predicate] map pop
+
+[
+  [&1 "Alice" name] 
+  [&1 [0 9] position] 
+  [&1 &5 in]
+  [&2 "Bob" name] 
+  [&2 [1 9] position] 
+  [&2 &5 in]
+  [&3 "Eve" name] 
+  [&3 [2 9] position] 
+  # [&3 &5 in]
+  ["Alice" "Adam" has_boss]
+  ["Bob" "Alice" has_boss]
+  ["Eve" "Alice" has_boss]
+] [assert] map pop
+
+clear
+
+# [[?who [?x 9] position]
+#  [?who &5 in]
+#  [?who "Alice" name]
+# ] and
+
+# [
+#   [? [0 ?] position]
+#   [? [1 ?] position]
+# ] or
+
+# # [[[&1 [0 9] position] [&1 [1 9] position] or]]
+
+# [
+#   [?x "Adam" has_boss] # -> frames= Alice
+#   [?x "Alice" has_boss] # -> frames=Bob Eve
+# ] or
+
+[ ?who "Alice" name ] not
+
+# [
+#   [ ?who [?x 9] position ]
+#   [[ ?who "Alice" name ] not ]
+# ] and
 
 
-[&1 "Alice" name] assert
-[&2 "Bob" name] assert
-# [&3 "Eve" name] assert
-
-[&1 [0 9] position] assert
-[&2 [1 9] position] assert
+# [[ [?x &5 in] [?x [0 ?] position] and ]
+#  [?x "Bob" name]] or
 
 
-[&1 &5 in] assert
-[&2 &6 in] assert
+# [ 
+#  [ [ "Alice" "Adam" has_boss ] [ "Alice" "Alice" has_boss ] or]
+#  [ [ "Bob" "Adam" has_boss ] [ "Bob" "Alice" has_boss ] or]
+#  [ [ "Eve" "Adam" has_boss ] [ "Eve" "Alice" has_boss ] or]
+# ]
 
-? ? in
+
+
 
 # &1 [? ?] position
 # ? [? 9] position [first ?who name first second] each

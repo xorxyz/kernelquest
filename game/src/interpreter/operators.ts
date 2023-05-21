@@ -301,6 +301,82 @@ export const query = new Operator(['query'], [], ({ stack, db }) => {
   stack.push(result);
 });
 
+export const and_query = new Operator(['and'], ['quotation'], ({ stack, db, dict }) => {
+  const quotation = stack.pop() as Quotation;
+
+  quotation.value = recursiveMap(quotation.value, ((factor) => {
+    if (factor instanceof UnknownOperator) {
+      const knownOperator = dict[factor.lexeme];
+      if (knownOperator) return knownOperator;
+    }
+    return factor;
+  }));
+
+  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const assertionSets = db.and(terms);
+
+  const term: Term = assertionSets.map(assertionSet => {
+    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+
+    return new Quotation(innerTerm.concat(db.builtins.and));
+  })
+
+  const result = new Quotation(term)
+
+
+  stack.push(result);
+});
+
+export const or_query = new Operator(['or'], ['quotation'], ({ stack, db, dict }) => {
+  const quotation = stack.pop() as Quotation;
+
+  quotation.value = recursiveMap(quotation.value, ((factor) => {
+    if (factor instanceof UnknownOperator) {
+      const knownOperator = dict[factor.lexeme];
+      if (knownOperator) return knownOperator;
+    }
+    return factor;
+  }));
+
+  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const assertionSets = db.or(terms);
+
+  const term: Term = assertionSets.map(assertionSet => {
+    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+
+    return new Quotation(innerTerm.concat(db.builtins.or));
+  })
+
+  const result = new Quotation(term)
+
+  stack.push(result);
+});
+
+export const not_query = new Operator(['not'], ['quotation'], ({ stack, db, dict }) => {
+  const quotation = stack.pop() as Quotation;
+
+  quotation.value = recursiveMap(quotation.value, ((factor) => {
+    if (factor instanceof UnknownOperator) {
+      const knownOperator = dict[factor.lexeme];
+      if (knownOperator) return knownOperator;
+    }
+    return factor;
+  }));
+
+  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const assertionSets = db.not(terms);
+
+  const term: Term = assertionSets.map(assertionSet => {
+    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+
+    return new Quotation(innerTerm.concat(db.builtins.not));
+  })
+
+  const result = new Quotation(term)
+
+  stack.push(result);
+});
+
 export class Predicate extends Operator {
   name: string;
 
@@ -320,15 +396,11 @@ export class Predicate extends Operator {
   }
 }
 
-export const and_query = new Operator(['and'], ['quotation'], ({ stack, db }) => {
-  const quotation = stack.pop() as Quotation;
-
-  stack.push(quotation);
-});
-
 export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db, syscall }) => {
   const typeList = stack.pop() as LiteralList<LiteralType>;
   const name = stack.pop() as LiteralString;
+
+  debug('predicate', name);
 
   if (dict[name.value]) {
     throw new Error(`predicate: The word ${name.value} is already in the dictionary.`);
@@ -342,12 +414,7 @@ export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stac
   }
 
   dict[name.value] = predicate;
-  syscall({
-    name: 'print',
-    args: {
-      text: `Defined predicate '${name.value}' with types [${typeList.value.map(t => t.value).join(' ')}]`
-    }
-  })
+  debug('predicate: saving predicate in dict', predicate);
 });
 
 export const is_type = new Operator(['is_type'], ['any', 'type'], ({ stack }) => {
@@ -416,7 +483,8 @@ const operators = {};
   toHex, 
   is_type, to_type,
   predicate, assert, query, 
-  length, first, second, third, and_query
+  length, first, second, third, 
+  and_query, or_query, not_query
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

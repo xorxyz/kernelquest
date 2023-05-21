@@ -572,12 +572,15 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
+
     try {
       const term = agent.mind.compiler.compile(text);
 
+      if (!term.length) return succeed('');
+
       agent.mind.interpreter.update(term);
 
-      return succeed('');
+      return succeed(new Quotation(term).dequote());
     } catch (err) {
       return fail((err as Error).message);
     }

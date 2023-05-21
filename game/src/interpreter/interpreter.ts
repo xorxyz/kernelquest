@@ -103,8 +103,6 @@ export class Interpreter {
     }
 
     if (this.term.length) {
-      debug('step: term', this.term);
-
       const factor = this.term.shift() as Factor;
       try {
 

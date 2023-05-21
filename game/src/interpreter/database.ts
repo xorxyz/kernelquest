@@ -58,12 +58,10 @@ export class Query {
     })
   }
 
-  answer (frame: Frame): Assertion {
-    debug('Answering query with frame:', frame, this);
+  apply (frame: Frame) {
+    const appliedTerm = recursiveMap(this.term, factor => this.bind(factor, frame))
 
-    const extendedTerm = recursiveMap(this.term, factor => this.bind(factor, frame))
-
-    return new Assertion(extendedTerm);
+    return new Query(appliedTerm);
   }
 
   private bind(factor: Factor, frame: Frame) {
@@ -72,10 +70,7 @@ export class Query {
     const data = frame.bindings.get(factor.name);
     if (data) return data;
 
-    throw new Error([
-      `Frame could not be mapped to query:`,
-      `binding does not exist for variable '${factor.name}'.`
-    ].join(' '))
+    return factor;
   }
 }
 
@@ -108,6 +103,11 @@ export class Database {
   readonly predicates: Map<string, Predicate> = new Map();
   readonly assertions: Array<Assertion> = [];
   readonly assertionsByPredicate: Map<string, Array<Assertion>> = new Map();
+  readonly builtins = {
+    and: new Predicate('and', ['quotation']),
+    or: new Predicate('or', ['quotation']),
+    not: new Predicate('not', ['quotation']),
+  }
 
   addPredicate (predicate: Predicate): boolean {
     debug('addPredicate:', predicate);
@@ -137,35 +137,65 @@ export class Database {
   search (term: Term): Array<Assertion> {
     const query = new Query(term);
 
+    return this.evaluateQuery(query).map(frame => new Assertion(query.apply(frame).term));
+  }
+
+  and (terms: Array<Term>): Assertion[][] {
+    if (terms.length < 2) throw new Error(`and: Expected at least two queries, got ${terms.length}`);
+
+    const queries = [...terms.map(term => new Query(term))].reverse();
+
+    let frames = this.evaluateQuery(queries[0]);
+
+    queries.slice(1).forEach((query) => {
+      const nextFrames = frames.flatMap(frame => {
+        return this.evaluateQuery(query, frame);
+      });
+
+      frames = nextFrames;
+    })
+
+    return frames.map(frame => queries.map(query => 
+      new Assertion(query.apply(frame).term)).reverse());
+  }
+
+  or (terms: Array<Term>): Assertion[][] {
+    if (terms.length < 2) throw new Error(`or: Expected at least two queries, got ${terms.length}`);
+
+    const queries = [...terms.map(term => new Query(term))].reverse();
+
+    const frames = queries.flatMap((query) => {
+      return this.evaluateQuery(query);
+    });
+
+    return frames.map(frame => queries.map(query => 
+      new Assertion(query.apply(frame).term)).reverse());
+  }
+
+  not (terms: Array<Term>): Assertion[][] {
+    return [[]]
+  }
+
+  evaluateQuery (query: Query, frame = new Frame()): Array<Frame> {
     if (!this.predicates.has(query.predicate.lexeme)) {
-      throw new Error(`search: predicate "${query.predicate}" is not in the database.`);
+      throw new Error(`evaluateQuery: predicate "${query.predicate}" is not in the database.`);
     }
 
     const indexedAssertions = this.assertionsByPredicate.get(query.predicate.lexeme) || [];
 
-    if (!query.variables.length) {
-      debug('search: No variable, searching for direct match...', indexedAssertions);
-      return indexedAssertions.filter(assertion => assertion.matches(query));
-    }
-
     return indexedAssertions
-      .map(assertion => this.match(query, assertion, new Frame()))
+      .map(assertion => this.match(query, assertion, frame))
       .filter((value): value is Frame => !!value)
-      .map(frame => query.answer(frame));
   }
 
-  // [%who [%x 4] position]                                             (who is at column 4)
-  // [0:who [1:x 2]]                                                    (variables)
-  // [[alice [0 4] position] [bob [2 4] position] [eve [9 9] position]] (assertions)
-  // { who: alice, x: 0 } { who: bob, x: 2 }                            (frame matches)
-  // { who: eve, x: 9 }                         
   match (query: Query, assertion: Assertion, frame: Frame): Frame | false {
-    const nextFrame = frame.clone();
-    const matches = query.arguments.every((arg, index) => {
-      return this.recursiveMatch(arg, assertion.arguments[index], nextFrame);
-    });
+    const extendedFrame = frame.clone();
+    const matches = !query.variables.length
+      ? assertion.matches(query)
+      : query.arguments.every((arg, index) => 
+          this.recursiveMatch(arg, assertion.arguments[index], extendedFrame));
 
-    return matches ? nextFrame : false;
+    return matches ? extendedFrame : false;
   }
 
   recursiveMatch(pattern: Factor, data: Factor, frame: Frame): boolean {
