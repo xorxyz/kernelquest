@@ -7,7 +7,7 @@ const noop = () => {};
 
 export const debug = true ? (...args) => {
   log('[debug]:', ...args);
-}: noop;
+} : noop;
 
 export const info = console.info.bind(console);
 

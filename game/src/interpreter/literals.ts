@@ -2,18 +2,18 @@ import { Vector } from '../shared';
 import { Factor, Literal, Term } from './types';
 
 export const TypeNames = [
-  'truth', 
-  'number', 
-  'hex', 
-  'string', 
-  'list', 
-  'vector', 
-  'quotation', 
-  'set', 
-  'ref', 
-  'unknown', 
-  'type'
-]
+  'truth',
+  'number',
+  'hex',
+  'string',
+  'list',
+  'vector',
+  'quotation',
+  'set',
+  'ref',
+  'unknown',
+  'type',
+];
 
 // () -> Truth
 export class LiteralTruth extends Literal {
@@ -144,7 +144,7 @@ export class Variable extends Literal {
   type = 'variable';
   name: string;
 
-  constructor (name: string) {
+  constructor(name: string) {
     super(`?${name}`);
     this.name = name;
   }
@@ -161,10 +161,10 @@ export class Variable extends Literal {
 export class LiteralType extends Literal {
   type = 'type';
   declare value;
-  label: string
+  label: string;
 
-  constructor (lexeme: string, value: string, label: string) {
-    super(lexeme, value)
+  constructor(lexeme: string, value: string, label: string) {
+    super(lexeme, value);
     this.label = label;
   }
 
@@ -202,12 +202,12 @@ export class LiteralList<
 > extends Quotation {
   type = 'list';
   declare value: List<T>;
-  of: string
+  of: string;
 
   constructor(term: List<T>) {
     super(term);
     this.lexeme = this.toString();
-    this.of = term[0]?.type || 'nothing'
+    this.of = term[0]?.type || 'nothing';
   }
 
   static isList(term: Term) {
@@ -277,7 +277,7 @@ export class LiteralHex extends LiteralNumber {
   }
 }
 
-export function recursiveMapStep (factor: Factor, result: Term, transform: Function) {
+export function recursiveMapStep(factor: Factor, result: Term, transform: Function) {
   if (!(factor instanceof Quotation)) {
     const transformed = transform(factor);
     result.push(transformed);
@@ -287,29 +287,28 @@ export function recursiveMapStep (factor: Factor, result: Term, transform: Funct
   const innerTerm = factor.value;
   const innerResult = new Term();
 
-  innerTerm.forEach(innerFactor => {
+  innerTerm.forEach((innerFactor) => {
     recursiveMapStep(innerFactor, innerResult, transform);
   });
 
   result.push(new Quotation(innerResult));
-  return;
 }
 
 export function recursiveMap(term: Term, transform: (factor: Factor) => Factor): Term {
   const result: Term = new Term();
-  
-  term.forEach(factor => recursiveMapStep(factor, result, transform));
-  
+
+  term.forEach((factor) => recursiveMapStep(factor, result, transform));
+
   return result;
 }
 
 export function matchTerms(termA: Term, termB: Term) {
   return termA.every((fA, index) => {
     const fB = termB.at(index);
-    if (!fB || fB.type !== fA.type) return false
+    if (!fB || fB.type !== fA.type) return false;
     if (fA instanceof Quotation && fB instanceof Quotation) {
-      return matchTerms(fA.value, fB.value)
+      return matchTerms(fA.value, fB.value);
     }
     return fA.value == fB.value;
-  })
+  });
 }

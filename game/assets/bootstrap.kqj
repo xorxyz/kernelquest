@@ -22,6 +22,7 @@
 
 clear
 
+
 # [[?who [?x 9] position]
 #  [?who &5 in]
 #  [?who "Alice" name]
@@ -39,7 +40,7 @@ clear
 #   [?x "Alice" has_boss] # -> frames=Bob Eve
 # ] or
 
-[ ?who "Alice" name ] not
+# [ ?who "Alice" name ] not
 
 # [
 #   [ ?who [?x 9] position ]

@@ -2,8 +2,6 @@ import { IAction } from '../engine';
 import { Queue, Stack, debug } from '../shared';
 import { Dictionary } from './compiler';
 import { Database } from './database';
-import { recursiveMap } from './literals';
-import { UnknownOperator } from './operators';
 import { Factor, Term } from './types';
 
 // How to use this in the game loop:
@@ -79,7 +77,7 @@ export class Interpreter {
     if (this.subinterpreter) {
       // - if it's done, get rid of it after pushing the results onto the current stack
       if (this.subinterpreter.isDone()) {
-        debug(`${this.subinterpreter.level} is done:` + this.subinterpreter.stack.toString());
+        debug(`${this.subinterpreter.level} is done:${this.subinterpreter.stack.toString()}`);
         const f = this.subinterpreter.stack.arr.shift();
         debug('got', f);
         if (f) this.stack.push(f);
@@ -105,14 +103,13 @@ export class Interpreter {
     if (this.term.length) {
       const factor = this.term.shift() as Factor;
       try {
-
         factor.validate(this.stack);
         factor.execute({
           stack: this.stack,
           syscall: this.syscall.bind(this),
           exec: this.exec.bind(this),
           dict: this.dict,
-          db: this.db
+          db: this.db,
         });
         this.log();
       } catch (err) {

@@ -191,8 +191,8 @@ export class Scanner {
     const text = this.source.substring(this.start, this.current);
     const parts = text.split(':');
 
-    if (parts.length > 2 || parts.some(part => !isAlphaNumeric(part))) {
-      throw new Error(`Parsing error: ${text} is not a valid type expression.`)
+    if (parts.length > 2 || parts.some((part) => !isAlphaNumeric(part))) {
+      throw new Error(`Parsing error: ${text} is not a valid type expression.`);
     }
 
     this.addToken(TokenType.TYPE, text);
@@ -206,7 +206,7 @@ export class Scanner {
     const text = this.source.substring(this.start + 1, this.current);
 
     if (!text.length && !isAlphaNumeric(text)) {
-      throw new Error(`Parsing error: '${text}' is not a valid pattern variable name.`)
+      throw new Error(`Parsing error: '${text}' is not a valid pattern variable name.`);
     }
 
     this.addToken(TokenType.VARIABLE, text);

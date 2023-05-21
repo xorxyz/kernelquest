@@ -15,18 +15,13 @@
     ],
     "declaration": true,
     "strict": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
     "noImplicitReturns": true,
-    "noImplicitAny": false,
-    "alwaysStrict": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false,
     "types": [
       "node"
     ],

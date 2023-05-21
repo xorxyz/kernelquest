@@ -6,7 +6,15 @@ import {
 import {
   LiteralHex,
   LiteralList,
-  LiteralNumber, LiteralString, LiteralTruth, LiteralType, LiteralVector, Quotation, recursiveMap, TypeNames, Variable,
+  LiteralNumber,
+  LiteralString,
+  LiteralTruth,
+  LiteralType,
+  LiteralVector,
+  Quotation,
+  recursiveMap,
+  TypeNames,
+  Variable,
 } from './literals';
 import { capitalize } from '../shared/text';
 
@@ -77,14 +85,14 @@ export class UnknownOperator extends Operator {
 export class CustomOperator extends Operator {
   name: string;
 
-  constructor (name: string, signature: Array<string>, term: Term) {
+  constructor(name: string, signature: Array<string>, term: Term) {
     super([name], signature, (execArgs) => {
       this.validate(execArgs.stack);
 
-      term.forEach(factor => {
-        factor.execute(execArgs)
+      term.forEach((factor) => {
+        factor.execute(execArgs);
       });
-    })
+    });
 
     this.name = name;
   }
@@ -262,7 +270,7 @@ export const toHex = new Operator(['to_hex'], ['number'], ({ stack }) => {
 });
 
 export const assert = new Operator(['assert'], ['quotation'], ({ stack, db, dict }) => {
-  let quotation = stack.pop() as Quotation;
+  const quotation = stack.pop() as Quotation;
 
   quotation.value = recursiveMap(quotation.value, ((factor) => {
     if (factor instanceof UnknownOperator) {
@@ -293,10 +301,10 @@ export const query = new Operator(['query'], [], ({ stack, db }) => {
     throw new Error(`query: predicate '${factor.lexeme}' is not defined.`);
   }
   const args = stack.popN(predicate.signature.length).reverse();
-  debug('query: args', args)
+  debug('query: args', args);
   const term = [...args, predicate];
   const assertions = db.search(term);
-  const result = new Quotation(assertions.map(assertion => new Quotation(assertion.term)));
+  const result = new Quotation(assertions.map((assertion) => new Quotation(assertion.term)));
 
   stack.push(result);
 });
@@ -312,17 +320,18 @@ export const and_query = new Operator(['and'], ['quotation'], ({ stack, db, dict
     return factor;
   }));
 
-  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const terms = quotation.value
+    .filter((x): x is Quotation => x instanceof Quotation)
+    .map((arg) => arg.value);
   const assertionSets = db.and(terms);
 
-  const term: Term = assertionSets.map(assertionSet => {
-    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+  const term: Term = assertionSets.map((assertionSet) => {
+    const innerTerm: Term = assertionSet.map((assertion) => new Quotation(assertion.term));
 
     return new Quotation(innerTerm.concat(db.builtins.and));
-  })
+  });
 
-  const result = new Quotation(term)
-
+  const result = new Quotation(term);
 
   stack.push(result);
 });
@@ -338,16 +347,18 @@ export const or_query = new Operator(['or'], ['quotation'], ({ stack, db, dict }
     return factor;
   }));
 
-  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const terms = quotation.value
+    .filter((x): x is Quotation => x instanceof Quotation)
+    .map((arg) => arg.value);
   const assertionSets = db.or(terms);
 
-  const term: Term = assertionSets.map(assertionSet => {
-    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+  const term: Term = assertionSets.map((assertionSet) => {
+    const innerTerm: Term = assertionSet.map((assertion) => new Quotation(assertion.term));
 
     return new Quotation(innerTerm.concat(db.builtins.or));
-  })
+  });
 
-  const result = new Quotation(term)
+  const result = new Quotation(term);
 
   stack.push(result);
 });
@@ -363,16 +374,18 @@ export const not_query = new Operator(['not'], ['quotation'], ({ stack, db, dict
     return factor;
   }));
 
-  const terms = quotation.value.filter((x): x is Quotation => x instanceof Quotation).map(arg => arg.value)
+  const terms = quotation.value
+    .filter((x): x is Quotation => x instanceof Quotation)
+    .map((arg) => arg.value);
   const assertionSets = db.not(terms);
 
-  const term: Term = assertionSets.map(assertionSet => {
-    const innerTerm: Term = assertionSet.map(assertion => new Quotation(assertion.term));
+  const term: Term = assertionSets.map((assertionSet) => {
+    const innerTerm: Term = assertionSet.map((assertion) => new Quotation(assertion.term));
 
     return new Quotation(innerTerm.concat(db.builtins.not));
-  })
+  });
 
-  const result = new Quotation(term)
+  const result = new Quotation(term);
 
   stack.push(result);
 });
@@ -380,23 +393,23 @@ export const not_query = new Operator(['not'], ['quotation'], ({ stack, db, dict
 export class Predicate extends Operator {
   name: string;
 
-  constructor (name: string, signature: Array<string>) {
+  constructor(name: string, signature: Array<string>) {
     super([name], signature, (execArgs) => {
       // this.validate(execArgs.stack);
 
       execArgs.stack.push(this);
       query.execute(execArgs);
-    })
+    });
 
     this.name = name;
   }
 
-  validate () {
+  validate() {
     return true;
   }
 }
 
-export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db, syscall }) => {
+export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stack, dict, db }) => {
   const typeList = stack.pop() as LiteralList<LiteralType>;
   const name = stack.pop() as LiteralString;
 
@@ -406,8 +419,8 @@ export const predicate = new Operator(['predicate'], ['string', 'list'], ({ stac
     throw new Error(`predicate: The word ${name.value} is already in the dictionary.`);
   }
 
-  const predicate = new Predicate(name.value, typeList.value.map(t => t.value));
-  const success = db.addPredicate(predicate);
+  const p = new Predicate(name.value, typeList.value.map((t) => t.value));
+  const success = db.addPredicate(p);
 
   if (!success) {
     throw new Error(`predicate: Predicate '${name.value}' already exists.`);
@@ -421,18 +434,16 @@ export const is_type = new Operator(['is_type'], ['any', 'type'], ({ stack }) =>
   const t = stack.pop() as LiteralType;
   const factor = stack.pop() as Factor;
 
-  console.log(factor, t)
-
-  stack.push(new LiteralTruth(factor.type === t.value))
+  stack.push(new LiteralTruth(factor.type === t.value));
 });
 
 export const to_type = new Operator(['to_type'], ['string'], ({ stack }) => {
   const s = stack.pop() as LiteralString;
   if (!TypeNames.includes(s.value)) {
-    throw new Error(`to_type: '${s.value}' is not a valid type.`)
+    throw new Error(`to_type: '${s.value}' is not a valid type.`);
   }
 
-  stack.push(new LiteralType(capitalize(s.value), s.value, ''))
+  stack.push(new LiteralType(capitalize(s.value), s.value, ''));
 });
 
 export const createUnknownWord = (name: string) => new UnknownOperator([name], [], (execArgs) => {
@@ -452,21 +463,21 @@ export const length = new Operator(['length'], ['list|quotation'], ({ stack }) =
 
 export const first = new Operator(['first'], ['list|quotation'], ({ stack }) => {
   const quotation = stack.pop() as Quotation;
-  const value = quotation.value[0]
+  const value = quotation.value[0];
 
   if (value) stack.push(value);
 });
 
 export const second = new Operator(['second'], ['list|quotation'], ({ stack }) => {
   const quotation = stack.pop() as Quotation;
-  const value = quotation.value[1]
+  const value = quotation.value[1];
 
   if (value) stack.push(value);
 });
 
 export const third = new Operator(['third'], ['list|quotation'], ({ stack }) => {
   const quotation = stack.pop() as Quotation;
-  const value = quotation.value[2]
+  const value = quotation.value[2];
 
   if (value) stack.push(value);
 });
@@ -480,11 +491,11 @@ const operators = {};
   swap, swapd, cat, clear, typeOf,
   choice,
   vector_add, vector_sub,
-  toHex, 
+  toHex,
   is_type, to_type,
-  predicate, assert, query, 
-  length, first, second, third, 
-  and_query, or_query, not_query
+  predicate, assert, query,
+  length, first, second, third,
+  and_query, or_query, not_query,
 ].forEach((operator) => {
   operator.aliases.forEach((alias) => {
     operators[alias] = operator;

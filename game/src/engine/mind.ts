@@ -1,4 +1,6 @@
-import { Compiler, Dictionary, Interpreter, LiteralTruth } from '../interpreter';
+import {
+  Compiler, Dictionary, Interpreter, LiteralTruth,
+} from '../interpreter';
 import combinators from '../interpreter/combinators';
 import operators, { Operator } from '../interpreter/operators';
 import { Queue } from '../shared';
@@ -45,11 +47,11 @@ export class Mind {
     this.tick = tick;
   }
 
-  log (message: string) {
+  log(message: string) {
     this.memory.push({
-      message: message,
-      tick: this.tick
-    })
+      message,
+      tick: this.tick,
+    });
   }
 
   think() {

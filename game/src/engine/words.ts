@@ -170,7 +170,7 @@ const face = new Operator(['face'], ['vector'], ({ stack, syscall }) => {
   const v = (stack.pop() as LiteralVector).vector;
   const headings = [SOUTH, WEST, NORTH, EAST];
 
-  if (headings.every(heading => !v.equals(heading))) {
+  if (headings.every((heading) => !v.equals(heading))) {
     throw new Error(`face: not a valid heading, got ${v.label}`);
   }
 
@@ -368,13 +368,13 @@ const zoneAt = new Operator(['zone_at'], ['vector'], async ({ stack, syscall }) 
 
 const print = new Operator(['print'], ['any'], async ({ stack, syscall }) => {
   const f = stack.pop() as Factor;
-  console.log(f)
+  console.log(f);
   syscall({
     name: 'print',
     args: {
       text: f.type === 'quotation' || f.type === 'list'
-        ? (f as Quotation).value.map(f => f.toString()).join('\n')
-        : f.toString()
+        ? (f as Quotation).value.map((f) => f.toString()).join('\n')
+        : f.toString(),
     },
   });
 });
@@ -425,7 +425,7 @@ const globals = {
     read,
     scratch,
     erase,
-    print
+    print,
   },
   struct: {
     stack: stackFn,

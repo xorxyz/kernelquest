@@ -1,19 +1,20 @@
-import { debug } from "../shared";
-import { Variable, recursiveMap, matchTerms, Quotation } from "./literals";
-import { Predicate } from "./operators";
-import { Factor, Term } from "./types";
+import { debug } from '../shared';
+import {
+  Variable, recursiveMap, matchTerms, Quotation,
+} from './literals';
+import { Predicate } from './operators';
+import { Factor, Term } from './types';
 
 export class Assertion {
-  readonly term: Term
-  readonly predicate: Predicate
-  readonly arguments: Term
-  readonly values: Array<any>
+  readonly term: Term;
+  readonly predicate: Predicate;
+  readonly arguments: Term;
 
-  constructor (term: Term) {
+  constructor(term: Term) {
     this.term = term;
     const predicate = term.at(-1);
 
-    debug('assertion', predicate)
+    debug('assertion', predicate);
 
     if (!(predicate instanceof Predicate)) {
       throw new Error('assertion: Could not instantiate, missing a predicate.');
@@ -22,20 +23,20 @@ export class Assertion {
     this.arguments = term.slice(0, -1);
   }
 
-  matches (query: Query) {
+  matches(query: Query) {
     debug('assertion.matches?', this.arguments, query.arguments);
     return matchTerms(this.arguments, query.arguments);
   }
 }
 
 export class Query {
-  readonly term: Term
-  readonly predicate: Predicate
-  readonly arguments: Term
+  readonly term: Term;
+  readonly predicate: Predicate;
+  readonly arguments: Term;
   readonly variables: Variable[] = [];
   private unnamedVariableCount = 0;
 
-  constructor (term: Term) {
+  constructor(term: Term) {
     this.term = term;
 
     const predicate = term.at(-1);
@@ -55,11 +56,11 @@ export class Query {
         this.variables.push(factor);
       }
       return factor;
-    })
+    });
   }
 
-  apply (frame: Frame) {
-    const appliedTerm = recursiveMap(this.term, factor => this.bind(factor, frame))
+  apply(frame: Frame) {
+    const appliedTerm = recursiveMap(this.term, (factor) => this.bind(factor, frame));
 
     return new Query(appliedTerm);
   }
@@ -78,17 +79,17 @@ export class Frame {
   readonly variables: Array<string> = [];
   readonly bindings: Map<string, Factor> = new Map();
 
-  bind (data: Factor, name: string): boolean {
+  bind(data: Factor, name: string): boolean {
     if (name && this.bindings.has(name)) {
       debug(`frame has binding '${name}'`);
       return this.bindings.get(name)?.value === data.value;
-    };
+    }
     this.bindings.set(name, data);
     this.variables.push(name);
     return true;
   }
 
-  clone () {
+  clone() {
     const copy = new Frame();
 
     this.bindings.forEach((data, name) => {
@@ -107,9 +108,9 @@ export class Database {
     and: new Predicate('and', ['quotation']),
     or: new Predicate('or', ['quotation']),
     not: new Predicate('not', ['quotation']),
-  }
+  };
 
-  addPredicate (predicate: Predicate): boolean {
+  addPredicate(predicate: Predicate): boolean {
     debug('addPredicate:', predicate);
     if (this.predicates.has(predicate.name)) {
       return false;
@@ -120,8 +121,8 @@ export class Database {
 
     return true;
   }
-  
-  assert (term: Term) {
+
+  assert(term: Term) {
     const assertion = new Assertion(term);
 
     debug('assert', assertion);
@@ -134,49 +135,45 @@ export class Database {
     this.assertions.push(assertion);
   }
 
-  search (term: Term): Array<Assertion> {
+  search(term: Term): Array<Assertion> {
     const query = new Query(term);
 
-    return this.evaluateQuery(query).map(frame => new Assertion(query.apply(frame).term));
+    return this.evaluateQuery(query).map((frame) => new Assertion(query.apply(frame).term));
   }
 
-  and (terms: Array<Term>): Assertion[][] {
+  and(terms: Array<Term>): Assertion[][] {
     if (terms.length < 2) throw new Error(`and: Expected at least two queries, got ${terms.length}`);
 
-    const queries = [...terms.map(term => new Query(term))].reverse();
+    const queries = [...terms.map((term) => new Query(term))].reverse();
 
     let frames = this.evaluateQuery(queries[0]);
 
     queries.slice(1).forEach((query) => {
-      const nextFrames = frames.flatMap(frame => {
-        return this.evaluateQuery(query, frame);
-      });
+      const nextFrames = frames.flatMap((frame) => this.evaluateQuery(query, frame));
 
       frames = nextFrames;
-    })
-
-    return frames.map(frame => queries.map(query => 
-      new Assertion(query.apply(frame).term)).reverse());
-  }
-
-  or (terms: Array<Term>): Assertion[][] {
-    if (terms.length < 2) throw new Error(`or: Expected at least two queries, got ${terms.length}`);
-
-    const queries = [...terms.map(term => new Query(term))].reverse();
-
-    const frames = queries.flatMap((query) => {
-      return this.evaluateQuery(query);
     });
 
-    return frames.map(frame => queries.map(query => 
-      new Assertion(query.apply(frame).term)).reverse());
+    return frames.map((frame) => queries
+      .map((query) => new Assertion(query.apply(frame).term)).reverse());
   }
 
-  not (terms: Array<Term>): Assertion[][] {
-    return [[]]
+  or(terms: Array<Term>): Assertion[][] {
+    if (terms.length < 2) throw new Error(`or: Expected at least two queries, got ${terms.length}`);
+
+    const queries = [...terms.map((term) => new Query(term))].reverse();
+
+    const frames = queries.flatMap((query) => this.evaluateQuery(query));
+
+    return frames.map((frame) => queries
+      .map((query) => new Assertion(query.apply(frame).term)).reverse());
   }
 
-  evaluateQuery (query: Query, frame = new Frame()): Array<Frame> {
+  not(terms: Array<Term>): Assertion[][] {
+    return [[]];
+  }
+
+  evaluateQuery(query: Query, frame = new Frame()): Array<Frame> {
     if (!this.predicates.has(query.predicate.lexeme)) {
       throw new Error(`evaluateQuery: predicate "${query.predicate}" is not in the database.`);
     }
@@ -184,16 +181,16 @@ export class Database {
     const indexedAssertions = this.assertionsByPredicate.get(query.predicate.lexeme) || [];
 
     return indexedAssertions
-      .map(assertion => this.match(query, assertion, frame))
-      .filter((value): value is Frame => !!value)
+      .map((assertion) => this.match(query, assertion, frame))
+      .filter((value): value is Frame => !!value);
   }
 
-  match (query: Query, assertion: Assertion, frame: Frame): Frame | false {
+  match(query: Query, assertion: Assertion, frame: Frame): Frame | false {
     const extendedFrame = frame.clone();
     const matches = !query.variables.length
       ? assertion.matches(query)
-      : query.arguments.every((arg, index) => 
-          this.recursiveMatch(arg, assertion.arguments[index], extendedFrame));
+      : query.arguments
+        .every((arg, index) => this.recursiveMatch(arg, assertion.arguments[index], extendedFrame));
 
     return matches ? extendedFrame : false;
   }
@@ -205,9 +202,8 @@ export class Database {
     }
 
     if (pattern instanceof Quotation && data instanceof Quotation) {
-      return pattern.value.every((innerFactor, index) => {
-        return this.recursiveMatch(innerFactor, data.value[index], frame);
-      })
+      return pattern.value
+        .every((innerFactor, index) => this.recursiveMatch(innerFactor, data.value[index], frame));
     }
 
     return pattern.value === data.value;

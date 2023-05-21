@@ -2,13 +2,13 @@ import { Scanner, Token, TokenType } from './lexer';
 import { Factor, Term } from './types';
 import {
   LiteralHex,
-  LiteralNumber, 
-  LiteralRef, 
-  LiteralString, 
-  LiteralTruth, 
-  LiteralType, 
-  Variable, 
-  Quotation, 
+  LiteralNumber,
+  LiteralRef,
+  LiteralString,
+  LiteralTruth,
+  LiteralType,
+  Variable,
+  Quotation,
   TypeNames,
 } from './literals';
 import operators, { createUnknownWord, Operator } from './operators';
@@ -126,7 +126,7 @@ export class Compiler {
       const parts = token.lexeme.split(':');
       const lower = parts[0].toLowerCase();
       if (!TypeNames.includes(lower)) {
-        throw new Error(parts[0] + ' is not a valid type.')
+        throw new Error(`${parts[0]} is not a valid type.`);
       }
       const literalType = new LiteralType(token.lexeme, lower, parts[1]);
       if (this.level === 0) {
@@ -139,7 +139,7 @@ export class Compiler {
 
     if (Object.keys(this.dict).includes(token.lexeme)) {
       const word = this.dict[token.lexeme];
-      if (this.level === 0) { 
+      if (this.level === 0) {
         factors.push(word);
       } else {
         this.quotations[this.level].value.push(word);
@@ -147,7 +147,7 @@ export class Compiler {
       return factors;
     }
 
-    debug('unknown:', token, 'Does dict have name: ', Object.keys(this.dict).filter(str => str === 'name'));
+    debug('unknown:', token, 'Does dict have name: ', Object.keys(this.dict).filter((str) => str === 'name'));
 
     const unknownWord = createUnknownWord(token.lexeme);
 

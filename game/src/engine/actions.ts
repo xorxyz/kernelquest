@@ -572,7 +572,6 @@ export const rm: IActionDefinition<{ id: number }> = {
 export const exec: IActionDefinition<{ text: string }> = {
   cost: 0,
   perform({ agent }, { text }) {
-
     try {
       const term = agent.mind.compiler.compile(text);
 
@@ -1070,12 +1069,12 @@ export const print: IActionDefinition<
 > = {
   cost: 0,
   perform(ctx, args) {
-    args.text.split('\n').forEach(line => {
+    args.text.split('\n').forEach((line) => {
       ctx.engine.hero.logs.push({
         tick: ctx.engine.hero.mind.tick,
         message: line,
       });
-    })
+    });
     return succeed('');
   },
   undo: undoNoop,
@@ -1123,7 +1122,7 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   zone,
   exit,
   zone_at: zoneAt,
-  print
+  print,
 };
 
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {
