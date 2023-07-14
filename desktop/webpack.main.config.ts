@@ -6,7 +6,7 @@ export const mainConfig: Configuration = {
   entry: {
     app: './src/index.ts',
   },
-  devtool: 'source-map',
+  devtool: 'eval',
   module: {
     rules,
   },

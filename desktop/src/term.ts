@@ -5,29 +5,29 @@ import { FitAddon } from 'xterm-addon-fit';
 
 // export const fitAddon = new FitAddon();
 
-export function createTerm (terminalEl) {
+export function createTerm(terminalEl) {
   const term = new Terminal({
     cols: SCREEN_WIDTH,
     rows: SCREEN_HEIGHT,
-    // // customGlyphs: true, 
+    // // customGlyphs: true,
     theme: {
       background: '#181818',
       // black: '#181818',
       green: '#0CFF24',
-      red: '#F92672', 
+      red: '#F92672',
       cursor: '#fff',
     },
     // fontSize: 32,
     allowProposedApi: true,
-    // cursorBlink: true, 
-    fontFamily: '"KernelQuest"'
+    // cursorBlink: true,
+    fontFamily: '"KernelQuest"',
   });
   document.addEventListener('click', () => term.focus());
-  
+
   const unicode14Addon = new Unicode14Addon();
-  
+
   term.loadAddon(unicode14Addon);
-  
+
   term.unicode.activeVersion = '14';
 
   term.open(terminalEl);
@@ -38,5 +38,5 @@ export function createTerm (terminalEl) {
 
   window.resizeBy(1, 1);
 
-  return term
+  return term;
 }

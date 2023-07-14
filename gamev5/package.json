@@ -1,0 +1,24 @@
+{
+  "name": "xor5-game",
+  "version": "5.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon -x ts-node index.ts -w . -e ts -i '**/*.test.ts'",
+    "test": "tsc --noEmit"
+  },
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
+  "license": "MIT",
+  "dependencies": {
+    "events": "^3.3.0",
+    "inkjs": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/events": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "eslint": "^8.41.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}

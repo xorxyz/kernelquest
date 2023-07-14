@@ -1125,6 +1125,36 @@ export const actions: Record<ValidActions, IActionDefinition<any>> = {
   print,
 };
 
+export const actionByCategory: Record<string, Record<string, IActionDefinition>> = {
+  movement: {
+    left, right, step, backstep, face,
+  },
+  query: {
+    path, ls, look, prop, that, me, xy, facing, zoneAt,
+  },
+  interaction: {
+    get, put, read, claim, scratch, erase, exit,
+  },
+  godmode: {
+    create, mv, rm, area, zone,
+  },
+  interpreter: {
+    define, del, exec, halt, wait,
+  },
+  communication: {
+    say, tell, hi, talk,
+  },
+  state: {
+    save, load,
+  },
+  terminal: {
+    puts, print, clear,
+  },
+  misc: {
+    noop,
+  },
+};
+
 export function succeed(msg: string, state?: HistoryEventState): IActionResult {
   return {
     status: 'success',

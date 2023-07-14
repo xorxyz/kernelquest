@@ -11,7 +11,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "tsc"
+    "test": "tsc",
+    "debug": "electron-forge start --vscode"
   },
   "keywords": [],
   "author": {

@@ -88,7 +88,7 @@ export class VirtualTerminal {
         : esc(Style.Dim) + cell.render(area, true))).join(''));
   }
 
-  buildScreenView(area1: Area, area2?: Area, t?: number) {
+  buildScreenView(area1: Area, area2?: Area, t?: number): Array<string> {
     let fov = this.agent.sees();
     if (!area2 || !t || !this.nextPosition) return this.renderArea(area1, fov);
 

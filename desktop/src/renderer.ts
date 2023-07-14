@@ -23,8 +23,9 @@ window.addEventListener('load', async () => {
 
   global.engine = engine;
 
-  term.onKey(({ key }) => {
-    const input = Buffer.from(key).toString('hex');
+  term.onKey((o) => {
+    console.log('KEY!', o);
+    const input = Buffer.from(o.key).toString('hex');
     engine.handleInput(input);
   });
 

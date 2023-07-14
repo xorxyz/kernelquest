@@ -114,10 +114,7 @@ export class Engine {
   update() {
     this.cycle++;
 
-    this.entities.agentList.forEach((agent: Agent) => {
-      this.processTurn(agent);
-      this.applyVelocity(agent);
-    });
+    this.entities.agentList.forEach((agent) => this.processTurn(agent));
 
     this.tty.render();
   }
@@ -316,6 +313,8 @@ export class Engine {
     }
 
     agent.see(agent.area);
+
+    this.applyVelocity(agent);
 
     if (this.cycle % 10 === 0) agent.sp.increase(1);
   }
