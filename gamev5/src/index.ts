@@ -27,7 +27,7 @@ export class Game {
 
   constructor(dependencies: IDependencies) {
     this.audioManager = new AudioManager(dependencies.audioPlayer || new NoAudioPlayer());
-    this.clock = new Clock(MS_PER_GAME_CYCLE, this.cycle.bind(this));
+    this.clock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
     this.entityManager = new EntityManager();
     this.inputManager = new InputManager(dependencies.terminal);
     this.performanceManager = new PerfomanceManager();
@@ -48,19 +48,19 @@ export class Game {
     this.clock.stop();
   }
 
-  private async cycle(): Promise<void> {
+  private async step(): Promise<void> {
     const tick = this.clock.getTick();
 
     try {
-      this.performanceManager.startTest('engine.cycle');
+      this.performanceManager.startTest('engine.step');
 
       await this.update(tick);
 
       this.render();
 
-      this.performanceManager.endTest('engine.cycle');
+      this.performanceManager.endTest('engine.step');
     } catch (err) {
-      logger.error('game.cycle(): Uncaught error! Exiting.', err);
+      logger.error('game.step(): Uncaught error! Exiting.', err);
       this.systemManager.exit();
     }
   }

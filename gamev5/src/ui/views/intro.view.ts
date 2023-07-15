@@ -25,9 +25,10 @@ export class IntroView extends View {
     this.skipAt = tick + TICKS_BEFORE_SKIP;
   }
 
-  override update(tick: number): void {
+  override update(tick: number): null {
     if (tick > this.skipAt) {
       this.next();
     }
+    return null;
   }
 }
