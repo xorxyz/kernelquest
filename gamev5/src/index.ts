@@ -6,7 +6,6 @@ import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
 import { ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
-import { PerfomanceManager } from './system/performance_manager';
 import { SystemManager, ISystemIO, NoSystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
 
@@ -21,7 +20,6 @@ export class Game {
   private clock: Clock;
   private entityManager: EntityManager;
   private inputManager: InputManager;
-  private performanceManager: PerfomanceManager;
   private systemManager: SystemManager;
   private viewManager: ViewManager;
 
@@ -30,7 +28,6 @@ export class Game {
     this.clock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
     this.entityManager = new EntityManager();
     this.inputManager = new InputManager(dependencies.terminal);
-    this.performanceManager = new PerfomanceManager();
     this.systemManager = new SystemManager(dependencies.systemIO || new NoSystemIO());
     this.viewManager = new ViewManager(dependencies.terminal);
   }
@@ -50,15 +47,16 @@ export class Game {
 
   private async step(): Promise<void> {
     const tick = this.clock.getTick();
+    const startTime = performance.now();
 
     try {
-      this.performanceManager.startTest('engine.step');
-
       await this.update(tick);
 
       this.render();
 
-      this.performanceManager.endTest('engine.step');
+      if (performance.now() - startTime > MS_PER_GAME_CYCLE) {
+        logger.warn(`game.step(): This cycle took longer than ${MS_PER_GAME_CYCLE} ms`);
+      }
     } catch (err) {
       logger.error('game.step(): Uncaught error! Exiting.', err);
       this.systemManager.exit();
