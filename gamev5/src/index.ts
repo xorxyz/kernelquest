@@ -2,11 +2,11 @@ import './types/global';
 import { AudioManager, IAudioPlayer, NoAudioPlayer } from './audio/audio_manager';
 import { MS_PER_GAME_CYCLE } from './shared/constants';
 import { Clock } from './shared/clock';
-import { EntityManager } from './entity_manager';
+import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
-import { PerfomanceManager } from './performance_manager';
 import { ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
+import { PerfomanceManager } from './system/performance_manager';
 import { SystemManager, ISystemIO, NoSystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
 
@@ -49,10 +49,12 @@ export class Game {
   }
 
   private async cycle(): Promise<void> {
+    const tick = this.clock.getTick();
+
     try {
       this.performanceManager.startTest('engine.cycle');
 
-      await this.update();
+      await this.update(tick);
 
       this.render();
 
@@ -63,8 +65,9 @@ export class Game {
     }
   }
 
-  private async update(): Promise<void> {
-    this.viewManager.update();
+  private async update(tick: number): Promise<void> {
+    const keyboardEvents = this.inputManager.pullKeyboardEvents();
+    const action = this.viewManager.update(tick, keyboardEvents);
   }
 
   private render(): void {

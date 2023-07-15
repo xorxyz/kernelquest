@@ -1,4 +1,4 @@
-import { Agent } from './shared/agent';
+import { Agent } from '../shared/agent';
 
 export class EntityManager {
   private idCounter = 0;

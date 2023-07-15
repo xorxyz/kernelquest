@@ -1,7 +1,11 @@
 import { Component } from '../../shared/component';
 
-export class ButtonComponent extends Component {
+export abstract class ButtonComponent extends Component {
+  abstract body: string;
+
   render(): string {
-    return '';
+    return this.body;
   }
+
+  abstract click(): void
 }

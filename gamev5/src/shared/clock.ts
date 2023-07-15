@@ -5,6 +5,7 @@ export class Clock {
   private expectedInterval = 0;
   private timeout = 0;
   private running = false;
+  private tick = 0;
   private callback: () => void;
 
   constructor(msInterval: number, callback: () => void) {
@@ -27,12 +28,17 @@ export class Clock {
     return this.running;
   }
 
+  getTick(): number {
+    return this.tick;
+  }
+
   private round(): void {
     const drift = performance.now() - this.expectedInterval;
     if (drift > this.expectedInterval) {
       logger.warn('Clock: Something unexpected happened');
     }
     this.callback();
+    this.tick += 1;
     this.expectedInterval += this.expectedInterval + this.msInterval;
     this.timeout = setTimeout(this.round, this.msInterval - drift);
   }

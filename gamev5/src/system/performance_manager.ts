@@ -1,5 +1,5 @@
-import { MS_PER_GAME_CYCLE } from './shared/constants';
-import { logger } from './shared/logger';
+import { MS_PER_GAME_CYCLE } from '../shared/constants';
+import { logger } from '../shared/logger';
 
 export class PerfomanceManager {
   private startTimes: Map<string, number> = new Map();
