@@ -1,9 +1,9 @@
-import {
-  IActionDefinition, IActionResult,
-} from '../shared/action';
+import { IActionDefinition } from '../shared/action';
+import { ActionResultType, IActionResult } from '../shared/interfaces';
 
-const succeed = (message?: string): IActionResult => ({ status: 'success', message });
-const fail = (message: string):IActionResult => ({ status: 'failure', message });
+const succeed = (message?: string): IActionResult => ({ type: ActionResultType.SUCCESS, message });
+
+const fail = (message: string):IActionResult => ({ type: ActionResultType.FAILURE, message });
 
 const noopAction: IActionDefinition = {
   cost: 0,
@@ -13,7 +13,7 @@ const noopAction: IActionDefinition = {
 
 const createAction: IActionDefinition<{ type: string }> = {
   cost: 0,
-  perform(ctx, arg): IActionResult {
+  perform(): IActionResult {
     return fail('TODO');
   },
   undo(): IActionResult {
@@ -28,5 +28,5 @@ export const actions: Record<string, Record<string, IActionDefinition>> = {
   },
 };
 
-export const validActionNames: string[] = Object.values(actions)
+export const validActions: string[] = Object.values(actions)
   .flatMap((section): string[] => Object.keys(section));

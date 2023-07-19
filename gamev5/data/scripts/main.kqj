@@ -1,0 +1,19 @@
+# main.kqj
+
+# predicates: executing a predicate registers it as a fact
+[
+  ["name"     [Ref String ]] # has name
+  ["like"     [Ref Ref]]     # similar
+  ["inside"   [Ref Ref]]     # containment
+  ["follows"  [Ref Ref]]     # follows
+
+  ["job"      [Ref:agent String:j]]
+] [i predicate] each
+
+whoami # root
+
+[0 0] "man" create
+  "Balt"   name
+  "wizard" job
+
+Balt # &1

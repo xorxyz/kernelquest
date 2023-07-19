@@ -1,8 +1,6 @@
 import { Vector } from './vector';
 
 export abstract class Component {
-  abstract render(): string
-
   private position: Vector;
 
   constructor(position: Vector) {
@@ -12,4 +10,6 @@ export abstract class Component {
   $render(): string {
     return this.render();
   }
+
+  abstract render(): string
 }

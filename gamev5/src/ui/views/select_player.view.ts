@@ -1,5 +1,3 @@
 import { View } from '../../shared/view';
 
-export class SelectPlayerView extends View {
-  components = {};
-}
+export class SelectPlayerView extends View {}

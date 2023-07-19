@@ -1,24 +1,19 @@
 import { MS_PER_GAME_CYCLE } from '../../shared/constants';
 import { Vector } from '../../shared/vector';
-import { View } from '../../shared/view';
+import { IRouter, View } from '../../shared/view';
 import { TextBoxComponent } from '../components/textbox';
 
 const DELAY_MS_BEFORE_SKIP = 3000;
 const TICKS_BEFORE_SKIP = DELAY_MS_BEFORE_SKIP / MS_PER_GAME_CYCLE;
 
 export class IntroView extends View {
-  components = {
-    title: new TextBoxComponent(new Vector(0, 0), 'Kernel Quest'),
-  };
-
-  events = {
-    enter: this.next,
-  };
-
   skipAt = TICKS_BEFORE_SKIP;
 
-  private next(): void {
-    this.router.go('player_select');
+  constructor(router: IRouter) {
+    super(router);
+
+    this.registerComponent('title', new TextBoxComponent(new Vector(0, 0), 'Kernel Quest'));
+    this.registerEvent('key:enter', this.next.bind(this));
   }
 
   override onLoad(tick: number): void {
@@ -30,5 +25,9 @@ export class IntroView extends View {
       this.next();
     }
     return null;
+  }
+
+  private next(): void {
+    this.router.go('player_select');
   }
 }

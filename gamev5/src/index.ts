@@ -1,56 +1,67 @@
 import './types/global';
-import { AudioManager, IAudioPlayer, NoAudioPlayer } from './audio/audio_manager';
+import { AudioManager, IAudioPlayer } from './audio/audio_manager';
 import { MS_PER_GAME_CYCLE } from './shared/constants';
 import { Clock } from './shared/clock';
 import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
 import { ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
-import { SystemManager, ISystemIO, NoSystemIO } from './system/system_manager';
+import { SystemManager, ISystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
+import { StateManager } from './state/state_manager';
+import { IActionDefinition } from './shared/action';
 
 interface IDependencies {
-  audioPlayer?: IAudioPlayer,
-  systemIO?: ISystemIO,
-  terminal: ITerminal,
+  actionDefinitions?: IActionDefinition[]
+  audioPlayer: IAudioPlayer
+  systemIO: ISystemIO
+  terminal: ITerminal
 }
 
 export class Game {
   private audioManager: AudioManager;
+
   private clock: Clock;
+
   private entityManager: EntityManager;
+
   private inputManager: InputManager;
+
+  private stateManager: StateManager;
+
   private systemManager: SystemManager;
+
   private viewManager: ViewManager;
 
   constructor(dependencies: IDependencies) {
-    this.audioManager = new AudioManager(dependencies.audioPlayer || new NoAudioPlayer());
+    this.audioManager = new AudioManager(dependencies.audioPlayer);
     this.clock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
     this.entityManager = new EntityManager();
     this.inputManager = new InputManager(dependencies.terminal);
-    this.systemManager = new SystemManager(dependencies.systemIO || new NoSystemIO());
+    this.stateManager = new StateManager();
+    this.systemManager = new SystemManager(dependencies.systemIO);
     this.viewManager = new ViewManager(dependencies.terminal);
   }
 
-  async start(): Promise<void> {
-    if (this.clock.isRunning()) return;
+  start(): void {
+    if (this.clock.isRunning) return;
     logger.debug('Starting game...');
 
     this.clock.start();
   }
 
-  async pause(): Promise<void> {
+  pause(): void {
     logger.debug('Pausing game...');
 
     this.clock.stop();
   }
 
-  private async step(): Promise<void> {
-    const tick = this.clock.getTick();
+  private step(): void {
+    const { tick } = this.clock;
     const startTime = performance.now();
 
     try {
-      await this.update(tick);
+      this.update(tick);
 
       this.render();
 
@@ -63,9 +74,9 @@ export class Game {
     }
   }
 
-  private async update(tick: number): Promise<void> {
-    const keyboardEvents = this.inputManager.pullKeyboardEvents();
-    const action = this.viewManager.update(tick, keyboardEvents);
+  private update(tick: number): void {
+    const inputEvents = this.inputManager.getInputEvents();
+    const viewAction = this.viewManager.update(tick, inputEvents);
   }
 
   private render(): void {

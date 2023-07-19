@@ -1,8 +1,10 @@
+import { InputEvent } from '../shared/events';
 import { IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { Queue } from '../shared/queue';
 
 export class InputManager {
   private terminal: ITerminal;
+
   private keyboardEvents = new Queue<IKeyboardEvent>();
 
   constructor(terminal: ITerminal) {
@@ -11,11 +13,13 @@ export class InputManager {
     this.terminal.onKey(this.handleInput.bind(this));
   }
 
-  pullKeyboardEvents(): IKeyboardEvent[] {
-    const events: IKeyboardEvent[] = [];
-    for (let i = 0; i < this.keyboardEvents.size; i++) {
-      const event = this.keyboardEvents.next();
-      if (event) events.push(event);
+  getInputEvents(): InputEvent[] {
+    const events: InputEvent[] = [];
+    for (let i = 0; i < this.keyboardEvents.size; i += 1) {
+      const keyboardEvent = this.keyboardEvents.next();
+      if (keyboardEvent) {
+        events.push(new InputEvent(keyboardEvent));
+      }
     }
     return events;
   }

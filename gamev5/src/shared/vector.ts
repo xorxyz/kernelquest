@@ -10,15 +10,21 @@ export interface IVector {
 /** 2d vector (xy) */
 export class Vector {
   x: number;
+
   y: number;
+
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
 
   get label(): string {
     return `[${this.x.toString(16).toUpperCase()} ${this.y.toString(16).toUpperCase()}]`;
   }
 
-  constructor(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
+  /** return a new Vector from the give xy object */
+  static from(obj: { x: number, y: number }): Vector {
+    return new Vector(obj.x, obj.y);
   }
 
   toObject(): IVector {
@@ -26,11 +32,6 @@ export class Vector {
       x: this.x,
       y: this.y,
     };
-  }
-
-  /** return a new Vector from the give xy object */
-  static from(obj: { x: number, y: number }): Vector {
-    return new Vector(obj.x, obj.y);
   }
 
   isZero(): boolean {

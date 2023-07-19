@@ -1,5 +1,5 @@
 export class Queue<T> {
-  items: Array<T> = [];
+  items: T[] = [];
 
   get size(): number {
     return this.items.length;
@@ -10,10 +10,10 @@ export class Queue<T> {
   }
 
   next(): T | null {
-    return this.items.shift() || null;
+    return this.items.shift() ?? null;
   }
 
   peek(): T | null {
-    return this.items[0] || null;
+    return this.items[0] ?? null;
   }
 }

@@ -1,15 +1,4 @@
-import { HistoryEvent } from '../shared/action';
-import { noop } from '../shared/util';
-
-export interface ISaveFileContents {
-  name: string,
-  stats: {
-    level: number,
-    gold: number,
-    time: number
-  },
-  history: Array<HistoryEvent>
-}
+import { ISaveFileContents } from '../shared/interfaces';
 
 export type SaveGameId = 0 | 1 | 2
 
@@ -23,20 +12,6 @@ export interface ISystemIO {
   exit: ExitFn,
   save: SaveFn,
   load: LoadFn
-}
-
-export const emptySaveFile = {
-  name: '',
-  stats: { level: 1, gold: 0, time: 0 },
-  history: [],
-};
-
-export class NoSystemIO {
-  exit = noop;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, class-methods-use-this
-  save = async (): Promise<void> => {};
-  // eslint-disable-next-line class-methods-use-this
-  load = async (): Promise<ISaveFileContents> => emptySaveFile;
 }
 
 export class SystemManager {

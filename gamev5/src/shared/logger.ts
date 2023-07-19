@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
 
+import { noop } from './util';
+
+process.env['DEBUG_MODE'] = 'true';
+
 const log = console.log.bind(console);
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
-
-export const debug = true ? (...args) => {
-  log('[debug]:', ...args);
-} : noop;
+export const debug = process.env['DEBUG_MODE']
+  ? (...args: unknown[]): void => { log('[debug]:', ...args); }
+  : noop;
 
 export const info = console.info.bind(console);
 

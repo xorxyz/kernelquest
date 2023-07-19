@@ -1,5 +1,3 @@
-import { noop } from '../shared/util';
-
 export interface IAudioPlayer {
   soundSrc: string,
   audioEl: {
@@ -7,15 +5,6 @@ export interface IAudioPlayer {
     currentTime: number,
     play: () => void
   }
-}
-
-export class NoAudioPlayer {
-  soundSrc = 'none';
-  audioEl = {
-    src: 'none',
-    currentTime: 0,
-    play: noop,
-  };
 }
 
 export class AudioManager {
