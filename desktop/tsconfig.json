@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
   },
-  "extends": "../game/tsconfig.json",
+  "extends": "../gamev5/tsconfig.json",
   "include": [
     "src/**/*.ts"
   ]

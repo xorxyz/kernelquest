@@ -1,10 +1,7 @@
 export interface IAudioPlayer {
-  soundSrc: string,
-  audioEl: {
-    src: string,
-    currentTime: number,
-    play: () => void
-  }
+  src: string
+  currentTime: number
+  play: () => void
 }
 
 export class AudioManager {

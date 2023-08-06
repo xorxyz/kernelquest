@@ -4,7 +4,7 @@ import { MS_PER_GAME_CYCLE } from './shared/constants';
 import { Clock } from './shared/clock';
 import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
-import { ITerminal } from './shared/interfaces';
+import { ITerminal, KeyboardEventHandler } from './shared/interfaces';
 import { logger } from './shared/logger';
 import { SystemManager, ISystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';

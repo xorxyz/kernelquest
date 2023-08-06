@@ -8,7 +8,7 @@
     "test": "tsc --noEmit"
   },
   "author": "Jonathan Dupré <hello@jonathandupre.com>",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "events": "^3.3.0",
     "inkjs": "^2.2.1"
@@ -18,7 +18,7 @@
     "@types/node": "^20.4.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.45.0",
-    "eslint-plugin-import": "^2.27.5"
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "^2.28.0"
   }
 }

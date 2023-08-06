@@ -1,56 +1,30 @@
-import './index.css';
-import 'xterm/css/xterm.css';
+import { Game } from 'xor5-game/src';
+import { SystemIO } from './components/system_io';
+import { Terminal } from './components/terminal';
+import { AudioPlayer } from './components/audio_player';
+
 import 'tachyons/css/tachyons.css';
-import { Engine } from 'xor4-game/src/engine';
-import { Buffer } from 'buffer';
-import { createTerm } from './term';
+import 'xterm/css/xterm.css';
+import './index.css';
 
-console.log('PAGE WAS RELOADED');
+window.addEventListener('load', () => {
+  const systemIO = new SystemIO();
+  const terminal = new Terminal('#terminal');
+  const audioPlayer = new AudioPlayer('#audio-player');
 
-window.addEventListener('load', async () => {
-  console.log('ON LOAD');
-  const terminalEl = document.querySelector('#terminal') as HTMLElement;
-  if (!terminalEl) throw new Error('Cant find the element.');
-
-  const audioEl = document.querySelector('#audio-player') as HTMLAudioElement;
-  if (!audioEl) throw new Error('Cant find audio player element');
-
-  const term = createTerm(terminalEl);
-
-  const engine = new Engine({
-    send: (str) => term.write(str),
+  const game = new Game({
+    systemIO,
+    terminal,
+    audioPlayer,
   });
 
-  global.engine = engine;
-
-  term.onKey((o) => {
-    console.log('KEY!', o);
-    const input = Buffer.from(o.key).toString('hex');
-    engine.handleInput(input);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      game.start();
+    } else {
+      game.pause();
+    }
   });
 
-  await engine.init();
-
-  await engine.load();
-
-  registerSoundEvents(engine.events, audioEl);
-
-  engine.start();
-  term.focus();
+  game.start();
 });
-
-function registerSoundEvents(bus, el) {
-  const events = [
-    'fail',
-    'step',
-    'rotate',
-  ];
-
-  events.forEach((name) => {
-    bus.on(`sound:${name}`, () => {
-      el.src = `main_window/assets/sounds/${name}.wav`;
-      el.currentTime = 0;
-      el.play();
-    });
-  });
-}

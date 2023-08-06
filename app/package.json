@@ -18,24 +18,24 @@
     "events": "^3.3.0",
     "twemoji": "^13.1.1",
     "vue": "^3.2.26",
-    "vue-router": "^4.1.6",
+    "vue-router": "^4.2.4",
     "xor4-game": "0.0.0",
     "xterm": "^4.19.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0"
   },
   "devDependencies": {
-    "@parcel/packager-ts": "^2.8.3",
+    "@parcel/packager-ts": "^2.9.3",
     "@parcel/transformer-raw": "^2.0.1",
-    "@parcel/transformer-typescript-types": "^2.8.3",
-    "@parcel/transformer-vue": "^2.8.3",
-    "@parcel/validator-typescript": "^2.8.3",
+    "@parcel/transformer-typescript-types": "^2.9.3",
+    "@parcel/transformer-vue": "^2.9.3",
+    "@parcel/validator-typescript": "^2.9.3",
     "@types/node": "^17.0.45",
-    "@typescript-eslint/eslint-plugin": "^5.59.2",
-    "@typescript-eslint/parser": "^5.59.2",
-    "eslint": "^8.39.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.46.0",
     "eslint-plugin-vue": "^8.7.1",
-    "parcel": "^2.8.3",
+    "parcel": "^2.9.3",
     "vue-eslint-parser": "^8.3.0"
   }
 }
