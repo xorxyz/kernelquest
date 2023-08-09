@@ -1,3 +1,3 @@
-import { View } from '../../shared/view';
+import { View } from '../view';
 
 export class GameOverView extends View {}

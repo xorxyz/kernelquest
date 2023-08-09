@@ -1,7 +1,9 @@
-import { Component } from './component';
-import { InputEvent } from './events';
-import { IAction } from './interfaces';
-import { Queue } from './queue';
+import { Component } from '../shared/component';
+import { InputEvent } from '../input/input_event';
+import { IAction } from '../shared/interfaces';
+import { Queue } from '../shared/queue';
+import { IGameState } from '../state/state_manager';
+import { Ansi } from './ansi';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void
 
@@ -24,12 +26,16 @@ export abstract class View {
 
   onLoad?(tick: number): void
 
-  update?(tick: number): IAction | null
+  update?(tick: number, state: IGameState): IAction | null
 
   render(): string {
-    const output = Object.values(this.components).map((component): string => component.$render());
+    const output = Object.values(this.components).map((component): string => {
+      const { x, y } = component.position;
 
-    return output.join('');
+      return `${Ansi.setXY(y, x)}${component.$render()}`;
+    });
+
+    return Ansi.clearScreen() + output.join('');
   }
 
   registerComponent(name: string, component: Component): Component {
@@ -48,7 +54,7 @@ export abstract class View {
     return handler;
   }
 
-  $update(tick: number, inputEvents: InputEvent[]): IAction | null {
+  $update(tick: number, state: IGameState, inputEvents: InputEvent[]): IAction | null {
     inputEvents.forEach((event): void => {
       const handler = this.events[event.name];
       if (handler) {
@@ -56,8 +62,14 @@ export abstract class View {
       }
     });
 
-    return this.update
-      ? this.update(tick)
-      : null;
+    if (this.update) {
+      this.update(tick, state);
+    }
+
+    Object.values(this.components).forEach((component): void => {
+      component.$update(state);
+    });
+
+    return null;
   }
 }

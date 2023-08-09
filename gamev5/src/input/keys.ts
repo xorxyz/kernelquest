@@ -1,4 +1,8 @@
-export const keys = {
+export const keyNames = {
+  '\x1B[D': 'ARROW_LEFT',
+};
+
+export const Keys = {
   ARROW_UP: '1b5b41',
   ARROW_DOWN: '1b5b42',
   ARROW_LEFT: '1b5b44',

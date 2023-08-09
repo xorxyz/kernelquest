@@ -1,3 +1,4 @@
+import { Being } from './being';
 import { Body } from './body';
 import { Soul } from './soul';
 import { Spirit } from './spirit';

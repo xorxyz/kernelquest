@@ -1,4 +1,4 @@
-import { InputEvent } from '../shared/events';
+import { InputEvent } from './input_event';
 import { IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { Queue } from '../shared/queue';
 

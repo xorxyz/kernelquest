@@ -1,4 +1,4 @@
-import { IKeyboardEvent } from './interfaces';
+import { IKeyboardEvent } from '../shared/interfaces';
 
 export class InputEvent {
   readonly name: string;

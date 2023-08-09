@@ -2,6 +2,8 @@
 
 import { noop } from './util';
 
+const process = { env: {} };
+
 process.env['DEBUG_MODE'] = 'true';
 
 const log = console.log.bind(console);

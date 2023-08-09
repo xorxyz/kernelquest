@@ -1,6 +1,7 @@
-import { InputEvent } from '../shared/events';
+import { InputEvent } from '../input/input_event';
 import { IAction, ITerminal } from '../shared/interfaces';
-import { IRouter, View } from '../shared/view';
+import { IRouter, View } from './view';
+import { IGameState } from '../state/state_manager';
 import { BlankView } from './views/blank.view';
 
 export class ViewManager {
@@ -26,10 +27,10 @@ export class ViewManager {
     this.terminal.write(output);
   }
 
-  update(tick: number, inputEvents: InputEvent[]): IAction | null {
+  update(tick: number, state: IGameState, inputEvents: InputEvent[]): IAction | null {
     this.tick = tick;
 
-    const action = this.activeView.$update(tick, inputEvents);
+    const action = this.activeView.$update(tick, state, inputEvents);
 
     return action;
   }

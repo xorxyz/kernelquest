@@ -4,7 +4,7 @@ import { MS_PER_GAME_CYCLE } from './shared/constants';
 import { Clock } from './shared/clock';
 import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
-import { ITerminal, KeyboardEventHandler } from './shared/interfaces';
+import { ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
 import { SystemManager, ISystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
@@ -43,6 +43,10 @@ export class Game {
     this.viewManager = new ViewManager(dependencies.terminal);
   }
 
+  get running(): boolean {
+    return this.clock.isRunning;
+  }
+
   start(): void {
     if (this.clock.isRunning) return;
     logger.debug('Starting game...');
@@ -57,11 +61,10 @@ export class Game {
   }
 
   private step(): void {
-    const { tick } = this.clock;
     const startTime = performance.now();
 
     try {
-      this.update(tick);
+      this.update(this.clock.tick);
 
       this.render();
 
@@ -69,14 +72,15 @@ export class Game {
         logger.warn(`game.step(): This cycle took longer than ${MS_PER_GAME_CYCLE} ms`);
       }
     } catch (err) {
-      logger.error('game.step(): Uncaught error! Exiting.', err);
-      this.systemManager.exit();
+      logger.error('game.step(): Uncaught error!', err);
+      // this.systemManager.exit();
     }
   }
 
   private update(tick: number): void {
+    this.stateManager.state.tick = tick;
     const inputEvents = this.inputManager.getInputEvents();
-    const viewAction = this.viewManager.update(tick, inputEvents);
+    this.viewManager.update(tick, this.stateManager.state, inputEvents);
   }
 
   private render(): void {

@@ -1,7 +1,7 @@
 import { MS_PER_GAME_CYCLE } from '../shared/constants';
 import { IHistoryEvent, ISaveFileContents } from '../shared/interfaces';
 
-interface IGameState {
+export interface IGameState {
   tick: number
   name: string
   stats: {
@@ -12,7 +12,7 @@ interface IGameState {
 }
 
 export class StateManager {
-  private state: IGameState = {
+  readonly state: IGameState = {
     tick: 0,
     name: '',
     stats: {

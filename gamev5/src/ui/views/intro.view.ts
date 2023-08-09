@@ -1,6 +1,6 @@
 import { MS_PER_GAME_CYCLE } from '../../shared/constants';
 import { Vector } from '../../shared/vector';
-import { IRouter, View } from '../../shared/view';
+import { IRouter, View } from '../view';
 import { TextBoxComponent } from '../components/textbox';
 
 const DELAY_MS_BEFORE_SKIP = 3000;
