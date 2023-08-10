@@ -1,5 +1,6 @@
-import { MS_PER_GAME_CYCLE } from '../shared/constants';
+import { MS_PER_GAME_CYCLE, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
 import { IHistoryEvent, ISaveFileContents } from '../shared/interfaces';
+import { Vector } from '../shared/vector';
 
 export interface IGameState {
   tick: number
@@ -8,19 +9,23 @@ export interface IGameState {
     level: number
     gold: number
   },
-  history: IHistoryEvent[]
+  history: IHistoryEvent[],
+  cursor: Vector
 }
 
+export const EmptyGameState = {
+  tick: 0,
+  name: '',
+  stats: {
+    level: 1,
+    gold: 0,
+  },
+  history: [],
+  cursor: new Vector(SCREEN_WIDTH, SCREEN_HEIGHT),
+};
+
 export class StateManager {
-  readonly state: IGameState = {
-    tick: 0,
-    name: '',
-    stats: {
-      level: 1,
-      gold: 0,
-    },
-    history: [],
-  };
+  readonly state: IGameState = ({ ...EmptyGameState });
 
   update(tick: number): void {
     this.state.tick = tick;

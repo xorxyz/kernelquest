@@ -21,7 +21,7 @@ interface IDependencies {
 export class Game {
   private audioManager: AudioManager;
 
-  private clock: Clock;
+  private systemClock: Clock;
 
   private entityManager: EntityManager;
 
@@ -35,7 +35,7 @@ export class Game {
 
   constructor(dependencies: IDependencies) {
     this.audioManager = new AudioManager(dependencies.audioPlayer);
-    this.clock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
+    this.systemClock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
     this.entityManager = new EntityManager();
     this.inputManager = new InputManager(dependencies.terminal);
     this.stateManager = new StateManager();
@@ -44,27 +44,27 @@ export class Game {
   }
 
   get running(): boolean {
-    return this.clock.isRunning;
+    return this.systemClock.isRunning;
   }
 
   start(): void {
-    if (this.clock.isRunning) return;
+    if (this.systemClock.isRunning) return;
     logger.debug('Starting game...');
 
-    this.clock.start();
+    this.systemClock.start();
   }
 
   pause(): void {
     logger.debug('Pausing game...');
 
-    this.clock.stop();
+    this.systemClock.stop();
   }
 
   private step(): void {
     const startTime = performance.now();
 
     try {
-      this.update(this.clock.tick);
+      this.update(this.systemClock.tick);
 
       this.render();
 
@@ -79,8 +79,8 @@ export class Game {
 
   private update(tick: number): void {
     this.stateManager.state.tick = tick;
-    const inputEvents = this.inputManager.getInputEvents();
-    this.viewManager.update(tick, this.stateManager.state, inputEvents);
+    const keyboardEvents = this.inputManager.getKeyboardEvents();
+    this.viewManager.update(tick, this.stateManager.state, keyboardEvents);
   }
 
   private render(): void {

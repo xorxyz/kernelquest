@@ -1,4 +1,5 @@
 import { IGameState } from '../state/state_manager';
+import { IKeyboardEvent } from './interfaces';
 import { Vector } from './vector';
 
 export abstract class Component {
@@ -8,15 +9,17 @@ export abstract class Component {
     this.position = position;
   }
 
-  $update(state: IGameState): void {
-    if (this.update) this.update(state);
+  $update(state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    if (this.update) this.update(state, keyboardEvents);
   }
 
-  $render(): string {
+  $render(): string[] {
     return this.render();
   }
 
-  abstract update?(state: IGameState): void
+  abstract getCursorOffset?(): Vector
 
-  abstract render(): string
+  abstract update?(state: IGameState, keyboardEvents: IKeyboardEvent[]): void
+
+  abstract render(): string[]
 }

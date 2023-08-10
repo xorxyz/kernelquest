@@ -10,18 +10,16 @@ import './index.css';
 let minimized = false;
 
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded');
-    const systemIO = new SystemIO();
-    const terminal = new Terminal('terminal');
-    const audioPlayer = new AudioPlayer('audio-player');
+  console.log('DOMContentLoaded');
+  const systemIO = new SystemIO();
+  const terminal = new Terminal('terminal');
+  const audioPlayer = new AudioPlayer('audio-player');
 
-    window.terminal = terminal
-  
-    const game = new Game({
-      systemIO,
-      terminal,
-      audioPlayer,
-    });
+  const game = new Game({
+    systemIO,
+    terminal,
+    audioPlayer,
+  });
 
   // Pause the game when the window is not visible
   document.addEventListener('visibilitychange', () => {

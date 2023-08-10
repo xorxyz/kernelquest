@@ -1,11 +1,14 @@
-import { InputEvent } from '../input/input_event';
-import { IAction, ITerminal } from '../shared/interfaces';
+import { IAction, IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { IRouter, View } from './view';
-import { IGameState } from '../state/state_manager';
+import { EmptyGameState, IGameState } from '../state/state_manager';
 import { BlankView } from './views/blank.view';
+import { Ansi } from './ansi';
+import { DebugView } from './views/debug.view';
 
 export class ViewManager {
   private activeView: View;
+
+  private gameState: IGameState = ({ ...EmptyGameState });
 
   private terminal: ITerminal;
 
@@ -19,18 +22,22 @@ export class ViewManager {
 
   constructor(terminal: ITerminal) {
     this.terminal = terminal;
-    this.activeView = this.registerView('blank', BlankView);
+    this.activeView = this.registerView('debug', DebugView);
   }
 
   render(): void {
     const output = this.activeView.render();
-    this.terminal.write(output);
+    const cursorPosition = this.activeView.getCursorPosition() ?? this.gameState.cursor;
+    const moveCursor = Ansi.setXY(cursorPosition.x, cursorPosition.y);
+
+    this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, state: IGameState, inputEvents: InputEvent[]): IAction | null {
+  update(tick: number, gameState: IGameState, keyboardEvents: IKeyboardEvent[]): IAction | null {
     this.tick = tick;
+    this.gameState = gameState;
 
-    const action = this.activeView.$update(tick, state, inputEvents);
+    const action = this.activeView.$update(tick, gameState, keyboardEvents);
 
     return action;
   }
