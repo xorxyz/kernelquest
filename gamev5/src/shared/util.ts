@@ -8,3 +8,5 @@ export const isAlpha = (str: string): RegExpMatchArray | null => str.match(/^[a-
 export const isDigit = (str: string): RegExpMatchArray | null => str.match(/^[0-9]*$/);
 
 export const isCapital = (str: string): RegExpMatchArray | null => str.match(/^[A-Z]*$/);
+
+export const isSpecialCharacter = (str: string): RegExpMatchArray | null => str.match(/^[!"/$%?&*()_+-=^<>;`,.^:']*$/);

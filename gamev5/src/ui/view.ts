@@ -55,7 +55,7 @@ export abstract class View {
     return output.join('');
   }
 
-  registerComponent(name: string, component: Component): Component {
+  registerComponent<T extends Component>(name: string, component: T): T {
     if (this.components[name]) {
       throw new Error(`registerComponent(): component '${name}' already exists.`);
     }
