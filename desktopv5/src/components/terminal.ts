@@ -40,17 +40,14 @@ export class Terminal implements ITerminal {
     this.xterm.loadAddon(new CanvasAddon());
     this.xterm.unicode.activeVersion = '14';
 
-    this.fitAddon.fit();
-
     document.addEventListener('click', () => this.xterm.focus());
 
     this.xterm.focus()
 
     // Fixes canvas size glitch caused by custom font
     setTimeout(() => {
-      window.resizeBy(1, 1)
-      window.resizeBy(-1, -1)
-    }, 24)
+      this.fitAddon.fit();
+    }, 300)
   }
 
   onKey(handler: KeyboardEventHandler) {
