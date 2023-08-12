@@ -1,16 +1,6 @@
 /* eslint-disable no-console */
 
-import { noop } from './util';
-
-const process = { env: {} };
-
-process.env['DEBUG_MODE'] = 'true';
-
-const log = console.log.bind(console);
-
-export const debug = process.env['DEBUG_MODE']
-  ? (...args: unknown[]): void => { log('[debug]:', ...args); }
-  : noop;
+export const debug = console.debug.bind(console);
 
 export const info = console.info.bind(console);
 

@@ -7,7 +7,7 @@ import { IGameState } from '../../state/state_manager';
 import { KeyCodes } from '../keys';
 
 export class TextInputComponent extends Component {
-  protected prompt = '# ';
+  protected prompt = '🧙 ';
 
   private text = '';
 

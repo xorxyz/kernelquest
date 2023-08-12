@@ -38,7 +38,7 @@ export class Terminal implements ITerminal {
     this.xterm.loadAddon(this.fitAddon);
 
     this.xterm.loadAddon(new CanvasAddon());
-    // this.xterm.unicode.activeVersion = '14';
+    this.xterm.unicode.activeVersion = '14';
 
     this.fitAddon.fit();
 

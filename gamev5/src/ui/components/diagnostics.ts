@@ -3,27 +3,35 @@ import { IKeyboardEvent } from '../../shared/interfaces';
 import { IGameState } from '../../state/state_manager';
 
 export class DiagnosticsComponent extends Component {
-  private ticks = '0';
+  private lastKeyboardEvent: IKeyboardEvent = {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    code: '',
+    key: '',
+    keyCode: 0,
+  };
 
-  private key = '';
+  private ticks = '0';
 
   update(state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
     this.ticks = String(state.tick).padStart(16, '0');
-    const lastKeyboardEvent = keyboardEvents.slice(-1)[0];
-    if (lastKeyboardEvent) {
-      this.key = [
-        lastKeyboardEvent.ctrlKey ? 'ctrl' : '',
-        lastKeyboardEvent.shiftKey ? 'shift' : '',
-        lastKeyboardEvent.altKey ? 'alt' : '',
-        lastKeyboardEvent.code,
-      ].filter((x): boolean => x !== '').join('+');
-    }
+    this.lastKeyboardEvent = keyboardEvents.slice(-1)[0] ?? this.lastKeyboardEvent;
   }
 
   render(): string[] {
     return [
       this.ticks,
-      this.key,
+      this.formatKeyCombo(),
     ];
+  }
+
+  private formatKeyCombo(): string {
+    return [
+      this.lastKeyboardEvent.ctrlKey ? 'ctrl' : '',
+      this.lastKeyboardEvent.shiftKey ? 'shift' : '',
+      this.lastKeyboardEvent.altKey ? 'alt' : '',
+      this.lastKeyboardEvent.code,
+    ].filter((x): boolean => x !== '').join('+');
   }
 }
