@@ -43,9 +43,11 @@ export interface ISaveFileContents {
 
 export interface IKeyboardEvent {
   altKey: boolean,
+  code: string,
   ctrlKey: boolean,
   shiftKey: boolean,
-  key: string
+  key: string,
+  keyCode: number,
 }
 
 export type KeyboardEventHandler = (evt: IKeyboardEvent) => void

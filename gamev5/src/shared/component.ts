@@ -8,7 +8,11 @@ export interface Component {
   getCursorOffset?(): Vector
 }
 
-export type EventHandler = (...args: unknown[]) => void
+export interface IEvent {
+
+}
+
+export type EventHandler = (event: IEvent) => void
 
 export abstract class Component {
   readonly position: Vector;
@@ -19,10 +23,10 @@ export abstract class Component {
     this.position = position;
   }
 
-  emit(eventName: string, ...args: unknown[]): void {
+  emit(eventName: string, event: IEvent): void {
     const handler = this.handlers[eventName];
     if (handler) {
-      handler(...args);
+      handler(event);
     }
   }
 

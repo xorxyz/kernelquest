@@ -9,4 +9,4 @@ export const isDigit = (str: string): RegExpMatchArray | null => str.match(/^[0-
 
 export const isCapital = (str: string): RegExpMatchArray | null => str.match(/^[A-Z]*$/);
 
-export const isSpecialCharacter = (str: string): RegExpMatchArray | null => str.match(/^[!"/$%?&*()_+-=^<>;`,.^:']*$/);
+export const isSpecialCharacter = (str: string): RegExpMatchArray | null => str.match(/^[ !"/$%?&*()_+-=^<>;`,.^:']*$/);

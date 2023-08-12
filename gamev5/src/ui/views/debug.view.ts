@@ -10,8 +10,8 @@ export class DebugView extends View {
     const inputComponent = this.registerComponent('input', new TextInputComponent(new Vector(0, 2)));
     const outputComponent = this.registerComponent('output', new TextOutputComponent(new Vector(0, 2)));
 
-    inputComponent.on('submit', (text): void => {
-      outputComponent.push(text);
+    inputComponent.on('submit', (event): void => {
+      outputComponent.push(event.text);
       inputComponent.position.addY(1);
     });
 
