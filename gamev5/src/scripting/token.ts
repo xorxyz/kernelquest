@@ -7,6 +7,7 @@ export enum SymbolToken {
   EOF = '\0',
   EQUAL = '=',
   EQUAL_EQUAL = '==',
+  EXCLAMATION = '!',
   EXCLAMATION_EQUAL = '!=',
   LEFT_CURLY_BRACE = '{',
   LEFT_SQUARE_BRACKET = '[',

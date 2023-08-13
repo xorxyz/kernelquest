@@ -5,8 +5,10 @@ export const isAlphaNumeric = (str: string): RegExpMatchArray | null => str.matc
 
 export const isAlpha = (str: string): RegExpMatchArray | null => str.match(/^[a-zA-Z]*$/);
 
+export const isLegalIdentifier = (str: string): RegExpMatchArray | null => str.match(/^[a-zA-Z-_]*$/);
+
 export const isDigit = (str: string): RegExpMatchArray | null => str.match(/^[0-9]*$/);
 
 export const isCapital = (str: string): RegExpMatchArray | null => str.match(/^[A-Z]*$/);
 
-export const isSpecialCharacter = (str: string): RegExpMatchArray | null => str.match(/^[ !"/$%?&*()_+-=^<>;`,.^:']*$/);
+export const isSpecialCharacter = (str: string): RegExpMatchArray | null => str.match(/^[ [\]!"/$%?&*()_+-=^<>;`,.^:']*$/);

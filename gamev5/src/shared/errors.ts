@@ -3,3 +3,5 @@
 export class ParsingError extends Error {}
 
 export class CompilationError extends Error {}
+
+export class RuntimeError extends Error {}

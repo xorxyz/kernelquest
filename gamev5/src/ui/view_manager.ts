@@ -1,7 +1,6 @@
 import { IAction, IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { IRouter, View } from './view';
 import { EmptyGameState, IGameState } from '../state/state_manager';
-import { BlankView } from './views/blank.view';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';

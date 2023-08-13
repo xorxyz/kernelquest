@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-export const debug = console.debug.bind(console);
+export const debug = console.log.bind(console);
 
 export const info = console.info.bind(console);
 

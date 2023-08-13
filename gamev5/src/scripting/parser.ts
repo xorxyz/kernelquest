@@ -1,6 +1,7 @@
 import { ParsingError } from '../shared/errors';
+import * as logger from '../shared/logger';
 import {
-  isAlpha, isAlphaNumeric, isCapital, isDigit,
+  isAlpha, isAlphaNumeric, isCapital, isDigit, isLegalIdentifier,
 } from '../shared/util';
 import { SequenceToken, SymbolToken, Token } from './token';
 
@@ -59,6 +60,12 @@ export class Parser {
       case SymbolToken.POUND:
         this.comment();
         break;
+      case SymbolToken.LEFT_SQUARE_BRACKET:
+        this.tokens.push(new Token(SymbolToken.LEFT_SQUARE_BRACKET, char));
+        break;
+      case SymbolToken.RIGHT_SQUARE_BRACKET:
+        this.tokens.push(new Token(SymbolToken.RIGHT_SQUARE_BRACKET, char));
+        break;
       case SymbolToken.DOT:
         this.tokens.push(new Token(SymbolToken.DOT, char));
         break;
@@ -102,13 +109,16 @@ export class Parser {
   }
 
   private equal(): void {
-    const next = this.peek();
+    this.scanUntilBoundary();
 
-    if (next === SymbolToken.EQUAL as string) {
+    const text = this.text.substring(this.start, this.current);
+
+    if (text === SymbolToken.EQUAL_EQUAL as string) {
       this.tokens.push(new Token(SymbolToken.EQUAL_EQUAL, SymbolToken.EQUAL_EQUAL as string));
-    } else {
-      throw new ParsingError('Single equal sign is illegal.');
+      return;
     }
+
+    throw new ParsingError(`${text} is illegal.`);
   }
 
   private exclamation(): void {
@@ -195,10 +205,14 @@ export class Parser {
   private identifier(): void {
     this.scanUntilBoundary();
 
-    const text = this.text.substring(this.start + 1, this.current);
+    const text = this.text.substring(this.start, this.current);
 
-    if (/[A-Za-z-_]/g.test(text)) {
+    if (!isLegalIdentifier(text)) {
       throw new ParsingError(`Identifier ${text} contains illegal characters.`);
+    }
+
+    if (text.startsWith('-')) {
+      throw new ParsingError('Identifier cannot start with a dash.');
     }
 
     this.tokens.push(new Token(SequenceToken.IDENTIFIER, text));
@@ -258,8 +272,8 @@ export class Parser {
   }
 
   private nextCharacter(): string {
-    this.current += 1;
     const char = this.text.charAt(this.current);
+    this.current += 1;
     return char;
   }
 

@@ -3,7 +3,7 @@ import { Atom } from './atom';
 export class Expression {
   readonly text: string;
 
-  private atoms: Atom[];
+  readonly atoms: Atom[];
 
   constructor(text: string, atoms: Atom[]) {
     this.text = text;

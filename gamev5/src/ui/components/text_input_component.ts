@@ -30,9 +30,7 @@ export class TextInputComponent extends Component {
   }
 
   private handleKeyboardEvent(event: IKeyboardEvent): void {
-    debug(event);
-
-    if (isAlphaNumeric(event.key) || isSpecialCharacter(event.key)) {
+    if (isAlphaNumeric(event.key) ?? isSpecialCharacter(event.key)) {
       this.insert(event.key);
       return;
     }

@@ -1,4 +1,4 @@
-import { Game } from 'xor5-game/src';
+import { Engine } from 'xor5-game/src';
 import { SystemIO } from './components/system_io';
 import { Terminal } from './components/terminal';
 import { AudioPlayer } from './components/audio_player';
@@ -15,27 +15,27 @@ window.addEventListener('DOMContentLoaded', () => {
   const terminal = new Terminal('terminal');
   const audioPlayer = new AudioPlayer('audio-player');
 
-  const game = new Game({
+  const engine = new Engine({
     systemIO,
     terminal,
     audioPlayer,
   });
 
-  // Pause the game when the window is not visible
+  // Pause the engine when the window is not visible
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden' && game.running) {
+    if (document.visibilityState === 'hidden' && engine.running) {
       minimized = true;
-      game.pause();
+      engine.pause();
     }
     
     if (document.visibilityState === 'visible' && minimized) {
       minimized = false;
-      game.start();
+      engine.start();
     }
   });
 
   if (!document.hidden) {
-    game.start();
+    engine.start();
   } else {
     minimized = true;
   }

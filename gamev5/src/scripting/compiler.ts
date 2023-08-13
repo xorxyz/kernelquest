@@ -11,6 +11,8 @@ import { HexType } from './types/hex';
 import { Ref } from './types/ref';
 import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
+import { logger } from '../shared/logger';
+import { Identifier } from './types/identifier';
 
 export class Compiler {
   private atoms: Atom[] = [];
@@ -38,6 +40,10 @@ export class Compiler {
       if (this.done) return;
       this.compileToken(token);
     });
+
+    if (this.level !== 0) {
+      throw new CompilationError('Unbalanced square brackets.');
+    }
 
     const expression = new Expression(this.text, this.atoms);
 
@@ -70,6 +76,9 @@ export class Compiler {
       case SequenceToken.VARIABLE:
         this.add(new VariableType(token.lexeme));
         break;
+      case SequenceToken.IDENTIFIER:
+        this.add(new Identifier(token.lexeme));
+        break;
       default:
         break;
     }
@@ -92,6 +101,7 @@ export class Compiler {
 
   private startQuotation(): void {
     this.level += 1;
+    this.quotations[this.level] = new Quotation();
   }
 
   private endQuotation(): void {
@@ -100,12 +110,16 @@ export class Compiler {
       throw new CompilationError(`(endQuotation) Current quotation not found (index ${this.level})`);
     }
 
-    const previousQuotation = this.quotations[this.level - 1];
-    if (!previousQuotation) {
-      throw new CompilationError(`(endQuotation) Previous quotation not found (index ${this.level})`);
+    if (this.level === 1) {
+      this.atoms.push(currentQuotation);
+    } else {
+      const previousQuotation = this.quotations[this.level - 1];
+      if (!previousQuotation) {
+        throw new CompilationError(`(endQuotation) Previous quotation not found (index ${this.level})`);
+      }
+      previousQuotation.push(currentQuotation);
     }
 
-    previousQuotation.push(currentQuotation);
     this.level -= 1;
   }
 }

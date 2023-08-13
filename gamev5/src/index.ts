@@ -18,7 +18,7 @@ interface IDependencies {
   terminal: ITerminal
 }
 
-export class Game {
+export class Engine {
   private audioManager: AudioManager;
 
   private systemClock: Clock;
@@ -49,13 +49,13 @@ export class Game {
 
   start(): void {
     if (this.systemClock.isRunning) return;
-    logger.debug('Starting game...');
+    logger.debug('Starting engine...');
 
     this.systemClock.start();
   }
 
   pause(): void {
-    logger.debug('Pausing game...');
+    logger.debug('Pausing engine...');
 
     this.systemClock.stop();
   }
@@ -69,10 +69,10 @@ export class Game {
       this.render();
 
       if (performance.now() - startTime > MS_PER_GAME_CYCLE) {
-        logger.warn(`game.step(): This cycle took longer than ${MS_PER_GAME_CYCLE} ms`);
+        logger.warn(`engine.step(): This cycle took longer than ${MS_PER_GAME_CYCLE} ms`);
       }
     } catch (err) {
-      logger.error('game.step(): Uncaught error!', err);
+      logger.error('engine.step(): Uncaught error!', err);
       // this.systemManager.exit();
     }
   }
@@ -80,6 +80,7 @@ export class Game {
   private update(tick: number): void {
     this.stateManager.state.tick = tick;
     const keyboardEvents = this.inputManager.getKeyboardEvents();
+    this.stateManager.update(tick);
     this.viewManager.update(tick, this.stateManager.state, keyboardEvents);
   }
 
