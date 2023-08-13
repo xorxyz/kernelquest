@@ -1,12 +1,12 @@
 import { Atom } from './atom';
 
 export class Expression {
-  readonly code: string[];
+  readonly text: string;
 
   private atoms: Atom[];
 
-  constructor(code: string[], atoms: Atom[]) {
-    this.code = code;
+  constructor(text: string, atoms: Atom[]) {
+    this.text = text;
     this.atoms = atoms;
   }
 }

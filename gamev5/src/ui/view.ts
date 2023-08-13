@@ -8,10 +8,30 @@ import { DiagnosticsComponent } from './components/diagnostics';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void
 
-export interface IRouter {
-  go: (name: string) => void
+export interface ICutTransition {
+  type: 'cut'
 }
 
+export interface IFadeTransition {
+  type: 'fade'
+  delay?: number,
+  duration?: number
+}
+
+export type ITransition = ICutTransition | IFadeTransition
+
+export interface IRouter {
+  go: (name: string, transition?: ITransition) => void
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface View {
+  onLoad?(tick: number): void
+
+  update?(tick: number, state: IGameState): IAction | null
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export abstract class View {
   protected actions = new Queue<IAction>();
 
@@ -27,10 +47,6 @@ export abstract class View {
     this.router = router;
     this.activeComponent = this.registerComponent('diagnostics', new DiagnosticsComponent(new Vector(0, 0)));
   }
-
-  onLoad?(tick: number): void
-
-  update?(tick: number, state: IGameState): IAction | null
 
   getCursorPosition(): Vector {
     return (this.activeComponent.getCursorOffset?.() ?? new Vector())
@@ -72,13 +88,6 @@ export abstract class View {
   }
 
   $update(tick: number, state: IGameState, keyboardEvents: IKeyboardEvent[]): IAction | null {
-    // inputEvents.forEach((event): void => {
-    //   const handler = this.events[event.name];
-    //   if (handler) {
-    //     handler.call(this, event);
-    //   }
-    // });
-
     keyboardEvents.forEach((event): void => {
       if (event.key === '\t') {
         const components = Object.values(this.components);

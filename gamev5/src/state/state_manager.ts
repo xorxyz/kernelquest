@@ -1,6 +1,5 @@
-import { MS_PER_GAME_CYCLE, SCREEN_HEIGHT, SCREEN_WIDTH } from '../shared/constants';
+import { MS_PER_GAME_CYCLE } from '../shared/constants';
 import { IHistoryEvent, ISaveFileContents } from '../shared/interfaces';
-import { Vector } from '../shared/vector';
 
 export interface IGameState {
   tick: number
@@ -10,7 +9,6 @@ export interface IGameState {
     gold: number
   },
   history: IHistoryEvent[],
-  cursor: Vector
 }
 
 export const EmptyGameState = {
@@ -21,7 +19,6 @@ export const EmptyGameState = {
     gold: 0,
   },
   history: [],
-  cursor: new Vector(SCREEN_WIDTH, SCREEN_HEIGHT),
 };
 
 export class StateManager {

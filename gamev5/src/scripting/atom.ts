@@ -1,5 +1,5 @@
 export class Atom {
-  readonly lexeme: string;
+  protected lexeme: string;
 
   constructor(lexeme: string) {
     this.lexeme = lexeme;

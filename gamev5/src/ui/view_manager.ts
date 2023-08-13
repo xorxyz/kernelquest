@@ -4,6 +4,7 @@ import { EmptyGameState, IGameState } from '../state/state_manager';
 import { BlankView } from './views/blank.view';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
+import { TitleView } from './views/title.view';
 
 export class ViewManager {
   private activeView: View;
@@ -22,12 +23,14 @@ export class ViewManager {
 
   constructor(terminal: ITerminal) {
     this.terminal = terminal;
-    this.activeView = this.registerView('debug', DebugView);
+
+    this.activeView = this.registerView('title', TitleView);
+    this.registerView('debug', DebugView);
   }
 
   render(): void {
     const output = this.activeView.render();
-    const cursorPosition = this.activeView.getCursorPosition() ?? this.gameState.cursor;
+    const cursorPosition = this.activeView.getCursorPosition();
     const moveCursor = Ansi.setXY(cursorPosition.x, cursorPosition.y);
 
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
