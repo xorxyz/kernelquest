@@ -1,11 +1,11 @@
 import { Atom } from '../atom';
 import { Literal } from '../literal';
 
-export class LiteralQuotation extends Literal {
+export class Quotation extends Literal {
   private atoms: Atom[] = [];
 
-  static from(atoms: Atom[]): LiteralQuotation {
-    const quotation = new LiteralQuotation('');
+  static from(atoms: Atom[]): Quotation {
+    const quotation = new Quotation('');
 
     atoms.forEach((atom): void => { quotation.push(atom); });
 

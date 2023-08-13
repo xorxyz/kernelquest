@@ -2,13 +2,15 @@ import { CompilationError } from '../shared/errors';
 import { Atom } from './atom';
 import { Dictionary } from './dictionary';
 import { Expression } from './expression';
-import { LiteralHex } from './literals/hex';
-import { LiteralNumber } from './literals/number';
-import { LiteralQuotation } from './literals/quotation';
-import { LiteralRef } from './literals/ref';
-import { LiteralString } from './literals/string';
+import { Quotation } from './types/quotation';
 import { Parser } from './parser';
 import { SequenceToken, SymbolToken, Token } from './token';
+import { StringType } from './types/string';
+import { NumberType } from './types/number';
+import { HexType } from './types/hex';
+import { Ref } from './types/ref';
+import { LiteralType } from './types/type';
+import { VariableType } from './types/variable';
 
 export class Compiler {
   private atoms: Atom[] = [];
@@ -19,7 +21,7 @@ export class Compiler {
 
   private level = 0;
 
-  private quotations: LiteralQuotation[] = [];
+  private quotations: Quotation[] = [];
 
   private text: string;
 
@@ -51,16 +53,22 @@ export class Compiler {
         this.endQuotation();
         break;
       case SequenceToken.STRING:
-        this.add(new LiteralString(token.lexeme));
+        this.add(new StringType(token.lexeme));
         break;
       case SequenceToken.NUMBER:
-        this.add(new LiteralNumber(token.lexeme));
+        this.add(new NumberType(token.lexeme));
         break;
       case SequenceToken.HEX:
-        this.add(new LiteralHex(token.lexeme));
+        this.add(new HexType(token.lexeme));
         break;
       case SequenceToken.REF:
-        this.add(new LiteralRef(token.lexeme));
+        this.add(new Ref(token.lexeme));
+        break;
+      case SequenceToken.TYPE:
+        this.add(new LiteralType(token.lexeme));
+        break;
+      case SequenceToken.VARIABLE:
+        this.add(new VariableType(token.lexeme));
         break;
       default:
         break;

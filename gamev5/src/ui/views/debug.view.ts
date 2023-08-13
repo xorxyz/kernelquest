@@ -1,5 +1,6 @@
-import { CompilationError, Compiler } from '../../scripting/compiler';
+import { Compiler } from '../../scripting/compiler';
 import { Dictionary } from '../../scripting/dictionary';
+import { CompilationError } from '../../shared/errors';
 import { Vector } from '../../shared/vector';
 import { TextInputComponent } from '../components/text_input_component';
 import { TextOutputComponent } from '../components/text_output_component';

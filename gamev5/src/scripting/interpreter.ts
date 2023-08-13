@@ -3,16 +3,17 @@ import { Dictionary } from './dictionary';
 import { Expression } from './expression';
 
 export class Interpreter {
-  private compiler: Compiler;
+  private dictionary: Dictionary;
 
   private expression: Expression | null = null;
 
   constructor(dictionary: Dictionary) {
-    this.compiler = new Compiler(dictionary);
+    this.dictionary = dictionary;
   }
 
   read(text: string): void {
-    this.expression = this.compiler.compile(text);
+    const compiler = new Compiler(this.dictionary, text);
+    this.expression = compiler.compile();
   }
 
   step(): void {
