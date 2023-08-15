@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { IGameState } from '../state/state_manager';
-import { IKeyboardEvent } from './interfaces';
-import { logger } from './logger';
-import { Vector } from './vector';
+import { IKeyboardEvent } from '../shared/interfaces';
+import { logger } from '../shared/logger';
+import { Vector } from '../shared/vector';
 
 export interface Component {
   getCursorOffset?(): Vector

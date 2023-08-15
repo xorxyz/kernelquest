@@ -11,7 +11,6 @@ import { HexType } from './types/hex';
 import { Ref } from './types/ref';
 import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
-import { logger } from '../shared/logger';
 import { Identifier } from './types/identifier';
 
 export class Compiler {

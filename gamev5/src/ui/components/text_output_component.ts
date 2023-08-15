@@ -1,4 +1,4 @@
-import { Component } from '../../shared/component';
+import { Component } from '../component';
 import { IGameState } from '../../state/state_manager';
 
 export class TextOutputComponent extends Component {

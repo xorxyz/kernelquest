@@ -1,4 +1,4 @@
-import { Component } from '../shared/component';
+import { Component } from './component';
 import { IAction, IKeyboardEvent } from '../shared/interfaces';
 import { Queue } from '../shared/queue';
 import { Vector } from '../shared/vector';

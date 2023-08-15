@@ -1,4 +1,4 @@
-import { Component } from '../../shared/component';
+import { Component } from '../component';
 import { IKeyboardEvent } from '../../shared/interfaces';
 import { IGameState } from '../../state/state_manager';
 

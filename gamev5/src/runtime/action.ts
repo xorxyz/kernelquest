@@ -1,6 +1,6 @@
 import { Agent } from './agent';
-import { Area } from './area';
-import { ActionArguments, HistoryEventState, IActionResult } from './interfaces';
+import { Area } from '../shared/area';
+import { ActionArguments, HistoryEventState, IActionResult } from '../shared/interfaces';
 
 export interface IActionContext {
   agent: Agent,

@@ -1,13 +1,27 @@
-import { Word } from './word';
+import { IAction } from '../shared/interfaces';
+import { Stack } from './stack';
+import { clear } from './words/actions';
+import { pop } from './words/operators';
+
+export type Word = (stack: Stack) => IAction | null
 
 export class Dictionary {
-  private words = new Map<string, Word>();
+  private actions = new Map<string, Word>();
 
-  add(name: string, word: Word): void {
-    this.words.set(name, word);
+  constructor() {
+    this.add('pop', pop);
+    this.add('clear', clear);
+  }
+
+  add(name: string, action: Word): void {
+    this.actions.set(name, action);
+  }
+
+  get(name: string): Word | null {
+    return this.actions.get(name) ?? null;
   }
 
   remove(name: string): void {
-    this.words.delete(name);
+    this.actions.delete(name);
   }
 }

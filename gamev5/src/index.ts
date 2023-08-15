@@ -9,7 +9,7 @@ import { logger } from './shared/logger';
 import { SystemManager, ISystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
 import { StateManager } from './state/state_manager';
-import { IActionDefinition } from './shared/action';
+import { IActionDefinition } from './runtime/action';
 
 interface IDependencies {
   actionDefinitions?: IActionDefinition[]

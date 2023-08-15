@@ -1,4 +1,4 @@
-import { Component } from '../../shared/component';
+import { Component } from '../component';
 import { IKeyboardEvent } from '../../shared/interfaces';
 import { debug } from '../../shared/logger';
 import { isAlphaNumeric, isSpecialCharacter } from '../../shared/util';

@@ -7,6 +7,8 @@ export type ActionArguments = Record<string, SerializableType>
 // Allows undo/redo by storing some data with the action history
 export type HistoryEventState = Record<string, SerializableType | Record<string, SerializableType>>
 
+export interface IActionContext {}
+
 export interface IAction {
   name: string,
   args?: ActionArguments
@@ -21,6 +23,14 @@ export interface IActionResult {
   type: ActionResultType
   message?: string
   state?: HistoryEventState
+}
+
+export interface IActionDefinition<
+  A extends ActionArguments = ActionArguments,
+  S extends HistoryEventState = HistoryEventState
+> {
+  perform(ctx: IActionContext, arg: A): IActionResult
+  undo(ctx: IActionContext, arg: A, previousState: S): IActionResult
 }
 
 export interface IHistoryEvent {

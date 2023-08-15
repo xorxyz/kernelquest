@@ -1,4 +1,4 @@
-import { Component } from '../../shared/component';
+import { Component } from '../component';
 
 export abstract class ButtonComponent extends Component {
   abstract body: string;

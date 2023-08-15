@@ -1,4 +1,4 @@
-import { IActionDefinition } from '../shared/action';
+import { IActionDefinition } from '../runtime/action';
 import { ActionResultType, IActionResult } from '../shared/interfaces';
 
 const succeed = (message?: string): IActionResult => ({ type: ActionResultType.SUCCESS, message });

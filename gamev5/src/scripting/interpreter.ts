@@ -1,11 +1,9 @@
 import { RuntimeError } from '../shared/errors';
-import { logger } from '../shared/logger';
+import { IAction } from '../shared/interfaces';
 import { Compiler } from './compiler';
 import { Dictionary } from './dictionary';
 import { Expression } from './expression';
-import { Literal } from './literal';
 import { Stack } from './stack';
-import { Identifier } from './types/identifier';
 
 export class Interpreter {
   private dictionary: Dictionary;
@@ -28,30 +26,25 @@ export class Interpreter {
     return this.index >= this.expression.atoms.length;
   }
 
-  run(): void {
-    this.expression.atoms.forEach((): void => {
-      this.step();
+  run(): IAction | null {
+    let action: IAction | null = null;
+    while (action === null && !this.finished) {
+      action = this.step();
       this.index += 1;
-    });
+    }
+
+    return action;
   }
 
-  step(): void {
-    if (this.finished) return;
+  step(): IAction | null {
+    if (this.finished) return null;
 
     const atom = this.expression.atoms.at(this.index);
     if (!atom) throw new RuntimeError(`Unexpected: There was no atom at index '${this.index}'`);
 
-    if (atom instanceof Literal) {
-      this.stack.push(atom);
-      return;
-    }
+    const action = atom.execute(this.stack, this.dictionary);
 
-    if (atom instanceof Identifier) {
-      logger.debug('Got identifier:', atom.lexeme);
-      return;
-    }
-
-    throw new RuntimeError(`Unhandled atom type '${atom.constructor.name}' for '${atom.lexeme}'`);
+    return action;
   }
 
   print(): string {

@@ -1,11 +1,11 @@
 import { Nature } from './nature';
 
 export class Entity {
-  readonly id: symbol;
+  readonly id: number;
 
   readonly nature: Nature;
 
-  constructor(id: symbol, nature: Nature) {
+  constructor(id: number, nature: Nature) {
     this.id = id;
     this.nature = nature;
   }
