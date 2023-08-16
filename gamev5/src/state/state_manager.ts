@@ -1,7 +1,9 @@
-import { MS_PER_GAME_CYCLE } from '../shared/constants';
-import { IHistoryEvent, ISaveFileContents } from '../shared/interfaces';
+import {
+  IAction, IActionResult, IGameEvent, IHistoryEvent, ISaveFileContents,
+} from '../shared/interfaces';
+import { SaveGameId } from '../system/system_manager';
 
-export interface IGameState {
+export interface IState {
   tick: number
   name: string
   stats: {
@@ -9,6 +11,11 @@ export interface IGameState {
     gold: number
   },
   history: IHistoryEvent[],
+}
+
+export interface ISystemState {
+  saveGameId: SaveGameId
+  game: IState
 }
 
 export const EmptyGameState = {
@@ -22,26 +29,22 @@ export const EmptyGameState = {
 };
 
 export class StateManager {
-  readonly state: IGameState = ({ ...EmptyGameState });
+  readonly state: ISystemState = {
+    saveGameId: 0,
+    game: { ...EmptyGameState },
+  };
 
-  update(tick: number): void {
-    this.state.tick = tick;
+  update(tick: number, playerAction: IAction | null, gameActions: IAction[]): IGameEvent[] {
+    this.state.game.tick = tick;
+
+    return [];
   }
 
   import(contents: ISaveFileContents): void {
-    this.state.history = contents.history;
+    this.state.game.history = contents.history;
   }
 
   export(): ISaveFileContents {
-    const ticksInMinutes = Number(((this.state.tick * MS_PER_GAME_CYCLE * 1000) / 60).toFixed(2));
-    return {
-      name: this.state.name,
-      stats: {
-        level: this.state.stats.level,
-        gold: this.state.stats.gold,
-        time: ticksInMinutes,
-      },
-      history: this.state.history,
-    };
+    return { ...this.state.game };
   }
 }

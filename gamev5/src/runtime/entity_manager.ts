@@ -1,3 +1,4 @@
+import { IAction } from '../shared/interfaces';
 import { Being } from './being';
 import { Body } from './body';
 import { Soul } from './soul';
@@ -13,4 +14,8 @@ export class EntityManager {
   private spirits = new Set<Spirit>();
 
   private creator = Being;
+
+  update(tick: number): IAction[] {
+    return [];
+  }
 }

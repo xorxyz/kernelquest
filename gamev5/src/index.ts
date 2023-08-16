@@ -4,7 +4,7 @@ import { MS_PER_GAME_CYCLE } from './shared/constants';
 import { Clock } from './shared/clock';
 import { EntityManager } from './runtime/entity_manager';
 import { InputManager } from './input/input_manager';
-import { ITerminal } from './shared/interfaces';
+import { IAction, ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
 import { SystemManager, ISystemIO } from './system/system_manager';
 import { ViewManager } from './ui/view_manager';
@@ -73,15 +73,39 @@ export class Engine {
       }
     } catch (err) {
       logger.error('engine.step(): Uncaught error!', err);
-      // this.systemManager.exit();
     }
   }
 
   private update(tick: number): void {
-    this.stateManager.state.tick = tick;
     const keyboardEvents = this.inputManager.getKeyboardEvents();
-    this.stateManager.update(tick);
-    this.viewManager.update(tick, this.stateManager.state, keyboardEvents);
+    const playerAction = this.viewManager.update(tick, this.stateManager.state, keyboardEvents);
+    const gameActions = this.entityManager.update(tick);
+    const gameEvents = this.stateManager.update(tick, playerAction, gameActions);
+
+    this.audioManager.update(tick, gameEvents);
+
+    this.handleSystemActions(playerAction);
+  }
+
+  private handleSystemActions(action: IAction | null): void {
+    if (!action) return;
+
+    if (action.name === 'save') {
+      const { saveGameId, game } = this.stateManager.state;
+      this.pause();
+      this.systemManager.save(saveGameId, game, (): void => {
+        this.start();
+      });
+    }
+
+    if (action.name === 'load') {
+      const { saveGameId } = this.stateManager.state;
+      this.pause();
+      this.systemManager.load(saveGameId, (contents): void => {
+        this.stateManager.import(contents);
+        this.start();
+      });
+    }
   }
 
   private render(): void {

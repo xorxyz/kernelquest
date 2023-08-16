@@ -5,7 +5,7 @@ export type SerializableType = boolean | number | string
 export type ActionArguments = Record<string, SerializableType>
 
 // Allows undo/redo by storing some data with the action history
-export type HistoryEventState = Record<string, SerializableType | Record<string, SerializableType>>
+export type GameEventState = Record<string, SerializableType | Record<string, SerializableType>>
 
 export interface IActionContext {}
 
@@ -22,33 +22,33 @@ export enum ActionResultType {
 export interface IActionResult {
   type: ActionResultType
   message?: string
-  state?: HistoryEventState
+  state?: GameEventState
 }
 
 export interface IActionDefinition<
   A extends ActionArguments = ActionArguments,
-  S extends HistoryEventState = HistoryEventState
+  S extends GameEventState = GameEventState
 > {
   perform(ctx: IActionContext, arg: A): IActionResult
   undo(ctx: IActionContext, arg: A, previousState: S): IActionResult
 }
 
-export interface IHistoryEvent {
+export interface IGameEvent {
   tick: number,
   agentId: number,
   action: IAction,
   failed?: boolean,
-  state?: HistoryEventState,
+  state?: GameEventState,
 }
 
 export interface ISaveFileContents {
+  tick: number,
   name: string,
   stats: {
     level: number,
     gold: number,
-    time: number
   },
-  history: IHistoryEvent[]
+  history: IGameEvent[]
 }
 
 export interface IKeyboardEvent {

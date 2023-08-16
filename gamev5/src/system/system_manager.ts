@@ -21,13 +21,24 @@ export class SystemManager {
     this.systemIO = systemIO;
   }
 
-  async save(saveGameId: SaveGameId, contents: ISaveFileContents): Promise<void> {
-    await this.systemIO.save(saveGameId, contents);
+  save(saveGameId: SaveGameId, contents: ISaveFileContents, callback: () => void): void {
+    this.systemIO.save(saveGameId, contents)
+      .then((): void => {
+        callback();
+      })
+      .catch((): void => {
+        // Handle error
+      });
   }
 
-  async load(saveGameId: SaveGameId): Promise<ISaveFileContents> {
-    const contents = await this.systemIO.load(saveGameId);
-    return contents;
+  load(saveGameId: SaveGameId, callback: (gameState: ISaveFileContents) => void): void {
+    this.systemIO.load(saveGameId)
+      .then((gameState): void => {
+        callback(gameState);
+      })
+      .catch((): void => {
+        // Handle error
+      });
   }
 
   exit(): void {
