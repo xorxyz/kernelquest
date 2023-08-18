@@ -1,21 +1,32 @@
+import { Agent } from '../runtime/agent';
 import {
-  IAction, IActionResult, IGameEvent, IHistoryEvent, ISaveFileContents,
+  ActionArguments,
+  GameEventState,
+  IAction, IActionResult, IGameEvent, ISaveFileContents,
 } from '../shared/interfaces';
-import { SaveGameId } from '../system/system_manager';
+import { IValidGameEvent } from './actions/valid_actions';
+import { EntityManager } from './entity_manager';
 
-export interface IState {
+export interface IActionContext {
+  agent: Agent
+}
+
+export interface IActionDefinition<
+  A extends ActionArguments = ActionArguments,
+  S extends GameEventState = GameEventState
+> {
+  perform(ctx: IActionContext, arg: A): IActionResult
+  undo(ctx: IActionContext, arg: A, previousState: S): IActionResult
+}
+
+export interface IGameState {
   tick: number
   name: string
   stats: {
     level: number
     gold: number
   },
-  history: IHistoryEvent[],
-}
-
-export interface ISystemState {
-  saveGameId: SaveGameId
-  game: IState
+  history: IValidGameEvent[],
 }
 
 export const EmptyGameState = {
@@ -29,22 +40,21 @@ export const EmptyGameState = {
 };
 
 export class StateManager {
-  readonly state: ISystemState = {
-    saveGameId: 0,
-    game: { ...EmptyGameState },
-  };
+  readonly game: IGameState = { ...EmptyGameState };
 
-  update(tick: number, playerAction: IAction | null, gameActions: IAction[]): IGameEvent[] {
-    this.state.game.tick = tick;
+  private entityManager = new EntityManager();
+
+  update(tick: number, playerAction: IAction | null): IGameEvent[] {
+    this.game.tick = tick;
 
     return [];
   }
 
-  import(contents: ISaveFileContents): void {
-    this.state.game.history = contents.history;
+  import(contents: IGameState): void {
+    this.game.history = contents.history;
   }
 
   export(): ISaveFileContents {
-    return { ...this.state.game };
+    return { ...this.game };
   }
 }

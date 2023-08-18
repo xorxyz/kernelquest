@@ -1,6 +1,9 @@
-import { ISaveFileContents } from '../shared/interfaces';
+import { IGameEvent, ISaveFileContents } from '../shared/interfaces';
+import { IValidGameEvent } from '../state/actions/valid_actions';
+import { IGameState } from '../state/state_manager';
+import { isValidAction } from './validation';
 
-export type SaveGameId = 0 | 1 | 2
+export type SaveGameId = 0 | 1 | 2 | 3
 
 export type ExitFn = () => void
 
@@ -15,14 +18,18 @@ export interface ISystemIO {
 }
 
 export class SystemManager {
+  private saveFileContents: ISaveFileContents | null = null;
+
   private systemIO: ISystemIO;
+
+  private saveGameId: SaveGameId = 0;
 
   constructor(systemIO: ISystemIO) {
     this.systemIO = systemIO;
   }
 
-  save(saveGameId: SaveGameId, contents: ISaveFileContents, callback: () => void): void {
-    this.systemIO.save(saveGameId, contents)
+  save(contents: ISaveFileContents, callback: () => void): void {
+    this.systemIO.save(this.saveGameId, contents)
       .then((): void => {
         callback();
       })
@@ -31,10 +38,16 @@ export class SystemManager {
       });
   }
 
-  load(saveGameId: SaveGameId, callback: (gameState: ISaveFileContents) => void): void {
+  load(saveGameId: SaveGameId, callback: (gameState: IGameState) => void): void {
     this.systemIO.load(saveGameId)
-      .then((gameState): void => {
-        callback(gameState);
+      .then((saveFileContents): void => {
+        this.saveGameId = saveGameId;
+        this.saveFileContents = saveFileContents;
+        const validGameState = {
+          ...saveFileContents,
+          history: this.validateGameEvents(),
+        };
+        callback(validGameState);
       })
       .catch((): void => {
         // Handle error
@@ -43,5 +56,23 @@ export class SystemManager {
 
   exit(): void {
     this.systemIO.exit();
+  }
+
+  private validateGameEvents(): IValidGameEvent[] {
+    if (!this.saveFileContents) throw new Error('Tried to validate save file contents before loading it.');
+
+    const { history } = this.saveFileContents;
+
+    const validGameEvents = history.filter((e: IGameEvent): e is IValidGameEvent => {
+      if (isValidAction(e.action)) {
+        return true;
+      }
+
+      throw new Error(
+        `Couldn't load the save file contents because it contains an invalid action: ${JSON.stringify(e.action)}`,
+      );
+    });
+
+    return validGameEvents;
   }
 }

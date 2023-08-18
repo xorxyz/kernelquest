@@ -3,18 +3,20 @@ import { IGameState } from '../state/state_manager';
 import { IKeyboardEvent } from '../shared/interfaces';
 import { logger } from '../shared/logger';
 import { Vector } from '../shared/vector';
+import { ValidAction } from '../state/actions/valid_actions';
+import { Queue } from '../shared/queue';
 
 export interface Component {
   getCursorOffset?(): Vector
 }
 
-export interface IEvent {
+export interface IEvent {}
 
-}
-
-export type EventHandler = (event: IEvent) => void
+export type EventHandler = (event: IEvent) => ValidAction | null
 
 export abstract class Component {
+  public queue = new Queue<ValidAction>();
+
   readonly position: Vector;
 
   private handlers: Record<string, EventHandler> = {};
@@ -26,7 +28,8 @@ export abstract class Component {
   emit(eventName: string, event: IEvent): void {
     const handler = this.handlers[eventName];
     if (handler) {
-      handler(event);
+      const action = handler(event);
+      if (action) this.queue.add(action);
     }
   }
 

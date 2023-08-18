@@ -3,25 +3,25 @@ import { Stack } from './stack';
 import { clear } from './words/actions';
 import { pop } from './words/operators';
 
-export type Word = (stack: Stack) => IAction | null
+export type Meaning = (stack: Stack) => IAction | null
 
 export class Dictionary {
-  private actions = new Map<string, Word>();
+  private meanings = new Map<string, Meaning>();
 
   constructor() {
     this.add('pop', pop);
     this.add('clear', clear);
   }
 
-  add(name: string, action: Word): void {
-    this.actions.set(name, action);
+  add(name: string, action: Meaning): void {
+    this.meanings.set(name, action);
   }
 
-  get(name: string): Word | null {
-    return this.actions.get(name) ?? null;
+  get(name: string): Meaning | null {
+    return this.meanings.get(name) ?? null;
   }
 
   remove(name: string): void {
-    this.actions.delete(name);
+    this.meanings.delete(name);
   }
 }

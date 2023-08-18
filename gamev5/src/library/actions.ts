@@ -27,6 +27,3 @@ export const actions: Record<string, Record<string, IActionDefinition>> = {
     create: createAction,
   },
 };
-
-export const validActions: string[] = Object.values(actions)
-  .flatMap((section): string[] => Object.keys(section));

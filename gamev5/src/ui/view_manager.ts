@@ -1,9 +1,10 @@
-import { IAction, IKeyboardEvent, ITerminal } from '../shared/interfaces';
+import { IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { IRouter, View } from './view';
 import { EmptyGameState, IGameState } from '../state/state_manager';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';
+import { ValidAction } from '../state/actions/valid_actions';
 
 export class ViewManager {
   private activeView: View;
@@ -35,11 +36,11 @@ export class ViewManager {
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, gameState: IGameState, keyboardEvents: IKeyboardEvent[]): IAction | null {
+  update(tick: number, state: IGameState, events: IKeyboardEvent[]): ValidAction | null {
     this.tick = tick;
-    this.gameState = gameState;
+    this.gameState = state;
 
-    const action = this.activeView.$update(tick, gameState, keyboardEvents);
+    const action = this.activeView.$update(tick, state, events);
 
     return action;
   }

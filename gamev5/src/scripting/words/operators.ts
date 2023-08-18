@@ -1,7 +1,7 @@
-import { Word } from '../dictionary';
+import { Meaning } from '../dictionary';
 import { Stack } from '../stack';
 
-export const pop: Word = (stack: Stack): null => {
+export const pop: Meaning = (stack: Stack): null => {
   stack.pop();
   return null;
 };

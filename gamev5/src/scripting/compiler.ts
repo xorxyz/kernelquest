@@ -11,7 +11,7 @@ import { HexType } from './types/hex';
 import { Ref } from './types/ref';
 import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
-import { Identifier } from './types/identifier';
+import { Word } from './types/word';
 
 export class Compiler {
   private atoms: Atom[] = [];
@@ -75,8 +75,8 @@ export class Compiler {
       case SequenceToken.VARIABLE:
         this.add(new VariableType(token.lexeme));
         break;
-      case SequenceToken.IDENTIFIER:
-        this.add(new Identifier(token.lexeme));
+      case SequenceToken.WORD:
+        this.add(new Word(token.lexeme));
         break;
       default:
         break;

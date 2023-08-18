@@ -1,8 +1,8 @@
 import { IAction } from '../../shared/interfaces';
-import { Word } from '../dictionary';
+import { Meaning } from '../dictionary';
 
-export const noop: Word = (): null => null;
+export const noop: Meaning = (): null => null;
 
-export const clear: Word = (): IAction => ({
+export const clear: Meaning = (): IAction => ({
   name: 'clear',
 });

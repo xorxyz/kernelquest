@@ -31,7 +31,7 @@ export enum SequenceToken {
   ATOM = 'atom',
   COMMENT = 'comment',
   HEX = 'hex',
-  IDENTIFIER = 'identifier',
+  WORD = 'word',
   NUMBER = 'number',
   STRING = 'string',
   QUOTATION = 'quotation',
