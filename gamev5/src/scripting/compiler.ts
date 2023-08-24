@@ -8,7 +8,7 @@ import { SequenceToken, SymbolToken, Token } from './token';
 import { StringType } from './types/string';
 import { NumberType } from './types/number';
 import { HexType } from './types/hex';
-import { Ref } from './types/ref';
+import { Idea } from './types/idea';
 import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
 import { Word } from './types/word';
@@ -66,8 +66,8 @@ export class Compiler {
       case SequenceToken.HEX:
         this.add(new HexType(token.lexeme));
         break;
-      case SequenceToken.REF:
-        this.add(new Ref(token.lexeme));
+      case SequenceToken.IDEA:
+        this.add(new Idea(token.lexeme));
         break;
       case SequenceToken.TYPE:
         this.add(new LiteralType(token.lexeme));

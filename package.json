@@ -58,5 +58,8 @@
   "bugs": {
     "url": "https://github.com/xorxyz/xor4/issues"
   },
-  "homepage": "https://github.com/xorxyz/xor4#readme"
+  "homepage": "https://github.com/xorxyz/xor4#readme",
+  "dependencies": {
+    "@badrap/valita": "^0.2.8"
+  }
 }

@@ -10,8 +10,10 @@
   "author": "Jonathan Dupré <hello@jonathandupre.com>",
   "license": "UNLICENSED",
   "dependencies": {
+    "@badrap/valita": "^0.2.8",
     "events": "^3.3.0",
-    "inkjs": "^2.2.1"
+    "inkjs": "^2.2.1",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/events": "^3.0.0",

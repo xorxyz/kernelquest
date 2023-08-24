@@ -31,13 +31,13 @@ export enum SequenceToken {
   ATOM = 'atom',
   COMMENT = 'comment',
   HEX = 'hex',
-  WORD = 'word',
+  IDEA = 'idea',
   NUMBER = 'number',
-  STRING = 'string',
   QUOTATION = 'quotation',
-  REF = 'ref',
+  STRING = 'string',
   TYPE = 'type',
   VARIABLE = 'variable',
+  WORD = 'word',
 }
 
 export type TokenType = SymbolToken | SequenceToken

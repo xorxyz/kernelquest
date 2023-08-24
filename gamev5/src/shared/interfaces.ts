@@ -17,10 +17,10 @@ export enum ActionResultType {
   FAILURE = 1
 }
 
-export interface IActionResult {
+export interface IActionResult<S extends GameEventState> {
   type: ActionResultType
   message?: string
-  state?: GameEventState
+  state?: S
 }
 
 export interface IGameEvent {
