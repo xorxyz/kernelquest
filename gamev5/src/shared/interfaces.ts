@@ -17,7 +17,7 @@ export enum ActionResultType {
   FAILURE = 1
 }
 
-export interface IActionResult<S extends GameEventState> {
+export interface IActionResult<S extends GameEventState | undefined> {
   type: ActionResultType
   message?: string
   state?: S

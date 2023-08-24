@@ -1,4 +1,3 @@
-import * as v from '@badrap/valita';
 import {
   IActionDefinition, createActionDefinition,
 } from '../action';
@@ -6,7 +5,6 @@ import { create, CreateAction } from './admin';
 
 export const [NoopAction, noop] = createActionDefinition({
   name: 'noop',
-  args: v.object({ _noop: v.string().optional() }),
 });
 
 export interface ActionMap {
@@ -15,7 +13,6 @@ export interface ActionMap {
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
-
 export type EveryActionName = EveryAction['name']
 
 export const actions: {

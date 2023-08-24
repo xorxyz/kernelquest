@@ -1,8 +1,8 @@
-import { ActionName } from '../runtime/actions';
+import { EveryActionName } from '../runtime/actions';
 import { ActionArguments, GameEventState, IGameEvent } from '../shared/interfaces';
 
 export interface IValidAction {
-  name: ActionName,
+  name: EveryActionName,
   args?: ActionArguments
 }
 

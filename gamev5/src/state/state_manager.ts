@@ -19,11 +19,11 @@ export const EmptyGameState = {
   history: [],
 };
 
-function isAction<K extends EveryActionName>(
-  action: Record<string, unknown>, name: K,
-): action is { name: K; args: ActionMap[K]['args']; } {
-  return action['name'] === name;
-}
+// function isAction<K extends EveryActionName>(
+//   action: Record<string, unknown>, name: K,
+// ): action is { name: K; args: ActionMap[K]['args']; } {
+//   return action['name'] === name;
+// }
 
 function performAction<K extends EveryActionName>(
   ctx: IActionContext,
@@ -33,11 +33,11 @@ function performAction<K extends EveryActionName>(
 
   try {
     const validatedAction = actionDefinition.validator.parse(action) as { name: K, args: ActionMap[K]['args'] };
-    if (isAction(validatedAction, action.name)) {
-      actionDefinition.perform(ctx, validatedAction.args);
-    } else {
-      // oh no
-    }
+    // if (isAction(validatedAction, action.name)) {
+    actionDefinition.perform(ctx, validatedAction.args);
+    // } else {
+    // oh no
+    // }
   } catch (err) {
     // oops
   }
@@ -59,7 +59,7 @@ export class StateManager {
 
       return [];
     } catch (e) {
-      logger.error('oops');
+      logger.error('oops', (e as Error).message);
 
       return [];
     }
