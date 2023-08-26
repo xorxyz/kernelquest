@@ -1,6 +1,5 @@
 import { RuntimeError } from '../shared/errors';
 import { IAction } from '../shared/interfaces';
-import { Compiler } from './compiler';
 import { Dictionary } from './dictionary';
 import { Expression } from './expression';
 import { Stack } from './stack';
@@ -8,25 +7,24 @@ import { Stack } from './stack';
 export class Interpreter {
   private dictionary: Dictionary;
 
-  private expression: Expression;
+  private stack: Stack = new Stack();
+
+  private expression: Expression = new Expression('', []);
 
   private index = 0;
 
-  private stack: Stack;
-
-  constructor(dictionary: Dictionary, text: string, stack = new Stack()) {
+  constructor(dictionary: Dictionary) {
     this.dictionary = dictionary;
-    this.stack = stack;
-
-    const compiler = new Compiler(this.dictionary, text);
-    this.expression = compiler.compile();
   }
 
   get finished(): boolean {
     return this.index >= this.expression.atoms.length;
   }
 
-  run(): IAction | null {
+  evaluate(stack: Stack, expression: Expression): IAction | null {
+    this.stack = stack;
+    this.expression = expression;
+
     let action: IAction | null = null;
     while (action === null && !this.finished) {
       action = this.step();
@@ -36,7 +34,11 @@ export class Interpreter {
     return action;
   }
 
-  step(): IAction | null {
+  print(): string {
+    return this.stack.print();
+  }
+
+  private step(): IAction | null {
     if (this.finished) return null;
 
     const atom = this.expression.atoms.at(this.index);
@@ -45,9 +47,5 @@ export class Interpreter {
     const action = atom.execute(this.stack, this.dictionary);
 
     return action;
-  }
-
-  print(): string {
-    return this.stack.print();
   }
 }

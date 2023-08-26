@@ -24,14 +24,15 @@ export class Compiler {
 
   private quotations: Quotation[] = [];
 
-  private text: string;
+  private text = '';
 
-  constructor(dictionary: Dictionary, text: string) {
+  constructor(dictionary: Dictionary) {
     this.dictionary = dictionary;
-    this.text = text;
   }
 
-  compile(): Expression {
+  compile(text: string): Expression {
+    this.text = text;
+
     const parser = new Parser(this.text);
     const tokens = parser.parse();
 

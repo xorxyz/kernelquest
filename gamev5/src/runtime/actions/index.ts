@@ -1,7 +1,7 @@
 import {
   IActionDefinition, createActionDefinition,
 } from '../action';
-import { create, CreateAction } from './admin';
+import * as admin from './admin';
 
 export const [NoopAction, noop] = createActionDefinition({
   name: 'noop',
@@ -9,7 +9,7 @@ export const [NoopAction, noop] = createActionDefinition({
 
 export interface ActionMap {
   noop: typeof NoopAction
-  create: typeof CreateAction
+  fork: typeof admin.ForkAction
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
@@ -19,5 +19,9 @@ export const actions: {
   [K in EveryActionName]: IActionDefinition<ActionMap[K]>
 } = {
   noop,
-  create,
+  fork: admin.fork,
 };
+
+export function isValidActionName(value: string): value is EveryActionName {
+  return Object.keys(actions).includes(value);
+}

@@ -1,7 +1,6 @@
+import { actions, isValidActionName } from '../runtime/actions';
 import { IGameEvent, ISaveFileContents } from '../shared/interfaces';
-import { IValidGameEvent } from '../state/actions/valid_actions';
-import { IGameState } from '../state/state_manager';
-import { isValidAction } from './validation';
+import { IGameState, IValidGameEvent } from '../state/valid_state';
 
 export type SaveGameId = 0 | 1 | 2 | 3
 
@@ -64,7 +63,7 @@ export class SystemManager {
     const { history } = this.saveFileContents;
 
     const validGameEvents = history.filter((e: IGameEvent): e is IValidGameEvent => {
-      if (isValidAction(e.action)) {
+      if (isValidActionName(e.action.name) && actions[e.action.name].validator.parse(e.action)) {
         return true;
       }
 
