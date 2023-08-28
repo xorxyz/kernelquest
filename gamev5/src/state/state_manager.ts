@@ -1,15 +1,15 @@
-import { IGameEvent, ISaveFileContents } from '../shared/interfaces';
+import {
+  ActionResultType, IActionResult, IGameEvent, ISaveFileContents,
+} from '../shared/interfaces';
 import { EntityManager } from './entity_manager';
-import { Area } from '../shared/area';
 import { IGameState } from './valid_state';
 import { IActionContext } from '../runtime/action';
-import { logger } from '../shared/logger';
-import { Agent } from '../runtime/agent';
 import {
   ActionMap, EveryAction, EveryActionName, actions,
 } from '../runtime/actions';
+import { Kernel } from '../runtime/os/kernel';
 
-export const EmptyGameState = {
+export const EmptyGameState: IGameState = {
   tick: 0,
   name: '',
   stats: {
@@ -17,30 +17,18 @@ export const EmptyGameState = {
     gold: 0,
   },
   history: [],
+  terminalText: [],
 };
-
-// function isAction<K extends EveryActionName>(
-//   action: Record<string, unknown>, name: K,
-// ): action is { name: K; args: ActionMap[K]['args']; } {
-//   return action['name'] === name;
-// }
 
 function performAction<K extends EveryActionName>(
   ctx: IActionContext,
   action: { name: K, args: ActionMap[K]['args'] },
-): void {
+): IActionResult {
   const actionDefinition = actions[action.name];
+  const validatedAction = actionDefinition.validator.parse(action) as { name: K, args: ActionMap[K]['args'] };
+  const result = actionDefinition.perform(ctx, validatedAction.args);
 
-  try {
-    const validatedAction = actionDefinition.validator.parse(action) as { name: K, args: ActionMap[K]['args'] };
-    // if (isAction(validatedAction, action.name)) {
-    actionDefinition.perform(ctx, validatedAction.args);
-    // } else {
-    // oh no
-    // }
-  } catch (err) {
-    // oops
-  }
+  return result;
 }
 
 export class StateManager {
@@ -48,21 +36,41 @@ export class StateManager {
 
   private entityManager = new EntityManager();
 
+  private kernel = new Kernel();
+
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
     this.game.tick = tick;
     if (!playerAction) return [];
 
-    const ctx = { agent: new Agent(), area: new Area() };
+    const ctx = {
+      agent: this.entityManager.player,
+      area: this.entityManager.home,
+      shell: this.kernel.shell,
+      state: this.game,
+    };
 
-    try {
-      performAction(ctx, playerAction);
+    const events: IGameEvent[] = [];
+    const result = performAction(ctx, playerAction);
 
-      return [];
-    } catch (e) {
-      logger.error('oops', (e as Error).message);
-
-      return [];
+    if (result.type === ActionResultType.SUCCESS) {
+      events.push({
+        tick,
+        agentId: 1,
+        action: playerAction,
+        state: result.state,
+      });
     }
+
+    if (result.type === ActionResultType.FAILURE) {
+      events.push({
+        tick,
+        agentId: 1,
+        action: playerAction,
+        failed: true,
+      });
+    }
+
+    return events;
   }
 
   import(contents: IGameState): void {

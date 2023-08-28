@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { IGameState } from '../state/state_manager';
 import { IKeyboardEvent } from '../shared/interfaces';
 import { logger } from '../shared/logger';
 import { Vector } from '../shared/vector';
-import { ValidAction } from '../state/actions/valid_actions';
 import { Queue } from '../shared/queue';
+import { EveryAction } from '../runtime/actions';
+import { IGameState } from '../state/valid_state';
 
 export interface Component {
   getCursorOffset?(): Vector
@@ -12,10 +12,10 @@ export interface Component {
 
 export interface IEvent {}
 
-export type EventHandler = (event: IEvent) => ValidAction | null
+export type EventHandler = (event: IEvent) => EveryAction | null
 
 export abstract class Component {
-  public queue = new Queue<ValidAction>();
+  public queue = new Queue<EveryAction>();
 
   readonly position: Vector;
 

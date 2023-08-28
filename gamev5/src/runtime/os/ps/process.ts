@@ -1,4 +1,4 @@
-import { Stack } from '../../scripting/stack';
+import { VM } from './vm';
 
 type ProcessState = 'New' | 'Ready' | 'Running' | 'Waiting' | 'Terminated'
 
@@ -8,8 +8,6 @@ type Signal = 'SIGINT' | 'SIGTERM' // | 'SIGKILL' | 'SIGHUP' | 'SIGCHLD'
 
 export class Process {
   readonly id: number;
-
-  readonly stack = new Stack();
 
   readonly parentId: number;
 
@@ -29,6 +27,8 @@ export class Process {
 
   private code = '';
 
+  private vm = new VM();
+
   constructor(parentId: number, id: number, userId: number, groupId: number) {
     this.parentId = parentId;
     this.id = id;
@@ -39,5 +39,13 @@ export class Process {
     const { userId, groupId } = this.owner;
     const process = new Process(this.id, nextId, userId, groupId);
     return process;
+  }
+
+  eval(text: string): void {
+    this.vm.eval(text);
+  }
+
+  printStack(): string {
+    return `[${this.vm.stack.print()}]`;
   }
 }

@@ -1,10 +1,9 @@
 import { Component } from '../component';
 import { IKeyboardEvent } from '../../shared/interfaces';
-import { debug } from '../../shared/logger';
 import { isAlphaNumeric, isSpecialCharacter } from '../../shared/util';
 import { Vector } from '../../shared/vector';
-import { IGameState } from '../../state/state_manager';
 import { KeyCodes } from '../keys';
+import { IGameState } from '../../state/valid_state';
 
 export class TextInputComponent extends Component {
   protected prompt = '# ';
@@ -30,7 +29,7 @@ export class TextInputComponent extends Component {
   }
 
   private handleKeyboardEvent(event: IKeyboardEvent): void {
-    if (isAlphaNumeric(event.key) ?? isSpecialCharacter(event.key)) {
+    if (isAlphaNumeric(event.key) || isSpecialCharacter(event.key)) {
       this.insert(event.key);
       return;
     }

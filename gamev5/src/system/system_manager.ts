@@ -45,6 +45,7 @@ export class SystemManager {
         const validGameState = {
           ...saveFileContents,
           history: this.validateGameEvents(),
+          terminalText: [],
         };
         callback(validGameState);
       })

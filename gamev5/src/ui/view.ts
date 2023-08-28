@@ -2,10 +2,10 @@ import { Component } from './component';
 import { IAction, IKeyboardEvent } from '../shared/interfaces';
 import { Queue } from '../shared/queue';
 import { Vector } from '../shared/vector';
-import { IGameState } from '../state/state_manager';
 import { Ansi } from './ansi';
 import { DiagnosticsComponent } from './components/diagnostics';
-import { ValidAction } from '../state/actions/valid_actions';
+import { EveryAction } from '../runtime/actions';
+import { IGameState } from '../state/valid_state';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void
 
@@ -29,7 +29,7 @@ export interface IRouter {
 export interface View {
   onLoad?(tick: number): void
 
-  update?(tick: number, state: IGameState): ValidAction | null
+  update?(tick: number, state: IGameState): EveryAction | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -88,7 +88,7 @@ export abstract class View {
     return handler;
   }
 
-  $update(tick: number, state: IGameState, keyboardEvents: IKeyboardEvent[]): ValidAction | null {
+  $update(tick: number, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
     keyboardEvents.forEach((event): void => {
       if (event.key === '\t') {
         const components = Object.values(this.components);
@@ -108,6 +108,6 @@ export abstract class View {
       component.$update(state, keyboardEvents);
     });
 
-    return null;
+    return this.activeComponent.queue.next();
   }
 }

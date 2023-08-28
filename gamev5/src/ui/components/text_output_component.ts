@@ -1,14 +1,19 @@
+import { Vector } from '../../shared/vector';
+import { IGameState } from '../../state/valid_state';
 import { Component } from '../component';
-import { IGameState } from '../../state/state_manager';
 
 export class TextOutputComponent extends Component {
-  private linesOfText: string[] = [];
+  linesOfText: string[] = [];
 
-  update(gameState: IGameState): void {
+  constructor(v: Vector, text?: string) {
+    super(v);
+    if (text) {
+      this.linesOfText.push(text);
+    }
   }
 
-  push(text: string): void {
-    this.linesOfText.push(text);
+  update(gameState: IGameState): void {
+    this.linesOfText = [...gameState.terminalText];
   }
 
   render(): string[] {

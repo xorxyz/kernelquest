@@ -1,5 +1,4 @@
 import { ParsingError } from '../shared/errors';
-import * as logger from '../shared/logger';
 import {
   isAlpha, isAlphaNumeric, isCapital, isDigit, isLegalIdentifier,
 } from '../shared/util';
@@ -215,7 +214,7 @@ export class Parser {
       throw new ParsingError('Identifier cannot start with a dash.');
     }
 
-    this.tokens.push(new Token(SequenceToken.IDENTIFIER, text));
+    this.tokens.push(new Token(SequenceToken.WORD, text));
   }
 
   private ref(): void {
@@ -228,7 +227,7 @@ export class Parser {
       throw new ParsingError('Ref should be a hex string');
     }
 
-    this.tokens.push(new Token(SequenceToken.REF, String(n)));
+    this.tokens.push(new Token(SequenceToken.IDEA, String(n)));
   }
 
   private hex(): void {

@@ -12,6 +12,7 @@ import { Idea } from './types/idea';
 import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
 import { Word } from './types/word';
+import { logger } from '../shared/logger';
 
 export class Compiler {
   private atoms: Atom[] = [];
@@ -32,6 +33,10 @@ export class Compiler {
 
   compile(text: string): Expression {
     this.text = text;
+    this.atoms = [];
+    this.done = false;
+    this.level = 0;
+    this.quotations = [];
 
     const parser = new Parser(this.text);
     const tokens = parser.parse();

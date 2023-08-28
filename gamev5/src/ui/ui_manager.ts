@@ -1,15 +1,13 @@
 import { IKeyboardEvent, ITerminal } from '../shared/interfaces';
 import { IRouter, View } from './view';
-import { EmptyGameState, IGameState } from '../state/state_manager';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';
-import { ValidAction } from '../state/actions/valid_actions';
+import { IGameState } from '../state/valid_state';
+import { EveryAction } from '../runtime/actions';
 
-export class ViewManager {
+export class UIManager {
   private activeView: View;
-
-  private gameState: IGameState = ({ ...EmptyGameState });
 
   private terminal: ITerminal;
 
@@ -36,10 +34,7 @@ export class ViewManager {
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, state: IGameState, events: IKeyboardEvent[]): ValidAction | null {
-    this.tick = tick;
-    this.gameState = state;
-
+  update(tick: number, state: IGameState, events: IKeyboardEvent[]): EveryAction | null {
     const action = this.activeView.$update(tick, state, events);
 
     return action;

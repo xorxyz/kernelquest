@@ -1,15 +1,21 @@
 import { Process } from './process';
 
 export class ProcessTable {
-  private counter = 1;
+  private counter = 0;
 
   private processes = new Map<number, Process>();
 
   constructor() {
-    this.processes.set(0, new Process(0, 0, 0, 0));
+    this.processes.set(0, new Process(0, this.incrementId(), 0, 0));
   }
 
-  fork(id: number): number {
+  find(id: number): Process {
+    const process = this.processes.get(id);
+    if (!process) throw new Error(`There is no process with id ${id}.`);
+    return process;
+  }
+
+  fork(id: number): Process {
     const process = this.processes.get(id);
     if (!process) throw new Error(`Process with id '${id}' does not exist.`);
 
@@ -18,7 +24,7 @@ export class ProcessTable {
 
     this.processes.set(nextId, clone);
 
-    return clone.id;
+    return clone;
   }
 
   incrementId(): number {

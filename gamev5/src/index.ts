@@ -6,13 +6,11 @@ import { InputManager } from './input/input_manager';
 import { ITerminal } from './shared/interfaces';
 import { logger } from './shared/logger';
 import { SystemManager, ISystemIO } from './system/system_manager';
-import { ViewManager } from './ui/view_manager';
+import { UIManager } from './ui/ui_manager';
 import { StateManager } from './state/state_manager';
-import { IActionDefinition } from './runtime/action';
-import { ValidAction } from './state/actions/valid_actions';
+import { IValidAction } from './state/valid_state';
 
 interface IDependencies {
-  actionDefinitions?: IActionDefinition[]
   audioPlayer: IAudioPlayer
   systemIO: ISystemIO
   terminal: ITerminal
@@ -29,7 +27,7 @@ export class Engine {
 
   private system: SystemManager;
 
-  private views: ViewManager;
+  private ui: UIManager;
 
   constructor(dependencies: IDependencies) {
     this.audio = new AudioManager(dependencies.audioPlayer);
@@ -37,7 +35,7 @@ export class Engine {
     this.input = new InputManager(dependencies.terminal);
     this.state = new StateManager();
     this.system = new SystemManager(dependencies.systemIO);
-    this.views = new ViewManager(dependencies.terminal);
+    this.ui = new UIManager(dependencies.terminal);
   }
 
   get running(): boolean {
@@ -75,7 +73,7 @@ export class Engine {
 
   private update(tick: number): void {
     const input = this.input.getKeyboardEvents();
-    const playerAction = this.views.update(tick, this.state.game, input);
+    const playerAction = this.ui.update(tick, this.state.game, input);
     const gameEvents = this.state.update(tick, playerAction);
 
     this.audio.update(tick, gameEvents);
@@ -83,7 +81,7 @@ export class Engine {
     this.handleSystemActions(playerAction);
   }
 
-  private handleSystemActions(action: ValidAction | null): void {
+  private handleSystemActions(action: IValidAction | null): void {
     if (!action) return;
 
     if (action.name === 'save') {
@@ -95,7 +93,7 @@ export class Engine {
 
     if (action.name === 'load') {
       this.pause();
-      this.system.load(action.args.saveGameId, (contents): void => {
+      this.system.load(action.args.id, (contents): void => {
         this.state.import(contents);
         this.start();
       });
@@ -103,6 +101,6 @@ export class Engine {
   }
 
   private render(): void {
-    this.views.render();
+    this.ui.render();
   }
 }

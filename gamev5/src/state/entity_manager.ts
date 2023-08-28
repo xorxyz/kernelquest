@@ -1,11 +1,31 @@
 import { Agent } from '../runtime/agent';
+import { Area } from '../shared/area';
+import { Vector } from '../shared/vector';
 
 export class EntityManager {
-  private idCounter = 0;
+  readonly player: Agent;
+
+  readonly home: Area;
+
+  private counter = 0;
 
   private agents = new Set<Agent>();
 
-  create() {
+  private areas = new Set<Area>();
 
+  constructor() {
+    this.player = new Agent(this.incrementCounter());
+    this.home = new Area(this.incrementCounter());
+
+    this.home.put(new Vector(0, 0), this.player.id);
+
+    this.agents.add(this.player);
+    this.areas.add(this.home);
+  }
+
+  private incrementCounter(): number {
+    const next = this.counter;
+    this.counter += 1;
+    return next;
   }
 }

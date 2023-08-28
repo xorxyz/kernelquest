@@ -9,6 +9,7 @@ export const [NoopAction, noop] = createActionDefinition({
 
 export interface ActionMap {
   noop: typeof NoopAction
+  sh: typeof admin.ShAction
   fork: typeof admin.ForkAction
 }
 
@@ -19,6 +20,7 @@ export const actions: {
   [K in EveryActionName]: IActionDefinition<ActionMap[K]>
 } = {
   noop,
+  sh: admin.sh,
   fork: admin.fork,
 };
 
