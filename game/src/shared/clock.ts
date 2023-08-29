@@ -1,54 +1,50 @@
-/*
- *  simple clock
- */
-import { EventEmitter } from 'events';
+import { logger } from './logger';
 
-export class Clock extends EventEmitter {
-  paused = true;
-  private stepMsDelay: number;
-  private tick = 0;
-  private edge = false;
-  private timeoutRef;
+export class Clock {
+  private callback: () => void;
 
-  constructor(msDelay: number) {
-    super();
+  private expectedMs = 0;
 
-    this.updateDelay(msDelay);
+  private msInterval;
+
+  private timeout: NodeJS.Timeout | undefined;
+
+  private _running = false;
+
+  private _tick = 0;
+
+  constructor(msInterval: number, callback: () => void) {
+    this.msInterval = msInterval;
+    this.callback = callback;
   }
 
-  get now() {
-    return this.tick;
+  get isRunning(): boolean {
+    return this._running;
   }
 
-  reset(tick = 0) {
-    this.tick = tick;
-    this.edge = false;
+  get tick(): number {
+    return this._tick;
   }
 
-  step() {
-    this.edge = !this.edge;
-    if (this.edge) this.tick++;
+  start(): void {
+    this.expectedMs = Date.now() + this.msInterval;
+    this.timeout = setTimeout(this.step.bind(this), this.msInterval);
+    this._running = true;
   }
 
-  start() {
-    this.emit('start');
-    this.paused = false;
-    this.timeoutRef = setInterval(() => {
-      this.step();
-
-      if (!this.edge) {
-        this.emit('tick', this.tick);
-      }
-    }, this.stepMsDelay);
+  stop(): void {
+    clearTimeout(this.timeout);
+    this._running = false;
   }
 
-  pause() {
-    this.emit('pause');
-    this.paused = true;
-    clearInterval(this.timeoutRef);
-  }
-
-  updateDelay(msDelay: number) {
-    this.stepMsDelay = msDelay / 2;
+  private step(): void {
+    this._tick += 1;
+    const drift = Date.now() - this.expectedMs;
+    this.callback();
+    if (drift > this.msInterval) {
+      logger.warn('Clock: Something unexpected happened');
+    }
+    this.expectedMs += this.msInterval;
+    this.timeout = setTimeout(this.step.bind(this), this.msInterval - drift);
   }
 }

@@ -5,15 +5,7 @@ import { plugins } from './webpack.plugins';
 
 rules.push({
   test: /\.css$/,
-  use: [
-    { loader: 'style-loader' }, 
-    { loader: 'css-loader' }
-  ],
-});
-
-rules.push({
-  test: /\.(woff|woff2|eot|ttf|otf)$/i,
-  type: 'asset/resource',
+  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
 });
 
 export const rendererConfig: Configuration = {
@@ -22,6 +14,6 @@ export const rendererConfig: Configuration = {
   },
   plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.ink', '.kqj'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.ink', '.kqj', '.woff2'],
   },
 };

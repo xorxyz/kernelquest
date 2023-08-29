@@ -1,30 +1,19 @@
 export class Queue<T> {
-  items: Array<T> = [];
-  get size() { return this.items.length; }
-  add(item: T) { this.items.push(item); }
-  next(): T | null { return this.items.shift() || null; }
-  peek(): T | null { return this.items[0] || null; }
-}
+  items: T[] = [];
 
-export class PriorityQueue<T> {
-  items: Map<T, number> = new Map();
-
-  /* adds an item in the queue */
-  put(item: T, priority: number) {
-    this.items.set(item, priority);
+  get size(): number {
+    return this.items.length;
   }
 
-  /* returns lowest priority item */
-  get() {
-    const sorted = Array.from(this.items.entries()).sort((a, b) => a[1] - b[1]);
-    const item = sorted[0][0];
-
-    this.items.delete(item);
-
-    return item;
+  add(item: T): void {
+    this.items.push(item);
   }
 
-  isEmpty() {
-    return this.items.size === 0;
+  next(): T | null {
+    return this.items.shift() ?? null;
+  }
+
+  peek(): T | null {
+    return this.items[0] ?? null;
   }
 }

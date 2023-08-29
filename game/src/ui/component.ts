@@ -1,55 +1,55 @@
-/**
- * - ui boxes: x,y numbering starts at 1.
- * - input fields - edit lines before before evaluating them as expressions
- */
-import { Vector, esc, Cursor } from '../shared';
-import { VirtualTerminal } from './pty';
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+import { IKeyboardEvent } from '../shared/interfaces';
+import { logger } from '../shared/logger';
+import { Vector } from '../shared/vector';
+import { Queue } from '../shared/queue';
+import { EveryAction } from '../world/actions';
+import { IGameState } from '../state/valid_state';
 
-/** @category Component */
-export const SCREEN_WIDTH = 90;
-/** @category Component */
-export const SCREEN_HEIGHT = 26;
-/** @category Component */
-export const N_OF_LINES = 7;
-/** @category Component */
-export const CELL_WIDTH = 2;
-
-/** @category Component */
-export abstract class UiComponent {
-  public position: Vector;
-  public style = '';
-  public z = 0;
-
-  constructor(x: number, y: number, z?: number) {
-    this.position = new Vector(x, y);
-    if (z) this.z = z;
-  }
-
-  abstract render(pty: VirtualTerminal, tick: number): Array<string>
-
-  compile(pty: VirtualTerminal, tick: number): string {
-    const { x, y } = this.position;
-
-    return esc(this.style) + this.render(pty, tick)
-      .map((line, i) => esc(Cursor.setXY(x, y + i)) + line)
-      .join('');
-  }
-
-  abstract handleInput(str, pty);
+export interface Component {
+  getCursorOffset?(): Vector
 }
 
-class EmptyComponent extends UiComponent {
-  value: Array<string> = [''];
-  render() {
-    return this.value;
-  }
-  handleInput() {
-    throw new Error('Not implemented');
-  }
-}
+export interface IEvent {}
 
-export function componentFrom(x, y, arr: Array<string>) {
-  const component = new EmptyComponent(x, y);
-  component.value = arr;
-  return component;
+export type EventHandler = (event: IEvent) => EveryAction | null
+
+export abstract class Component {
+  public queue = new Queue<EveryAction>();
+
+  readonly position: Vector;
+
+  private handlers: Record<string, EventHandler> = {};
+
+  constructor(position: Vector) {
+    this.position = position;
+  }
+
+  emit(eventName: string, event: IEvent): void {
+    const handler = this.handlers[eventName];
+    if (handler) {
+      const action = handler(event);
+      if (action) this.queue.add(action);
+    }
+  }
+
+  on(eventName: string, handler: EventHandler): void {
+    if (this.handlers[eventName]) {
+      logger.error(`Handler already exists for ${eventName}`);
+      return;
+    }
+    this.handlers[eventName] = handler;
+  }
+
+  $update(state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    if (this.update) this.update(state, keyboardEvents);
+  }
+
+  $render(): string[] {
+    return this.render();
+  }
+
+  abstract update?(state: IGameState, keyboardEvents: IKeyboardEvent[]): void
+
+  abstract render(): string[]
 }

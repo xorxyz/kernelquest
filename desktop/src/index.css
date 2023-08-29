@@ -1,12 +1,30 @@
+html {
+  background-color: #000;
+}
+
+html, body {
+  overflow: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
   background-color: #202020;
+  animation-duration: .7s;
+  animation-delay: .3s;
+}
+
+body, #terminal {
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-fill-mode: forwards;
 }
 
 #terminal {
   box-shadow: .2ex .2ex rgba(0, 0, 0, 0.05);
   text-shadow: .2ex .2ex rgba(0, 0, 0, 0.025);
+  animation-duration: 1s;
+  animation-delay: .6s;
 }
 
 #terminal * {
@@ -18,6 +36,11 @@ body {
 }
 
 @font-face {
-  font-family: "KernelQuest";
-  src: url("./JetBrainsMono-Medium") format('woff2');
+  font-family: "JetBrainsMono-Medium";
+  src: url("./JetBrainsMono-Medium.woff2") format('woff2');
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

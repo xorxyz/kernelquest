@@ -5,15 +5,13 @@
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "sourceMap": true,
   },
-  "include": ["src/**/*"]
+  "extends": "../gamev5/tsconfig.json",
+  "include": [
+    "src/**/*.ts"
+  ]
 }

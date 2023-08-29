@@ -1,0 +1,23 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: #202020;
+}
+
+#terminal {
+  box-shadow: .2ex .2ex rgba(0, 0, 0, 0.05);
+  text-shadow: .2ex .2ex rgba(0, 0, 0, 0.025);
+}
+
+#terminal * {
+  cursor: default;
+}
+
+#terminal div {
+  overflow: hidden;
+}
+
+@font-face {
+  font-family: "KernelQuest";
+  src: url("./JetBrainsMono-Medium") format('woff2');
+}

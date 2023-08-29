@@ -3,7 +3,7 @@
 ## Developping under WSL2
 
 1. Delete the `node_modules` directory
-1. Run `npm_config_platform=win32 yarn`
+1. Run `npm install --platform=win32`
 
 See also:
 

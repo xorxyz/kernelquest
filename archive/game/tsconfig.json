@@ -8,14 +8,13 @@
     "outDir": "build",
     "target": "ESNext",
     "module": "ES2020",
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "lib": [
       "es2020",
       "dom"
     ],
     "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -26,6 +25,9 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types",
       "src/types"

@@ -6,6 +6,7 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": true,
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
@@ -22,18 +23,22 @@
     }
   },
   "extends": [
+    "eslint:recommended",
     "airbnb-base",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked"
   ],
   "rules": {
-    "no-use-before-define": "off",
     "import/extensions": "off",
-    "lines-between-class-members": "off",
     "import/prefer-default-export": "off",
-    "no-plusplus": "off",
-    "max-classes-per-file": "off",
-    "class-methods-use-this": "off",
-    "no-restricted-syntax": "off"
+    "@typescript-eslint/explicit-function-return-type": ["error", { 
+      "allowTypedFunctionExpressions": true
+    }],
+    "no-implicit-coercion": "error",
+    "no-underscore-dangle": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/member-ordering": "error",
+    "function-paren-newline": ["error", "consistent"]
   }
 }

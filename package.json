@@ -1,5 +1,5 @@
 {
-  "name": "xor4",
+  "name": "xor5",
   "private": true,
   "version": "0.0.0",
   "description": "run a broken system manually while defending it against impossible odds",
@@ -13,7 +13,6 @@
   ],
   "alias": {
     "xor4-app": "./app",
-    "xor4-game": "./game",
     "xor5-game": "./gamev5",
     "xor4-www": "./www"
   },
