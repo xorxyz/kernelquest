@@ -1,4 +1,4 @@
-import { Cell, LayerName } from '../runtime/cell';
+import { Cell, LayerName } from '../world/cell';
 import { Vector } from './vector';
 
 const AREA_WIDTH = 16;

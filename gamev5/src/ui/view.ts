@@ -4,7 +4,7 @@ import { Queue } from '../shared/queue';
 import { Vector } from '../shared/vector';
 import { Ansi } from './ansi';
 import { DiagnosticsComponent } from './components/diagnostics';
-import { EveryAction } from '../runtime/actions';
+import { EveryAction } from '../world/actions';
 import { IGameState } from '../state/valid_state';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void

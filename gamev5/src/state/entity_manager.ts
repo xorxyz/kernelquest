@@ -1,4 +1,4 @@
-import { Agent } from '../runtime/agent';
+import { Agent } from '../world/agent';
 import { Area } from '../shared/area';
 import { Vector } from '../shared/vector';
 

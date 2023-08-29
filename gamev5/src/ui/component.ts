@@ -3,7 +3,7 @@ import { IKeyboardEvent } from '../shared/interfaces';
 import { logger } from '../shared/logger';
 import { Vector } from '../shared/vector';
 import { Queue } from '../shared/queue';
-import { EveryAction } from '../runtime/actions';
+import { EveryAction } from '../world/actions';
 import { IGameState } from '../state/valid_state';
 
 export interface Component {

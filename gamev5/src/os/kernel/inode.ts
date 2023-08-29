@@ -16,8 +16,9 @@ export class INode {
 
   private owner: { userId: number, groupId: number };
 
-  constructor(id: number, userId: number, groupId: number) {
+  constructor(id: number, name: string, userId: number, groupId: number) {
     this.id = id;
+    this.rename(name);
     this.owner = { userId, groupId };
   }
 

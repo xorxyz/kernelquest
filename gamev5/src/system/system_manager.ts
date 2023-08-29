@@ -1,4 +1,4 @@
-import { actions, isValidActionName } from '../runtime/actions';
+import { actions, isValidActionName } from '../world/actions';
 import { IGameEvent, ISaveFileContents } from '../shared/interfaces';
 import { IGameState, IValidGameEvent } from '../state/valid_state';
 

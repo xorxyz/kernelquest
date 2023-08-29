@@ -4,7 +4,7 @@ import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';
 import { IGameState } from '../state/valid_state';
-import { EveryAction } from '../runtime/actions';
+import { EveryAction } from '../world/actions';
 
 export class UIManager {
   private activeView: View;

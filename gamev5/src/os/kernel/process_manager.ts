@@ -1,6 +1,6 @@
 import { Process } from './process';
 
-export class ProcessTable {
+export class ProcessManager {
   private counter = 0;
 
   private processes = new Map<number, Process>();

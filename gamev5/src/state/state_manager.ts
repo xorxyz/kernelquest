@@ -3,11 +3,11 @@ import {
 } from '../shared/interfaces';
 import { EntityManager } from './entity_manager';
 import { IGameState } from './valid_state';
-import { IActionContext } from '../runtime/action';
+import { IActionContext } from '../world/action';
 import {
   ActionMap, EveryAction, EveryActionName, actions,
-} from '../runtime/actions';
-import { Kernel } from '../runtime/os/kernel';
+} from '../world/actions';
+import { Kernel } from '../os/kernel/kernel';
 
 export const EmptyGameState: IGameState = {
   tick: 0,

@@ -1,3 +1,5 @@
+import { IAction, SerializableType } from '../../../shared/interfaces';
+import { Program } from './program';
 import { VM } from './vm';
 
 type ProcessState = 'New' | 'Ready' | 'Running' | 'Waiting' | 'Terminated'
@@ -15,6 +17,8 @@ export class Process {
 
   private owner: { userId: number, groupId: number };
 
+  private args: SerializableType[];
+
   private eventConditionCodes = new Set<EventConditionCode>();
 
   private signalInfo = new Set<Signal>();
@@ -25,9 +29,7 @@ export class Process {
 
   private fileDescriptors = [];
 
-  private code = '';
-
-  private vm = new VM();
+  private program = Program;
 
   constructor(parentId: number, id: number, userId: number, groupId: number) {
     this.parentId = parentId;
@@ -41,8 +43,9 @@ export class Process {
     return process;
   }
 
-  eval(text: string): void {
-    this.vm.eval(text);
+  eval(text: string): IAction | null {
+    const action = this.vm.eval(text);
+    return action;
   }
 
   printStack(): string {

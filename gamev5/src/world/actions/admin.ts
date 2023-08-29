@@ -8,8 +8,12 @@ export const [ShAction, sh] = createActionDefinition({
   }),
   perform({ shell, state }, args) {
     try {
-      shell.eval(args.text);
+      const action = shell.eval(args.text);
       state.terminalText.push(shell.printStack());
+      if (action) {
+        state.terminalText.push(action.name);
+        shell.queue(action);
+      }
       return succeed();
     } catch (err) {
       const { message } = err as Error;
