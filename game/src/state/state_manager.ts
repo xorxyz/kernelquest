@@ -40,7 +40,7 @@ export class StateManager {
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
     this.game.tick = tick;
-    if (!playerAction) return [];
+    if (!playerAction || ['save', 'load'].includes(playerAction.name)) return [];
 
     const ctx = {
       agent: this.entityManager.player,

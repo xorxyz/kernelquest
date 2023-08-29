@@ -6,9 +6,10 @@ export const [ShAction, sh] = createActionDefinition({
   args: v.object({
     text: v.string(),
   }),
-  perform({ shell, state }, args) {
+  perform({ tty, shell, state }, args) {
     try {
-      const action = shell.eval(args.text);
+      tty.push(args.text);
+      const action = shell.run();
       state.terminalText.push(shell.printStack());
       if (action) {
         state.terminalText.push(action.name);
