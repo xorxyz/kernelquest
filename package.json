@@ -5,15 +5,13 @@
   "description": "run a broken system manually while defending it against impossible odds",
   "main": "./app/src/script.ts",
   "workspaces": [
-    "app",
     "desktop",
     "game",
-    "gamev5",
     "www"
   ],
   "alias": {
     "xor4-app": "./app",
-    "xor5-game": "./gamev5",
+    "xor5-game": "./game",
     "xor4-www": "./www"
   },
   "scripts": {
@@ -30,7 +28,7 @@
     },
     "game": {
       "source": [
-        "gamev5/src/index.ts"
+        "game/src/index.ts"
       ]
     }
   },

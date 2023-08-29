@@ -2,7 +2,7 @@
 
 ## Developping under WSL2
 
-1. Delete the `node_modules` directory
+1. Delete all the `node_modules` directories
 1. Run `npm_config_platform=win32 yarn`
 
 See also:
