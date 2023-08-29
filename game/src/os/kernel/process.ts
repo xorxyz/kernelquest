@@ -1,6 +1,8 @@
-import { IAction, SerializableType } from '../../../shared/interfaces';
-import { Program } from './program';
-import { VM } from './vm';
+import { Runtime } from '../../scripting/runtime';
+import { IAction, SerializableType } from '../../shared/interfaces';
+import { logger } from '../../shared/logger';
+import { init } from '../programs/init';
+import { IProgram } from './program';
 
 type ProcessState = 'New' | 'Ready' | 'Running' | 'Waiting' | 'Terminated'
 
@@ -15,9 +17,11 @@ export class Process {
 
   readonly childrenIds = new Set<number>();
 
-  private owner: { userId: number, groupId: number };
+  readonly args: SerializableType[];
 
-  private args: SerializableType[];
+  readonly program: IProgram;
+
+  private owner: { userId: number, groupId: number };
 
   private eventConditionCodes = new Set<EventConditionCode>();
 
@@ -29,26 +33,34 @@ export class Process {
 
   private fileDescriptors = [];
 
-  private program = Program;
+  private runtime = new Runtime();
 
-  constructor(parentId: number, id: number, userId: number, groupId: number) {
-    this.parentId = parentId;
+  constructor(parent: Process | null, id: number) {
+    if (parent === null) {
+      this.parentId = 0;
+      this.id = id;
+      this.owner = { userId: 0, groupId: 0 };
+      this.program = init;
+      this.args = [];
+      return;
+    }
+
+    this.parentId = parent.id;
     this.id = id;
-    this.owner = { userId, groupId };
+    this.owner = { userId: parent.owner.userId, groupId: parent.owner.groupId };
+    this.program = parent.program;
+    this.args = parent.args;
   }
 
-  clone(nextId: number): Process {
-    const { userId, groupId } = this.owner;
-    const process = new Process(this.id, nextId, userId, groupId);
-    return process;
-  }
+  run(): IAction | null {
+    this.state = 'Running';
+    const execution = this.program.run(this.runtime);
 
-  eval(text: string): IAction | null {
-    const action = this.vm.eval(text);
-    return action;
-  }
+    const result = execution.next();
 
-  printStack(): string {
-    return `[${this.vm.stack.print()}]`;
+    logger.debug(result.value);
+    this.state = 'Ready';
+
+    return null;
   }
 }

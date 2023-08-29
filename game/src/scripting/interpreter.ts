@@ -5,7 +5,7 @@ import { Dictionary } from './dictionary';
 import { Expression } from './expression';
 import { Stack } from './stack';
 
-export type RuntimeExecution = Generator<IAction | null, IAction | null>
+export type RuntimeExecution = Generator<IAction | null, number>
 
 export class Interpreter {
   private dictionary: Dictionary;
@@ -29,25 +29,25 @@ export class Interpreter {
     this.stack = stack;
     this.expression = expression;
 
-    return this.run();
+    return this.start();
   }
 
   print(): string {
     return this.stack.print();
   }
 
-  * run(): RuntimeExecution {
+  private* start(): RuntimeExecution {
     while (!this.done) {
       yield this.step();
     }
 
-    return null;
+    return 0;
   }
 
-  step(): IAction | null {
-    if (this.finished) return null;
+  private step(): IAction | null {
+    if (this.done) return null;
 
-    const atom = this.expression.atoms.at(this.index);
+    const atom = this.expression.atoms[this.index];
     if (!atom) throw new RuntimeError(`Unexpected: There was no atom at index '${this.index}'`);
 
     logger.debug('atom', atom);

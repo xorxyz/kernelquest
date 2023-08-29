@@ -17,10 +17,6 @@ export class Runtime {
     this.interpreter = new Interpreter(this.dictionary);
   }
 
-  get done(): boolean {
-    return this.interpreter.done;
-  }
-
   execute(code: string): RuntimeExecution {
     const expression = this.compiler.compile(code);
     const execution = this.interpreter.evaluate(this.stack, expression);

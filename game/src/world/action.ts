@@ -5,7 +5,7 @@ import {
   ActionArguments, ActionResultType, GameEventState, IActionResult,
 } from '../shared/interfaces';
 import { IGameState } from '../state/valid_state';
-import { Process } from './os/ps/process';
+import { Process } from '../os/kernel/process';
 
 export interface IActionContext {
   agent: Agent,

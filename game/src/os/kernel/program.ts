@@ -1,9 +1,10 @@
 // import { IAction, SerializableType } from '../../shared/interfaces';
 
-// export type ProgramExecution = Generator<unknown, unknown>
+import { Runtime } from '../../scripting/runtime';
+import { IAction } from '../../shared/interfaces';
 
-export abstract class Program<A, B> {
-  abstract run(): Generator<A, B>
+export interface IProgram {
+  run(runtime: Runtime): Generator<IAction | null, number>
 }
 
 // * run(): Generator<ISysCall, ISysCall, number> {

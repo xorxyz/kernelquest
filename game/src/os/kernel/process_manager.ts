@@ -6,7 +6,7 @@ export class ProcessManager {
   private processes = new Map<number, Process>();
 
   constructor() {
-    this.processes.set(0, new Process(0, this.incrementId(), 0, 0));
+    this.processes.set(0, new Process(null, this.incrementId()));
   }
 
   find(id: number): Process {
@@ -16,15 +16,15 @@ export class ProcessManager {
   }
 
   fork(id: number): Process {
-    const process = this.processes.get(id);
-    if (!process) throw new Error(`Process with id '${id}' does not exist.`);
+    const parent = this.processes.get(id);
+    if (!parent) throw new Error(`Process with id '${id}' does not exist.`);
 
     const nextId = this.incrementId();
-    const clone = process.clone(nextId);
+    const child = new Process(parent, nextId);
 
-    this.processes.set(nextId, clone);
+    this.processes.set(nextId, child);
 
-    return clone;
+    return child;
   }
 
   incrementId(): number {
