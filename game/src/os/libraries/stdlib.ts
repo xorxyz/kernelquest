@@ -18,17 +18,39 @@ export const STDIN_FILENO = 0;
 export const STDOUT_FILENO = 1;
 export const STDERR_FILENO = 2;
 
-export function read(fd: number): IAction {
+export function read(fd: number, offset: number): IAction {
   return {
     name: 'read',
     args: {
       fd,
+      offset,
     },
   };
 }
+
+export const O_RDONLY = 'O_RDONLY';
+export const O_WRONLY = 'O_WRONLY';
+export const O_RDWR = 'O_RDWR';
+export const O_CREAT = 'O_CREAT';
+export const O_EXCL = 'O_EXCL';
+
+export const FD_FLAGS = [O_RDONLY, O_WRONLY, O_RDWR, O_CREAT, O_EXCL] as const;
+
+export type FdFlag = typeof FD_FLAGS[number]
+
 // write(): Write data to a file descriptor
 // lseek(): Move the read/write file offset
+
 // open(): Open a file
+export function open(name: string, flag: FdFlag): IAction {
+  return {
+    name: 'open',
+    args: {
+      name,
+      flag,
+    },
+  };
+}
 // fcntl(): Perform various operations on a file descriptor, such as getting or setting its flags.
 // flags: O_RDONLY, O_WRONLY, O_RDWR, O_CREAT, O_EXCL
 

@@ -1,16 +1,17 @@
+import { fork } from '../../os/syscalls';
 import {
   IActionDefinition, createActionDefinition,
 } from '../action';
-import * as admin from './admin';
+import { sh } from './admin';
 
-export const [NoopAction, noop] = createActionDefinition({
+export const noop = createActionDefinition({
   name: 'noop',
 });
 
 export interface ActionMap {
-  noop: typeof NoopAction
-  sh: typeof admin.ShAction
-  fork: typeof admin.ForkAction
+  noop: typeof noop.action
+  sh: typeof sh.action
+  fork: typeof fork.action
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
@@ -20,8 +21,8 @@ export const actions: {
   [K in EveryActionName]: IActionDefinition<ActionMap[K]>
 } = {
   noop,
-  sh: admin.sh,
-  fork: admin.fork,
+  sh,
+  fork,
 };
 
 export function isValidActionName(value: string): value is EveryActionName {

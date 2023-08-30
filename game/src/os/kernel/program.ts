@@ -3,8 +3,14 @@
 import { Runtime } from '../../scripting/runtime';
 import { IAction } from '../../shared/interfaces';
 
+export type SystemCallReturnValue = number
+
+export type ProgramExitCode = number
+
+export type ProgramExecution = Generator<IAction | null, ProgramExitCode, SystemCallReturnValue>
+
 export interface IProgram {
-  run(runtime: Runtime): Generator<IAction | null, number>
+  execute(runtime: Runtime, memory: string): ProgramExecution
 }
 
 // * run(): Generator<ISysCall, ISysCall, number> {

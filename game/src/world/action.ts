@@ -52,6 +52,8 @@ export interface IActionDefinition<
 > {
   validator: v.ObjectType
 
+  action: { name: A['name']; args: A['args'] }
+
   perform(ctx: IActionContext, args: A['args']): IActionResult
 
   undo(ctx: IActionContext, args: A['args'], previousState: GameEventState): IActionResult
@@ -59,10 +61,7 @@ export interface IActionDefinition<
 
 type ActionDefinitionReturnType<
   T extends string, A extends ActionArguments
-> = [
-  { name: T; args: A },
-  IActionDefinition<{ name: T; args: A; }>
-];
+> = IActionDefinition<{ name: T; args: A; }>;
 
 export interface ICreateActionDefinitionParams<
   T extends string, A extends ActionArguments
@@ -88,8 +87,9 @@ T extends string, A extends ActionArguments
   const actionInterface = { name, args: {} as A };
   const actionDefinition: IActionDefinition<typeof actionInterface> = {
     validator,
+    action: actionInterface,
     perform: perform ?? noopFn,
     undo: undo ?? noopFn,
   };
-  return [actionInterface, actionDefinition];
+  return actionDefinition;
 }

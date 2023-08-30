@@ -1,17 +1,29 @@
 import { Runtime } from '../../scripting/runtime';
-import { IAction } from '../../shared/interfaces';
-import { IProgram } from '../kernel/program';
-import { STDIN_FILENO, read } from '../libraries/stdlib';
+import { logger } from '../../shared/logger';
+import { IProgram, ProgramExecution } from '../kernel/program';
+import { read, open, O_RDONLY } from '../libraries/stdlib';
 
 export const shell: IProgram = {
-  * run(runtime: Runtime): Generator<IAction | null, number, string> {
-    const code: string = yield read(STDIN_FILENO);
-    const exec = runtime.execute(code);
+  * execute(runtime: Runtime, memory: string): ProgramExecution {
+    const tty: number = yield open('/dev/tty', O_RDONLY);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (true) {
+      try {
+        const offset = 0;
+        const length = yield read(tty, 0);
 
-    for (let result = exec.next(); !result.done; result = exec.next()) {
-      yield result.value;
+        if (length === -1) throw new Error('Failed to read from stdin.');
+
+        const code = memory.slice(offset, length);
+        const exec = runtime.execute(code);
+
+        for (let result = exec.next(); !result.done; result = exec.next()) {
+          yield result.value;
+        }
+      } catch (err) {
+        logger.debug('Shell crashed:', (err as Error).message);
+        return 1;
+      }
     }
-
-    return 0;
   },
 };
