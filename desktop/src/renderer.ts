@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
       minimized = true;
       engine.pause();
     }
-    
+
     if (document.visibilityState === 'visible' && minimized) {
       minimized = false;
       engine.start();

@@ -2,16 +2,19 @@ import * as v from '@badrap/valita';
 import { Agent } from './agent';
 import { Area } from '../shared/area';
 import {
-  ActionArguments, ActionResultType, GameEventState, IActionResult,
+  ActionArguments, ActionResultType, GameEventState, IAction, IActionResult, SerializableType,
 } from '../shared/interfaces';
 import { IGameState } from '../state/valid_state';
-import { Process } from '../os/kernel/process';
+import { Runtime } from '../scripting/runtime';
+import { Stack } from '../scripting/stack';
+import { Atom } from '../scripting/atom';
+import { InterpretMeaningFn } from '../scripting/meaning';
 
 export interface IActionContext {
   agent: Agent,
   area: Area,
-  shell: Process,
-  state: IGameState
+  shell: Runtime,
+  state: IGameState,
 }
 
 export interface IActionValidator {
@@ -54,20 +57,32 @@ export interface IActionDefinition<
 
   action: { name: A['name']; args: A['args'] }
 
+  interpret: InterpretMeaningFn<A['args']>
+
   perform(ctx: IActionContext, args: A['args']): IActionResult
 
   undo(ctx: IActionContext, args: A['args'], previousState: GameEventState): IActionResult
+
+  validate(a: IAction): a is A
 }
 
 type ActionDefinitionReturnType<
   T extends string, A extends ActionArguments
 > = IActionDefinition<{ name: T; args: A; }>;
 
-export interface ICreateActionDefinitionParams<
+export type CreateActionDefinitionParams<
   T extends string, A extends ActionArguments
-> {
+> = {
   name: T,
   args?: v.Type<A>,
+  sig?: (keyof A)[],
+  state?: v.Type<GameEventState>,
+  perform?: (ctx: IActionContext, args: A) => IActionResult,
+  undo?: (ctx: IActionContext, args: A, state: GameEventState) => IActionResult,
+} | {
+  name: T,
+  args: v.Type<A>,
+  sig: (keyof A)[],
   state?: v.Type<GameEventState>,
   perform?: (ctx: IActionContext, args: A) => IActionResult,
   undo?: (ctx: IActionContext, args: A, state: GameEventState) => IActionResult,
@@ -76,8 +91,8 @@ export interface ICreateActionDefinitionParams<
 export function createActionDefinition<
 T extends string, A extends ActionArguments
 >({
-  name, args, state, perform, undo,
-}: ICreateActionDefinitionParams<T, A>): ActionDefinitionReturnType<T, A> {
+  name, args, sig, state, perform, undo,
+}: CreateActionDefinitionParams<T, A>): ActionDefinitionReturnType<T, A> {
   const validator = v.object({
     name: v.literal(name),
     args: args ?? v.object({ _no_args: v.string().optional() }),
@@ -85,11 +100,53 @@ T extends string, A extends ActionArguments
   });
 
   const actionInterface = { name, args: {} as A };
-  const actionDefinition: IActionDefinition<typeof actionInterface> = {
+  type ActionType = typeof actionInterface
+  const actionDefinition: IActionDefinition<ActionType> = {
     validator,
     action: actionInterface,
     perform: perform ?? noopFn,
     undo: undo ?? noopFn,
+    validate(action: IAction): action is ActionType {
+      try {
+        validator.parse(action);
+        return true;
+      } catch (err) {
+        // throw new Error('The values on the stack don\'t match the function signature.');
+        return false;
+      }
+    },
+    interpret(stack: Stack): ActionType {
+      if (!args || !sig) {
+        // This action does not take any arguments
+        return { name, args: actionInterface.args };
+      }
+
+      if (stack.size < sig.length) {
+        throw new Error(`Expected to find ${sig.length} values on the stack, but found ${stack.size}.`);
+      }
+
+      const popped = stack.popN(sig.length).reverse();
+      const myArgs = popped
+        .map((atom, index): [keyof A | undefined, Atom] => [sig[index], atom])
+        .filter((kv): kv is [keyof A, Atom] => !!kv[0])
+        .reduce((record, [key, atom]) => {
+          record.set(key, atom.serialize());
+          return record;
+        }, new Map<keyof A, SerializableType>());
+
+      const action = {
+        name,
+        args: Object.fromEntries(myArgs),
+      };
+
+      if (!this.validate(action)) {
+        // The action failed validation, revert the stack back to its original state
+        popped.forEach((atom) => { stack.push(atom); });
+        throw new Error(`The values on the stack don't match the function signature: [${sig.join(' ')}]`);
+      }
+
+      return action;
+    },
   };
   return actionDefinition;
 }

@@ -1,8 +1,6 @@
-import { IAction } from '../shared/interfaces';
-import { Dictionary } from './dictionary';
-import { Stack } from './stack';
+import { IAction, SerializableType } from '../shared/interfaces';
 
-export abstract class Atom {
+export class Atom {
   readonly lexeme: string;
 
   constructor(lexeme: string) {
@@ -13,5 +11,13 @@ export abstract class Atom {
     return this.lexeme;
   }
 
-  abstract execute (stack: Stack, dictionary: Dictionary): IAction | null
+  // eslint-disable-next-line class-methods-use-this
+  execute(_: Stack): IAction | null {
+    throw new Error('execute() method is not implemented');
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  serialize(): SerializableType {
+    throw new Error('serialize() method is not implemented');
+  }
 }

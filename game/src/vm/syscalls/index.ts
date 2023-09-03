@@ -1,4 +1,4 @@
-import { v } from '../../shared/validation';
+import * as v from '../../shared/validation';
 import { createActionDefinition, succeed } from '../../world/action';
 
 export const fork = createActionDefinition({

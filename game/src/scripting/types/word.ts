@@ -14,4 +14,8 @@ export class Word extends Atom {
 
     throw new RuntimeError(`Word '${this.lexeme}' was not found in the active dictionary.`);
   }
+
+  serialize(): string {
+    return this.lexeme;
+  }
 }

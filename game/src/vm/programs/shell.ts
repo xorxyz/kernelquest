@@ -15,6 +15,7 @@ export const shell: IProgram = {
         if (length === -1) throw new Error('Failed to read from stdin.');
 
         const code = memory.slice(offset, length);
+        logger.debug('shell, executing:', code);
         const exec = runtime.execute(code);
 
         for (let result = exec.next(); !result.done; result = exec.next()) {

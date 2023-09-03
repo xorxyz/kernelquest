@@ -5,7 +5,7 @@ import { Dictionary } from './dictionary';
 import { Expression } from './expression';
 import { Stack } from './stack';
 
-export type RuntimeExecution = Generator<IAction | null, number>
+export type RuntimeExecution = Generator<IAction | null, null>
 
 export class Interpreter {
   private dictionary: Dictionary;
@@ -41,7 +41,7 @@ export class Interpreter {
       yield this.step();
     }
 
-    return 0;
+    return null;
   }
 
   private step(): IAction | null {

@@ -1,4 +1,4 @@
-import { v } from '../../shared/validation';
+import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
 
 export const sh = createActionDefinition({
@@ -6,21 +6,52 @@ export const sh = createActionDefinition({
   args: v.object({
     text: v.string(),
   }),
-  perform({ state }, args) {
+  sig: ['text'],
+  perform({ state, shell }, args) {
     try {
-      // tty.write(args.text);
-      // state.terminalText.push(shell.printStack());
-      // if (action) {
-      //   state.terminalText.push(action.name);
-      //   shell.queue(action);
-      // }
+      shell.execute(args.text);
       return succeed();
     } catch (err) {
       const { message } = err as Error;
-      state.terminalText.push(message);
+      state.terminal.output.push(message);
 
       return fail(message);
     }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const clear = createActionDefinition({
+  name: 'clear',
+  perform({ state, shell }) {
+    try {
+      state.terminal.output.splice(0, state.terminal.output.length);
+      shell.clear();
+
+      return succeed();
+    } catch (err) {
+      const { message } = err as Error;
+      state.terminal.output.push(message);
+
+      return fail(message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const create = createActionDefinition({
+  name: 'create',
+  sig: ['type', 'position'],
+  args: v.object({
+    type: v.string(),
+    position: v.tuple([v.number(), v.number()]),
+  }),
+  perform() {
+    return fail('TODO');
   },
   undo() {
     return succeed();

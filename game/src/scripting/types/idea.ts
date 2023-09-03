@@ -1,14 +1,19 @@
+import { SerializableType } from '../../shared/interfaces';
 import { Literal } from '../literal';
 
 export class Idea extends Literal {
   readonly value: number;
 
-  constructor(n: number) {
-    super(String(n));
-    this.value = n;
+  constructor(lexeme: string) {
+    super(lexeme);
+    this.value = Number(lexeme);
   }
 
   override toString(): string {
     return `&${this.lexeme}`;
+  }
+
+  override serialize(): SerializableType {
+    return this.toString();
   }
 }

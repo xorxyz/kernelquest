@@ -1,6 +1,6 @@
 import { Component } from '../component';
 import { IKeyboardEvent } from '../../shared/interfaces';
-import { IGameState } from '../../state/state_manager';
+import { IGameState } from '../../state/valid_state';
 
 export class DiagnosticsComponent extends Component {
   private lastKeyboardEvent: IKeyboardEvent = {

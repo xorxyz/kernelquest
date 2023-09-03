@@ -1,3 +1,3 @@
-import * as valita from '@badrap/valita';
+export type * from '@badrap/valita';
 
-export const v = valita;
+export * from '@badrap/valita';

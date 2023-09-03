@@ -73,7 +73,7 @@ export class Engine {
 
   private update(tick: number): void {
     const input = this.input.getKeyboardEvents();
-    const playerAction = this.ui.update(tick, this.state.game, input);
+    const playerAction = this.ui.update(tick, this.state.gameState, input);
     const gameEvents = this.state.update(tick, playerAction);
 
     this.audio.update(tick, gameEvents);
@@ -86,7 +86,7 @@ export class Engine {
 
     if (action.name === 'save') {
       this.pause();
-      this.system.save(this.state.game, (): void => {
+      this.system.save(this.state.gameState, (): void => {
         this.start();
       });
     }

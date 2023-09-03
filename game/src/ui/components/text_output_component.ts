@@ -13,7 +13,7 @@ export class TextOutputComponent extends Component {
   }
 
   update(gameState: IGameState): void {
-    this.linesOfText = [...gameState.terminalText];
+    this.linesOfText = [...gameState.terminal.output];
   }
 
   render(): string[] {

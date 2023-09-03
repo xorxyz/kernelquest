@@ -1,13 +1,10 @@
-import { Dictionary } from '../../scripting/dictionary';
-import { Interpreter } from '../../scripting/interpreter';
-import { Stack } from '../../scripting/stack';
 import { Component } from '../component';
-import { logger } from '../../shared/logger';
 import { Vector } from '../../shared/vector';
 import { TextInputComponent } from '../components/text_input_component';
 import { TextOutputComponent } from '../components/text_output_component';
 import { IRouter, View } from '../view';
 import { IAction } from '../../shared/interfaces';
+import { EveryAction } from '../../world/actions';
 
 export class DebugView extends View {
   private input: Component;

@@ -22,5 +22,7 @@ export interface IGameState {
     gold: number
   },
   history: IValidGameEvent[],
-  terminalText: string[]
+  terminal: {
+    output: string[]
+  }
 }

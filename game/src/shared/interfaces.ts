@@ -1,6 +1,6 @@
 /* Interfaces between modules and with the outside world. */
 
-export type SerializableType = boolean | number | string
+export type SerializableType = boolean | number | string | [number, number]
 
 export type ActionArguments = Record<string, SerializableType>
 

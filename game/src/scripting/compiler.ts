@@ -67,13 +67,13 @@ export class Compiler {
         this.add(new StringType(token.lexeme));
         break;
       case SequenceToken.NUMBER:
-        this.add(new NumberType(token.lexeme));
+        this.add(new NumberType(Number(token.lexeme)));
         break;
       case SequenceToken.HEX:
-        this.add(new HexType(token.lexeme));
+        this.add(new HexType(Number(token.lexeme)));
         break;
       case SequenceToken.IDEA:
-        this.add(new Idea(token.lexeme));
+        this.add(new Idea(Number(token.lexeme)));
         break;
       case SequenceToken.TYPE:
         this.add(new LiteralType(token.lexeme));
@@ -82,6 +82,12 @@ export class Compiler {
         this.add(new VariableType(token.lexeme));
         break;
       case SequenceToken.WORD:
+        this.add(new Word(token.lexeme));
+        break;
+      case SymbolToken.DOT:
+      case SymbolToken.PLUS:
+      case SymbolToken.STAR:
+      case SymbolToken.SLASH:
         this.add(new Word(token.lexeme));
         break;
       default:
