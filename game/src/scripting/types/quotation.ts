@@ -23,4 +23,8 @@ export class Quotation extends Literal {
   push(atom: Atom): void {
     this.atoms.push(atom);
   }
+
+  override clone(): Quotation {
+    return Quotation.from(this.atoms);
+  }
 }

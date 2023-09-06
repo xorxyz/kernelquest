@@ -35,7 +35,7 @@ function validate<A extends WordArguments>(
   return Object.entries(argsDef).every(([key, Ctor]) => args[key] instanceof Ctor);
 }
 
-function interpret<A extends WordArguments>(
+export function interpret<A extends WordArguments>(
   this: IMeaning<A>,
   stack: Stack,
 ): IAction | null {

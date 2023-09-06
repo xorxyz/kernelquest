@@ -1,13 +1,12 @@
-import { ActionArguments } from '../shared/interfaces';
-import { InterpretMeaningFn, WordArguments } from './meaning';
+import { interpret } from './meaning';
 
-// export type Meaning = (stack: Stack) => IAction | null
+export type InterpretFn = typeof interpret
 
 export class Dictionary {
-  private meanings = new Map<string, InterpretMeaningFn<WordArguments | ActionArguments>>();
+  private meanings = new Map<string, typeof interpret>();
 
   static from(
-    obj: Record<string, InterpretMeaningFn<WordArguments | ActionArguments>>,
+    obj: Record<string, InterpretFn>,
   ): Dictionary {
     const dict = new Dictionary();
     Object.entries(obj).forEach(([key, value]) => {
@@ -16,11 +15,11 @@ export class Dictionary {
     return dict;
   }
 
-  add(name: string, action: InterpretMeaningFn<WordArguments | ActionArguments>): void {
+  add(name: string, action: InterpretFn): void {
     this.meanings.set(name, action);
   }
 
-  get(name: string): InterpretMeaningFn<WordArguments | ActionArguments> | null {
+  get(name: string): InterpretFn | null {
     return this.meanings.get(name) ?? null;
   }
 
@@ -28,7 +27,7 @@ export class Dictionary {
     this.meanings.delete(name);
   }
 
-  list(): [string, InterpretMeaningFn<WordArguments | ActionArguments>][] {
+  list(): [string, InterpretFn][] {
     return [...this.meanings.entries()];
   }
 

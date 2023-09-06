@@ -15,7 +15,11 @@ export class Word extends Atom {
     throw new RuntimeError(`Word '${this.lexeme}' was not found in the active dictionary.`);
   }
 
-  serialize(): string {
+  override serialize(): string {
     return this.lexeme;
+  }
+
+  override clone(): Word {
+    return new Word(this.lexeme);
   }
 }

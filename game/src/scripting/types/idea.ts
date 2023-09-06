@@ -16,4 +16,8 @@ export class Idea extends Literal {
   override serialize(): SerializableType {
     return this.toString();
   }
+
+  override clone(): Idea {
+    return new Idea(this.lexeme);
+  }
 }

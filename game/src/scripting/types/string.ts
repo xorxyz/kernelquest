@@ -8,4 +8,8 @@ export class StringType extends Literal {
   override serialize(): string {
     return this.toString();
   }
+
+  override clone(): StringType {
+    return new StringType(this.lexeme);
+  }
 }

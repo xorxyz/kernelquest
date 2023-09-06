@@ -5,7 +5,11 @@ export class VariableType extends Literal {
     return `?${this.lexeme}`;
   }
 
-  serialize(): string {
+  override serialize(): string {
     return this.toString();
+  }
+
+  override clone(): VariableType {
+    return new VariableType(this.lexeme);
   }
 }

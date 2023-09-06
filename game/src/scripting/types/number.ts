@@ -12,4 +12,8 @@ export class NumberType extends Literal {
   override serialize(): SerializableType {
     return this.value;
   }
+
+  override clone(): NumberType {
+    return new NumberType(this.value);
+  }
 }
