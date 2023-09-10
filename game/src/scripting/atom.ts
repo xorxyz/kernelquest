@@ -1,4 +1,5 @@
 import { IAction, SerializableType } from '../shared/interfaces';
+import { Queue } from '../shared/queue';
 import { Dictionary } from './dictionary';
 import { Stack } from './stack';
 
@@ -14,7 +15,7 @@ export class Atom {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  execute(_: Stack, __: Dictionary): IAction | null {
+  execute(_: Stack, __: Dictionary, ___: Queue<Atom>): IAction | null {
     throw new Error('execute() method is not implemented');
   }
 

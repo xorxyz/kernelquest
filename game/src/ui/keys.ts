@@ -3,8 +3,10 @@ export const KeyCodes = {
   ARROW_UP: 38,
   ARROW_RIGHT: 39,
   ARROW_DOWN: 40,
+  BACKQUOTE: 222,
   BACKSPACE: 8,
   ENTER: 13,
   DELETE: 46,
+  PERIOD: 190,
   SPACE: 32,
 };

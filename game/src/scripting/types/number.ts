@@ -1,4 +1,5 @@
 import { SerializableType } from '../../shared/interfaces';
+import { logger } from '../../shared/logger';
 import { Literal } from '../literal';
 
 export class NumberType extends Literal {
@@ -6,6 +7,7 @@ export class NumberType extends Literal {
 
   constructor(value: number) {
     super(String(value));
+    logger.debug(value)
     this.value = value;
   }
 

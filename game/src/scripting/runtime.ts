@@ -50,6 +50,10 @@ export class Runtime {
   }
 
   printStack(): string {
-    return `[${this.stack.print()}]`;
+    return this.interpreter.printStack();
+  }
+
+  printExpression(): string {
+    return this.interpreter.printExpression();
   }
 }

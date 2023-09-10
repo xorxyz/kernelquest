@@ -1,5 +1,5 @@
 import { Vector } from '../../shared/vector';
-import { IGameState } from '../../state/valid_state';
+import { IEngineState } from '../../state/valid_state';
 import { Component } from '../component';
 
 export class TextOutputComponent extends Component {
@@ -12,8 +12,8 @@ export class TextOutputComponent extends Component {
     }
   }
 
-  update(gameState: IGameState): void {
-    this.linesOfText = [...gameState.terminal.output];
+  update(state: IEngineState): void {
+    this.linesOfText = [...state.terminal.output];
   }
 
   render(): string[] {

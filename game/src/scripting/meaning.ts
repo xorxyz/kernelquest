@@ -1,13 +1,14 @@
 import { Stack } from './stack';
 import { Atom } from './atom';
 import { IAction } from '../shared/interfaces';
+import { Queue } from '../shared/queue';
 
 type InstanceTypeOfConstructors<T> = {
   [K in keyof T]: T[K] extends new (...args: never[]) => infer R ? R : never;
 };
 
 export type InterpretMeaningFn<A> = (
-  stack: Stack, args: InstanceTypeOfConstructors<A>
+  stack: Stack, args: InstanceTypeOfConstructors<A>, queue: Queue<Atom>
 ) => IAction | null
 
 type AtomCtor = new (...args: never[]) => Atom
@@ -18,7 +19,7 @@ export interface IMeaning<A extends WordArguments> {
   args: A
   words?: string[]
   sig: (keyof A)[]
-  interpret: (stack: Stack) => IAction | null
+  interpret: (stack: Stack, expr: Queue<Atom>) => IAction | null
   $interpret: InterpretMeaningFn<A>
 }
 
@@ -38,6 +39,7 @@ function validate<A extends WordArguments>(
 export function interpret<A extends WordArguments>(
   this: IMeaning<A>,
   stack: Stack,
+  queue: Queue<Atom>,
 ): IAction | null {
   if (stack.size < this.sig.length) {
     throw new Error(`Expected to find ${this.sig.length} values on the stack, but found ${stack.size}.`);
@@ -58,7 +60,7 @@ export function interpret<A extends WordArguments>(
     throw new Error(`The values on the stack don't match the function signature: [${this.sig.join(' ')}]`);
   }
 
-  return this.$interpret(stack, myArgs);
+  return this.$interpret(stack, myArgs, queue);
 }
 
 export function createMeaning<A extends WordArguments>(

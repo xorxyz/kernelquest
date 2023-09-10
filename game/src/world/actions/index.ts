@@ -5,7 +5,7 @@ import { fork } from '../../vm/syscalls';
 import {
   IActionDefinition, createActionDefinition,
 } from '../action';
-import { sh, clear } from './admin';
+import { sh, clear, next, debug } from './admin';
 
 export const noop = createActionDefinition({
   name: 'noop',
@@ -16,6 +16,8 @@ export interface ActionMap {
   sh: typeof sh.action
   clear: typeof clear.action
   fork: typeof fork.action
+  next: typeof next.action
+  debug: typeof debug.action
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
@@ -28,6 +30,8 @@ export const actions: {
   sh,
   clear,
   fork,
+  next,
+  debug
 };
 
 export const actionWords = Dictionary.from(

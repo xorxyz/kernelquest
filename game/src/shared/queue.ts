@@ -16,4 +16,8 @@ export class Queue<T> {
   peek(): T | null {
     return this.items[0] ?? null;
   }
+
+  isEmpty(): boolean {
+    return this.size < 1;
+  }
 }

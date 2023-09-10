@@ -10,13 +10,35 @@ export const sh = createActionDefinition({
   perform({ state, shell }, args) {
     try {
       shell.execute(args.text);
-      return succeed();
+      return succeed(args.text);
     } catch (err) {
       const { message } = err as Error;
       state.terminal.output.push(message);
 
       return fail(message);
     }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const next = createActionDefinition({
+  name: 'next',
+  perform() {
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const debug = createActionDefinition({
+  name: 'debug',
+  perform({ state }) {
+    state.debugMode = !state.debugMode;
+
+    return succeed();
   },
   undo() {
     return succeed();

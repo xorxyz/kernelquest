@@ -1,6 +1,8 @@
 import { Dictionary } from '../dictionary';
 import { IMeaning, InterpretMeaningFn, WordArguments } from '../meaning';
-import * as operators from './operators';
+import * as math from './math.operators';
+import * as stack from './stack.operators';
+import * as combinators from './combinators';
 
 // Create a record entry for each synonym of each word
 function spreadWords(
@@ -16,5 +18,7 @@ function spreadWords(
 }
 
 export const defaultWords = Dictionary.from({
-  ...spreadWords(operators),
+  ...spreadWords(math),
+  ...spreadWords(stack),
+  ...spreadWords(combinators),
 });

@@ -36,7 +36,7 @@ export const dup = createMeaning({
   },
 });
 
-// [A B] -> [A B A]
+// [A B] -> [A A B]
 export const dupd = createMeaning({
   args: {
     a: Atom,
@@ -45,8 +45,8 @@ export const dupd = createMeaning({
   sig: ['a', 'b'],
   interpret(stack, { a, b }): null {
     stack.push(a);
-    stack.push(b);
     stack.push(a.clone())
+    stack.push(b);
     return null;
   },
 });

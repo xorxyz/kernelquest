@@ -1,6 +1,8 @@
 import { RuntimeError } from '../shared/errors';
 import { IAction } from '../shared/interfaces';
 import { logger } from '../shared/logger';
+import { Queue } from '../shared/queue';
+import { Atom } from './atom';
 import { Dictionary } from './dictionary';
 import { Expression } from './expression';
 import { Stack } from './stack';
@@ -16,12 +18,14 @@ export class Interpreter {
 
   private index = 0;
 
+  private queue = new Queue<Atom>();
+
   constructor(dictionary: Dictionary) {
     this.dictionary = dictionary;
   }
 
   get done(): boolean {
-    return this.index >= this.expression.atoms.length;
+    return this.queue.isEmpty() && this.index >= this.expression.atoms.length;
   }
 
   evaluate(stack: Stack, expression: Expression): RuntimeExecution {
@@ -32,8 +36,14 @@ export class Interpreter {
     return this.start();
   }
 
-  print(): string {
+  printStack(): string {
     return this.stack.print();
+  }
+
+  printExpression(): string {
+    const expr = this.expression.atoms.slice(this.index).map(atom => atom.toString()).join(' ');
+    const queue = this.queue.items.map((atom) => atom.toString()).join(' ')
+    return `${expr} ${queue}`
   }
 
   private* start(): RuntimeExecution {
@@ -47,12 +57,10 @@ export class Interpreter {
   private step(): IAction | null {
     if (this.done) return null;
 
-    const atom = this.expression.atoms[this.index];
+    const atom = this.queue.next() ?? this.expression.atoms[this.index];
     if (!atom) throw new RuntimeError(`Unexpected: There was no atom at index '${this.index}'`);
 
-    logger.debug('atom', atom);
-
-    const action = atom.execute(this.stack, this.dictionary);
+    const action = atom.execute(this.stack, this.dictionary, this.queue);
 
     this.index += 1;
 

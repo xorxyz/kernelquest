@@ -5,7 +5,7 @@ import { Vector } from '../shared/vector';
 import { Ansi } from './ansi';
 import { DiagnosticsComponent } from './components/diagnostics';
 import { EveryAction } from '../world/actions';
-import { IGameState } from '../state/valid_state';
+import { IEngineState, IGameState } from '../state/valid_state';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void
 
@@ -29,7 +29,7 @@ export interface IRouter {
 export interface View {
   onLoad?(tick: number): void
 
-  update?(tick: number, state: IGameState): EveryAction | null
+  update?(tick: number, state: IEngineState, keyboardEvents: KeyboardEvent[]): EveryAction | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -88,7 +88,7 @@ export abstract class View {
     return handler;
   }
 
-  $update(tick: number, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  $update(tick: number, state: IEngineState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
     keyboardEvents.forEach((event): void => {
       if (event.key === '\t') {
         const components = Object.values(this.components);
@@ -101,7 +101,7 @@ export abstract class View {
     });
 
     if (this.update) {
-      this.update(tick, state);
+      this.update(tick, state, keyboardEvents);
     }
 
     Object.values(this.components).forEach((component): void => {

@@ -3,7 +3,7 @@ import { IRouter, View } from './view';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';
-import { IGameState } from '../state/valid_state';
+import { IEngineState } from '../state/valid_state';
 import { EveryAction } from '../world/actions';
 
 export class UIManager {
@@ -34,7 +34,7 @@ export class UIManager {
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, state: IGameState, events: IKeyboardEvent[]): EveryAction | null {
+  update(tick: number, state: IEngineState, events: IKeyboardEvent[]): EveryAction | null {
     const action = this.activeView.$update(tick, state, events);
 
     return action;

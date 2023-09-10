@@ -14,7 +14,6 @@ import {
   Quotation,
   recursiveMap,
   TypeNames,
-  Variable,
 } from './literals';
 import { capitalize } from '../shared/text';
 

@@ -3,9 +3,13 @@ import { IKeyboardEvent } from '../../shared/interfaces';
 import { isAlphaNumeric, isSpecialCharacter } from '../../shared/util';
 import { Vector } from '../../shared/vector';
 import { KeyCodes } from '../keys';
-import { IGameState } from '../../state/valid_state';
+import { IEngineState } from '../../state/valid_state';
 
 export class TextInputComponent extends Component {
+  private debugMode = false;
+
+  private busyShell = false; 
+
   protected prompt = '# ';
 
   private text = '';
@@ -17,18 +21,26 @@ export class TextInputComponent extends Component {
   }
 
   render(): string[] {
+    const prompt = this.debugMode && this.busyShell ? '⌛' : this.prompt;
+
     return [
-      this.prompt + this.text,
+      prompt + this.text,
     ];
   }
 
-  update(_: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+  update(state: IEngineState, keyboardEvents: IKeyboardEvent[]): void {
+    this.debugMode = state.debugMode;
+    this.busyShell = !state.shell.done();
+
     keyboardEvents.forEach((event): void => {
       this.handleKeyboardEvent(event);
     });
   }
 
   private handleKeyboardEvent(event: IKeyboardEvent): void {
+    const blocked = this.debugMode && this.busyShell
+    if (blocked) return;
+
     if (isAlphaNumeric(event.key) || isSpecialCharacter(event.key)) {
       this.insert(event.key);
       return;

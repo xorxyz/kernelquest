@@ -2,6 +2,12 @@ import { SerializableType } from '../../shared/interfaces';
 import { Literal } from '../literal';
 
 export class HexType extends Literal {
+  readonly value: number
+   
+  constructor(value: number) {
+    super(String(value))
+    this.value = value;
+  }
   override toString(): string {
     return `x${this.lexeme}`;
   }
@@ -11,6 +17,6 @@ export class HexType extends Literal {
   }
 
   override clone(): HexType {
-    return new HexType(this.lexeme);
+    return new HexType(this.value);
   }
 }

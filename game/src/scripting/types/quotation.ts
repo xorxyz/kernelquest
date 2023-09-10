@@ -2,7 +2,7 @@ import { Atom } from '../atom';
 import { Literal } from '../literal';
 
 export class Quotation extends Literal {
-  private atoms: Atom[] = [];
+  readonly atoms: Atom[] = [];
 
   constructor() {
     super('[]');

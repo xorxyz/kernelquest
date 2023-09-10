@@ -1,3 +1,5 @@
+import { createMeaning } from "../meaning";
+import { NumberType } from "../types/number";
 
 export const add = createMeaning({
   words: ['+'],

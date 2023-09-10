@@ -2,7 +2,7 @@ import {
   ActionResultType, IActionResult, IGameEvent, ISaveFileContents,
 } from '../shared/interfaces';
 import { EntityManager } from './entity_manager';
-import { IGameState } from './valid_state';
+import { IEngineState, IGameState } from './valid_state';
 import { IActionContext } from '../world/action';
 import {
   ActionMap, EveryAction, EveryActionName, actionWords, actions, isValidAction,
@@ -19,9 +19,6 @@ export const EmptyGameState: IGameState = {
     gold: 0,
   },
   history: [],
-  terminal: {
-    output: [],
-  },
 };
 
 function performAction<K extends EveryActionName>(
@@ -36,41 +33,55 @@ function performAction<K extends EveryActionName>(
 }
 
 export class StateManager {
-  readonly gameState: IGameState = { ...EmptyGameState };
-
   private entityManager = new EntityManager();
-
-  private shell: Runtime;
 
   private actionBuffer = new Queue<EveryAction>();
 
+  readonly engineState: IEngineState
+
   constructor() {
-    this.shell = new Runtime([defaultWords, actionWords]);
+    this.engineState = {
+      game: { ...EmptyGameState },
+      shell: new Runtime([defaultWords, actionWords]),
+      terminal: {
+        output: []
+      },
+      debugMode: true
+    };
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
-    this.gameState.tick = tick;
+    this.engineState.game.tick = tick;
 
     let action = playerAction;
 
-    if (!this.shell.done()) {
+    if (!this.engineState.shell.done()) {
       if (playerAction) {
         this.actionBuffer.add(playerAction);
       }
 
-      try {
-        const next = this.shell.continue();
+      if (!this.engineState.debugMode || playerAction?.name === 'next') {
+        try {
+          const next = this.engineState.shell.continue();
+  
+          if (next && isValidAction(next)) {
+            action = next;
+          }
 
-        if (next && isValidAction(next)) {
-          action = next;
+          if (this.engineState.shell.done()) {
+            this.engineState.terminal.output.push('ok');
+          } else {
+            this.engineState.terminal.output.push(
+              `${this.engineState.shell.printStack()} <- ${this.engineState.shell.printExpression()}`
+            )
+          }
+
+        } catch (err) {
+          const errorMessage = (err as Error).message;
+          this.engineState.terminal.output.push(errorMessage);
         }
-        if (this.shell.done()) {
-          this.gameState.terminal.output.push(this.shell.printStack());
-        }
-      } catch (err) {
-        const errorMessage = (err as Error).message;
-        this.gameState.terminal.output.push(errorMessage);
       }
+
     } else if (this.actionBuffer.size) {
       action = this.actionBuffer.next();
       if (playerAction) {
@@ -83,14 +94,18 @@ export class StateManager {
     const ctx = {
       agent: this.entityManager.player,
       area: this.entityManager.home,
-      state: this.gameState,
-      shell: this.shell,
+      state: this.engineState.game,
+      shell: this.engineState.shell,
     };
 
     const events: IGameEvent[] = [];
     const result = performAction(ctx, action);
 
     if (result.type === ActionResultType.SUCCESS) {
+      if (result.message) {
+        this.engineState.terminal.output.push(result.message);
+      }
+
       events.push({
         tick,
         agentId: 1,
@@ -112,10 +127,10 @@ export class StateManager {
   }
 
   import(contents: IGameState): void {
-    this.gameState.history = { ...contents.history };
+    this.engineState.game.history = { ...contents.history };
   }
 
   export(): ISaveFileContents {
-    return { ...this.gameState };
+    return { ...this.engineState.game };
   }
 }

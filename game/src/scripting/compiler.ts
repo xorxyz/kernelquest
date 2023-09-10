@@ -86,6 +86,7 @@ export class Compiler {
         break;
       case SymbolToken.DOT:
       case SymbolToken.PLUS:
+      case SymbolToken.MINUS:
       case SymbolToken.STAR:
       case SymbolToken.SLASH:
         this.add(new Word(token.lexeme));

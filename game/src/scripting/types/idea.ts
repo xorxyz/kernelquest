@@ -4,9 +4,9 @@ import { Literal } from '../literal';
 export class Idea extends Literal {
   readonly value: number;
 
-  constructor(lexeme: string) {
-    super(lexeme);
-    this.value = Number(lexeme);
+  constructor(value: number) {
+    super(String(value));
+    this.value = value;
   }
 
   override toString(): string {
@@ -18,6 +18,6 @@ export class Idea extends Literal {
   }
 
   override clone(): Idea {
-    return new Idea(this.lexeme);
+    return new Idea(this.value);
   }
 }

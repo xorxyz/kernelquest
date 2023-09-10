@@ -183,8 +183,6 @@ export class Parser {
       throw new ParsingError(`Value is not a number: '${value}'.`);
     }
 
-    if (char === SymbolToken.MINUS as string) value = -value;
-
     this.tokens.push(new Token(SequenceToken.NUMBER, String(value)));
   }
 
