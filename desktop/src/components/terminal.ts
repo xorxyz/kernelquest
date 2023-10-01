@@ -20,7 +20,7 @@ export class Terminal implements ITerminal {
     this.el = el;
 
     this.xterm = new xterm.Terminal({
-      cols: SCREEN_WIDTH,
+      cols: SCREEN_WIDTH + 2,
       rows: SCREEN_HEIGHT,
       theme: {
         background: '#181818',

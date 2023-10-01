@@ -47,7 +47,7 @@ export abstract class View {
 
   constructor(router: IRouter) {
     this.router = router;
-    this.activeComponent = this.registerComponent('diagnostics', new DiagnosticsComponent(new Vector(0, 0)));
+    // this.activeComponent = this.registerComponent('diagnostics', new DiagnosticsComponent(new Vector(0, 0)));
   }
 
   getCursorPosition(): Vector {
@@ -78,6 +78,7 @@ export abstract class View {
       throw new Error(`registerComponent(): component '${name}' already exists.`);
     }
     this.components[name] = component;
+    if (!this.activeComponent) this.activeComponent = component;
     return component;
   }
 

@@ -6,6 +6,8 @@ import { IRouter, View } from '../view';
 import { EveryAction } from '../../world/actions';
 import { IKeyboardEvent } from '../../shared/interfaces';
 import { KeyCodes } from '../keys';
+import { TitleBarComponent } from '../components/title_bar';
+import { StackBarComponent } from '../components/stack_bar';
 
 export class DebugView extends View {
   private input: Component;
@@ -15,8 +17,11 @@ export class DebugView extends View {
   constructor(router: IRouter) {
     super(router);
 
-    this.output = this.registerComponent('output', new TextOutputComponent(new Vector(0, 3)));
-    this.input = this.registerComponent('input', new TextInputComponent(new Vector(0, 3)));
+    this.registerComponent('title', new TitleBarComponent(new Vector(0, 0)));
+    this.registerComponent('stack', new StackBarComponent(new Vector(2, 1)));
+
+    this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, 3)));
+    this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, 3)));
 
     this.input.on('submit', function (event): EveryAction {
       if (event.text === '') {

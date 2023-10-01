@@ -18,7 +18,7 @@ export class TextInputComponent extends Component {
   private cursorX = 0;
 
   override getCursorOffset(): Vector {
-    return new Vector(this.prompt.length + this.cursorX + 1, 1);
+    return new Vector(this.prompt.length + this.cursorX, 1);
   }
 
   render(): string[] {

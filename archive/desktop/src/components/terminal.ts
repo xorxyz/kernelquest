@@ -43,11 +43,13 @@ export class Terminal implements ITerminal {
   }
 
   onKey(handler: KeyboardEventHandler) {
-    this.xterm.onKey(({ key, domEvent: { ctrlKey, shiftKey, altKey } }) => handler({
+    this.xterm.onKey(({ key, domEvent: { ctrlKey, shiftKey, altKey, code, keyCode } }) => handler({
       key,
       ctrlKey,
       shiftKey,
       altKey,
+      code,
+      keyCode
     }));
   }
 

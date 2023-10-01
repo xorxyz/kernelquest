@@ -1,4 +1,4 @@
-import { Game } from 'xor5-game/src';
+import { Engine } from 'xor5-game/src';
 import { SystemIO } from './components/system_io';
 import { Terminal } from './components/terminal';
 import { AudioPlayer } from './components/audio_player';
@@ -12,7 +12,7 @@ window.addEventListener('load', () => {
   const terminal = new Terminal('#terminal');
   const audioPlayer = new AudioPlayer('#audio-player');
 
-  const game = new Game({
+  const game = new Engine({
     systemIO,
     terminal,
     audioPlayer,
