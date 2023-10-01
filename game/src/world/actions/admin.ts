@@ -25,7 +25,8 @@ export const sh = createActionDefinition({
 
 export const next = createActionDefinition({
   name: 'next',
-  perform() {
+  perform({ shell }) {
+    shell.continue();
     return succeed();
   },
   undo() {

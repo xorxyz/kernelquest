@@ -29,7 +29,7 @@ export interface IRouter {
 export interface View {
   onLoad?(tick: number): void
 
-  update?(tick: number, state: IEngineState, keyboardEvents: KeyboardEvent[]): EveryAction | null
+  update?(tick: number, state: IEngineState, keyboardEvents: IKeyboardEvent[]): EveryAction | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -101,7 +101,8 @@ export abstract class View {
     });
 
     if (this.update) {
-      this.update(tick, state, keyboardEvents);
+      const viewAction = this.update(tick, state, keyboardEvents);
+      if (viewAction) return viewAction;
     }
 
     Object.values(this.components).forEach((component): void => {
