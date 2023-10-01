@@ -31,10 +31,6 @@ export class Runtime {
     return this.debug;
   }
 
-  read(): string {
-    return this.output.join('\n')
-  }
-
   done(): boolean {
     return !this.execution;
   }

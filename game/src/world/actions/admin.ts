@@ -10,7 +10,7 @@ export const sh = createActionDefinition({
   perform({ state, shell }, args) {
     try {
       shell.execute(args.text);
-      return succeed(args.text);
+      return succeed('# ' + args.text);
     } catch (err) {
       const { message } = err as Error;
       state.terminal.output.push(message);

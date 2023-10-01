@@ -41,6 +41,8 @@ export class StateManager {
 
   private shell: Runtime
 
+  private tracing = false;
+
   constructor (shell: Runtime) {
     this.shell = shell;
   }
@@ -63,14 +65,15 @@ export class StateManager {
             action = next;
           }
 
-          if (this.shell.done()) {
-            this.shell.print('ok');
-          } else {
-            this.shell.print(
-              `${this.shell.printStack()} <- ${this.shell.printExpression()}`
-            )
+          if (this.tracing) {
+            if (this.shell.done()) {
+              this.shell.print('ok');
+            } else {
+              this.shell.print(
+                `${this.shell.printStack()} <- ${this.shell.printExpression()}`
+              )
+            }
           }
-
         } catch (err) {
           const errorMessage = (err as Error).message;
           this.shell.print(errorMessage);
