@@ -37,48 +37,43 @@ export class StateManager {
 
   private actionBuffer = new Queue<EveryAction>();
 
-  readonly engineState: IEngineState
+  readonly gameState: IGameState = { ...EmptyGameState }
 
-  constructor() {
-    this.engineState = {
-      game: { ...EmptyGameState },
-      shell: new Runtime([defaultWords, actionWords]),
-      terminal: {
-        output: []
-      },
-      debugMode: true
-    };
+  private shell: Runtime
+
+  constructor (shell: Runtime) {
+    this.shell = shell;
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
-    this.engineState.game.tick = tick;
+    this.gameState.tick = tick;
 
     let action = playerAction;
 
-    if (!this.engineState.shell.done()) {
+    if (!this.shell.done()) {
       if (playerAction) {
         this.actionBuffer.add(playerAction);
       }
 
-      if (!this.engineState.debugMode || playerAction?.name === 'next') {
+      if (!this.shell.isDebugEnabled() || playerAction?.name === 'next') {
         try {
-          const next = this.engineState.shell.continue();
+          const next = this.shell.continue();
   
           if (next && isValidAction(next)) {
             action = next;
           }
 
-          if (this.engineState.shell.done()) {
-            this.engineState.terminal.output.push('ok');
+          if (this.shell.done()) {
+            this.shell.print('ok');
           } else {
-            this.engineState.terminal.output.push(
-              `${this.engineState.shell.printStack()} <- ${this.engineState.shell.printExpression()}`
+            this.shell.print(
+              `${this.shell.printStack()} <- ${this.shell.printExpression()}`
             )
           }
 
         } catch (err) {
           const errorMessage = (err as Error).message;
-          this.engineState.terminal.output.push(errorMessage);
+          this.shell.print(errorMessage);
         }
       }
 
@@ -94,8 +89,8 @@ export class StateManager {
     const ctx = {
       agent: this.entityManager.player,
       area: this.entityManager.home,
-      state: this.engineState.game,
-      shell: this.engineState.shell,
+      state: this.gameState,
+      shell: this.shell,
     };
 
     const events: IGameEvent[] = [];
@@ -103,7 +98,7 @@ export class StateManager {
 
     if (result.type === ActionResultType.SUCCESS) {
       if (result.message) {
-        this.engineState.terminal.output.push(result.message);
+        this.shell.print(result.message);
       }
 
       events.push({
@@ -127,10 +122,10 @@ export class StateManager {
   }
 
   import(contents: IGameState): void {
-    this.engineState.game.history = { ...contents.history };
+    this.gameState.history = { ...contents.history };
   }
 
   export(): ISaveFileContents {
-    return { ...this.engineState.game };
+    return { ...this.gameState };
   }
 }

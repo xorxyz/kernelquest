@@ -34,7 +34,7 @@ export class DebugView extends View {
     this.focus(this.input);
   }
 
-  override update(tick, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  override update(tick, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
     this.input.position.setY(3 + this.output.linesOfText.length);
     let action: EveryAction | null = null
     keyboardEvents.forEach(event => {

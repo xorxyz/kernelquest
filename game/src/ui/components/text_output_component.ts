@@ -1,5 +1,5 @@
+import { Runtime } from '../../scripting/runtime';
 import { Vector } from '../../shared/vector';
-import { IEngineState } from '../../state/valid_state';
 import { Component } from '../component';
 
 export class TextOutputComponent extends Component {
@@ -12,8 +12,8 @@ export class TextOutputComponent extends Component {
     }
   }
 
-  update(state: IEngineState): void {
-    this.linesOfText = [...state.terminal.output];
+  update(shell: Runtime): void {
+    this.linesOfText = shell.getOutput();
   }
 
   render(): string[] {

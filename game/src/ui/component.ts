@@ -4,7 +4,8 @@ import { logger } from '../shared/logger';
 import { Vector } from '../shared/vector';
 import { Queue } from '../shared/queue';
 import { EveryAction } from '../world/actions';
-import { IEngineState } from '../state/valid_state';
+import { IGameState } from '../state/valid_state';
+import { Runtime } from '../scripting/runtime';
 
 export interface Component {
   getCursorOffset?(): Vector
@@ -41,15 +42,15 @@ export abstract class Component {
     this.handlers[eventName] = handler;
   }
 
-  $update(state: IEngineState, keyboardEvents: IKeyboardEvent[]): void {
-    if (this.update) this.update(state, keyboardEvents);
+  $update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    if (this.update) this.update(shell, state, keyboardEvents);
   }
 
   $render(): string[] {
     return this.render();
   }
 
-  abstract update?(state: IEngineState, keyboardEvents: IKeyboardEvent[]): void
+  abstract update?(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void
 
   abstract render(): string[]
 }

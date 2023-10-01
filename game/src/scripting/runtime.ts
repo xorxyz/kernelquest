@@ -15,6 +15,10 @@ export class Runtime {
 
   private execution: RuntimeExecution | null = null;
 
+  private output: Array<string> = []
+
+  private debug = false;
+
   constructor(dictionaries?: Dictionary[]) {
     if (dictionaries) {
       dictionaries.forEach((dict) => { this.dictionary.combine(dict); });
@@ -23,11 +27,20 @@ export class Runtime {
     this.interpreter = new Interpreter(this.dictionary);
   }
 
+  isDebugEnabled () {
+    return this.debug;
+  }
+
+  read(): string {
+    return this.output.join('\n')
+  }
+
   done(): boolean {
     return !this.execution;
   }
 
   clear(): void {
+    this.output.splice(0, this.output.length);
     this.stack.clear();
   }
 
@@ -49,11 +62,27 @@ export class Runtime {
     return result.value;
   }
 
+  print(text: string) {
+    this.output.push(text);
+  }
+
+  getOutput() {
+    return [...this.output];
+  }
+
   printStack(): string {
     return this.interpreter.printStack();
   }
 
   printExpression(): string {
     return this.interpreter.printExpression();
+  }
+
+  enableDebug () {
+    this.debug = true;
+  }
+
+  disableDebug () {
+    this.debug = true;
   }
 }

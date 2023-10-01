@@ -49,17 +49,9 @@ export const debug = createActionDefinition({
 export const clear = createActionDefinition({
   name: 'clear',
   perform({ state, shell }) {
-    try {
-      state.terminal.output.splice(0, state.terminal.output.length);
-      shell.clear();
+    shell.clear();
 
-      return succeed();
-    } catch (err) {
-      const { message } = err as Error;
-      state.terminal.output.push(message);
-
-      return fail(message);
-    }
+    return succeed();
   },
   undo() {
     return succeed();

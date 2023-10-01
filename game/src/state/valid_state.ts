@@ -1,6 +1,5 @@
 import { EveryActionName } from '../world/actions';
 import { ActionArguments, GameEventState, IGameEvent } from '../shared/interfaces';
-import { Runtime } from '../scripting/runtime';
 
 export interface IValidAction {
   name: EveryActionName,
@@ -23,13 +22,4 @@ export interface IGameState {
     gold: number
   },
   history: IValidGameEvent[]
-}
-
-export interface IEngineState {
-  game: IGameState
-  debugMode: boolean
-  shell: Runtime
-  terminal: {
-    output: string[]
-  }
 }

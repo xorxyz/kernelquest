@@ -1,6 +1,7 @@
 import { Component } from '../component';
 import { IKeyboardEvent } from '../../shared/interfaces';
-import { IEngineState } from '../../state/valid_state';
+import { IGameState } from '../../state/valid_state';
+import { Runtime } from '../../scripting/runtime';
 
 export class DiagnosticsComponent extends Component {
   private lastKeyboardEvent: IKeyboardEvent = {
@@ -16,10 +17,10 @@ export class DiagnosticsComponent extends Component {
 
   private stack = '[]';
 
-  update(state: IEngineState, keyboardEvents: IKeyboardEvent[]): void {
-    this.ticks = String(state.game.tick).padStart(16, '0');
+  update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    this.ticks = String(state.tick).padStart(16, '0');
     this.lastKeyboardEvent = keyboardEvents.slice(-1)[0] ?? this.lastKeyboardEvent;
-    this.stack = `[${state.shell.printStack()}]`;
+    this.stack = `[${shell.printStack()}]`;
   }
 
   render(): string[] {

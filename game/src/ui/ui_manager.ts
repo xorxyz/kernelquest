@@ -3,11 +3,14 @@ import { IRouter, View } from './view';
 import { Ansi } from './ansi';
 import { DebugView } from './views/debug.view';
 import { TitleView } from './views/title.view';
-import { IEngineState } from '../state/valid_state';
 import { EveryAction } from '../world/actions';
+import { IGameState } from '../state/valid_state';
+import { Runtime } from '../scripting/runtime';
 
 export class UIManager {
   private activeView: View;
+
+  private shell: Runtime;
 
   private terminal: ITerminal;
 
@@ -19,7 +22,8 @@ export class UIManager {
     go: this.go.bind(this),
   };
 
-  constructor(terminal: ITerminal) {
+  constructor(terminal: ITerminal, shell: Runtime) {
+    this.shell = shell;
     this.terminal = terminal;
 
     this.activeView = this.registerView('title', TitleView);
@@ -34,8 +38,8 @@ export class UIManager {
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, state: IEngineState, events: IKeyboardEvent[]): EveryAction | null {
-    const action = this.activeView.$update(tick, state, events);
+  update(tick: number, shell: Runtime, state: IGameState, events: IKeyboardEvent[]): EveryAction | null {
+    const action = this.activeView.$update(tick, shell, state, events);
 
     return action;
   }

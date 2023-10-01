@@ -3,7 +3,8 @@ import { IKeyboardEvent } from '../../shared/interfaces';
 import { isAlphaNumeric, isSpecialCharacter } from '../../shared/util';
 import { Vector } from '../../shared/vector';
 import { KeyCodes } from '../keys';
-import { IEngineState } from '../../state/valid_state';
+import { Runtime } from '../../scripting/runtime';
+import { IGameState } from '../../state/valid_state';
 
 export class TextInputComponent extends Component {
   private debugMode = false;
@@ -28,9 +29,9 @@ export class TextInputComponent extends Component {
     ];
   }
 
-  update(state: IEngineState, keyboardEvents: IKeyboardEvent[]): void {
-    this.debugMode = state.debugMode;
-    this.busyShell = !state.shell.done();
+  update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    this.debugMode = shell.isDebugEnabled();
+    this.busyShell = !shell.done();
 
     keyboardEvents.forEach((event): void => {
       this.handleKeyboardEvent(event);
