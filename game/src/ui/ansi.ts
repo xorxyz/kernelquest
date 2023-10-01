@@ -21,6 +21,7 @@ export const fgColors: Record<AnsiColor, string> = {
   White: '[37m',
   Green: '[32m',
   Gray: '[38;5;248m',
+  Blue: '[34m',
 };
 
 export const Ansi = {

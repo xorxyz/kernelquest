@@ -9,6 +9,8 @@ import { KeyCodes } from '../keys';
 import { TitleBarComponent } from '../components/title_bar';
 import { StackBarComponent } from '../components/stack_bar';
 
+const OUTPUT_VERTICAL_OFFSET = 2;
+
 export class DebugView extends View {
   private input: Component;
 
@@ -20,8 +22,8 @@ export class DebugView extends View {
     this.registerComponent('title', new TitleBarComponent(new Vector(0, 0)));
     this.registerComponent('stack', new StackBarComponent(new Vector(2, 1)));
 
-    this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, 3)));
-    this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, 3)));
+    this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
+    this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
 
     this.input.on('submit', function (event): EveryAction {
       if (event.text === '') {
@@ -40,7 +42,7 @@ export class DebugView extends View {
   }
 
   override update(tick, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
-    this.input.position.setY(3 + this.output.linesOfText.length);
+    this.input.position.setY(OUTPUT_VERTICAL_OFFSET + this.output.linesOfText.length);
     let action: EveryAction | null = null
     keyboardEvents.forEach(event => {
       switch (event.keyCode) {

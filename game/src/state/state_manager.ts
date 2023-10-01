@@ -45,6 +45,8 @@ export class StateManager {
 
   constructor (shell: Runtime) {
     this.shell = shell;
+    shell.print('Kernel Quest v5.1.0-lvl1');
+    shell.print(`Type 'help' and press enter for available commands.`);
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {

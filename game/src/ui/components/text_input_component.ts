@@ -5,20 +5,24 @@ import { Vector } from '../../shared/vector';
 import { KeyCodes } from '../keys';
 import { Runtime } from '../../scripting/runtime';
 import { IGameState } from '../../state/valid_state';
+import { Ansi } from '../ansi';
+
+export const PROMPT_SIZE = 11;
 
 export class TextInputComponent extends Component {
   private debugMode = false;
 
   private busyShell = false; 
 
-  protected prompt = '# ';
+  protected prompt = Ansi.fgColor('Green') + '3/3' + Ansi.fgColor('Gray') + ':' + Ansi.fgColor('Blue') + '[0 0]' + Ansi.reset() + '# ';
 
   private text = '';
 
   private cursorX = 0;
 
   override getCursorOffset(): Vector {
-    return new Vector(this.prompt.length + this.cursorX, 1);
+    return new Vector(PROMPT_SIZE + this.cursorX, 1)
+    // return new Vector(this.prompt.length + this.cursorX, 1);
   }
 
   render(): string[] {
