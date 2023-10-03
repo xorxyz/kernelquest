@@ -5,14 +5,12 @@
   "description": "run a broken system manually while defending it against impossible odds",
   "main": "./app/src/script.ts",
   "workspaces": [
+    "alpha",
     "desktop",
-    "game",
-    "www"
+    "game"
   ],
   "alias": {
-    "xor4-app": "./app",
-    "xor5-game": "./game",
-    "xor4-www": "./www"
+    "xor5-game": "./game"
   },
   "scripts": {
     "test": "run-s lint tests:* && echo 'All tests ran successfully'",

@@ -1,0 +1,26 @@
+{
+  "name": "@kernelquest/alpha",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "tachyons": "^4.12.0",
+    "xterm": "^5.2.1",
+    "xterm-addon-canvas": "^0.4.0",
+    "xterm-addon-fit": "^0.7.0",
+    "xor5-game": "5.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "nuxt": "^3.7.4",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5"
+  }
+}
