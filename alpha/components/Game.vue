@@ -9,17 +9,19 @@
 
 <script lang="ts">
 
-import { Engine } from 'xor5-game/src';
-import { SystemIO } from '../lib/system_io';
-import { Terminal } from '../lib/terminal';
-import { AudioPlayer } from '../lib/audio_player';
-
-import 'tachyons/css/tachyons.css';
-import 'xterm/css/xterm.css';
-import '../index.css';
-
 export default {
-  mounted(){
+  async mounted(){
+    if (!process.client) return;
+
+    const { Engine } = await import('xor5-game/src');
+    const { SystemIO } = await import('../lib/system_io');
+    const { Terminal } = await import('../lib/terminal');
+    const { AudioPlayer } = await import('../lib/audio_player');
+
+    await import('tachyons/css/tachyons.css');
+    await import('xterm/css/xterm.css');
+    await import('../index.css');
+  
     const systemIO = new SystemIO();
     const terminal = new Terminal('terminal');
     const audioPlayer = new AudioPlayer('audio-player');
@@ -30,9 +32,7 @@ export default {
       audioPlayer,
     });
 
-    if (process.client) {
-      this.handleVisibilityChanges();
-    } 
+    this.handleVisibilityChanges();
   },
   methods: {
     handleVisibilityChanges() {
