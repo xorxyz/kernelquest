@@ -4,13 +4,19 @@
   "version": "0.0.0",
   "description": "run a broken system manually while defending it against impossible odds",
   "main": "./app/src/script.ts",
-  "workspaces": [
-    "alpha",
-    "desktop",
-    "game"
-  ],
+  "workspaces": {
+    "packages": [
+      "alpha",
+      "desktop",
+      "game",
+      "levels"
+    ],
+    "nohoist": ["**/nuxt", "**/nuxt/**", "**/@nuxt", "**/@nuxt/**", "@nuxt", "nuxt", "xor5-alpha"]
+  },
   "alias": {
-    "xor5-game": "./game"
+    "xor5-alpha": "./alpha",
+    "xor5-game": "./game",
+    "xor5-levels": "./levels"
   },
   "scripts": {
     "test": "run-s lint tests:* && echo 'All tests ran successfully'",
