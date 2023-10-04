@@ -1,0 +1,23 @@
+{
+  "name": "xor5-levels",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "tsc --noEmit",
+    "build": "node scripts/build.mjs"
+  },
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "xor5-game": "5.0.0"
+  },
+  "devDependencies": {
+    "@types/events": "^3.0.0",
+    "@types/node": "^20.4.2",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "^2.28.0"
+  }
+}

@@ -2,16 +2,15 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "resolveJsonModule": true,
     "noEmit": true,
     "outDir": "build",
     "target": "ESNext",
-    "moduleResolution": "Node16",
-    "module": "Node16",
+    "moduleResolution": "NodeNext",
+    "module": "es2020",
     "lib": [
-      "es2022",
-      "dom"
+      "esnext"
     ],
     "declaration": true,
     "strict": true,
@@ -33,10 +32,10 @@
   },
   "include": [
     "src/**/*.ts",
-    "assets/**/*"
   ],
   "exclude": [
     "build",
     "node_modules/**/*",
+    "scripts/build.js"
   ]
 }

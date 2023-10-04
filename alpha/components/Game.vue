@@ -8,10 +8,11 @@
 </template>
 
 <script lang="ts">
-
 export default {
   async mounted(){
     if (!process.client) return;
+
+    console.log(this.levelId);
 
     const { Engine } = await import('xor5-game/src');
     const { SystemIO } = await import('../lib/system_io');
@@ -21,7 +22,13 @@ export default {
     await import('tachyons/css/tachyons.css');
     await import('xterm/css/xterm.css');
     await import('../index.css');
-  
+
+    try {
+      await import(`https://kernelquest-assets.s3.ca-central-1.amazonaws.com/levels/${this.levelId}.js`)
+    } catch (e) {
+      console.log('Failed to load level data.')
+    }
+
     const systemIO = new SystemIO();
     const terminal = new Terminal('terminal');
     const audioPlayer = new AudioPlayer('audio-player');
@@ -31,8 +38,13 @@ export default {
       terminal,
       audioPlayer,
     });
+    
+    // this.engine.loadLevel()
 
     this.handleVisibilityChanges();
+  },
+  props: {
+    levelId: String
   },
   methods: {
     handleVisibilityChanges() {
