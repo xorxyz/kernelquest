@@ -24,4 +24,4 @@ jobs:
       - name: Sync files to S3 bucket
         run: |
           cd alpha && aws s3 sync .output/public s3://kernelquest-assets
-          cd levels && aws s3 sync dist s3://kernelquest-assets/levels
+          cd ../levels && aws s3 sync dist s3://kernelquest-assets/levels
