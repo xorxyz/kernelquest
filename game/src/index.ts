@@ -77,11 +77,11 @@ export class Engine {
   }
 
   private update(tick: number): void {
-    const input = this.input.getKeyboardEvents();
-    const playerAction = this.ui.update(tick, this.shell, this.stateManager.gameState, input);
+    const keyboardEvents = this.input.getKeyboardEvents();
+    const playerAction = this.ui.update(tick, this.shell, this.stateManager.gameState, keyboardEvents);
     const gameEvents = this.stateManager.update(tick, playerAction);
 
-    this.audio.update(tick, gameEvents);
+    this.audio.update(tick, keyboardEvents, gameEvents);
 
     this.handleSystemActions(playerAction);
   }
