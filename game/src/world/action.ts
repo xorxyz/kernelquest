@@ -130,7 +130,7 @@ T extends string, A extends ActionArguments
         .map((atom, index): [keyof A | undefined, Atom] => [sig[index], atom])
         .filter((kv): kv is [keyof A, Atom] => !!kv[0])
         .reduce((record, [key, atom]) => {
-          record.set(key, atom.serialize());
+          record.set(key, atom.lexeme);
           return record;
         }, new Map<keyof A, SerializableType>());
 
@@ -138,6 +138,8 @@ T extends string, A extends ActionArguments
         name,
         args: Object.fromEntries(myArgs),
       };
+
+      console.log('validate', this)
 
       if (!this.validate(action)) {
         // The action failed validation, revert the stack back to its original state

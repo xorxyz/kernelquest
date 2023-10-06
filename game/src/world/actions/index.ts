@@ -5,7 +5,7 @@ import { fork } from '../../vm/syscalls';
 import {
   IActionDefinition, createActionDefinition,
 } from '../action';
-import { sh, clear, next, debug } from './admin';
+import { sh, clear, next, debug, help, help_about } from './all';
 
 export const noop = createActionDefinition({
   name: 'noop',
@@ -18,6 +18,8 @@ export interface ActionMap {
   fork: typeof fork.action
   next: typeof next.action
   debug: typeof debug.action
+  help: typeof help.action
+  help_about: typeof help_about.action
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
@@ -31,12 +33,14 @@ export const actions: {
   clear,
   fork,
   next,
-  debug
+  debug,
+  help,
+  help_about
 };
 
 export const actionWords = Dictionary.from(
   Object.fromEntries(Object.entries(actions).reduce((record, [name, action]) => {
-    record.set(name, action.interpret);
+    record.set(name, action.interpret.bind(action));
     return record;
   }, new Map<string, InterpretMeaningFn<ActionArguments|WordArguments>>())),
 );

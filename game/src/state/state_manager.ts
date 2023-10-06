@@ -101,11 +101,11 @@ export class StateManager {
     const events: IGameEvent[] = [];
     const result = performAction(ctx, action);
 
-    if (result.type === ActionResultType.SUCCESS) {
-      if (result.message) {
-        this.shell.print(result.message);
-      }
+    if (result.message) {
+      this.shell.print(result.message);
+    }
 
+    if (result.type === ActionResultType.SUCCESS) {
       events.push({
         tick,
         agentId: 1,
