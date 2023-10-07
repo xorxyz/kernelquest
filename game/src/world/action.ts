@@ -13,7 +13,6 @@ export interface IActionContext {
   agent: Agent,
   area: Area,
   shell: Runtime,
-  state: IEngineState,
 }
 
 export interface IActionValidator {
@@ -129,7 +128,7 @@ T extends string, A extends ActionArguments
         .map((atom, index): [keyof A | undefined, Atom] => [sig[index], atom])
         .filter((kv): kv is [keyof A, Atom] => !!kv[0])
         .reduce((record, [key, atom]) => {
-          record.set(key, atom.lexeme);
+          record.set(key, atom.toJS());
           return record;
         }, new Map<keyof A, SerializableType>());
 
@@ -143,7 +142,9 @@ T extends string, A extends ActionArguments
       if (!this.validate(action)) {
         // The action failed validation, revert the stack back to its original state
         popped.forEach((atom) => { stack.push(atom); });
-        throw new Error(`The values on the stack don't match the function signature: [${sig.join(' ')}]`);
+        throw new Error(
+          `The values on the stack don't match the function signature: [${sig.join(' ')}]. Instead, got ${JSON.stringify(Object.entries(action.args))}`
+          );
       }
 
       return action;

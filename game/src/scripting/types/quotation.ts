@@ -2,14 +2,16 @@ import { Atom } from '../atom';
 import { Literal } from '../literal';
 
 export class Quotation extends Literal {
-  readonly atoms: Atom[] = [];
+  override readonly value: Atom[] = [];
 
-  constructor() {
-    super('[]');
+  constructor(lex: string = '[]') {
+    super(lex);
   }
 
   static from(atoms: Atom[]): Quotation {
-    const quotation = new Quotation();
+    const lexeme = '[' + atoms.map(atom => atom.toString()).join(' ') + ']';
+
+    const quotation = new Quotation(lexeme);
 
     atoms.forEach((atom): void => { quotation.push(atom); });
 
@@ -17,14 +19,14 @@ export class Quotation extends Literal {
   }
 
   override toString(): string {
-    return `[${this.atoms.map((atom: Atom): string => atom.toString()).join(' ')}]`;
-  }
-
-  push(atom: Atom): void {
-    this.atoms.push(atom);
+    return `[${this.value.map((atom: Atom): string => atom.toString()).join(' ')}]`;
   }
 
   override clone(): Quotation {
-    return Quotation.from(this.atoms);
+    return Quotation.from(this.value);
+  }
+
+  private push(atom: Atom): void {
+    this.value.push(atom);
   }
 }

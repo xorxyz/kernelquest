@@ -5,6 +5,7 @@ import { Stack } from './stack';
 
 export class Atom {
   readonly lexeme: string;
+  readonly value: any;
 
   constructor(lexeme: string) {
     this.lexeme = lexeme;
@@ -12,6 +13,13 @@ export class Atom {
 
   toString(): string {
     return this.lexeme;
+  }
+
+  toJS() {
+    if (this.value instanceof Array) {
+      return this.value.map(atom => atom.toJS());
+    }
+    return this.value;
   }
 
   // eslint-disable-next-line class-methods-use-this

@@ -26,8 +26,9 @@ export class Heading {
 }
 
 export class Agent {
-  id: number;
-  heading = new Heading();
+  readonly id: number;
+  readonly heading = new Heading();
+  readonly position = new Vector();
 
   constructor(id: number) {
     this.id = id;

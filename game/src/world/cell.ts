@@ -11,6 +11,10 @@ export class Cell {
     this.position = new Vector(x, y);
   }
 
+  get(layer: LayerName = 'middle'): number {
+    return this.layers.get(layer) || 0;
+  }
+
   put(layer: LayerName, id: number): void {
     this.layers.set(layer, id);
   }
@@ -24,7 +28,7 @@ export class Cell {
   }
 
   contains(id: number): boolean {
-    return Object.values(this.layers).includes(id);
+    return [...this.layers.values()].includes(id);
   }
 
   find(id: number): LayerName[] {

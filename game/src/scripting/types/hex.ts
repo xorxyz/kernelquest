@@ -2,7 +2,7 @@ import { SerializableType } from '../../shared/interfaces';
 import { Literal } from '../literal';
 
 export class HexType extends Literal {
-  readonly value: number
+  override readonly value: number
    
   constructor(value: number) {
     super(String(value))

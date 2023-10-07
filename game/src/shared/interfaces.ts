@@ -1,6 +1,8 @@
 /* Interfaces between modules and with the outside world. */
 
-export type SerializableType = boolean | number | string | [number, number]
+import { Vector } from "./vector"
+
+export type SerializableType = boolean | number | string | Vector
 
 export type ActionArguments = Record<string, SerializableType>
 

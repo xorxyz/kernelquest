@@ -92,7 +92,7 @@ export class StateManager {
     if (!action) return [];
 
     const ctx = {
-      agent: this.entityManager.player,
+      agent: this.entityManager.hero,
       area: this.entityManager.home,
       state: this.gameState,
       shell: this.shell,

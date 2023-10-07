@@ -2,7 +2,7 @@ import { Vector } from '../../shared/vector';
 import { Literal } from '../literal';
 
 export class LiteralVector extends Literal {
-  readonly value = new Vector();
+  override readonly value = new Vector();
 
   constructor(v: Vector) {
     super(v.label);
@@ -14,6 +14,6 @@ export class LiteralVector extends Literal {
   }
 
   override clone(): LiteralVector {
-    return new LiteralVector(this.value.clone());;
+    return new LiteralVector(this.value.clone());
   }
 }

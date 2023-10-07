@@ -1,3 +1,4 @@
+import { Agent } from '../world/agent';
 import { Cell, LayerName } from '../world/cell';
 import { Vector } from './vector';
 
@@ -34,22 +35,20 @@ export class Area {
     return cell;
   }
 
-  move(id: number, destination: Vector, destinationLayer?: LayerName): void {
+  move(agent: Agent, destination: Vector): void {
     const targetCell = this.cellAt(destination);
-    const sourceCell = this.find(id);
+    const sourceCell = this.find(agent.id);
 
-    if (!destinationLayer) {
-      const layers = sourceCell.find(id);
-      layers.forEach((layer) => { targetCell.put(layer, id); });
-    } else {
-      targetCell.put(destinationLayer, id);
-    }
+    targetCell.put('middle', agent.id);
+    sourceCell.remove(agent.id);    
 
-    sourceCell.remove(id);
+    agent.position.copy(destination);
   }
 
-  put(position: Vector, entityId: number, layer: LayerName = 'middle'): void {
+  put(position: Vector, agent: Agent): void {
     const cell = this.cellAt(position);
-    cell.put(layer, entityId);
+    cell.put('middle', agent.id);
+
+    agent.position.copy(position);
   }
 }

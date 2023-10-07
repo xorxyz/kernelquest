@@ -1,3 +1,4 @@
+import { Idea } from '../../scripting/types/idea';
 import { LiteralVector } from '../../scripting/types/vector';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
@@ -14,7 +15,7 @@ export const sh = createActionDefinition({
       return succeed('# ' + args.text);
     } catch (err) {
       const { message } = err as Error;
-      state.terminal.output.push(message);
+      shell.print(message);
 
       return fail(message);
     }
@@ -107,6 +108,44 @@ export const right = createActionDefinition({
   },
 });
 
+export const point = createActionDefinition({
+  name: 'point',
+  sig: ['position'],
+  args: v.object({
+    position: v.vector(),
+  }),
+  perform({ area, shell }, { position }) {
+    const cell = area.cellAt(position);
+    shell.push(new Idea(cell.get()));
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const xy = createActionDefinition({
+  name: 'xy',
+  perform({ agent, area, shell }) {
+    shell.push(new LiteralVector(area.find(agent.id).position));
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const step = createActionDefinition({
+  name: 'step',
+  perform({ agent, area }) {
+    area.move(agent, agent.position.clone().add(agent.heading.get()));
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
 export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
@@ -131,7 +170,6 @@ export const help_about = createActionDefinition({
     word: v.string(),
   }),
   perform({ shell }, { word }) {
-    console.log('name', word);
     const lines = {
       pop: [
         'pop == [x:Atom] -> []',

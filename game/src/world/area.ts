@@ -37,7 +37,7 @@ export class Area {
 
   find(id: number): Cell {
     const cell = this.cells.find((c) => c.contains(id));
-    if (!cell) throw new Error(`There is entity &${id} in this area.`);
+    if (!cell) throw new Error(`There is no entity &${id} in this area.`);
     return cell;
   }
 

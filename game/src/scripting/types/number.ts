@@ -3,7 +3,7 @@ import { logger } from '../../shared/logger';
 import { Literal } from '../literal';
 
 export class NumberType extends Literal {
-  readonly value: number;
+  override readonly value: number;
 
   constructor(value: number) {
     super(String(value));
