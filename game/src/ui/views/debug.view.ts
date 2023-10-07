@@ -1,4 +1,3 @@
-import { Component } from '../component';
 import { Vector } from '../../shared/vector';
 import { TextInputComponent } from '../components/text_input_component';
 import { TextOutputComponent } from '../components/text_output_component';
@@ -12,9 +11,13 @@ import { StackBarComponent } from '../components/stack_bar';
 const OUTPUT_VERTICAL_OFFSET = 2;
 
 export class DebugView extends View {
-  private input: Component;
+  private input: TextInputComponent;
 
   private output: TextOutputComponent;
+
+  private historyIndex: number = 0;
+
+  private history: string[] = []
 
   constructor(router: IRouter) {
     super(router);
@@ -25,10 +28,16 @@ export class DebugView extends View {
     this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
     this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
 
-    this.input.on('submit', function (event): EveryAction {
+    this.input.on('up', this.up.bind(this));
+    this.input.on('down', this.down.bind(this));
+
+    this.input.on('submit', (event): EveryAction => {
       if (event.text === '') {
         return { name: 'next', args: {} }
       }
+
+      this.history.push(event.text);
+      this.historyIndex = this.historyIndex + 1;
 
       return {
         name: 'sh',
@@ -39,6 +48,24 @@ export class DebugView extends View {
     });
 
     this.focus(this.input);
+  }
+
+  up (): EveryAction {
+    if (this.historyIndex !== 0) {
+      this.historyIndex = this.historyIndex - 1;
+      this.input.replace(this.history[this.historyIndex]);
+    }
+
+    return { name: 'noop', args: {} };
+  }
+
+  down (): EveryAction {
+    if (this.historyIndex < this.history.length) {
+      this.historyIndex = this.historyIndex + 1;
+      this.input.replace(this.history[this.historyIndex]);
+    }
+
+    return { name: 'noop', args: {} };
   }
 
   override update(tick, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {

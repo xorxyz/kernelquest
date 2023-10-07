@@ -67,6 +67,12 @@ export class TextInputComponent extends Component {
       case KeyCodes.ARROW_RIGHT:
         this.right(event.ctrlKey);
         break;
+        case KeyCodes.ARROW_UP:
+          this.up();
+          break;
+        case KeyCodes.ARROW_DOWN:
+          this.down();
+          break;
       default:
         break;
     }
@@ -123,6 +129,19 @@ export class TextInputComponent extends Component {
     } else {
       this.cursorX += 1;
     }
+  }
+
+  private up(): void {
+    this.emit('up', {});
+  }
+
+  private down(): void {
+    this.emit('down', {});
+  }
+
+  replace(text: string = '') {
+    this.text = text;
+    this.cursorX = text.length;
   }
 }
 

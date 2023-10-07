@@ -1,3 +1,4 @@
+import { LiteralVector } from '../../scripting/types/vector';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
 
@@ -73,14 +74,47 @@ export const create = createActionDefinition({
   },
 });
 
+export const facing = createActionDefinition({
+  name: 'facing',
+  perform({ agent, shell }) {
+    shell.push(new LiteralVector(agent.heading.get()))
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const left = createActionDefinition({
+  name: 'left',
+  perform({ agent }) {
+    agent.heading.left();
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const right = createActionDefinition({
+  name: 'right',
+  perform({ agent }) {
+    agent.heading.right();
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
 export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
       'kernelquest, v5.0.0',
-      'Type `name help_about` to find more about the function `name`.',
-      'help\tpop\tfacing\tstep\tleft\tright',
-      'xy\tclear\tlook\tlook\tget\tput',
+      'Type `"abc" help_about` to find more about the word `abc`.',
+      'help\tfacing\tstep\tleft\tright\tpop\tclear',
+      'point\txy\tlook\tget\tput\tread\twrite',
     ].forEach(line => shell.print(line));
 
     return succeed();
@@ -116,12 +150,40 @@ export const help_about = createActionDefinition({
         `\tRotates your heading left.`
       ],
       right: [
-        'left == [] -> []',
+        'right == [] -> []',
         `\tRotates your heading right.`
       ],
       step: [
         'step == [] -> []',
-        `\t Increments your position by your heading, if the cell you are facing is free.`
+        `\tIncrements your position by your heading, if the cell you are facing is free.`
+      ],
+      xy: [
+        'xy == [] -> [v:Vector]',
+        `\tReturns your current position.`
+      ],
+      point: [
+        'point == [v:Vector] -> [i:Idea]',
+        `\tReturns an idea of what's at a given position.`
+      ],
+      look: [
+        'look == [i:Idea] -> []',
+        `\tDescribes the thing represented by an idea.`
+      ],
+      get: [
+        'get == [] -> [i:Idea]',
+        `\tPicks up what is in front of you, if possible. Returns an idea of that thing.`
+      ],
+      put: [
+        'put == [] -> []',
+        `\tDrops what's in your hands, if possible.`
+      ],
+      read: [
+        'read == [] -> [q:Quotation]',
+        `\tReturns the value contained in the readable thing you might be holding.`
+      ],
+      write: [
+        'write == [q:Quotation] -> []',
+        `\tWrites a value down if you are holding a writable thing.`
       ],
     }[word];
 

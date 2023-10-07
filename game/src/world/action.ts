@@ -4,7 +4,6 @@ import { Area } from '../shared/area';
 import {
   ActionArguments, ActionResultType, GameEventState, IAction, IActionResult, SerializableType,
 } from '../shared/interfaces';
-import { IEngineState } from '../state/valid_state';
 import { Runtime } from '../scripting/runtime';
 import { Stack } from '../scripting/stack';
 import { Atom } from '../scripting/atom';

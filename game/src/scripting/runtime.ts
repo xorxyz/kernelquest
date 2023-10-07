@@ -1,4 +1,5 @@
 import { IAction } from '../shared/interfaces';
+import { Atom } from './atom';
 import { Compiler } from './compiler';
 import { Dictionary } from './dictionary';
 import { RuntimeExecution, Interpreter } from './interpreter';
@@ -80,5 +81,13 @@ export class Runtime {
 
   disableDebug () {
     this.debug = true;
+  }
+
+  pop(): Atom | undefined {
+    return this.stack.pop();
+  }
+
+  push(atom: Atom) {
+    this.stack.push(atom);
   }
 }
