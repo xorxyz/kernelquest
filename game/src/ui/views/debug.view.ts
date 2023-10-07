@@ -30,27 +30,28 @@ export class DebugView extends View {
 
     this.input.on('up', this.up.bind(this));
     this.input.on('down', this.down.bind(this));
-
-    this.input.on('submit', (event): EveryAction => {
-      if (event.text === '') {
-        return { name: 'next', args: {} }
-      }
-
-      this.history.push(event.text);
-      this.historyIndex = this.historyIndex + 1;
-
-      return {
-        name: 'sh',
-        args: {
-          text: event.text,
-        },
-      }
-    });
+    this.input.on('submit', this.submit.bind(this));
 
     this.focus(this.input);
   }
 
-  up (): EveryAction {
+  private submit(event): EveryAction {
+    if (event.text === '') {
+      return { name: 'next', args: {} }
+    }
+    
+    this.historyIndex = this.history.length + 1;
+    this.history.push(event.text);
+
+    return {
+      name: 'sh',
+      args: {
+        text: event.text,
+      }
+    }
+  }
+
+  private up (): EveryAction {
     if (this.historyIndex !== 0) {
       this.historyIndex = this.historyIndex - 1;
       this.input.replace(this.history[this.historyIndex]);
@@ -59,7 +60,7 @@ export class DebugView extends View {
     return { name: 'noop', args: {} };
   }
 
-  down (): EveryAction {
+  private down (): EveryAction {
     if (this.historyIndex < this.history.length) {
       this.historyIndex = this.historyIndex + 1;
       this.input.replace(this.history[this.historyIndex]);

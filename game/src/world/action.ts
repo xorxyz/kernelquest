@@ -8,11 +8,13 @@ import { Runtime } from '../scripting/runtime';
 import { Stack } from '../scripting/stack';
 import { Atom } from '../scripting/atom';
 import { InterpretMeaningFn } from '../scripting/meaning';
+import { EntityManager } from '../state/entity_manager';
 
 export interface IActionContext {
   agent: Agent,
   area: Area,
   shell: Runtime,
+  entities: EntityManager
 }
 
 export interface IActionValidator {
@@ -109,6 +111,7 @@ T extends string, A extends ActionArguments
         validator.parse(action);
         return true;
       } catch (err) {
+        console.error('Action validation error:', (err as Error).message)
         // throw new Error('The values on the stack don\'t match the function signature.');
         return false;
       }
@@ -137,13 +140,11 @@ T extends string, A extends ActionArguments
         args: Object.fromEntries(myArgs),
       };
 
-      console.log('validate', this)
-
       if (!this.validate(action)) {
         // The action failed validation, revert the stack back to its original state
         popped.forEach((atom) => { stack.push(atom); });
         throw new Error(
-          `The values on the stack don't match the function signature: [${sig.join(' ')}]. Instead, got ${JSON.stringify(Object.entries(action.args))}`
+          `The values on the stack don't match the function signature: [${sig.join(' ')}].`
           );
       }
 

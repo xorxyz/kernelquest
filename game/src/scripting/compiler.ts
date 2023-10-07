@@ -13,6 +13,8 @@ import { LiteralType } from './types/type';
 import { VariableType } from './types/variable';
 import { Word } from './types/word';
 import { logger } from '../shared/logger';
+import { LiteralVector } from './types/vector';
+import { Vector } from '../shared/vector';
 
 export class Compiler {
   private atoms: Atom[] = [];
@@ -123,7 +125,10 @@ export class Compiler {
     }
 
     if (this.level === 1) {
-      this.atoms.push(currentQuotation);
+      const finalAtom = LiteralVector.isVector(currentQuotation) 
+        ? new LiteralVector(new Vector(...currentQuotation.toJS()))
+        : currentQuotation;
+      this.atoms.push(finalAtom);
     } else {
       const previousQuotation = this.quotations[this.level - 1];
       if (!previousQuotation) {

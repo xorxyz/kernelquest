@@ -1,5 +1,6 @@
 import { Vector } from '../../shared/vector';
 import { Literal } from '../literal';
+import { Quotation } from './quotation';
 
 export class LiteralVector extends Literal {
   override readonly value = new Vector();
@@ -7,6 +8,10 @@ export class LiteralVector extends Literal {
   constructor(v: Vector) {
     super(v.label);
     this.value = v.clone();
+  }
+
+  static isVector(quotation: Quotation) {
+    return quotation.value.length === 2 && quotation.toJS().every((item: unknown) => typeof item === 'number');
   }
 
   override toString(): string {

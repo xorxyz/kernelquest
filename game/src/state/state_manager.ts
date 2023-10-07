@@ -96,6 +96,7 @@ export class StateManager {
       area: this.entityManager.home,
       state: this.gameState,
       shell: this.shell,
+      entities: this.entityManager
     };
 
     const events: IGameEvent[] = [];

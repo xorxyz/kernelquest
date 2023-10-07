@@ -88,8 +88,9 @@ export const facing = createActionDefinition({
 
 export const left = createActionDefinition({
   name: 'left',
-  perform({ agent }) {
+  perform({ agent, shell }) {
     agent.heading.left();
+    shell.push(new LiteralVector(agent.heading.get()));
     return succeed();
   },
   undo() {
@@ -99,8 +100,9 @@ export const left = createActionDefinition({
 
 export const right = createActionDefinition({
   name: 'right',
-  perform({ agent }) {
+  perform({ agent, shell }) {
     agent.heading.right();
+    shell.push(new LiteralVector(agent.heading.get()));
     return succeed();
   },
   undo() {
@@ -115,9 +117,14 @@ export const point = createActionDefinition({
     position: v.vector(),
   }),
   perform({ area, shell }, { position }) {
-    const cell = area.cellAt(position);
-    shell.push(new Idea(cell.get()));
-    return succeed();
+    try {
+      const cell = area.cellAt(position);
+      shell.push(new Idea(cell.get()));
+      return succeed();
+    } catch (err) {
+      shell.push(new Idea(0));
+      return fail((err as Error).message);
+    }
   },
   undo() {
     return succeed();
@@ -137,9 +144,35 @@ export const xy = createActionDefinition({
 
 export const step = createActionDefinition({
   name: 'step',
-  perform({ agent, area }) {
-    area.move(agent, agent.position.clone().add(agent.heading.get()));
+  perform({ agent, area, shell }) {
+    try {
+      area.move(agent, agent.position.clone().add(agent.heading.get()));
+      shell.push(new LiteralVector(agent.position));
+      return succeed();
+    } catch (err) {
+      shell.push(new LiteralVector(agent.position));
+      return fail(`You can't go there.`);
+    }
+  },
+  undo() {
     return succeed();
+  },
+});
+
+export const look = createActionDefinition({
+  name: 'look',
+  sig: ['id'],
+  args: v.object({
+    id: v.number(),
+  }),
+  perform({ shell, entities }, { id }) {
+    try {
+      const agent = entities.getAgent(id);
+      shell.print(agent.describe());
+      return succeed();
+    } catch (err) {
+      return fail((err as Error).message);
+    }
   },
   undo() {
     return succeed();
@@ -185,15 +218,15 @@ export const help_about = createActionDefinition({
       ],
       left: [
         'left == [] -> []',
-        `\tRotates your heading left.`
+        `\tRotates your heading left and returns your new heading.`
       ],
       right: [
         'right == [] -> []',
-        `\tRotates your heading right.`
+        `\tRotates your heading right and returns your new heading.`
       ],
       step: [
-        'step == [] -> []',
-        `\tIncrements your position by your heading, if the cell you are facing is free.`
+        'step == [] -> [v:Vector]',
+        `\tIncrements your position by your heading, if the cell is free. Returns your position.`
       ],
       xy: [
         'xy == [] -> [v:Vector]',

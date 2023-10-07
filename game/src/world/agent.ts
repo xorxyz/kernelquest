@@ -25,12 +25,20 @@ export class Heading {
   }
 }
 
+export type AgentType = 'wizard' | 'scroll' | 'door';
+
 export class Agent {
   readonly id: number;
   readonly heading = new Heading();
   readonly position = new Vector();
+  readonly type: AgentType;
 
-  constructor(id: number) {
+  constructor(id: number, type: AgentType) {
     this.id = id;
+    this.type = type;
+  }
+
+  describe (): string {
+    return `It's a ${this.type}.`;
   }
 }

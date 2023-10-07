@@ -9,9 +9,7 @@ export class Quotation extends Literal {
   }
 
   static from(atoms: Atom[]): Quotation {
-    const lexeme = '[' + atoms.map(atom => atom.toString()).join(' ') + ']';
-
-    const quotation = new Quotation(lexeme);
+    const quotation = new Quotation();
 
     atoms.forEach((atom): void => { quotation.push(atom); });
 
@@ -26,7 +24,7 @@ export class Quotation extends Literal {
     return Quotation.from(this.value);
   }
 
-  private push(atom: Atom): void {
+  push(atom: Atom): void {
     this.value.push(atom);
   }
 }
