@@ -1,12 +1,12 @@
 import { IAudioPlayer } from "xor5-game/src/audio/audio_manager";
 
-function createAudioEl(name: string) {
+function createAudioEl(type: 'sounds' | 'music', name: string) {
   const el = document.createElement('audio');
   const source = document.createElement('source');
   el.hidden = true;
   el.appendChild(source);
   source.type = 'audio/wav';
-  source.src = `https://alpha.kernel.quest/sounds/${name}.wav`
+  source.src = `https://alpha.kernel.quest/${type}/${name}.wav`
   el.play();
   el.pause();
   document.body.appendChild(el);
@@ -24,6 +24,8 @@ export class AudioPlayer implements IAudioPlayer {
   private sounds: Record<string, HTMLAudioElement> = {}
   private musics: Record<string, HTMLAudioElement> = {}
 
+  private currentMusic = '';
+
   get src (): string {
     return ''
   }
@@ -40,9 +42,21 @@ export class AudioPlayer implements IAudioPlayer {
 
     const keys = new Array(8).fill(0).map((_, i) =>  `key${i + 1}`);
 
-    [...keys, 'fail'].forEach(name => {
-      const el = createAudioEl(name);
+    [...keys, 'fail', 'get', 'put', 'rotate'].forEach(name => {
+      const el = createAudioEl('sounds', name);
       this.sounds[name] = el;
+    });
+
+    const songs: [string, number][] =  [
+      ['title_screen', 0.4], ['village', 0.2], ['dungeon', 0.5], ['victory', 0.5]
+    ];
+
+    songs.forEach(([name, volume]) => {
+      const el = createAudioEl('music', name);
+      el.volume = volume;
+      el.loop = true;
+      el.classList.add('music');
+      this.musics[name] = el;
     })
   }
 
@@ -72,7 +86,24 @@ export class AudioPlayer implements IAudioPlayer {
     audio.play();
   }
 
+  pauseMusic() {
+    if (this.currentMusic) {
+      const currentAudio = this.musics[this.currentMusic];
+      currentAudio.pause();
+    }
+  }
+
   playMusic (name: string) {
-    console.log('playMusic:', name)
+    this.pauseMusic();
+
+    const audio = this.musics[name];
+
+    if (!audio) throw new Error(`Music '${name}' does not exist.`);
+
+    this.currentMusic = name;
+
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
   }
 }

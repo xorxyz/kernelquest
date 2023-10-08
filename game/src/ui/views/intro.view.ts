@@ -3,7 +3,7 @@ import { Vector } from '../../shared/vector';
 import { IRouter, View } from '../view';
 import { TextBoxComponent } from '../components/textbox';
 
-const DELAY_MS_BEFORE_SKIP = 3000;
+const DELAY_MS_BEFORE_SKIP = 33000;
 const TICKS_BEFORE_SKIP = DELAY_MS_BEFORE_SKIP / MS_PER_GAME_CYCLE;
 
 export class IntroView extends View {

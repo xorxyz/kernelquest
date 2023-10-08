@@ -1,17 +1,13 @@
-import {
-  SCREEN_HEIGHT, SCREEN_WIDTH,
-} from '../../shared/constants';
 import { IKeyboardEvent } from '../../shared/interfaces';
 import { msInTicks } from '../../shared/time';
 import { Vector } from '../../shared/vector';
 import { EveryAction } from '../../world/actions';
 import { TextLabelComponent } from '../components/text_label';
-import { KeyCodes } from '../keys';
 import { IRouter, View } from '../view';
 
-export const MS_VISIBLE = 88000
+export const MS_VISIBLE = 3000
 
-export class TitleView extends View {
+export class LevelTitleView extends View {
   private startingTick = 0;
 
   private title: TextLabelComponent;
@@ -21,10 +17,10 @@ export class TitleView extends View {
   constructor(router: IRouter) {
     super(router);
 
-    const title = 'Kernel Quest';
-    const xy = new Vector(SCREEN_WIDTH / 2 - (title.length / 2), (SCREEN_HEIGHT / 2) - 2);
+    const text = 'Level 1';
+    const xy = new Vector(42, 11);
 
-    this.title = this.registerComponent('title', new TextLabelComponent(xy, title));
+    this.title = this.registerComponent('title', new TextLabelComponent(xy, text));
 
     this.focus(this.title);
   }
@@ -36,13 +32,11 @@ export class TitleView extends View {
   override update(tick: number, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
     if (!this.init) {
       this.init = true;
-      return { name: 'play_music', args: { title: 'title_screen' } };
+      return { name: 'pause_music', args: {} };
     }
 
-    if (tick > (this.startingTick + msInTicks(MS_VISIBLE)) || keyboardEvents.some(e => e.keyCode === KeyCodes.ENTER)) {
-      console.log('whoa')
-      keyboardEvents = [];
-      this.router.go('level_title');
+    if (tick > (this.startingTick + msInTicks(MS_VISIBLE))) {
+      this.router.go('debug');
     }
 
     return null;

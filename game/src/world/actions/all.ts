@@ -310,6 +310,30 @@ export const write = createActionDefinition({
   },
 });
 
+export const play_music = createActionDefinition({
+  name: 'play_music',
+  sig: ['title'],
+  args: v.object({
+    title: v.string()
+  }),
+  perform() {
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const pause_music = createActionDefinition({
+  name: 'pause_music',
+  perform() {
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
 export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {

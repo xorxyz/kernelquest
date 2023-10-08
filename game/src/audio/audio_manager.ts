@@ -5,6 +5,7 @@ export interface IAudioPlayer {
   currentTime: number
   playSound: (name: string) => void
   playMusic: (name: string) => void
+  pauseMusic: () => void
 }
 
 export class AudioManager {
@@ -27,6 +28,19 @@ export class AudioManager {
       if (event.agentId === 1 && event.failed) {
         this.audioPlayer.playSound('fail');
         failed = true;
+      }
+      if (event.failed) return;
+      if (['get', 'put'].includes(event.action.name)) {
+        this.audioPlayer.playSound(event.action.name);
+      }
+      if (['left', 'right'].includes(event.action.name)) {
+        this.audioPlayer.playSound('rotate');
+      }
+      if (event.action.name === 'play_music' && event.action.args && event.action.args['title']) {
+        this.audioPlayer.playMusic(event.action.args['title'] as string);
+      }
+      if (event.action.name === 'pause_music') {
+        this.audioPlayer.pauseMusic();
       }
     });
 

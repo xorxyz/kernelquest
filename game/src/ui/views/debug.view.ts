@@ -19,6 +19,8 @@ export class DebugView extends View {
 
   private history: string[] = []
 
+  private init = false;
+
   constructor(router: IRouter) {
     super(router);
 
@@ -70,6 +72,11 @@ export class DebugView extends View {
   }
 
   override update(tick, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+    if (!this.init) {
+      this.init = true;
+      return { name: 'play_music', args: { title: 'village' } };
+    }
+
     this.input.position.setY(OUTPUT_VERTICAL_OFFSET + this.output.linesOfText.length);
     let action: EveryAction | null = null
     keyboardEvents.forEach(event => {

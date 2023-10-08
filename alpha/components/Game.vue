@@ -1,9 +1,12 @@
 <template>
-  <div>
+  <div @click="onClick">
     <div class="flex items-center justify-center bw1 b--white mv0 pv0">
       <div id="terminal" class="overflow-hidden"></div>
     </div>
     <audio id="audio-player" preload="auto" hidden></audio>
+    <div class="pv3">
+      <button class="pv1 ph3" @click="toggleMute">{{ muted ? '🔊 Unmute' : '🔇 Mute' }}</button>
+    </div>
   </div>
 </template>
 
@@ -40,14 +43,37 @@ export default {
     });
     
     // this.engine.loadLevel()
+    this.mute();
 
     this.handleVisibilityChanges();
+
   },
   props: {
-    levelId: String
+    levelId: String,
   },
   methods: {
+    onClick() {
+      if (this.init) return;
+      this.init = true;
+      this.engine.start();
+    },
+    toggleMute() {
+      this.muted ? this.unmute() : this.mute();
+    },
+    mute() {
+      document.querySelectorAll(".music").forEach((elem) => {
+        elem.muted = true;
+      });
+      this.muted = true;
+    },
+    unmute() {
+      document.querySelectorAll(".music").forEach((elem) => {
+        elem.muted = false;
+      });
+      this.muted = false;
+    },
     handleVisibilityChanges() {
+      if (!this.init) return;
       // Pause the engine when the window is not visible
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden' && this.engine.running) {
@@ -71,7 +97,9 @@ export default {
   data() {
     return {
       engine: null,
-      minimized: false
+      minimized: false,
+      init: false,
+      muted: false,
     }
   }
 }
