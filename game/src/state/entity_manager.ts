@@ -1,4 +1,4 @@
-import { Agent, AgentType } from '../world/agent';
+import { Agent, AgentType, Scroll } from '../world/agent';
 import { Area } from '../shared/area';
 import { Vector } from '../shared/vector';
 
@@ -17,7 +17,12 @@ export class EntityManager {
     this.hero = this.createAgent('wizard');
     this.home = this.createArea();
 
+    const scroll = this.createAgent('scroll') as Scroll;
+
+    scroll.write('password123');
+
     this.home.put(new Vector(0, 0), this.hero);
+    this.home.put(new Vector(0, 1), scroll);
   }
 
   private incrementCounter(): number {
@@ -27,8 +32,21 @@ export class EntityManager {
   }
 
   createAgent (type: AgentType) {
-    const agent = new Agent(this.incrementCounter(), type);
+    let agent
+
+    const id = this.incrementCounter();
+
+    switch (type) {
+      case 'scroll':
+        agent = new Scroll(id)
+        break;
+      default:
+        agent = new Agent(this.incrementCounter(), type);
+        break;
+    }
+    
     this.agents.add(agent);
+
     return agent;
   }
 

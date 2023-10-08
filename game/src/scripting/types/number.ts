@@ -6,7 +6,7 @@ export class NumberType extends Literal {
   override readonly value: number;
 
   constructor(value: number) {
-    super(String(value));
+    super('Number', String(value));
     logger.debug(value)
     this.value = value;
   }

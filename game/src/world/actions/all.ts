@@ -1,7 +1,9 @@
 import { Idea } from '../../scripting/types/idea';
+import { StringType } from '../../scripting/types/string';
 import { LiteralVector } from '../../scripting/types/vector';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
+import { Scroll } from '../agent';
 
 export const sh = createActionDefinition({
   name: 'sh',
@@ -75,10 +77,21 @@ export const create = createActionDefinition({
   },
 });
 
+export const heading = createActionDefinition({
+  name: 'heading',
+  perform({ agent, shell }) {
+    shell.push(new LiteralVector(agent.heading.get()))
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
 export const facing = createActionDefinition({
   name: 'facing',
   perform({ agent, shell }) {
-    shell.push(new LiteralVector(agent.heading.get()))
+    shell.push(new LiteralVector(agent.facing()))
     return succeed();
   },
   undo() {
@@ -146,12 +159,13 @@ export const step = createActionDefinition({
   name: 'step',
   perform({ agent, area, shell }) {
     try {
-      area.move(agent, agent.position.clone().add(agent.heading.get()));
+      const destination = agent.position.clone().add(agent.heading.get());
+      area.move(agent, destination);
       shell.push(new LiteralVector(agent.position));
       return succeed();
     } catch (err) {
       shell.push(new LiteralVector(agent.position));
-      return fail(`You can't go there.`);
+      return fail((err as Error).message);
     }
   },
   undo() {
@@ -167,8 +181,125 @@ export const look = createActionDefinition({
   }),
   perform({ shell, entities }, { id }) {
     try {
+      if (id === 0) throw new Error(`It's nothing.`);
       const agent = entities.getAgent(id);
       shell.print(agent.describe());
+      return succeed();
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const hands = createActionDefinition({
+  name: 'hands',
+  perform({ agent, shell }) {
+    try {
+      const id = agent.holding();
+      if (!id) throw new Error('There is nothing in your hands.');
+      shell.push(new Idea(id));
+      return succeed();
+    } catch (err) {
+      shell.push(new Idea(0));
+      return fail((err as Error).message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const get = createActionDefinition({
+  name: 'get',
+  perform({ agent, area, entities, shell }) {
+    try {
+      const target = area.cellAt(agent.position.clone().add(agent.heading.get()));
+      const id = target.get();
+      if (!id) throw new Error('There is nothing here.');
+      const entity = entities.getAgent(id);
+      agent.get(entity);
+      target.remove(id);
+      shell.push(new Idea(id));
+      return succeed(`You take the ${entity.type}.`);
+    } catch (err) {
+      shell.push(new Idea(0));
+      return fail((err as Error).message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const put = createActionDefinition({
+  name: 'put',
+  perform({ agent, area, entities, shell }) {
+    try {
+      const entity = agent.put();
+      if (!entity) throw new Error('You are not holding anything.');
+      area.put(agent.facing(), entity);
+      return succeed(`You put the ${entity.type} down.`);
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const type = createActionDefinition({
+  name: 'type',
+  perform({ shell }) {
+    const atom = shell.pop();
+    if (!atom) {
+      shell.push(new StringType('None'))
+      return fail('`type` expecteds an atom on the stack.')
+    }
+    shell.push(new StringType(atom.type));
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const read = createActionDefinition({
+  name: 'read',
+  perform({ agent, entities, shell }) {
+    try {
+      const id = agent.holding();
+      const entity = entities.getAgent(id);
+      if (entity.type !== 'scroll') throw new Error(`That is not something you can read.`);
+      const text = (entity as Scroll).read();
+      shell.push(new StringType(text));
+      shell.print(`It reads: '${text}'.`);
+      return succeed();
+    } catch (err) {
+      return fail((err as Error).message);
+    }
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const write = createActionDefinition({
+  name: 'write',
+  sig: ['text'],
+  args: v.object({
+    text: v.string()
+  }),
+  perform({ agent, entities, shell }, { text }) {
+    try {
+      const id = agent.holding();
+      const entity = entities.getAgent(id);
+      if (entity.type !== 'scroll') throw new Error(`That is not something you can write.`);
+      (entity as Scroll).write(text);
+      shell.print(`You write: '${text}' on the ${entity.type}.`);
       return succeed();
     } catch (err) {
       return fail((err as Error).message);
@@ -184,9 +315,9 @@ export const help = createActionDefinition({
   perform({ shell }) {
     [
       'kernelquest, v5.0.0',
-      'Type `"abc" help_about` to find more about the word `abc`.',
-      'help\tfacing\tstep\tleft\tright\tpop\tclear',
-      'point\txy\tlook\tget\tput\tread\twrite',
+      'Type `"abc" about` to find more about the `abc` word.',
+      'help\tabout\theading\tfacing\tstep\tleft\tright\tpop\tclear',
+      'point\txy\tlook\thands\tget\tput\tread\twrite',
     ].forEach(line => shell.print(line));
 
     return succeed();
@@ -196,14 +327,22 @@ export const help = createActionDefinition({
   },
 });
 
-export const help_about = createActionDefinition({
-  name: 'help_about',
+export const about = createActionDefinition({
+  name: 'about',
   sig: ['word'],
   args: v.object({
     word: v.string(),
   }),
   perform({ shell }, { word }) {
     const lines = {
+      help: [
+        'help == [] -> []',
+        `\tLists the available words.`
+      ],
+      about: [
+        'about == [word:String] -> []',
+        `\tDescribes the usage of a given word.`
+      ],
       pop: [
         'pop == [x:Atom] -> []',
         `\tRemoves the atom that's on top of the stack.`
@@ -212,9 +351,13 @@ export const help_about = createActionDefinition({
         'clear == [] -> []',
         `\tClears the terminal output.`
       ],
+      heading: [
+        'heading == [] -> [v:Vector]',
+        `\tReturns your current heading.`
+      ],
       facing: [
         'facing == [] -> [v:Vector]',
-        `\tReturns your current heading.`
+        `\tReturns the position in front of you.`
       ],
       left: [
         'left == [] -> []',
@@ -239,6 +382,10 @@ export const help_about = createActionDefinition({
       look: [
         'look == [i:Idea] -> []',
         `\tDescribes the thing represented by an idea.`
+      ],
+      hands: [
+        'hands == [] -> [i:Idea]',
+        '\tReturns an idea of what is your hands.'
       ],
       get: [
         'get == [] -> [i:Idea]',

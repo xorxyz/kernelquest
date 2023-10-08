@@ -6,7 +6,7 @@ export class LiteralVector extends Literal {
   override readonly value = new Vector();
 
   constructor(v: Vector) {
-    super(v.label);
+    super('Vector', v.label);
     this.value = v.clone();
   }
 

@@ -5,7 +5,7 @@ export class HexType extends Literal {
   override readonly value: number
    
   constructor(value: number) {
-    super(String(value))
+    super('Hex', String(value))
     this.value = value;
   }
   override toString(): string {

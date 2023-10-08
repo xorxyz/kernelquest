@@ -5,7 +5,7 @@ export class Idea extends Literal {
   override readonly value: number;
 
   constructor(value: number) {
-    super(String(value));
+    super('Idea', String(value));
     this.value = value;
   }
 

@@ -1,62 +1,63 @@
-import { Vector } from "../shared/vector"
-import { Agent } from "./agent"
-import { Cell, LayerName } from './cell';
+// import { Vector } from "../shared/vector"
+// import { Agent } from "./agent"
+// import { Cell, LayerName } from './cell';
 
-interface AgentData {
-  position: Vector
-}
+// interface AgentData {
+//   position: Vector
+// }
 
-const AREA_WIDTH = 16;
-const AREA_HEIGHT = 10;
+// const AREA_WIDTH = 16;
+// const AREA_HEIGHT = 10;
 
-export class Area {
-  id: number;
+// export class Area {
+//   id: number;
 
-  agents = new Map<Agent, AgentData>();
+//   agents = new Map<Agent, AgentData>();
 
-  cells: Cell[];
+//   cells: Cell[];
 
-  constructor(id: number) {
-    this.id = id;
-    this.cells = new Array(AREA_WIDTH * AREA_HEIGHT).fill(0).map((_, n) => {
-      const y = Math.floor(n / AREA_WIDTH);
-      const x = n - (y * AREA_WIDTH) - 1;
-      return new Cell(x, y);
-    });
-  }
+//   constructor(id: number) {
+//     this.id = id;
+//     this.cells = new Array(AREA_WIDTH * AREA_HEIGHT).fill(0).map((_, n) => {
+//       const y = Math.floor(n / AREA_WIDTH);
+//       const x = n - (y * AREA_WIDTH) - 1;
 
-  cellAt(v: Vector): Cell {
-    const cell = this.cells.find((c) => c.position.equals(v));
-    if (!cell) throw new Error(`There is no cell at ${v.label}.`);
-    return cell;
-  }
+//       return new Cell(x, y);
+//     });
+//   }
 
-  contains(id: number): boolean {
-    return this.cells.some((cell) => cell.contains(id));
-  }
+//   cellAt(v: Vector): Cell {
+//     const cell = this.cells.find((c) => c.position.equals(v));
+//     if (!cell) throw new Error(`There is no cell at ${v.label}.`);
+//     return cell;
+//   }
 
-  find(id: number): Cell {
-    const cell = this.cells.find((c) => c.contains(id));
-    if (!cell) throw new Error(`There is no entity &${id} in this area.`);
-    return cell;
-  }
+//   contains(id: number): boolean {
+//     return this.cells.some((cell) => cell.contains(id));
+//   }
 
-  move(id: number, destination: Vector, destinationLayer?: LayerName): void {
-    const targetCell = this.cellAt(destination);
-    const sourceCell = this.find(id);
+//   find(id: number): Cell {
+//     const cell = this.cells.find((c) => c.contains(id));
+//     if (!cell) throw new Error(`There is no entity &${id} in this area.`);
+//     return cell;
+//   }
 
-    if (!destinationLayer) {
-      const layers = sourceCell.find(id);
-      layers.forEach((layer) => { targetCell.put(layer, id); });
-    } else {
-      targetCell.put(destinationLayer, id);
-    }
+//   move(id: number, destination: Vector, destinationLayer?: LayerName): void {
+//     const targetCell = this.cellAt(destination);
+//     const sourceCell = this.find(id);
 
-    sourceCell.remove(id);
-  }
+//     if (!destinationLayer) {
+//       const layers = sourceCell.find(id);
+//       layers.forEach((layer) => { targetCell.put(layer, id); });
+//     } else {
+//       targetCell.put(destinationLayer, id);
+//     }
 
-  put(position: Vector, entityId: number, layer: LayerName = 'middle'): void {
-    const cell = this.cellAt(position);
-    cell.put(layer, entityId);
-  }
-}
+//     sourceCell.remove(id);
+//   }
+
+//   put(position: Vector, entityId: number, layer: LayerName = 'middle'): void {
+//     const cell = this.cellAt(position);
+//     cell.put(layer, entityId);
+//   }
+// }

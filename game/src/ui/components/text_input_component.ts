@@ -6,6 +6,7 @@ import { KeyCodes } from '../keys';
 import { Runtime } from '../../scripting/runtime';
 import { IGameState } from '../../state/valid_state';
 import { Ansi } from '../ansi';
+import { EmptyGameState } from '../../state/state_manager';
 
 export const PROMPT_SIZE = 11;
 
@@ -14,15 +15,28 @@ export class TextInputComponent extends Component {
 
   private busyShell = false; 
 
-  protected prompt = Ansi.fgColor('Green') + '3/3' + Ansi.fgColor('Gray') + ':' + Ansi.fgColor('Blue') + '[0 0]' + Ansi.reset() + '# ';
-
   private text = '';
 
   private cursorX = 0;
 
+  private state: IGameState = EmptyGameState;
+
   override getCursorOffset(): Vector {
     return new Vector(PROMPT_SIZE + this.cursorX, 1)
     // return new Vector(this.prompt.length + this.cursorX, 1);
+  }
+
+  get prompt () {
+    return [
+      Ansi.fgColor('Green'),
+      `3/3`,
+      Ansi.fgColor('Gray'),
+      `:`,
+      Ansi.fgColor('Blue'),
+      `[${this.state.hero.x} ${this.state.hero.y}]`,
+      Ansi.reset(),
+      `# `
+    ].join('');
   }
 
   render(): string[] {
@@ -34,6 +48,7 @@ export class TextInputComponent extends Component {
   }
 
   update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+    this.state = state;
     this.debugMode = shell.isDebugEnabled();
     this.busyShell = !shell.done();
 

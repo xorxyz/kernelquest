@@ -19,6 +19,10 @@ export const EmptyGameState: IGameState = {
     gold: 0,
   },
   history: [],
+  hero: {
+    x: 0,
+    y: 0,
+  }
 };
 
 function performAction<K extends EveryActionName>(
@@ -123,6 +127,9 @@ export class StateManager {
         failed: true,
       });
     }
+
+    this.gameState.hero.x = this.entityManager.hero.position.x;
+    this.gameState.hero.y = this.entityManager.hero.position.y;
 
     return events;
   }

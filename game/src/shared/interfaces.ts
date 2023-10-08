@@ -1,8 +1,9 @@
 /* Interfaces between modules and with the outside world. */
 
+import { Atom } from "../scripting/atom"
 import { Vector } from "./vector"
 
-export type SerializableType = boolean | number | string | Vector
+export type SerializableType = boolean | number | string | Vector | Atom
 
 export type ActionArguments = Record<string, SerializableType>
 

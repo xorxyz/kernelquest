@@ -1,10 +1,10 @@
 import { Literal } from '../literal';
 
 export class Truth extends Literal {
-  private value: boolean
+  override value: boolean
 
   constructor (value: boolean) {
-    super(String(value))
+    super('Truth', String(value))
     this.value = value;
   }
   

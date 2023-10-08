@@ -14,12 +14,14 @@ export class Area {
     this.id = id;
     this.cells = new Array(AREA_WIDTH * AREA_HEIGHT).fill(0).map((_, n) => {
       const y = Math.floor(n / AREA_WIDTH);
-      const x = n - (y * AREA_WIDTH) - 1;
+      const x = n - (y * AREA_WIDTH);
+      console.log('xy', x, y);
       return new Cell(x, y);
     });
   }
 
   cellAt(v: Vector): Cell {
+    console.log('cellat', v)
     const cell = this.cells.find((c) => c.position.equals(v));
     if (!cell) throw new Error(`There is no cell at ${v.label}.`);
     return cell;

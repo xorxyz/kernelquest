@@ -4,10 +4,12 @@ import { Dictionary } from './dictionary';
 import { Stack } from './stack';
 
 export class Atom {
+  readonly type: string;
   readonly lexeme: string;
   readonly value: any;
 
-  constructor(lexeme: string) {
+  constructor(type: string, lexeme: string) {
+    this.type = type;
     this.lexeme = lexeme;
   }
 

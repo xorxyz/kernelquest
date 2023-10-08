@@ -6,6 +6,10 @@ import { Dictionary } from '../dictionary';
 import { Stack } from '../stack';
 
 export class Word extends Atom {
+  constructor (lexeme: string) {
+    super('Word', lexeme);
+  }
+
   override execute(stack: Stack, dictionary: Dictionary, queue: Queue<Atom>): IAction | null {
     const meaning = dictionary.get(this.lexeme);
 

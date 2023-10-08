@@ -5,7 +5,7 @@ export class Quotation extends Literal {
   override readonly value: Atom[] = [];
 
   constructor(lex: string = '[]') {
-    super(lex);
+    super('Quotation', lex);
   }
 
   static from(atoms: Atom[]): Quotation {

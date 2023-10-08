@@ -21,5 +21,9 @@ export interface IGameState {
     level: number
     gold: number
   },
-  history: IValidGameEvent[]
+  history: IValidGameEvent[],
+  hero: {
+    x: number,
+    y: number
+  }
 }

@@ -16,6 +16,7 @@ export class Cell {
   }
 
   put(layer: LayerName, id: number): void {
+    if (this.layers.get(layer)) throw new Error('There is already something here.');
     this.layers.set(layer, id);
   }
 

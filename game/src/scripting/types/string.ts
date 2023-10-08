@@ -1,6 +1,13 @@
 import { Literal } from '../literal';
 
 export class StringType extends Literal {
+  override readonly value: string
+
+  constructor (lexeme: string) {
+    super('String', lexeme);
+    this.value = lexeme;
+  }
+
   override toString(): string {
     return `"${this.lexeme}"`;
   }
