@@ -30,7 +30,7 @@ export class AudioManager {
         failed = true;
       }
       if (event.failed) return;
-      if (['get', 'put'].includes(event.action.name)) {
+      if (['step', 'get', 'put'].includes(event.action.name)) {
         this.audioPlayer.playSound(event.action.name);
       }
       if (['left', 'right'].includes(event.action.name)) {

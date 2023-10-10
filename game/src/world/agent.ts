@@ -1,4 +1,6 @@
+import { Queue } from "../shared/queue";
 import { Vector } from "../shared/vector";
+import { EveryAction } from "./actions";
 
 export const South = new Vector(0, 1);
 export const West = new Vector(-1, 0);
@@ -25,7 +27,7 @@ export class Heading {
   }
 }
 
-export type AgentType = 'wizard' | 'scroll' | 'door';
+export type AgentType = 'wizard' | 'man' | 'wall' | 'scroll' | 'flag';
 
 export class Agent {
   readonly id: number;
@@ -33,6 +35,7 @@ export class Agent {
   readonly position = new Vector();
   readonly type: AgentType;
   private hands: Agent | null = null;
+  private queue: Queue<EveryAction> = new Queue();
 
   constructor(id: number, type: AgentType) {
     this.id = id;
@@ -60,6 +63,10 @@ export class Agent {
   facing (): Vector {
     return this.position.clone().add(this.heading.get());
   }
+
+  do (action: EveryAction) {
+    this.queue.add(action);
+  }
 }
 
 export class Scroll extends Agent {
@@ -75,5 +82,32 @@ export class Scroll extends Agent {
 
   write(text: string): void {
     this.text = text;
+  }
+  
+  execute(agent: Agent): void {
+    agent.do({
+      name: 'sh',
+      args: {
+        text: this.text
+      }
+    })
+  }
+}
+
+export class Flag extends Agent {
+  constructor(id: number) {
+    super(id, 'flag');
+  }
+}
+
+export class Man extends Agent {
+  constructor(id: number) {
+    super(id, 'man');
+  }
+}
+
+export class Wall extends Agent {
+  constructor(id: number) {
+    super(id, 'wall');
   }
 }

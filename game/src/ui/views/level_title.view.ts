@@ -1,11 +1,12 @@
 import { IKeyboardEvent } from '../../shared/interfaces';
 import { msInTicks } from '../../shared/time';
+import { isDev } from '../../shared/util';
 import { Vector } from '../../shared/vector';
 import { EveryAction } from '../../world/actions';
 import { TextLabelComponent } from '../components/text_label';
 import { IRouter, View } from '../view';
 
-export const MS_VISIBLE = 3000
+export const MS_VISIBLE = isDev ? 0 : 3000;
 
 export class LevelTitleView extends View {
   private startingTick = 0;

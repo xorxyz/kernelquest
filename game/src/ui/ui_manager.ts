@@ -7,6 +7,7 @@ import { EveryAction } from '../world/actions';
 import { IGameState } from '../state/valid_state';
 import { Runtime } from '../scripting/runtime';
 import { LevelTitleView } from './views/level_title.view';
+import { VictoryView } from './views/victory.view';
 
 export class UIManager {
   private activeView: View;
@@ -30,6 +31,7 @@ export class UIManager {
     this.activeView = this.registerView('title', TitleView);
     this.registerView('debug', DebugView);
     this.registerView('level_title', LevelTitleView);
+    this.registerView('victory', VictoryView);
   }
 
   render(): void {

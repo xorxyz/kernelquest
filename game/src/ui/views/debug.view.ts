@@ -7,6 +7,7 @@ import { IKeyboardEvent } from '../../shared/interfaces';
 import { KeyCodes } from '../keys';
 import { TitleBarComponent } from '../components/title_bar';
 import { StackBarComponent } from '../components/stack_bar';
+import { IGameState } from '../../state/valid_state';
 
 const OUTPUT_VERTICAL_OFFSET = 2;
 
@@ -71,11 +72,15 @@ export class DebugView extends View {
     return { name: 'noop', args: {} };
   }
 
-  override update(tick, shell, state, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  override update(tick, shell, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
     if (!this.init) {
       this.init = true;
       return { name: 'play_music', args: { title: 'village' } };
     }
+
+    if (state.level.victory) {
+      this.router.go('victory');
+    } 
 
     this.input.position.setY(OUTPUT_VERTICAL_OFFSET + this.output.linesOfText.length);
     let action: EveryAction | null = null

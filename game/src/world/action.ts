@@ -9,12 +9,14 @@ import { Stack } from '../scripting/stack';
 import { Atom } from '../scripting/atom';
 import { InterpretMeaningFn } from '../scripting/meaning';
 import { EntityManager } from '../state/entity_manager';
+import { IGameState } from '../state/valid_state';
 
 export interface IActionContext {
   agent: Agent,
   area: Area,
   shell: Runtime,
-  entities: EntityManager
+  entities: EntityManager,
+  state: IGameState
 }
 
 export interface IActionValidator {

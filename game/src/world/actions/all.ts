@@ -3,7 +3,7 @@ import { StringType } from '../../scripting/types/string';
 import { LiteralVector } from '../../scripting/types/vector';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
-import { Scroll } from '../agent';
+import { Flag, Scroll } from '../agent';
 
 export const sh = createActionDefinition({
   name: 'sh',
@@ -11,7 +11,7 @@ export const sh = createActionDefinition({
     text: v.string(),
   }),
   sig: ['text'],
-  perform({ state, shell }, args) {
+  perform({ shell }, args) {
     try {
       shell.execute(args.text);
       return succeed('# ' + args.text);
@@ -40,8 +40,12 @@ export const next = createActionDefinition({
 
 export const debug = createActionDefinition({
   name: 'debug',
-  perform({ state }) {
-    state.debugMode = !state.debugMode;
+  perform({ shell }) {
+    if (shell.isDebugEnabled()) {
+      shell.disableDebug();
+    } else {
+      shell.enableDebug();
+    }
 
     return succeed();
   },
@@ -179,12 +183,13 @@ export const look = createActionDefinition({
   args: v.object({
     id: v.number(),
   }),
-  perform({ shell, entities }, { id }) {
+  perform({ area, entities }, { id }) {
     try {
       if (id === 0) throw new Error(`It's nothing.`);
+      if (id === 1) return succeed(`That's you, a wizard.`);
+      area.find(id);
       const agent = entities.getAgent(id);
-      shell.print(agent.describe());
-      return succeed();
+      return succeed(agent.describe());
     } catch (err) {
       return fail((err as Error).message);
     }
@@ -214,7 +219,7 @@ export const hands = createActionDefinition({
 
 export const get = createActionDefinition({
   name: 'get',
-  perform({ agent, area, entities, shell }) {
+  perform({ agent, area, entities, shell, state }) {
     try {
       const target = area.cellAt(agent.position.clone().add(agent.heading.get()));
       const id = target.get();
@@ -223,6 +228,12 @@ export const get = createActionDefinition({
       agent.get(entity);
       target.remove(id);
       shell.push(new Idea(id));
+
+      if (entity instanceof Flag) {
+        state.level.victory = true;
+        return succeed('You got the flag!');
+      }
+
       return succeed(`You take the ${entity.type}.`);
     } catch (err) {
       shell.push(new Idea(0));
@@ -334,6 +345,20 @@ export const pause_music = createActionDefinition({
   },
 });
 
+export const reset = createActionDefinition({
+  name: 'reset',
+  perform({ state, shell }) {
+    state.level.victory = false;
+    state.history = [];
+    shell.clear();
+
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+})
+
 export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
@@ -439,4 +464,3 @@ export const about = createActionDefinition({
     return succeed();
   },
 });
-

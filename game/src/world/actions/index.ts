@@ -6,7 +6,9 @@ import {
   IActionDefinition, createActionDefinition,
 } from '../action';
 import { 
-  sh, clear, next, debug, help, about, heading, facing, left, right, xy, step, point, look, hands, get, put, type, read, write, play_music, pause_music
+  sh, clear, next, debug, help, about, heading, facing, 
+  left, right, xy, step, point, look, hands, get, put, 
+  type, read, write, play_music, pause_music, reset
 } from './all';
 
 export const noop = createActionDefinition({
@@ -38,6 +40,7 @@ export interface ActionMap {
   write: typeof write.action
   play_music: typeof play_music.action
   pause_music: typeof pause_music.action
+  reset: typeof reset.action
 }
 
 export type EveryAction = ActionMap[keyof ActionMap]
@@ -69,7 +72,8 @@ export const actions: {
   read,
   write,
   play_music,
-  pause_music
+  pause_music,
+  reset
 };
 
 export const actionWords = Dictionary.from(

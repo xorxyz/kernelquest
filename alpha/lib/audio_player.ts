@@ -42,7 +42,7 @@ export class AudioPlayer implements IAudioPlayer {
 
     const keys = new Array(8).fill(0).map((_, i) =>  `key${i + 1}`);
 
-    [...keys, 'fail', 'get', 'put', 'rotate'].forEach(name => {
+    [...keys, 'fail', 'step', 'get', 'put', 'rotate'].forEach(name => {
       const el = createAudioEl('sounds', name);
       this.sounds[name] = el;
     });

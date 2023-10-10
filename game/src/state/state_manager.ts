@@ -2,14 +2,13 @@ import {
   ActionResultType, IActionResult, IGameEvent, ISaveFileContents,
 } from '../shared/interfaces';
 import { EntityManager } from './entity_manager';
-import { IEngineState, IGameState } from './valid_state';
+import { IGameState, IValidGameEvent } from './valid_state';
 import { IActionContext } from '../world/action';
 import {
-  ActionMap, EveryAction, EveryActionName, actionWords, actions, isValidAction,
+  ActionMap, EveryAction, EveryActionName, actions, isValidAction,
 } from '../world/actions';
 import { Runtime } from '../scripting/runtime';
 import { Queue } from '../shared/queue';
-import { defaultWords } from '../scripting/words';
 
 export const EmptyGameState: IGameState = {
   tick: 0,
@@ -22,6 +21,9 @@ export const EmptyGameState: IGameState = {
   hero: {
     x: 0,
     y: 0,
+  },
+  level: {
+    victory: false
   }
 };
 
@@ -130,6 +132,8 @@ export class StateManager {
 
     this.gameState.hero.x = this.entityManager.hero.position.x;
     this.gameState.hero.y = this.entityManager.hero.position.y;
+
+    events.forEach(e => this.gameState.history.push(e as IValidGameEvent));
 
     return events;
   }

@@ -1,6 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const noop = (): void => { };
 
+export const isDev = process.env.NODE_ENV !== 'production';
+
+console.log('isDev?', isDev);
+
 export const isAlphaNumeric = (str: string): boolean => !!str.match(/^[a-zA-Z0-9]*$/);
 
 export const isAlpha = (str: string): boolean => !!str.match(/^[a-zA-Z]*$/);
