@@ -87,7 +87,6 @@ export class StateManager {
           this.shell.print(errorMessage);
         }
       }
-
     } else if (this.actionBuffer.size) {
       action = this.actionBuffer.next();
       if (playerAction) {
@@ -100,7 +99,7 @@ export class StateManager {
     const ctx = {
       agent: this.entityManager.hero,
       area: this.entityManager.home,
-      state: this.gameState,
+      state: this.gameState,  
       shell: this.shell,
       entities: this.entityManager
     };

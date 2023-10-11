@@ -384,6 +384,9 @@ export const about = createActionDefinition({
   }),
   perform({ shell }, { word }) {
     const lines = {
+      abc: [
+        'No, not *this* word, silly.',
+      ],
       help: [
         'help == [] -> []',
         `\tLists the available words.`
