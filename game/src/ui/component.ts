@@ -43,14 +43,14 @@ export abstract class Component {
   }
 
   $update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
-    if (this.update) this.update(shell, state, keyboardEvents);
+    // if (this.update) this.update(shell, state, keyboardEvents);
   }
 
   $render(): string[] {
     return this.render();
   }
 
-  abstract update?(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void
+  // abstract update?(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void
 
   abstract render(): string[]
 }

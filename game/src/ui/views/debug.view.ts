@@ -8,10 +8,20 @@ import { KeyCodes } from '../keys';
 import { TitleBarComponent } from '../components/title_bar';
 import { StackBarComponent } from '../components/stack_bar';
 import { IGameState } from '../../state/valid_state';
+import { SCREEN_HEIGHT } from '../../shared/constants';
+import { Runtime } from '../../scripting/runtime';
 
 const OUTPUT_VERTICAL_OFFSET = 2;
 
+
+const titleBar = 1;
+const stackBar = 1;
+const margin = 4;
+
+const maxHeight = SCREEN_HEIGHT - titleBar - stackBar - margin;
 export class DebugView extends View {
+  private title: TitleBarComponent;
+
   private input: TextInputComponent;
 
   private output: TextOutputComponent;
@@ -25,7 +35,7 @@ export class DebugView extends View {
   constructor(router: IRouter) {
     super(router);
 
-    this.registerComponent('title', new TitleBarComponent(new Vector(0, 0)));
+    this.title = this.registerComponent('title', new TitleBarComponent(new Vector(0, 0)));
     this.registerComponent('stack', new StackBarComponent(new Vector(2, 1)));
 
     this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
@@ -72,7 +82,13 @@ export class DebugView extends View {
     return { name: 'noop', args: {} };
   }
 
-  override update(tick, shell, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  override update(_: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+    const linesOfText = shell.getOutput().slice(-maxHeight);
+
+    this.title.update(shell, state);
+    this.output.update(linesOfText);
+    this.input.update(shell, state, keyboardEvents);
+
     if (!this.init) {
       this.init = true;
       return { name: 'play_music', args: { title: 'village' } };

@@ -56,7 +56,7 @@ export const debug = createActionDefinition({
 
 export const clear = createActionDefinition({
   name: 'clear',
-  perform({ state, shell }) {
+  perform({ shell }) {
     shell.clear();
 
     return succeed();
@@ -345,12 +345,20 @@ export const pause_music = createActionDefinition({
   },
 });
 
-export const reset = createActionDefinition({
-  name: 'reset',
-  perform({ state, shell }) {
+export const load_level = createActionDefinition({
+  name: 'load_level',
+  sig: ['id'],
+  args: v.object({
+    id: v.number()
+  }),
+  perform({ entities, state, shell }, { id }) {
+    shell.clear();
+
+    entities.load(id);
+
+    state.level.id = id;
     state.level.victory = false;
     state.history = [];
-    shell.clear();
 
     return succeed();
   },
@@ -401,7 +409,7 @@ export const about = createActionDefinition({
       ],
       clear: [
         'clear == [] -> []',
-        `\tClears the terminal output.`
+        `\tClears the terminal output and the stack.`
       ],
       heading: [
         'heading == [] -> [v:Vector]',

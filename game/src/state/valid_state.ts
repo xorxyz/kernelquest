@@ -27,6 +27,7 @@ export interface IGameState {
     y: number
   },
   level: {
+    id: number,
     victory: boolean
   }
 }

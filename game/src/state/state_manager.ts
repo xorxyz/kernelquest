@@ -23,6 +23,7 @@ export const EmptyGameState: IGameState = {
     y: 0,
   },
   level: {
+    id: 1,
     victory: false
   }
 };
@@ -96,6 +97,8 @@ export class StateManager {
 
     if (!action) return [];
 
+    this.gameState.level.id = this.entityManager.currentLevel;
+
     const ctx = {
       agent: this.entityManager.hero,
       area: this.entityManager.home,
@@ -133,6 +136,8 @@ export class StateManager {
     this.gameState.hero.y = this.entityManager.hero.position.y;
 
     events.forEach(e => this.gameState.history.push(e as IValidGameEvent));
+
+    if (events.length) console.log('events', events);
 
     return events;
   }

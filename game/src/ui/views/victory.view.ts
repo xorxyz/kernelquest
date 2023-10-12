@@ -18,6 +18,8 @@ export class VictoryView extends View {
 
   private musicFinished = false;
 
+  private done = false;
+
   constructor(router: IRouter) {
     super(router);
 
@@ -39,12 +41,18 @@ export class VictoryView extends View {
       return { name: 'play_music', args: { title: 'victory' } };
     }
 
+    if (this.done) {
+      this.router.go('level_title');
+      return null;
+    }
+
     if (keyboardEvents.some(e => e.keyCode === KeyCodes.ENTER)) {
-      this.router.go('title');
-      return { name: 'reset', args: {} };
+      this.done = true;
+      return { name: 'load_level', args: { id: state.level.id + 1 } };
     }
 
     if (!this.musicFinished && tick > (this.startingTick + msInTicks(MS_HEARD))) {
+      this.musicFinished = true;
       return { name: 'pause_music', args: {} };
     }
 

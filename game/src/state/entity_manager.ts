@@ -2,46 +2,79 @@ import { Agent, AgentType, Flag, Man, Scroll, Wall } from '../world/agent';
 import { Area } from '../shared/area';
 import { Vector } from '../shared/vector';
 
-export class EntityManager {
-  readonly hero: Agent;
+export class Level {
+  fn: Function
 
-  readonly home: Area;
+  constructor (fn: Function) {
+    this.fn = fn;
+  }
+}
+
+export const levelOne = new Level(function (this: EntityManager) {
+  const flag = this.createAgent('flag') as Flag;
+
+  this.home.put(new Vector(0, 1), flag);
+
+  [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
+    const wall = this.createAgent('wall') as Wall;
+    this.home.put(new Vector(x, y), wall);
+  });
+});
+
+export const levelTwo = new Level(function (this: EntityManager) {
+  const scroll = this.createAgent('scroll') as Scroll;
+  const flag = this.createAgent('flag') as Flag;
+  const man = this.createAgent('man') as Man;
+
+  scroll.write('password123');
+
+  this.home.put(new Vector(0, 2), scroll);
+  this.home.put(new Vector(2, 1), man);
+  this.home.put(new Vector(3, 2), flag);
+
+  [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
+    const wall = this.createAgent('wall') as Wall;
+    this.home.put(new Vector(x, y), wall);
+  });
+});
+
+export class EntityManager {
+  hero: Agent;
+
+  home: Area;
 
   private counter = 1;
 
   private agents = new Set<Agent>();
 
   private areas = new Set<Area>();
+  
+  private levels = [null, levelOne, levelTwo]
+
+  currentLevel = 1;
 
   constructor() {
+    this.load(this.currentLevel);
+  }
+  
+  reset() {
+    this.agents = new Set();
+    this.areas = new Set();
+  }
+
+  init() {
     this.hero = this.createAgent('wizard');
     this.home = this.createArea();
     this.home.put(new Vector(0, 0), this.hero);
-
-    const createLevelOne = () => {
-      const scroll = this.createAgent('scroll') as Scroll;
-      const flag = this.createAgent('flag') as Flag;
-      const man = this.createAgent('man') as Man;
-
-      scroll.write('password123');
-
-      this.home.put(new Vector(0, 2), scroll);
-      this.home.put(new Vector(2, 1), man);
-      this.home.put(new Vector(3, 2), flag);
-
-      [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
-        const wall = this.createAgent('wall') as Wall;
-        this.home.put(new Vector(x, y), wall);
-      });
-    }
-
-    createLevelOne();
   }
-
-  private incrementCounter(): number {
-    const next = this.counter;
-    this.counter += 1;
-    return next;
+  
+  load(id: number) {
+    this.reset();
+    this.init();
+    const level = this.levels[id];
+    if (!level) throw new Error(`Level '${id}' does not exist.`);
+    level.fn.call(this);
+    this.currentLevel = id
   }
 
   createAgent (type: AgentType) {
@@ -83,5 +116,11 @@ export class EntityManager {
     if (!agent) throw new Error(`There is no entity with id '${id}'.`);
     
     return agent;
+  }
+
+  private incrementCounter(): number {
+    const next = this.counter;
+    this.counter += 1;
+    return next;
   }
 }

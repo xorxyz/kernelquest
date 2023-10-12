@@ -10,7 +10,7 @@ import { TextLabelComponent } from '../components/text_label';
 import { KeyCodes } from '../keys';
 import { IRouter, View } from '../view';
 
-export const MS_VISIBLE = isDev ? 0 : 88000
+export const MS_VISIBLE = isDev ? 750 : 88000
 
 export class TitleView extends View {
   private startingTick = 0;
@@ -41,7 +41,6 @@ export class TitleView extends View {
     }
 
     if (tick > (this.startingTick + msInTicks(MS_VISIBLE)) || keyboardEvents.some(e => e.keyCode === KeyCodes.ENTER)) {
-      console.log('whoa')
       keyboardEvents = [];
       this.router.go('level_title');
     }

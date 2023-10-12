@@ -38,7 +38,7 @@ export class Runtime {
 
   clear(): void {
     this.output.splice(0, this.output.length);
-    // this.stack.clear();
+    this.stack.clear();
   }
 
   execute(code: string): RuntimeExecution {

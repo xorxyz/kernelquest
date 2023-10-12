@@ -9,7 +9,9 @@ export class TextLabelComponent extends Component {
     this.text = text;
   }
 
-  update() {}
+  update(text: string) {
+    this.text = text;
+  }
 
   render(): string[] {
     return [this.text];
