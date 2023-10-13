@@ -27,7 +27,6 @@ export class LevelTitleView extends View {
 
   override onLoad(tick: number): void {
     this.startingTick = tick;
-    this.init = true;
   }
 
   override update(tick: number, shell, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
