@@ -225,6 +225,9 @@ export const get = createActionDefinition({
       const id = target.get();
       if (!id) throw new Error('There is nothing here.');
       const entity = entities.getAgent(id);
+      if (!['flag', 'scroll', 'sheep'].includes(entity.type)) {
+        throw new Error(`You can't get this.`);
+      };
       agent.get(entity);
       target.remove(id);
       shell.push(new Idea(id));

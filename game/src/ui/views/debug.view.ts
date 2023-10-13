@@ -24,6 +24,8 @@ export class DebugView extends View {
 
   private input: TextInputComponent;
 
+  private stack: StackBarComponent;
+
   private output: TextOutputComponent;
 
   private historyIndex: number = 0;
@@ -36,7 +38,7 @@ export class DebugView extends View {
     super(router);
 
     this.title = this.registerComponent('title', new TitleBarComponent(new Vector(0, 0)));
-    this.registerComponent('stack', new StackBarComponent(new Vector(2, 1)));
+    this.stack = this.registerComponent('stack', new StackBarComponent(new Vector(2, 1)));
 
     this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
     this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
@@ -88,6 +90,7 @@ export class DebugView extends View {
     this.title.update(shell, state);
     this.output.update(linesOfText);
     this.input.update(shell, state, keyboardEvents);
+    this.stack.update(shell, state);
 
     if (!this.init) {
       this.init = true;

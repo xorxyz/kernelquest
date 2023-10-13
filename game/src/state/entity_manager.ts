@@ -13,7 +13,7 @@ export class Level {
 export const levelOne = new Level(function (this: EntityManager) {
   const flag = this.createAgent('flag') as Flag;
 
-  this.home.put(new Vector(0, 1), flag);
+  this.home.put(new Vector(1, 1), flag);
 
   [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
     const wall = this.createAgent('wall') as Wall;
@@ -22,6 +22,17 @@ export const levelOne = new Level(function (this: EntityManager) {
 });
 
 export const levelTwo = new Level(function (this: EntityManager) {
+  const flag = this.createAgent('flag') as Flag;
+
+  this.home.put(new Vector(3, 2), flag);
+
+  [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
+    const wall = this.createAgent('wall') as Wall;
+    this.home.put(new Vector(x, y), wall);
+  });
+});
+
+export const levelThree = new Level(function (this: EntityManager) {
   const scroll = this.createAgent('scroll') as Scroll;
   const flag = this.createAgent('flag') as Flag;
   const man = this.createAgent('man') as Man;
