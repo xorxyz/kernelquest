@@ -19,7 +19,7 @@ export class StackBarComponent extends Component {
 
   render(): string[] {
     return [
-      `[${this.stack}]`
+      `Stack: [${this.stack}]${this.stack.length === 0 ? ' (Empty)' : ''}`,
     ];
   }
 }

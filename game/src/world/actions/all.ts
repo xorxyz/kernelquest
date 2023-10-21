@@ -1,6 +1,7 @@
 import { Idea } from '../../scripting/types/idea';
 import { StringType } from '../../scripting/types/string';
 import { LiteralVector } from '../../scripting/types/vector';
+import { logger } from '../../shared/logger';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
 import { Flag, Scroll } from '../agent';
@@ -41,11 +42,12 @@ export const next = createActionDefinition({
 export const debug = createActionDefinition({
   name: 'debug',
   perform({ shell }) {
-    if (shell.isDebugEnabled()) {
-      shell.disableDebug();
-    } else {
-      shell.enableDebug();
-    }
+    logger.warn('Tried to toggle debug mode');
+    // if (shell.isDebugEnabled()) {
+    //   shell.disableDebug();
+    // } else {
+    //   shell.enableDebug();
+    // }
 
     return succeed();
   },
@@ -58,6 +60,18 @@ export const clear = createActionDefinition({
   name: 'clear',
   perform({ shell }) {
     shell.clear();
+
+    return succeed();
+  },
+  undo() {
+    return succeed();
+  },
+});
+
+export const nothing = createActionDefinition({
+  name: 'nothing',
+  perform({ shell }) {
+    shell.push(new Idea(0));
 
     return succeed();
   },
@@ -374,8 +388,11 @@ export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
-      'kernelquest, v5.0.0',
-      'Type `"abc" about` to find more about the `abc` word.',
+      `Remember that magic words take their input from the stack, and return values on the stack.`,
+      `If you forget the meaning of a word, surround that word in double quotes,`,
+      `and say 'about'. For example, say:`, 
+      `"pop" about`,
+      `to learn more about the 'pop' word. Here are all the magic words you can use:`,
       'help\tabout\theading\tfacing\tstep\tleft\tright\tpop\tclear',
       'point\txy\tlook\thands\tget\tput\tread\twrite',
     ].forEach(line => shell.print(line));
@@ -465,6 +482,10 @@ export const about = createActionDefinition({
       write: [
         'write == [q:Quotation] -> []',
         `\tWrites a value down if you are holding a writable thing.`
+      ],
+      nothing: [
+        'nothing == [] -> [&0]',
+        `\tReturns an empty idea.`
       ],
     }[word];
 

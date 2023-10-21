@@ -52,8 +52,9 @@ export class StateManager {
 
   constructor (shell: Runtime) {
     this.shell = shell;
-    shell.print('Kernel Quest v5.1.0-lvl1');
-    shell.print(`Type 'help' and press enter for available commands.`);
+    shell.print('Good morning, Balthazar.');
+    shell.print(`Time for another puzzle. If you capture the flag, I might let you out.`);
+    shell.print(`You can say 'help' if you forget the magic words.`);
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {

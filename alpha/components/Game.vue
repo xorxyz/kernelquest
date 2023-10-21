@@ -1,11 +1,16 @@
 <template>
-  <div @click="onClick">
+  <div class="mv1">
     <div class="flex items-center justify-center bw1 b--white mv0 pv0">
-      <div id="terminal" class="overflow-hidden"></div>
+      <div id="terminal" class="overflow-hidden" :class="{ 'o-0': !init }"></div>
+      <button v-if="!init" class="f2 pv2 ph3 ma3 fixed pointer strong bg-white b--none br2 shadow2" @click="onClick">
+        Run game
+      </button>
     </div>
     <audio id="audio-player" preload="auto" hidden></audio>
     <div class="pv3">
-      <button class="pv1 ph3" @click="toggleMute">{{ muted ? '🔊 Unmute' : '🔇 Mute' }}</button>
+      <button class="pv1 ph3" @click="toggleMute">
+        {{ muted ? '🔊 Unmute' : '🔇 Mute' }}
+      </button>
     </div>
   </div>
 </template>
@@ -14,8 +19,6 @@
 export default {
   async mounted(){
     if (!process.client) return;
-
-    console.log(this.levelId);
 
     const { Engine } = await import('xor5-game/src');
     const { SystemIO } = await import('../lib/system_io');

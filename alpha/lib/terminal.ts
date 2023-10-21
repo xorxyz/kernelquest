@@ -30,7 +30,7 @@ export class Terminal implements ITerminal {
       },
       allowProposedApi: true,
       fontFamily: '"JetBrainsMono-Medium"',
-      fontSize: 24
+      fontSize: 21
     });
 
     this.xterm.open(this.el);

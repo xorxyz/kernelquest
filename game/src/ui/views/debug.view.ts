@@ -103,18 +103,18 @@ export class DebugView extends View {
 
     this.input.position.setY(OUTPUT_VERTICAL_OFFSET + this.output.linesOfText.length);
     let action: EveryAction | null = null
-    keyboardEvents.forEach(event => {
-      switch (event.keyCode) {
-        case KeyCodes.BACKQUOTE:
-          action = { name: 'debug', args: {} };
-          break;
-        case KeyCodes.PERIOD:
-          action = { name: 'next', args: {} };
-          break;
-        default:
-          break;
-      }
-    })
+    // keyboardEvents.forEach(event => {
+    //   switch (event.keyCode) {
+    //     case KeyCodes.BACKQUOTE:
+    //       action = { name: 'debug', args: {} };
+    //       break;
+    //     case KeyCodes.PERIOD:
+    //       action = { name: 'next', args: {} };
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // })
     return action;
   }
 }
