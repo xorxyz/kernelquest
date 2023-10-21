@@ -25,3 +25,4 @@ jobs:
         run: |
           cd alpha && aws s3 sync .output/public s3://kernelquest-assets
           cd ../levels && aws s3 sync dist s3://kernelquest-assets/levels
+          aws cloudfront create-invalidation --distribution-id E2VRKRRAMLQPM9 --paths "/*"

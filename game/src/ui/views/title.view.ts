@@ -23,9 +23,11 @@ export class TitleView extends View {
     super(router);
 
     const title = 'Kernel Quest';
-    const xy = new Vector(SCREEN_WIDTH / 2 - (title.length / 2), (SCREEN_HEIGHT / 2) - 2);
+    const xy = new Vector(SCREEN_WIDTH / 2 - (title.length / 2), (SCREEN_HEIGHT / 2) - 3);
 
     this.title = this.registerComponent('title', new TextLabelComponent(xy, title));
+
+    this.registerComponent('instruction', new TextLabelComponent(xy.clone().addY(4).subX(5), 'Press enter to continue.'));
 
     this.focus(this.title);
   }
