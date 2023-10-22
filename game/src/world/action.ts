@@ -95,9 +95,10 @@ T extends string, A extends ActionArguments
 >({
   name, args, sig, state, perform, undo,
 }: CreateActionDefinitionParams<T, A>): ActionDefinitionReturnType<T, A> {
+  const definedArgs = args ?? v.object({ _no_args: v.string().optional() })
   const validator = v.object({
     name: v.literal(name),
-    args: args ?? v.object({ _no_args: v.string().optional() }),
+    args: definedArgs,
     // state: state ?? v.object({ _no_state: v.string().optional() }),
   });
 
@@ -125,7 +126,7 @@ T extends string, A extends ActionArguments
       }
 
       if (stack.size < sig.length) {
-        throw new Error(`Expected to find ${sig.length} values on the stack, but found ${stack.size}.`);
+        throw new Error(`I expected to find ${sig.length} argument${sig.length === 1 ? '' : 's'} on the stack, but I found ${stack.size}.`);
       }
 
       const popped = stack.popN(sig.length).reverse();
@@ -146,7 +147,8 @@ T extends string, A extends ActionArguments
         // The action failed validation, revert the stack back to its original state
         popped.forEach((atom) => { stack.push(atom); });
         throw new Error(
-          `The values on the stack don't match the function signature: [${sig.join(' ')}].`
+          `I tried to say '${name}', but I need these arguments first: [${Object.values(definedArgs.shape).map(x => x.name)}]`
+          // `The values on the stack don't match the function signature: [${Object.values(definedArgs.shape).map(x => x.name)}].`
           );
       }
 

@@ -388,13 +388,17 @@ export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
-      `Remember that magic words take their input from the stack, and return values on the stack.`,
-      `If you forget the meaning of a word, surround that word in double quotes,`,
-      `and say 'about'. For example, say:`, 
-      `"pop" about`,
-      `to learn more about the 'pop' word. Here are all the magic words you can use:`,
-      'help\tabout\theading\tfacing\tstep\tleft\tright\tpop\tclear',
-      'point\txy\tlook\thands\tget\tput\tread\twrite',
+      `Balthazar opens his spell book. It reads:`,
+      `  Phrases are made of words and spaces. Every verb expresses an action.`,
+      `  The object of a phrase always precedes the verb.`,
+      `  Words in double quotes ("") denote the word itself.`,
+      `  If I forget the meaning of a word, I can mention a word, and say,`,
+      `  'about'. For example, I can say:`, 
+      `  "pop" about`,
+      `  to learn more about the 'pop' word.`,
+      `  The words I know are:`,
+      '  help\tabout\theading\tfacing\tstep\tleft\tright\tpop\tclear',
+      '  point\txy\tlook\thands\tget\tput\tread\twrite',
     ].forEach(line => shell.print(line));
 
     return succeed();
@@ -412,9 +416,6 @@ export const about = createActionDefinition({
   }),
   perform({ shell }, { word }) {
     const lines = {
-      abc: [
-        'No, not *this* word, silly.',
-      ],
       help: [
         'help == [] -> []',
         `\tLists the available words.`

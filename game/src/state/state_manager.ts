@@ -52,9 +52,15 @@ export class StateManager {
 
   constructor (shell: Runtime) {
     this.shell = shell;
-    shell.print('Good morning, Balthazar.');
-    shell.print(`Time for another puzzle. If you capture the flag, I might let you out.`);
-    shell.print(`You can say 'help' if you forget the magic words.`);
+    // shell.print('Good morning, Balthazar.');
+    // shell.print(`Time for another puzzle. If you capture the flag, I might let you out.`);
+    // shell.print(`You can say 'help' if you forget the magic words.`);
+    shell.print(`Balthazar enters a vast, mostly empty room. In the back, a fire crackles,`);
+    shell.print(`casting shadows against the stone walls. A flag lays on the ground, in the.`);
+    shell.print(`middle. `);
+    shell.print(`Balthazar is a wizard. He speaks, and things happen. He records all his`);
+    shell.print(`magical knowledge in a spell book. He can consult that book at any time to`);
+    shell.print(`be reminded of his incantations, by saying 'help'.`);
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
