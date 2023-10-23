@@ -388,17 +388,18 @@ export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
-      `Balthazar opens his spell book. It reads:`,
-      `  Phrases are made of words and spaces. Every verb expresses an action.`,
-      `  The object of a phrase always precedes the verb.`,
-      `  Words in double quotes ("") denote the word itself.`,
-      `  If I forget the meaning of a word, I can mention a word, and say,`,
-      `  'about'. For example, I can say:`, 
-      `  "pop" about`,
-      `  to learn more about the 'pop' word.`,
-      `  The words I know are:`,
-      '  help\tabout\theading\tfacing\tstep\tleft\tright\tpop\tclear',
-      '  point\txy\tlook\thands\tget\tput\tread\twrite',
+      `Phrases are made out of atoms. An atom can be a phrase, a noun, or a verb.`,
+      `You read a phrase from left to right. Nouns get pushed on the stack.`,
+      `Verbs take their objects from the stack. Verbs let you take action, like`,
+      `modify the stack or interact with the environment.`, 
+      `If you forget the meaning of a word, you can enclose it in double quotes ("")`,
+      `and say "about". For example, you can say: `,
+      `"pop" about`,
+      `to learn more about the "pop" word.`, 
+      ``, 
+      `The words you know are:`,
+      'help\tabout\tpop\tclear\theading\tfacing\tstep\tleft\tright',
+      'point\txy\tlook\thands\tget\tput\tread',
     ].forEach(line => shell.print(line));
 
     return succeed();
