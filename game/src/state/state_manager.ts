@@ -59,11 +59,10 @@ export class StateManager {
      
 
     shell.print(`You enter a vast, mostly empty room. The door closes behind you.`);
-    shell.print(`In the back, a fire crackles, casting shadows against the stone walls.`);
-    shell.print(`The flag you were looking for lays on the ground, in the middle of the room.`);
+    shell.print(`In the background, a fire gently roars, casting shadows against the stone walls.`);
+    shell.print(`The flag you seek rests in the center of the room, flat on the floor.`);
     shell.print(``);
-    shell.print(`At any time, you can ask to be reminded of your available actions by `);
-    shell.print(`saying 'help'.`);
+    shell.print(`At any time, say 'help' to know what you can do.`);
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {

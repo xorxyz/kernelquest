@@ -388,18 +388,16 @@ export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
-      `Phrases are made out of atoms. An atom can be a phrase, a noun, or a verb.`,
-      `You read a phrase from left to right. Nouns get pushed on the stack.`,
-      `Verbs take their objects from the stack. Verbs let you take action, like`,
-      `modify the stack or interact with the environment.`, 
-      `If you forget the meaning of a word, you can enclose it in double quotes ("")`,
-      `and say "about". For example, you can say: `,
-      `"pop" about`,
-      `to learn more about the "pop" word.`, 
-      ``, 
-      `The words you know are:`,
-      'help\tabout\tpop\tclear\theading\tfacing\tstep\tleft\tright',
-      'point\txy\tlook\thands\tget\tput\tread',
+      `When you say a word, it gets added to a stack. Many words just stay there.`,
+      `Some change the preceding ones. A few make you do something, then they vanish.`,
+      ``,
+      `To learn more about a word, say it in double quotes and then 'about'.`,
+      `For example, you can learn more about 'xy' by saying:`,
+      `"xy" about`,
+      ``,
+      `The words you can use are:`,
+      'help\tabout\txy\theading\tfacing\tleft\tright\tstep',
+      'point\tlook\thands\tget\tput\tread\tpop\tclear',
     ].forEach(line => shell.print(line));
 
     return succeed();
@@ -419,75 +417,75 @@ export const about = createActionDefinition({
     const lines = {
       help: [
         'help == [] -> []',
-        `\tLists the available words.`
+        `Lists the available words.`
       ],
       about: [
         'about == [word:String] -> []',
-        `\tDescribes the usage of a given word.`
+        `Describes the usage of a given word.`
       ],
       pop: [
         'pop == [x:Atom] -> []',
-        `\tRemoves the atom that's on top of the stack.`
+        `Removes the atom that's on top of the stack.`
       ],
       clear: [
         'clear == [] -> []',
-        `\tClears the terminal output and the stack.`
+        `Clears the terminal output and the stack.`
       ],
       heading: [
         'heading == [] -> [v:Vector]',
-        `\tReturns your current heading.`
+        `Returns your current heading.`
       ],
       facing: [
         'facing == [] -> [v:Vector]',
-        `\tReturns the position in front of you.`
+        `Returns the position in front of you.`
       ],
       left: [
         'left == [] -> []',
-        `\tRotates your heading left and returns your new heading.`
+        `Rotates your heading left and returns your new heading.`
       ],
       right: [
         'right == [] -> []',
-        `\tRotates your heading right and returns your new heading.`
+        `Rotates your heading right and returns your new heading.`
       ],
       step: [
         'step == [] -> [v:Vector]',
-        `\tIncrements your position by your heading, if the cell is free. Returns your position.`
+        `Increments your position by your heading, if the cell is free. Returns your position.`
       ],
       xy: [
         'xy == [] -> [v:Vector]',
-        `\tReturns your current position.`
+        `Returns your current position.`
       ],
       point: [
         'point == [v:Vector] -> [i:Idea]',
-        `\tReturns an idea of what's at a given position.`
+        `Returns an idea of what's at a given position.`
       ],
       look: [
         'look == [i:Idea] -> []',
-        `\tDescribes the thing represented by an idea.`
+        `Describes the thing represented by an idea.`
       ],
       hands: [
         'hands == [] -> [i:Idea]',
-        '\tReturns an idea of what is your hands.'
+        'Returns an idea of what is your hands.'
       ],
       get: [
         'get == [] -> [i:Idea]',
-        `\tPicks up what is in front of you, if possible. Returns an idea of that thing.`
+        `Picks up what is in front of you, if possible. Returns an idea of that thing.`
       ],
       put: [
         'put == [] -> []',
-        `\tDrops what's in your hands, if possible.`
+        `Drops what's in your hands, if possible.`
       ],
       read: [
         'read == [] -> [q:Quotation]',
-        `\tReturns the value contained in the readable thing you might be holding.`
+        `Returns the value contained in the readable thing you might be holding.`
       ],
       write: [
         'write == [q:Quotation] -> []',
-        `\tWrites a value down if you are holding a writable thing.`
+        `Writes a value down if you are holding a writable thing.`
       ],
       nothing: [
         'nothing == [] -> [&0]',
-        `\tReturns an empty idea.`
+        `Returns an empty idea.`
       ],
     }[word];
 

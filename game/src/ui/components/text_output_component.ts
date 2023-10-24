@@ -1,5 +1,3 @@
-import { Runtime } from '../../scripting/runtime';
-import { SCREEN_HEIGHT } from '../../shared/constants';
 import { Vector } from '../../shared/vector';
 import { Component } from '../component';
 

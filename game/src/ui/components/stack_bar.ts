@@ -2,6 +2,7 @@ import { Component } from '../component';
 import { IGameState } from '../../state/valid_state';
 import { Runtime } from '../../scripting/runtime';
 import { SCREEN_WIDTH } from '../../shared/constants';
+import { Ansi, fgColors } from '../ansi';
 
 const margin = 2;
 const brackets = 2;
@@ -19,7 +20,9 @@ export class StackBarComponent extends Component {
 
   render(): string[] {
     return [
-      `Stack: [${this.stack}]${this.stack.length === 0 ? ' (Empty)' : ''}`,
+      Ansi.fgColor('Cyan') + 
+      `Stack: [${this.stack}]${this.stack.length === 0 ? ' (Empty)' : ''}` + 
+      Ansi.reset(),
     ];
   }
 }
