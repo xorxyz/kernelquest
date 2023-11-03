@@ -4,21 +4,22 @@ import { TextOutputComponent } from '../components/text_output_component';
 import { IRouter, View } from '../view';
 import { EveryAction } from '../../world/actions';
 import { IKeyboardEvent } from '../../shared/interfaces';
-import { KeyCodes } from '../keys';
 import { TitleBarComponent } from '../components/title_bar';
 import { StackBarComponent } from '../components/stack_bar';
 import { IGameState } from '../../state/valid_state';
 import { SCREEN_HEIGHT } from '../../shared/constants';
 import { Runtime } from '../../scripting/runtime';
+import { AreaMapComponent } from '../components/area_map';
 
-const OUTPUT_VERTICAL_OFFSET = 2;
+const OUTPUT_VERTICAL_OFFSET = 14;
 
 
 const titleBar = 1;
 const stackBar = 1;
-const margin = 4;
+// const margin = 4;
 
-const maxHeight = SCREEN_HEIGHT - titleBar - stackBar - margin;
+const maxHeight = SCREEN_HEIGHT - titleBar - stackBar - OUTPUT_VERTICAL_OFFSET;
+
 export class DebugView extends View {
   private title: TitleBarComponent;
 
@@ -27,6 +28,8 @@ export class DebugView extends View {
   private stack: StackBarComponent;
 
   private output: TextOutputComponent;
+
+  private areaMap: AreaMapComponent;
 
   private historyIndex: number = 0;
 
@@ -42,6 +45,8 @@ export class DebugView extends View {
 
     this.output = this.registerComponent('output', new TextOutputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
     this.input = this.registerComponent('input', new TextInputComponent(new Vector(2, OUTPUT_VERTICAL_OFFSET)));
+    
+    this.areaMap = this.registerComponent('area_map', new AreaMapComponent(new Vector(28, 3)));
 
     this.input.on('up', this.up.bind(this));
     this.input.on('down', this.down.bind(this));
@@ -84,13 +89,14 @@ export class DebugView extends View {
     return { name: 'noop', args: {} };
   }
 
-  override update(_: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  override update(_: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[], area: Area): EveryAction | null {
     const linesOfText = shell.getOutput().slice(-maxHeight);
 
     this.title.update(shell, state);
     this.output.update(linesOfText);
     this.input.update(shell, state, keyboardEvents);
     this.stack.update(shell, state);
+    this.areaMap.update(shell, state, area);
 
     if (!this.init) {
       this.init = true;

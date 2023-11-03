@@ -1,6 +1,6 @@
-import { Agent } from '../world/agent';
-import { Cell } from '../world/cell';
-import { Vector } from './vector';
+import { Agent } from './agent';
+import { Cell } from './cell';
+import { Vector } from '../shared/vector';
 
 const AREA_WIDTH = 16;
 const AREA_HEIGHT = 10;
@@ -9,14 +9,18 @@ export class Area {
   id: number;
 
   cells: Cell[];
+  rows: Cell[][];
 
   constructor(id: number) {
     this.id = id;
+
     this.cells = new Array(AREA_WIDTH * AREA_HEIGHT).fill(0).map((_, n) => {
       const y = Math.floor(n / AREA_WIDTH);
       const x = n - (y * AREA_WIDTH);
       return new Cell(x, y);
     });
+
+    this.rows = new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((_, x) => this.cellAt(new Vector(x, y))));
   }
 
   cellAt(v: Vector): Cell {
@@ -39,7 +43,7 @@ export class Area {
     const targetCell = this.cellAt(destination);
     const sourceCell = this.find(agent.id);
 
-    targetCell.put('middle', agent.id);
+    targetCell.put('middle', agent);
     sourceCell.remove(agent.id);    
 
     agent.position.copy(destination);
@@ -47,8 +51,12 @@ export class Area {
 
   put(position: Vector, agent: Agent): void {
     const cell = this.cellAt(position);
-    cell.put('middle', agent.id);
+    cell.put('middle', agent);
 
     agent.position.copy(position);
+  }
+
+  render(): string[] {
+    return this.rows.map(row => row.map(cell => cell.render()).join(''));
   }
 }

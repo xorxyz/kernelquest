@@ -40,7 +40,7 @@ function performAction<K extends EveryActionName>(
 }
 
 export class StateManager {
-  private entityManager = new EntityManager();
+  readonly entityManager = new EntityManager();
 
   private actionBuffer = new Queue<EveryAction>();
 
@@ -56,11 +56,10 @@ export class StateManager {
     // shell.print(`Time for another puzzle. If you capture the flag, I might let you out.`);
     // shell.print(`You can say 'help' if you forget the magic words.`);
 
-     
-
-    shell.print(`You enter a vast, mostly empty room. The door closes behind you.`);
-    shell.print(`In the background, a fire gently roars, casting shadows against the stone walls.`);
+    shell.print(`You enter a vast, mostly empty room.`);
+    shell.print(`In the back, a fire gently roars, casting shadows against the stone walls.`);
     shell.print(`The flag you seek rests in the center of the room, flat on the floor.`);
+    shell.print(`You remember why you are here: you need to get the flag, and leave.`);
     shell.print(``);
     shell.print(`At any time, say 'help' to know what you can do.`);
   }
@@ -82,10 +81,14 @@ export class StateManager {
           if (next && isValidAction(next)) {
             action = next;
           }
+          
+          if (this.shell.done()) {
+            this.shell.print(`# ${this.shell.printLastExpression()} -> [${this.shell.printStack()}]`);
+          }
 
           if (this.tracing) {
             if (this.shell.done()) {
-              this.shell.print('ok');
+              // this.shell.print('ok');
             } else {
               this.shell.print(
                 `${this.shell.printStack()} <- ${this.shell.printExpression()}`

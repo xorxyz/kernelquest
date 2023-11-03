@@ -6,6 +6,7 @@ import { Queue } from '../shared/queue';
 import { EveryAction } from '../world/actions';
 import { IGameState } from '../state/valid_state';
 import { Runtime } from '../scripting/runtime';
+import { Area } from '../world/area';
 
 export interface Component {
   getCursorOffset?(): Vector
@@ -42,7 +43,7 @@ export abstract class Component {
     this.handlers[eventName] = handler;
   }
 
-  $update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): void {
+  $update(shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[], area: Area): void {
     // if (this.update) this.update(shell, state, keyboardEvents);
   }
 

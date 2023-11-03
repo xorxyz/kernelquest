@@ -8,6 +8,8 @@ import { IGameState } from '../state/valid_state';
 import { Runtime } from '../scripting/runtime';
 import { LevelTitleView } from './views/level_title.view';
 import { VictoryView } from './views/victory.view';
+import { EntityManager } from '../state/entity_manager';
+import { Area } from '../world/area';
 
 export class UIManager {
   private activeView: View;
@@ -42,9 +44,9 @@ export class UIManager {
     this.terminal.write(Ansi.clearScreen() + output + moveCursor);
   }
 
-  update(tick: number, shell: Runtime, state: IGameState, events: IKeyboardEvent[]): EveryAction | null {
+  update(tick: number, shell: Runtime, state: IGameState, events: IKeyboardEvent[], area: Area): EveryAction | null {
     this.tick = tick;
-    const action = this.activeView.$update(tick, shell, state, events);
+    const action = this.activeView.$update(tick, shell, state, events, area);
 
     return action;
   }

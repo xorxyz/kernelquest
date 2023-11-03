@@ -29,6 +29,14 @@ export class Heading {
 
 export type AgentType = 'wizard' | 'man' | 'wall' | 'scroll' | 'flag';
 
+export const glyphs: Record<AgentType, string> = {
+  wizard: '🧙',
+  flag: '🚩 ',
+  man: '👨',
+  scroll: '📜',
+  wall: '##'
+};
+
 export class Agent {
   readonly id: number;
   readonly heading = new Heading();
@@ -66,6 +74,10 @@ export class Agent {
 
   do (action: EveryAction) {
     this.queue.add(action);
+  }
+
+  render() {
+    return glyphs[this.type];
   }
 }
 

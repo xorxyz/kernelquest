@@ -36,5 +36,34 @@ export const Ansi = {
   },
   reset() {
     return esc('[0m');
+  },
+  newline() {
+    return esc('[G');
   }
 };
+
+
+// export const Screen = {
+//   Clear: '[2J',
+// };
+
+// export const Line = {
+//   ClearAfter: '[0K',
+//   ClearBefore: '[1L',
+//   Clear: '[2K',
+//   Start: '[G',
+// };
+
+// export const Cursor = {
+//   Blink: '[5;m',
+//   EraseRight: '[K',
+//   MoveLeft: '[1D',
+//   MoveRight: '[1C',
+//   up: (n) => `[${n}A`,
+//   right: (n) => `[${n}C`,
+//   down: (n) => `[${n}B`,
+//   left: (n) => `[${n}D`,
+//   setX: (x: number) => `[;${x}H]`,
+//   setXY: (x: number, y: number) => `[${y};${x}H`,
+//   set: (v: Vector) => `[${v.y};${v.x}H`,
+// };

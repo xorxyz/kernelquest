@@ -7,6 +7,7 @@ import { DiagnosticsComponent } from './components/diagnostics';
 import { EveryAction } from '../world/actions';
 import { IGameState } from '../state/valid_state';
 import { Runtime } from '../scripting/runtime';
+import { Area } from '../world/area';
 
 type ViewEventHandler = (inputEvent: InputEvent) => void
 
@@ -30,7 +31,7 @@ export interface IRouter {
 export interface View {
   onLoad?(tick: number): void
 
-  update?(tick: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null
+  update?(tick: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[], area: Area): EveryAction | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -90,7 +91,7 @@ export abstract class View {
     return handler;
   }
 
-  $update(tick: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[]): EveryAction | null {
+  $update(tick: number, shell: Runtime, state: IGameState, keyboardEvents: IKeyboardEvent[], area: Area): EveryAction | null {
     keyboardEvents.forEach((event): void => {
       if (event.key === '\t') {
         const components = Object.values(this.components);
@@ -103,12 +104,12 @@ export abstract class View {
     });
 
     if (this.update) {
-      const viewAction = this.update(tick, shell, state, keyboardEvents);
+      const viewAction = this.update(tick, shell, state, keyboardEvents, area);
       if (viewAction) return viewAction;
     }
 
     Object.values(this.components).forEach((component): void => {
-      component.$update(shell, state, keyboardEvents);
+      component.$update(shell, state, keyboardEvents, area);
     });
 
     return this.activeComponent.queue.next();

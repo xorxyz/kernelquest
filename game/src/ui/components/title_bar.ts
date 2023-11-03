@@ -17,7 +17,7 @@ export class TitleBarComponent extends Component {
 
   render(): string[] {
     const left = `Kernel Quest. Level ${this.levelId}`;
-    const right = `${this.actions}  ${this.ticks}`.padStart(SCREEN_WIDTH - left.length, ' ')
+    const right = `${this.actions}`.padStart(SCREEN_WIDTH - left.length, ' ')
     return [
       Ansi.bgColor('White') + Ansi.fgColor('Black') + left + right + Ansi.reset()
     ];

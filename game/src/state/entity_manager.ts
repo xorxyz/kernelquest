@@ -1,5 +1,5 @@
 import { Agent, AgentType, Flag, Man, Scroll, Wall } from '../world/agent';
-import { Area } from '../shared/area';
+import { Area } from '../world/area';
 import { Vector } from '../shared/vector';
 
 export class Level {
@@ -11,11 +11,12 @@ export class Level {
 }
 
 export const levelOne = new Level(function (this: EntityManager) {
+  this.home.put(new Vector(2, 0), this.hero);
   const flag = this.createAgent('flag') as Flag;
 
-  this.home.put(new Vector(1, 1), flag);
+  this.home.put(new Vector(2, 2), flag);
 
-  [[2, 0], [4,0], [2, 2], [4, 2], [0, 3], [1, 3], [2, 3], [3, 3], [4, 3]].forEach(([x, y]) => {
+  [[0,0], [1,0], [3,0], [4,0], [0,1], [0,2], [0,3], [4, 2], [0, 4], [1, 4], [2, 4], [3, 4], [4, 1], [4, 3], [4, 4]].forEach(([x, y]) => {
     const wall = this.createAgent('wall') as Wall;
     this.home.put(new Vector(x, y), wall);
   });
@@ -76,7 +77,6 @@ export class EntityManager {
   init() {
     this.hero = this.createAgent('wizard');
     this.home = this.createArea();
-    this.home.put(new Vector(0, 0), this.hero);
   }
   
   load(id: number) {

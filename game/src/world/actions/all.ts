@@ -15,7 +15,7 @@ export const sh = createActionDefinition({
   perform({ shell }, args) {
     try {
       shell.execute(args.text);
-      return succeed('# ' + args.text);
+      return succeed();
     } catch (err) {
       const { message } = err as Error;
       shell.print(message);
@@ -236,15 +236,15 @@ export const get = createActionDefinition({
   perform({ agent, area, entities, shell, state }) {
     try {
       const target = area.cellAt(agent.position.clone().add(agent.heading.get()));
-      const id = target.get();
-      if (!id) throw new Error('There is nothing here.');
-      const entity = entities.getAgent(id);
+      const x = target.get();
+      if (!x) throw new Error('There is nothing here.');
+      const entity = entities.getAgent(x.id);
       if (!['flag', 'scroll', 'sheep'].includes(entity.type)) {
         throw new Error(`You can't get this.`);
       };
       agent.get(entity);
-      target.remove(id);
-      shell.push(new Idea(id));
+      target.remove(x.id);
+      shell.push(new Idea(x.id));
 
       if (entity instanceof Flag) {
         state.level.victory = true;
@@ -388,16 +388,17 @@ export const help = createActionDefinition({
   name: 'help',
   perform({ shell }) {
     [
-      `When you say a word, it gets added to a stack. Many words just stay there.`,
-      `Some change the preceding ones. A few make you do something, then they vanish.`,
-      ``,
-      `To learn more about a word, say it in double quotes and then 'about'.`,
-      `For example, you can learn more about 'xy' by saying:`,
-      `"xy" about`,
-      ``,
+      // `When you say a word, it gets added to a stack. Many words just stay there.`,
+      // `Some change the preceding ones. A few make you do something, then they vanish.`,
+      // ``,
+      // `To learn more about a word, say it in double quotes and then 'about'.`,
+      // `For example, you can learn more about 'xy' by saying:`,
+      // `"xy" about`,
+      // ``,
       `The words you can use are:`,
-      'help\tabout\txy\theading\tfacing\tleft\tright\tstep',
-      'point\tlook\thands\tget\tput\tread\tpop\tclear',
+      'help\tleft\tright\tstep\tget',
+      // 'help\tabout\txy\theading\tfacing\tleft\tright\tstep',
+      // 'point\tlook\thands\tget\tput\tread\tpop\tclear',
     ].forEach(line => shell.print(line));
 
     return succeed();

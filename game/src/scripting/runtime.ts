@@ -2,6 +2,7 @@ import { IAction } from '../shared/interfaces';
 import { Atom } from './atom';
 import { Compiler } from './compiler';
 import { Dictionary } from './dictionary';
+import { Expression } from './expression';
 import { RuntimeExecution, Interpreter } from './interpreter';
 import { Stack } from './stack';
 
@@ -15,6 +16,8 @@ export class Runtime {
   private stack = new Stack();
 
   private execution: RuntimeExecution | null = null;
+
+  private expressionHistory: string[] = [];
 
   private output: Array<string> = []
 
@@ -54,6 +57,7 @@ export class Runtime {
     if (!this.execution) return null;
     const result = this.execution.next();
     if (result.done) {
+      this.expressionHistory.push(this.interpreter.printExpression());
       this.execution = null;
     }
     return result.value;
@@ -73,6 +77,10 @@ export class Runtime {
 
   printExpression(): string {
     return this.interpreter.printExpression();
+  }
+
+  printLastExpression(): string {
+    return this.expressionHistory[this.expressionHistory.length - 1] ?? '';
   }
 
   enableDebug () {

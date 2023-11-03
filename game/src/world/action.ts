@@ -1,6 +1,6 @@
 import * as v from '@badrap/valita';
 import { Agent } from './agent';
-import { Area } from '../shared/area';
+import { Area } from './area';
 import {
   ActionArguments, ActionResultType, GameEventState, IAction, IActionResult, SerializableType,
 } from '../shared/interfaces';
@@ -147,7 +147,7 @@ T extends string, A extends ActionArguments
         // The action failed validation, revert the stack back to its original state
         popped.forEach((atom) => { stack.push(atom); });
         throw new Error(
-          `I tried to say '${name}', but I need these arguments first: [${Object.values(definedArgs.shape).map(x => x.name)}]`
+          `You try to say '${name}', but some arguments are missing: [${Object.values(definedArgs.shape).map(x => x.name)}]`
           // `The values on the stack don't match the function signature: [${Object.values(definedArgs.shape).map(x => x.name)}].`
           );
       }

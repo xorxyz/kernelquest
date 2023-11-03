@@ -41,6 +41,10 @@ export class Interpreter {
   }
 
   printExpression(): string {
+    return this.expression.atoms.map(atom => atom.toString()).join(' ');
+  }
+
+  printCurrentState(): string {
     const expr = this.expression.atoms.slice(this.index).map(atom => atom.toString()).join(' ');
     const queue = this.queue.items.map((atom) => atom.toString()).join(' ')
     return `${expr} ${queue}`
