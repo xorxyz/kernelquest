@@ -83,7 +83,11 @@ export class StateManager {
           }
           
           if (this.shell.done()) {
-            this.shell.print(`# ${this.shell.printLastExpression()} -> [${this.shell.printStack()}]`);
+            const printedExpression = this.shell.printLastExpression();
+            const printedStack = this.shell.printStack();
+            const maxWidth = 90 - 14 - printedExpression.length;
+            const ellipsis = printedStack.length > maxWidth ? '...' : ''
+            this.shell.print(`# ${printedExpression} -> [${ellipsis}${this.shell.printStack().slice(-maxWidth)}]`);
           }
 
           if (this.tracing) {

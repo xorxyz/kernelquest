@@ -5,6 +5,7 @@ import { logger } from '../../shared/logger';
 import * as v from '../../shared/validation';
 import { createActionDefinition, fail, succeed } from '../action';
 import { Flag, Scroll } from '../agent';
+import { Area } from '../area';
 
 export const sh = createActionDefinition({
   name: 'sh',
@@ -175,11 +176,27 @@ export const xy = createActionDefinition({
 
 export const step = createActionDefinition({
   name: 'step',
-  perform({ agent, area, shell }) {
+  perform({ agent, area, shell, entities, state }) {
     try {
       const destination = agent.position.clone().add(agent.heading.get());
+
+      // Agent is trying to leave the bounds of the area
+      if (!Area.bounds.contains(destination)) {
+        try {
+          const holdingId = agent.holding();  
+          const holding = entities.getAgent(holdingId);
+          if (holding instanceof Flag) {
+            state.level.victory = true;
+            return succeed();
+          }
+        } catch (err) {
+          // 
+        }
+      }
+
       area.move(agent, destination);
       shell.push(new LiteralVector(agent.position));
+
       return succeed();
     } catch (err) {
       shell.push(new LiteralVector(agent.position));
@@ -246,12 +263,12 @@ export const get = createActionDefinition({
       target.remove(x.id);
       shell.push(new Idea(x.id));
 
-      if (entity instanceof Flag) {
-        state.level.victory = true;
-        return succeed('You got the flag!');
-      }
+      // if (entity instanceof Flag) {
+      //   state.level.victory = true;
+      //   return succeed('You got the flag!');
+      // }
 
-      return succeed(`You take the ${entity.type}.`);
+      return succeed(`You get the ${entity.type}.`);
     } catch (err) {
       shell.push(new Idea(0));
       return fail((err as Error).message);

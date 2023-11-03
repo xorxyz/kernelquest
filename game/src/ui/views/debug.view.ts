@@ -104,6 +104,7 @@ export class DebugView extends View {
     }
 
     if (state.level.victory) {
+      console.log('VICTORY')
       this.router.go('victory');
     } 
 

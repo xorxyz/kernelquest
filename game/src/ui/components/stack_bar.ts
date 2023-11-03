@@ -4,10 +4,11 @@ import { Runtime } from '../../scripting/runtime';
 import { SCREEN_WIDTH } from '../../shared/constants';
 import { Ansi, fgColors } from '../ansi';
 
+const label = 7; 
 const margin = 2;
 const brackets = 2;
 const ellipse = 3;
-const maxWidth = SCREEN_WIDTH - brackets - margin - ellipse;
+const maxWidth = SCREEN_WIDTH - label - brackets - margin - ellipse;
 
 export class StackBarComponent extends Component {
   private stack = '';
@@ -20,9 +21,9 @@ export class StackBarComponent extends Component {
 
   render(): string[] {
     return [
-      Ansi.fgColor('Cyan') + 
-      `Stack: [${this.stack}]${this.stack.length === 0 ? ' (Empty)' : ''}` + 
-      Ansi.reset(),
+      // Ansi.fgColor('Cyan') + 
+      `Stack: [${this.stack}]${this.stack.length === 0 ? ' (Empty)' : ''}`
+      // Ansi.reset(),
     ];
   }
 }

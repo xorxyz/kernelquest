@@ -1,6 +1,7 @@
 import { Agent } from './agent';
 import { Cell } from './cell';
 import { Vector } from '../shared/vector';
+import { Rectangle } from '../shared/rectangle';
 
 const AREA_WIDTH = 16;
 const AREA_HEIGHT = 10;
@@ -21,6 +22,10 @@ export class Area {
     });
 
     this.rows = new Array(10).fill(0).map((_, y) => new Array(16).fill(0).map((_, x) => this.cellAt(new Vector(x, y))));
+  }
+
+  static get bounds () {
+    return new Rectangle(new Vector(0, 0), new Vector(16, 10));
   }
 
   cellAt(v: Vector): Cell {
