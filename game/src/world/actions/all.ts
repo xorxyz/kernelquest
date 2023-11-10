@@ -120,8 +120,9 @@ export const facing = createActionDefinition({
 
 export const left = createActionDefinition({
   name: 'left',
-  perform({ agent, shell }) {
+  perform({ agent, area, shell }) {
     agent.heading.left();
+    area.updateHandle(agent);
     shell.push(new LiteralVector(agent.heading.get()));
     return succeed();
   },
@@ -132,8 +133,9 @@ export const left = createActionDefinition({
 
 export const right = createActionDefinition({
   name: 'right',
-  perform({ agent, shell }) {
+  perform({ agent, area, shell }) {
     agent.heading.right();
+    area.updateHandle(agent);
     shell.push(new LiteralVector(agent.heading.get()));
     return succeed();
   },

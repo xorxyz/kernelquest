@@ -69,10 +69,16 @@ export class StateManager {
 
     let action = playerAction;
 
+    if (playerAction?.name === 'sh') {
+      const printedExpression = playerAction.args.text;
+      this.shell.print(`# ${printedExpression}`);
+    }
+
     if (!this.shell.done()) {
       if (playerAction) {
         this.actionBuffer.add(playerAction);
       }
+
 
       if (!this.shell.isDebugEnabled() || playerAction?.name === 'next') {
         try {
@@ -83,11 +89,11 @@ export class StateManager {
           }
           
           if (this.shell.done()) {
-            const printedExpression = this.shell.printLastExpression();
-            const printedStack = this.shell.printStack();
-            const maxWidth = 90 - 14 - printedExpression.length;
-            const ellipsis = printedStack.length > maxWidth ? '...' : ''
-            this.shell.print(`# ${printedExpression} -> [${ellipsis}${this.shell.printStack().slice(-maxWidth)}]`);
+            // const printedExpression = '';
+            // const printedStack = this.shell.printStack();
+            // const maxWidth = 90 - 14;
+            // const ellipsis = printedStack.length > maxWidth ? '...' : ''
+            // this.shell.print(`-> [${ellipsis}${this.shell.printStack().slice(-maxWidth)}]`);
           }
 
           if (this.tracing) {

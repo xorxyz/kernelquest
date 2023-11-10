@@ -12,6 +12,8 @@ export class Area {
   cells: Cell[];
   rows: Cell[][];
 
+  handles = new Map<number, Vector>();
+
   constructor(id: number) {
     this.id = id;
 
@@ -52,6 +54,12 @@ export class Area {
     sourceCell.remove(agent.id);    
 
     agent.position.copy(destination);
+    this.updateHandle(agent);
+  }
+
+  updateHandle(agent: Agent) {
+    this.handles.delete(agent.id);
+    this.handles.set(agent.id, agent.facing());
   }
 
   put(position: Vector, agent: Agent): void {
@@ -59,9 +67,12 @@ export class Area {
     cell.put('middle', agent);
 
     agent.position.copy(position);
+    if (agent.type === 'wizard') {
+      this.updateHandle(agent);
+    }
   }
 
   render(): string[] {
-    return this.rows.map(row => row.map(cell => cell.render()).join(''));
+    return this.rows.map(row => row.map(cell => cell.render(this)).join(''));
   }
 }

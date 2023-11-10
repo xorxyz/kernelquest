@@ -1,5 +1,7 @@
 import { Vector } from '../shared/vector';
+import { Ansi } from '../ui/ansi';
 import { Agent } from './agent';
+import { Area } from './area';
 
 export type LayerName = 'lower' | 'middle' | 'upper'
 
@@ -10,6 +12,10 @@ export class Cell {
 
   constructor(x: number, y: number) {
     this.position = new Vector(x, y);
+  }
+
+  get held (): boolean {
+    return false
   }
 
   get(layer: LayerName = 'middle'): Agent | null {
@@ -43,7 +49,10 @@ export class Cell {
     return layer;
   }
 
-  render(): string {
-    return  this.get('middle')?.render() ?? '..'
+  render(area: Area): string {
+    const handled = [...area.handles.values()].some(v => v.equals(this.position));
+    const glyph = this.get('middle')?.render() ?? '..';
+
+    return handled ? Ansi.bgColor('Cyan') + glyph + Ansi.reset() : glyph; 
   }
 }
