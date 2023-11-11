@@ -9,6 +9,8 @@ import {
 } from '../world/actions';
 import { Runtime } from '../scripting/runtime';
 import { Queue } from '../shared/queue';
+import { Vector } from '../shared/vector';
+import { Flag, Man, Scroll, Wall } from '../world/agent';
 
 export const EmptyGameState: IGameState = {
   tick: 0,
@@ -39,6 +41,16 @@ function performAction<K extends EveryActionName>(
   return result;
 }
 
+type SetupFn = (this: StateManager) => void
+
+export class Level {
+  fn: SetupFn
+
+  constructor (fn: SetupFn) {
+    this.fn = fn;
+  }
+}
+
 export class StateManager {
   readonly entityManager = new EntityManager();
 
@@ -46,22 +58,19 @@ export class StateManager {
 
   readonly gameState: IGameState = { ...EmptyGameState }
 
-  private shell: Runtime
+  readonly shell: Runtime
 
   private tracing = false;
+  
+  private levels: Level[]
 
-  constructor (shell: Runtime) {
+  private currentLevel = 0;
+
+  constructor (shell: Runtime, levels: Level[]) {
     this.shell = shell;
-    // shell.print('Good morning, Balthazar.');
-    // shell.print(`Time for another puzzle. If you capture the flag, I might let you out.`);
-    // shell.print(`You can say 'help' if you forget the magic words.`);
+    this.levels = levels;
 
-    shell.print(`You enter a vast, mostly empty room.`);
-    shell.print(`In the back, a fire gently roars, casting shadows against the stone walls.`);
-    shell.print(`The flag you seek rests in the center of the room, flat on the floor.`);
-    shell.print(`You remember why you are here: you need to get the flag, and leave.`);
-    shell.print(``);
-    shell.print(`At any time, say 'help' to know what you can do.`);
+    this.load(this.currentLevel);
   }
 
   update(tick: number, playerAction: EveryAction | null): IGameEvent[] {
@@ -119,14 +128,15 @@ export class StateManager {
 
     if (!action) return [];
 
-    this.gameState.level.id = this.entityManager.currentLevel;
+    this.gameState.level.id = this.currentLevel;
 
     const ctx = {
       agent: this.entityManager.hero,
       area: this.entityManager.home,
       state: this.gameState,  
       shell: this.shell,
-      entities: this.entityManager
+      entities: this.entityManager,
+      load: this.load.bind(this)
     };
 
     const events: IGameEvent[] = [];
@@ -162,6 +172,15 @@ export class StateManager {
     if (events.length) console.log('events', events);
 
     return events;
+  }
+  
+  load(id: number) {
+    this.entityManager.reset();
+    this.entityManager.init();
+    const level = this.levels[id];
+    if (!level) throw new Error(`Level '${id}' does not exist.`);
+    level.fn.call(this);
+    this.currentLevel = id
   }
 
   import(contents: IGameState): void {

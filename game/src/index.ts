@@ -12,6 +12,7 @@ import { IValidAction } from './state/valid_state';
 import { defaultWords } from './scripting/words';
 import { actionWords } from './world/actions';
 import { Runtime } from './scripting/runtime';
+import { levelOne, levelThree, levelTwo } from './state/levels';
 
 interface IDependencies {
   audioPlayer: IAudioPlayer
@@ -34,13 +35,13 @@ export class Engine {
 
   private ui: UIManager;
 
-  constructor(dependencies: IDependencies) {
-    this.audio = new AudioManager(dependencies.audioPlayer);
+  constructor({ audioPlayer, terminal, systemIO }: IDependencies) {
+    this.audio = new AudioManager(audioPlayer);
     this.clock = new Clock(MS_PER_GAME_CYCLE, this.step.bind(this));
-    this.input = new InputManager(dependencies.terminal);
-    this.stateManager = new StateManager(this.shell);
-    this.system = new SystemManager(dependencies.systemIO);
-    this.ui = new UIManager(dependencies.terminal, this.shell);
+    this.input = new InputManager(terminal);
+    this.stateManager = new StateManager(this.shell, [levelOne, levelTwo, levelThree]);
+    this.system = new SystemManager(systemIO);
+    this.ui = new UIManager(terminal, this.shell);
   }
 
   get running(): boolean {

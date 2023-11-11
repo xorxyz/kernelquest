@@ -16,7 +16,8 @@ export interface IActionContext {
   area: Area,
   shell: Runtime,
   entities: EntityManager,
-  state: IGameState
+  state: IGameState,
+  load: (id: number) => void
 }
 
 export interface IActionValidator {

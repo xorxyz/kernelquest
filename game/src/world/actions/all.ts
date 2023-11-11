@@ -387,10 +387,10 @@ export const load_level = createActionDefinition({
   args: v.object({
     id: v.number()
   }),
-  perform({ entities, state, shell }, { id }) {
+  perform({ load, state, shell }, { id }) {
     shell.clear();
 
-    entities.load(id);
+    load(id);
 
     state.level.id = id;
     state.level.victory = false;
