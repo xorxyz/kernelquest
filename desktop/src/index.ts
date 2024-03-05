@@ -12,18 +12,18 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // app.commandLine.appendSwitch('in-process-gpu');
 
-app.commandLine.appendSwitch('no-sandbox');
-app.commandLine.appendSwitch('disable-gpu-sandbox');
-app.commandLine.appendSwitch('disable-software-rasterizer');
+// app.commandLine.appendSwitch('no-sandbox');
 app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch('disable-gpu-sandbox');
 app.commandLine.appendSwitch('disable-gpu-compositing');
-app.commandLine.appendSwitch('disable-gpu-rasterization');
+// app.commandLine.appendSwitch('disable-gpu-rasterization');
+app.commandLine.appendSwitch('disable-software-rasterizer');
 
-// app.commandLine.appendSwitch('enable-logging');
+app.commandLine.appendSwitch('enable-logging');
 // app.commandLine.appendSwitch('view-stack-traces');
-// app.commandLine.appendSwitch('enable-gpu-driver-debug-logging');
+app.commandLine.appendSwitch('enable-gpu-driver-debug-logging');
 
-app.disableHardwareAcceleration();
+// app.disableHardwareAcceleration();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
