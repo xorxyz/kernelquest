@@ -1,0 +1,155 @@
+/* $pale=#D1D1D8
+$light=#414161
+$dark=#38344E //#303043
+$darker=#25203D//#1F1F33
+$light-purple=#7676FF
+$purple=#6464D8
+$blue=#357edd
+$darkest=#131023 // #181529 //#14142C
+
+$window=#1C1C35
+$term=#070714
+$sidebar=#14142C
+$border=#383865
+  
+.bg-window
+  background-color: $window
+.bg-term
+  background-color: $term
+  ::-moz-selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+  ::selection 
+    background-color: rgba(255, 255, 255, 0.99)
+    color: #000
+.bg-darkest
+  background-color: $darkest */
+
+body {
+  background-color: #25203D;
+  /* background-color: #000; */
+  color: #fff;
+  font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  font-size: 16;
+}
+
+.avatar {
+  background-color: #414161;
+  background-image: url('/kareniel.png');
+  background-size: contain;
+  transition: 0.3s;
+}
+
+.avatar.is-empty {
+  background-image: url('/empty-avatar.png') !important
+}
+
+.tab {
+  border-bottom: 0.3rem solid transparent;
+}
+
+.tab.is-selected {
+  border-bottom: 0.3rem solid #6464D8;
+}
+
+.purple {
+  color: #7676ff;
+}
+
+.bg-purple {
+  background-color: #6464D8;
+}
+
+.container {
+  width: 72rem;
+}
+
+.bg-dark {
+  background-color: #38344E;
+}
+
+.bg-darkest {
+  background-color: #131023;
+}
+
+.hidden {
+  display: none;
+}
+
+#palette {
+  max-width: 60ex;
+  max-height: 20ex;
+}
+
+.green {
+  color: rgb(0, 255, 0);
+}
+
+img.emoji {
+  height: 1.25em;
+  width: 1.25em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+}
+
+.emoji.is-large {
+  height: 2.25em;
+  width: 2.25em;
+}
+
+#tab_buttons button.is-active {
+  background-color: #555;
+  color: #aaa;
+}
+
+.button {
+  box-shadow: 0px 7px 0px 0px rgba(0,0,0,0.3);
+  display: inline-block;
+  background-color: #6464D8;
+  border-radius: .25rem;
+  color: white;
+}
+
+.button:hover {
+  animation: btn 0.15s ease 0.05s both;
+}
+
+@keyframes btn {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  100% {
+    transform: translate(0px, 3px);
+    box-shadow: 0px 4px 0px 0px rgba(0,0,0,0.3);
+  }
+}
+
+.card {
+  box-shadow: 0px 0px 1rem 0px rgba(0,0,0,0.2);
+  padding: 1rem 2.5rem;
+  background-color: #38344E;
+  border-radius: .25rem;
+}
+
+.tag {
+  color: white;
+  /* cursor: pointer; */
+  background-color:#25203D;
+  border-radius: .5rem;
+  display: inline-block;
+  padding: .25rem 1rem;
+  margin: .5rem .5rem .5rem 0;
+  transition: 0.15s;
+}
+
+.tag.is-small {
+  padding: .25rem .5rem;
+  margin: .25rem 0.25rem .25rem 0;
+  font-size: .7rem;
+}
+
+.tag:hover {
+  background-color: #131023;
+  transition: 0.15s;
+}
+  
