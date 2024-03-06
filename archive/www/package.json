@@ -1,0 +1,48 @@
+{
+  "name": "@xor/www",
+  "private": true,
+  "version": "2022.03.26",
+  "description": "The Kernel Quest Website",
+  "scripts": {
+    "start": "npm run watch",
+    "watch": "ts-node bin/watch",
+    "build": "run-s build:*",
+    "build:www": "ts-node bin/build",
+    "build:docs": "cd .. && npx typedoc --entryPointStrategy packages --out www/dist/ts .",
+    "build:deps": "cd .. && npx dependency-cruiser --output-type dot game | dot -T svg > www/dist/images/diagrams/dependency-graph.svg",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --ext .js,.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kareniel/www.git"
+  },
+  "author": "Jonathan Dupré <hello@jonathandupre.com>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/xorxyz/www/issues"
+  },
+  "homepage": "https://github.com/xorxyz/www#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.45",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "budo": "^11.8.4",
+    "change-case": "^3.1.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "feed": "^4.2.2",
+    "fs-extra": "^7.0.1",
+    "gray-matter": "^4.0.3",
+    "marked": "^4.3.0",
+    "mkdirp": "^0.5.6",
+    "pug": "^3.0.2",
+    "rimraf": "^2.7.1",
+    "stylus": "^0.54.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "yaml": "^1.10.2"
+  }
+}

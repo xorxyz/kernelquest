@@ -1,4 +1,9 @@
-!data
-!build
-public/docs/*
-public/images/diagram/dependency-graph.svg
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.data
+.env
+dist

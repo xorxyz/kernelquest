@@ -1,9 +1,4 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "CommonJS"
-  },
-	"include": [
-		"bin/*.ts",
-  ]
+  // https://v3.nuxtjs.org/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json"
 }
