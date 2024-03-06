@@ -1,3 +1,0 @@
-Contact: mailto:security@diagonal.sh
-Canonical: https://xor.xyz/.well-known/security.txt
-Hiring: https://www.diagonal.sh/company/careers

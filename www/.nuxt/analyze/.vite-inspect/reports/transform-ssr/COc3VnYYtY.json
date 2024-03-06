@@ -1,0 +1,298 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxtjs/mdc/dist/runtime/components/prose/ProseH1.vue?vue&type=script&setup=true&lang.ts",
+  "transforms": [
+    {
+      "name": "vite:vue",
+      "result": "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, mergeProps as _mergeProps } from \"vue\"\nimport { ssrRenderSlot as _ssrRenderSlot, ssrRenderAttr as _ssrRenderAttr, ssrRenderAttrs as _ssrRenderAttrs } from \"vue/server-renderer\"\n\nimport { computed, useRuntimeConfig } from '#imports'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ProseH1',\n  __ssrInlineRender: true,\n  props: {\n    id: {}\n  },\n  setup(__props: any) {\n\nconst props = __props\n\nconst { headings } = useRuntimeConfig().public.mdc\nconst generate = computed(() => props.id && headings?.anchorLinks?.h1)\n\nreturn (_ctx: any,_push: any,_parent: any,_attrs: any) => {\n  _push(`<h1${_ssrRenderAttrs(_mergeProps({ id: _ctx.id }, _attrs))}>`)\n  if (_unref(generate)) {\n    _push(`<a${_ssrRenderAttr(\"href\", `#${_ctx.id}`)}>`)\n    _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent)\n    _push(`</a>`)\n  } else {\n    _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent)\n  }\n  _push(`</h1>`)\n}\n}\n\n})",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxtjs/mdc/dist/runtime/components/prose/ProseH1.vue"
+        ],
+        "sourcesContent": [
+          "<template>\n  <h1 :id=\"id\">\n    <a\n      v-if=\"generate\"\n      :href=\"`#${id}`\"\n    >\n      <slot />\n    </a>\n    <slot v-else />\n  </h1>\n</template>\n\n<script setup lang=\"ts\">\nimport { computed, useRuntimeConfig } from '#imports'\n\nconst props = defineProps<{ id?: string }>()\n\nconst { headings } = useRuntimeConfig().public.mdc\nconst generate = computed(() => props.id && headings?.anchorLinks?.h1)\n</script>\n"
+        ],
+        "names": [],
+        "mappings": ";;;;AAaA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrD;;;;;;;;;AAFwB;AAGxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,OAA8B;AAC5C;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;;;;;;;;;;;;"
+      }
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162222,
+      "end": 1709737162222,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderSlot as _ssrRenderSlot, ssrRenderAttr as _ssrRenderAttr, ssrRenderAttrs as _ssrRenderAttrs } from \"vue/server-renderer\";\nimport { computed, useRuntimeConfig } from \"#imports\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ProseH1\",\n  __ssrInlineRender: true,\n  props: {\n    id: {}\n  },\n  setup(__props) {\n    const props = __props;\n    const { headings } = useRuntimeConfig().public.mdc;\n    const generate = computed(() => props.id && headings?.anchorLinks?.h1);\n    return (_ctx, _push, _parent, _attrs) => {\n      _push(`<h1${_ssrRenderAttrs(_mergeProps({ id: _ctx.id }, _attrs))}>`);\n      if (_unref(generate)) {\n        _push(`<a${_ssrRenderAttr(\"href\", `#${_ctx.id}`)}>`);\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n        _push(`</a>`);\n      } else {\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n      }\n      _push(`</h1>`);\n    };\n  }\n});\n",
+      "start": 1709737162222,
+      "end": 1709737162262,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxtjs/mdc/dist/runtime/components/prose/ProseH1.vue?vue&type=script&setup=true&lang.ts"
+        ],
+        "sourcesContent": [
+          "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, mergeProps as _mergeProps } from \"vue\"\nimport { ssrRenderSlot as _ssrRenderSlot, ssrRenderAttr as _ssrRenderAttr, ssrRenderAttrs as _ssrRenderAttrs } from \"vue/server-renderer\"\n\nimport { computed, useRuntimeConfig } from '#imports'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ProseH1',\n  __ssrInlineRender: true,\n  props: {\n    id: {}\n  },\n  setup(__props: any) {\n\nconst props = __props\n\nconst { headings } = useRuntimeConfig().public.mdc\nconst generate = computed(() => props.id && headings?.anchorLinks?.h1)\n\nreturn (_ctx: any,_push: any,_parent: any,_attrs: any) => {\n  _push(`<h1${_ssrRenderAttrs(_mergeProps({ id: _ctx.id }, _attrs))}>`)\n  if (_unref(generate)) {\n    _push(`<a${_ssrRenderAttr(\"href\", `#${_ctx.id}`)}>`)\n    _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent)\n    _push(`</a>`)\n  } else {\n    _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent)\n  }\n  _push(`</h1>`)\n}\n}\n\n})"
+        ],
+        "mappings": "AAAA,SAAS,mBAAmB,wBAAwB;AACpD,SAAS,SAAS,QAAQ,cAAc,mBAAmB;AAC3D,SAAS,iBAAiB,gBAAgB,iBAAiB,gBAAgB,kBAAkB,uBAAuB;AAEpH,SAAS,UAAU,wBAAwB;AAG3C,eAA4B,iCAAiB;AAAA,EAC3C,QAAQ;AAAA,EACR,mBAAmB;AAAA,EACnB,OAAO;AAAA,IACL,IAAI,CAAC;AAAA,EACP;AAAA,EACA,MAAM,SAAc;AAEtB,UAAM,QAAQ;AAEd,UAAM,EAAE,SAAS,IAAI,iBAAiB,EAAE,OAAO;AAC/C,UAAM,WAAW,SAAS,MAAM,MAAM,MAAM,UAAU,aAAa,EAAE;AAErE,WAAO,CAAC,MAAU,OAAW,SAAa,WAAgB;AACxD,YAAM,MAAM,gBAAgB,YAAY,EAAE,IAAI,KAAK,GAAG,GAAG,MAAM,CAAC,CAAC,GAAG;AACpE,UAAI,OAAO,QAAQ,GAAG;AACpB,cAAM,KAAK,eAAe,QAAQ,IAAI,KAAK,EAAE,EAAE,CAAC,GAAG;AACnD,uBAAe,KAAK,QAAQ,WAAW,CAAC,GAAG,MAAM,OAAO,OAAO;AAC/D,cAAM,MAAM;AAAA,MACd,OAAO;AACL,uBAAe,KAAK,QAAQ,WAAW,CAAC,GAAG,MAAM,OAAO,OAAO;AAAA,MACjE;AACA,YAAM,OAAO;AAAA,IACf;AAAA,EACA;AAEA,CAAC;",
+        "names": []
+      }
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162262,
+      "end": 1709737162262,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162265,
+      "end": 1709737162266,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737162267,
+      "end": 1709737162267,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162267,
+      "end": 1709737162267,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162267,
+      "end": 1709737162267,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162268,
+      "end": 1709737162268,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162268,
+      "end": 1709737162268,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162268,
+      "end": 1709737162268,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162268,
+      "end": 1709737162268,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162268,
+      "end": 1709737162268,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162268,
+      "end": 1709737162269,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162268,
+      "end": 1709737162269,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { computed } from 'vue';\nimport { useRuntimeConfig } from '#app/nuxt';\nimport { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderSlot as _ssrRenderSlot, ssrRenderAttr as _ssrRenderAttr, ssrRenderAttrs as _ssrRenderAttrs } from \"vue/server-renderer\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ProseH1\",\n  __ssrInlineRender: true,\n  props: {\n    id: {}\n  },\n  setup(__props) {\n    const props = __props;\n    const { headings } = useRuntimeConfig().public.mdc;\n    const generate = computed(() => props.id && headings?.anchorLinks?.h1);\n    return (_ctx, _push, _parent, _attrs) => {\n      _push(`<h1${_ssrRenderAttrs(_mergeProps({ id: _ctx.id }, _attrs))}>`);\n      if (_unref(generate)) {\n        _push(`<a${_ssrRenderAttr(\"href\", `#${_ctx.id}`)}>`);\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n        _push(`</a>`);\n      } else {\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n      }\n      _push(`</h1>`);\n    };\n  }\n});\n",
+      "start": 1709737162269,
+      "end": 1709737162273,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAE1I,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3E,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5E,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { computed } from 'vue';\nimport { useRuntimeConfig } from '#app/nuxt';\nimport { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderSlot as _ssrRenderSlot, ssrRenderAttr as _ssrRenderAttr, ssrRenderAttrs as _ssrRenderAttrs } from \"vue/server-renderer\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ProseH1\",\n  __ssrInlineRender: true,\n  props: {\n    id: {}\n  },\n  setup(__props) {\n    const props = __props;\n    const { headings } = useRuntimeConfig().public.mdc;\n    const generate = computed(() => props.id && headings?.anchorLinks?.h1);\n    return (_ctx, _push, _parent, _attrs) => {\n      _push(`<h1${_ssrRenderAttrs(_mergeProps({ id: _ctx.id }, _attrs))}>`);\n      if (_unref(generate)) {\n        _push(`<a${_ssrRenderAttr(\"href\", `#${_ctx.id}`)}>`);\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n        _push(`</a>`);\n      } else {\n        _ssrRenderSlot(_ctx.$slots, \"default\", {}, null, _push, _parent);\n      }\n      _push(`</h1>`);\n    };\n  }\n});\n",
+      "start": 1709737162269,
+      "end": 1709737162273,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAE1I,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3E,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5E,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162273,
+      "end": 1709737162273,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162273,
+      "end": 1709737162273,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162273,
+      "end": 1709737162273,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162273,
+      "end": 1709737162273,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162274,
+      "end": 1709737162274,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737162274,
+      "end": 1709737162274,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162274,
+      "end": 1709737162274,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162274,
+      "end": 1709737162274,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162275,
+      "end": 1709737162275,
+      "order": "normal"
+    }
+  ]
+}

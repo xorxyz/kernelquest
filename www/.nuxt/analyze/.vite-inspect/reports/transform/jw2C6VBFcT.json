@@ -1,0 +1,229 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/legacy/composables/navigation.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { hash } from \"ohash\";\nimport { encodeQueryParams } from \"../../utils/query.js\";\nimport { jsonStringify } from \"../../utils/json.js\";\nimport { addPrerenderPath, shouldUseClientDB, withContentBase } from \"../../composables/utils.js\";\nimport { useContentPreview } from \"../../composables/preview.js\";\nimport { queryContent } from \"./query.js\";\nimport { useRuntimeConfig } from \"#imports\";\nexport const fetchContentNavigation = async (queryBuilder) => {\n  const { content } = useRuntimeConfig().public;\n  if (typeof queryBuilder?.params !== \"function\") {\n    queryBuilder = queryContent(queryBuilder);\n  }\n  const params = queryBuilder.params();\n  const apiPath = content.experimental.stripQueryParameters ? withContentBase(`/navigation/${process.dev ? \"_\" : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`) : withContentBase(process.dev ? `/navigation/${hash(params)}` : `/navigation/${hash(params)}.${content.integrity}.json`);\n  if (!process.dev && process.server) {\n    addPrerenderPath(apiPath);\n  }\n  if (shouldUseClientDB()) {\n    const generateNavigation = await import(\"./client-db.js\").then((m) => m.generateNavigation);\n    return generateNavigation(params);\n  }\n  const data = await $fetch(apiPath, {\n    method: \"GET\",\n    responseType: \"json\",\n    params: content.experimental.stripQueryParameters ? void 0 : {\n      _params: jsonStringify(params),\n      previewToken: useContentPreview().getPreviewToken()\n    }\n  });\n  if (typeof data === \"string\" && data.startsWith(\"<!DOCTYPE html>\")) {\n    throw new Error(\"Not found\");\n  }\n  return data;\n};\n",
+      "start": 1709737160450,
+      "end": 1709737160516,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160516,
+      "end": 1709737160516,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { hash } from \"ohash\";\nimport { encodeQueryParams } from \"../../utils/query.js\";\nimport { jsonStringify } from \"../../utils/json.js\";\nimport { addPrerenderPath, shouldUseClientDB, withContentBase } from \"../../composables/utils.js\";\nimport { useContentPreview } from \"../../composables/preview.js\";\nimport { queryContent } from \"./query.js\";\nimport { useRuntimeConfig } from \"#imports\";\nexport const fetchContentNavigation = async (queryBuilder) => {\n  const { content } = useRuntimeConfig().public;\n  if (typeof queryBuilder?.params !== \"function\") {\n    queryBuilder = queryContent(queryBuilder);\n  }\n  const params = queryBuilder.params();\n  const apiPath = content.experimental.stripQueryParameters ? withContentBase(`/navigation/${false ? \"_\" : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`) : withContentBase(false ? `/navigation/${hash(params)}` : `/navigation/${hash(params)}.${content.integrity}.json`);\n  if (false) {\n    addPrerenderPath(apiPath);\n  }\n  if (shouldUseClientDB()) {\n    const generateNavigation = await import(\"./client-db.js\").then((m) => m.generateNavigation);\n    return generateNavigation(params);\n  }\n  const data = await $fetch(apiPath, {\n    method: \"GET\",\n    responseType: \"json\",\n    params: content.experimental.stripQueryParameters ? void 0 : {\n      _params: jsonStringify(params),\n      previewToken: useContentPreview().getPreviewToken()\n    }\n  });\n  if (typeof data === \"string\" && data.startsWith(\"<!DOCTYPE html>\")) {\n    throw new Error(\"Not found\");\n  }\n  return data;\n};\n",
+      "start": 1709737160516,
+      "end": 1709737160603,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160620,
+      "end": 1709737160620,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160620,
+      "end": 1709737160620,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160621,
+      "end": 1709737160621,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160621,
+      "end": 1709737160621,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { useRuntimeConfig } from '#app/nuxt';\nimport { hash } from \"ohash\";\nimport { encodeQueryParams } from \"../../utils/query.js\";\nimport { jsonStringify } from \"../../utils/json.js\";\nimport { addPrerenderPath, shouldUseClientDB, withContentBase } from \"../../composables/utils.js\";\nimport { useContentPreview } from \"../../composables/preview.js\";\nimport { queryContent } from \"./query.js\";\nexport const fetchContentNavigation = async (queryBuilder) => {\n  const { content } = useRuntimeConfig().public;\n  if (typeof queryBuilder?.params !== \"function\") {\n    queryBuilder = queryContent(queryBuilder);\n  }\n  const params = queryBuilder.params();\n  const apiPath = content.experimental.stripQueryParameters ? withContentBase(`/navigation/${false ? \"_\" : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`) : withContentBase(false ? `/navigation/${hash(params)}` : `/navigation/${hash(params)}.${content.integrity}.json`);\n  if (false) {\n    addPrerenderPath(apiPath);\n  }\n  if (shouldUseClientDB()) {\n    const generateNavigation = await import(\"./client-db.js\").then((m) => m.generateNavigation);\n    return generateNavigation(params);\n  }\n  const data = await $fetch(apiPath, {\n    method: \"GET\",\n    responseType: \"json\",\n    params: content.experimental.stripQueryParameters ? void 0 : {\n      _params: jsonStringify(params),\n      previewToken: useContentPreview().getPreviewToken()\n    }\n  });\n  if (typeof data === \"string\" && data.startsWith(\"<!DOCTYPE html>\")) {\n    throw new Error(\"Not found\");\n  }\n  return data;\n};\n",
+      "start": 1709737160621,
+      "end": 1709737160625,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClG,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAE1C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9C,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1S,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9B,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChG,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtC,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzD,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160625,
+      "end": 1709737160625,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160627,
+      "end": 1709737160630,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "result": "import { __vitePreload } from \"\u0000vite/preload-helper.js\";import { useRuntimeConfig } from '#app/nuxt';\nimport { hash } from \"ohash\";\nimport { encodeQueryParams } from \"../../utils/query.js\";\nimport { jsonStringify } from \"../../utils/json.js\";\nimport { addPrerenderPath, shouldUseClientDB, withContentBase } from \"../../composables/utils.js\";\nimport { useContentPreview } from \"../../composables/preview.js\";\nimport { queryContent } from \"./query.js\";\nexport const fetchContentNavigation = async (queryBuilder) => {\n  const { content } = useRuntimeConfig().public;\n  if (typeof queryBuilder?.params !== \"function\") {\n    queryBuilder = queryContent(queryBuilder);\n  }\n  const params = queryBuilder.params();\n  const apiPath = content.experimental.stripQueryParameters ? withContentBase(`/navigation/${false ? \"_\" : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`) : withContentBase(false ? `/navigation/${hash(params)}` : `/navigation/${hash(params)}.${content.integrity}.json`);\n  if (false) {\n    addPrerenderPath(apiPath);\n  }\n  if (shouldUseClientDB()) {\n    const generateNavigation = await __vitePreload(() => import(\"./client-db.js\"),__VITE_IS_MODERN__?\"__VITE_PRELOAD__\":void 0,import.meta.url).then((m) => m.generateNavigation);\n    return generateNavigation(params);\n  }\n  const data = await $fetch(apiPath, {\n    method: \"GET\",\n    responseType: \"json\",\n    params: content.experimental.stripQueryParameters ? void 0 : {\n      _params: jsonStringify(params),\n      previewToken: useContentPreview().getPreviewToken()\n    }\n  });\n  if (typeof data === \"string\" && data.startsWith(\"<!DOCTYPE html>\")) {\n    throw new Error(\"Not found\");\n  }\n  return data;\n};\n",
+      "start": 1709737160630,
+      "end": 1709737160630,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160632,
+      "end": 1709737160632,
+      "order": "normal"
+    }
+  ]
+}

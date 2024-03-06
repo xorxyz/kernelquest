@@ -1,0 +1,1 @@
+import{_ as r,j as a,o as s,c as u,a as c}from"./entry.BOW7OJZK.js";const l={setup(){const{logout:o}=a();return{logout:()=>{o({logoutParams:{returnTo:window.location.origin}})}}}};function i(o,t,g,n,d,p){return s(),u("div",null,[c("button",{onClick:t[0]||(t[0]=(...e)=>n.logout&&n.logout(...e))},"Log out")])}const f=r(l,[["render",i]]);export{f as default};

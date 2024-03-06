@@ -1,0 +1,224 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/DocumentDrivenEmpty.vue?nuxt_component=async&nuxt_component_name=DocumentDrivenEmpty",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script>\nimport { defineComponent, h } from \"vue\";\nexport default defineComponent({\n  name: \"DocumentDrivenEmpty\",\n  props: {\n    value: {\n      type: Object,\n      required: true\n    }\n  },\n  render({ value }) {\n    return h(\"div\", void 0, [\n      h(\"p\", \"Document is empty\"),\n      h(\"p\", `Add content to it by opening ${value._source}/${value._file} file.`)\n    ]);\n  }\n});\n</script>\n",
+      "start": 1709737159934,
+      "end": 1709737160077,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "\nimport { defineComponent, h } from \"vue\";\nconst _sfc_main = defineComponent({\n  name: \"DocumentDrivenEmpty\",\n  props: {\n    value: {\n      type: Object,\n      required: true\n    }\n  },\n  render({ value }) {\n    return h(\"div\", void 0, [\n      h(\"p\", \"Document is empty\"),\n      h(\"p\", `Add content to it by opening ${value._source}/${value._file} file.`)\n    ]);\n  }\n});\n\n\n\n\nexport default _sfc_main",
+      "start": 1709737160077,
+      "end": 1709737160078,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "result": "import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/DocumentDrivenEmpty.vue\").then(r => r.default))",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "replace",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "result": "import { __vitePreload } from \"\u0000vite/preload-helper.js\";import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => __vitePreload(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/DocumentDrivenEmpty.vue\"),__VITE_IS_MODERN__?\"__VITE_PRELOAD__\":void 0,import.meta.url).then(r => r.default))",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160078,
+      "end": 1709737160078,
+      "order": "normal"
+    }
+  ]
+}

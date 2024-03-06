@@ -1,0 +1,230 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/app.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<template>\n  <div class=\"flex w-100 vh-100 flex-column overflow-y-scroll\">\n    <nav-bar/>\n    <NuxtPage class=\"\" />\n    <layout-footer/>\n  </div>\n</template>\n\n<script setup>\nconst title = ref(\"Kernel Quest\");\n\nuseHead({\n  title: title,\n  meta: [{\n    name: \"viewport\",\n    content: \"width=device-width, initial-scale=1.0\",\n  }, {\n    name: \"description\",\n    content: \"\",\n  }, {\n    name: \"keywords\",\n    content: \"\",\n  }, {\n    name: \"author\",\n    content: \"Jonathan Dupré\",\n  }],\n  script: [{\n    src: \"https://www.googletagmanager.com/gtag/js?id=XXX-A1A1A1A1\",\n    async: true\n  }, {\n    src: \"https://f.convertkit.com/ckjs/ck.5.js\",\n    async: true\n  }, {\n    src: \"/twemoji.min.js\",\n    integrity: \"sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU\"\n  }],\n  link: [{\n    rel: \"stylesheet\",\n    href: \"https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"/style.css\"\n  }]\n});\n</script>\n",
+      "start": 1709737160369,
+      "end": 1709737160417,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160417,
+      "end": 1709737160417,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "import { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"flex w-100 vh-100 flex-column overflow-y-scroll\" }\n\n\nconst _sfc_main = {\n  __name: 'app',\n  setup(__props) {\n\nconst title = ref(\"Kernel Quest\");\n\nuseHead({\n  title: title,\n  meta: [{\n    name: \"viewport\",\n    content: \"width=device-width, initial-scale=1.0\",\n  }, {\n    name: \"description\",\n    content: \"\",\n  }, {\n    name: \"keywords\",\n    content: \"\",\n  }, {\n    name: \"author\",\n    content: \"Jonathan Dupré\",\n  }],\n  script: [{\n    src: \"https://www.googletagmanager.com/gtag/js?id=XXX-A1A1A1A1\",\n    async: true\n  }, {\n    src: \"https://f.convertkit.com/ckjs/ck.5.js\",\n    async: true\n  }, {\n    src: \"/twemoji.min.js\",\n    integrity: \"sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU\"\n  }],\n  link: [{\n    rel: \"stylesheet\",\n    href: \"https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"/style.css\"\n  }]\n});\n\nreturn (_ctx, _cache) => {\n  const _component_nav_bar = _resolveComponent(\"nav-bar\")\n  const _component_NuxtPage = _resolveComponent(\"NuxtPage\")\n  const _component_layout_footer = _resolveComponent(\"layout-footer\")\n\n  return (_openBlock(), _createElementBlock(\"div\", _hoisted_1, [\n    _createVNode(_component_nav_bar),\n    _createVNode(_component_NuxtPage, { class: \"\" }),\n    _createVNode(_component_layout_footer)\n  ]))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1709737160417,
+      "end": 1709737160419,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160419,
+      "end": 1709737160419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { ref } from 'vue';\nimport { useHead } from '@unhead/vue';\nimport { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"flex w-100 vh-100 flex-column overflow-y-scroll\" }\n\n\nconst _sfc_main = {\n  __name: 'app',\n  setup(__props) {\n\nconst title = ref(\"Kernel Quest\");\n\nuseHead({\n  title: title,\n  meta: [{\n    name: \"viewport\",\n    content: \"width=device-width, initial-scale=1.0\",\n  }, {\n    name: \"description\",\n    content: \"\",\n  }, {\n    name: \"keywords\",\n    content: \"\",\n  }, {\n    name: \"author\",\n    content: \"Jonathan Dupré\",\n  }],\n  script: [{\n    src: \"https://www.googletagmanager.com/gtag/js?id=XXX-A1A1A1A1\",\n    async: true\n  }, {\n    src: \"https://f.convertkit.com/ckjs/ck.5.js\",\n    async: true\n  }, {\n    src: \"/twemoji.min.js\",\n    integrity: \"sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU\"\n  }],\n  link: [{\n    rel: \"stylesheet\",\n    href: \"https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"/style.css\"\n  }]\n});\n\nreturn (_ctx, _cache) => {\n  const _component_nav_bar = _resolveComponent(\"nav-bar\")\n  const _component_NuxtPage = _resolveComponent(\"NuxtPage\")\n  const _component_layout_footer = _resolveComponent(\"layout-footer\")\n\n  return (_openBlock(), _createElementBlock(\"div\", _hoisted_1, [\n    _createVNode(_component_nav_bar),\n    _createVNode(_component_NuxtPage, { class: \"\" }),\n    _createVNode(_component_layout_footer)\n  ]))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1709737160419,
+      "end": 1709737160420,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5J;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/E;AACA;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClC;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACT,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9B,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACZ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxF,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC;AACH;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrE;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1C,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC;AACD,CAAC;AACD;AACA,CAAC;AACD;AACA;AACA;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC"
+      }
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/home/jdupre/code/kernelquest/www/components/content/NavBar.vue\";\nimport { default as __nuxt_component_1 } from \"/home/jdupre/code/kernelquest/www/node_modules/nuxt/dist/pages/runtime/page\";\nimport { default as __nuxt_component_2 } from \"/home/jdupre/code/kernelquest/www/components/content/LayoutFooter.vue\";\nimport { ref } from 'vue';\nimport { useHead } from '@unhead/vue';\nimport { resolveComponent as _resolveComponent, createVNode as _createVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"flex w-100 vh-100 flex-column overflow-y-scroll\" }\n\n\nconst _sfc_main = {\n  __name: 'app',\n  setup(__props) {\n\nconst title = ref(\"Kernel Quest\");\n\nuseHead({\n  title: title,\n  meta: [{\n    name: \"viewport\",\n    content: \"width=device-width, initial-scale=1.0\",\n  }, {\n    name: \"description\",\n    content: \"\",\n  }, {\n    name: \"keywords\",\n    content: \"\",\n  }, {\n    name: \"author\",\n    content: \"Jonathan Dupré\",\n  }],\n  script: [{\n    src: \"https://www.googletagmanager.com/gtag/js?id=XXX-A1A1A1A1\",\n    async: true\n  }, {\n    src: \"https://f.convertkit.com/ckjs/ck.5.js\",\n    async: true\n  }, {\n    src: \"/twemoji.min.js\",\n    integrity: \"sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU\"\n  }],\n  link: [{\n    rel: \"stylesheet\",\n    href: \"https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css\"\n  }, {\n    rel: \"stylesheet\",\n    href: \"/style.css\"\n  }]\n});\n\nreturn (_ctx, _cache) => {\n  const _component_nav_bar = __nuxt_component_0\n  const _component_NuxtPage = __nuxt_component_1\n  const _component_layout_footer = __nuxt_component_2\n\n  return (_openBlock(), _createElementBlock(\"div\", _hoisted_1, [\n    _createVNode(_component_nav_bar),\n    _createVNode(_component_NuxtPage, { class: \"\" }),\n    _createVNode(_component_layout_footer)\n  ]))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160420,
+      "end": 1709737160420,
+      "order": "normal"
+    }
+  ]
+}

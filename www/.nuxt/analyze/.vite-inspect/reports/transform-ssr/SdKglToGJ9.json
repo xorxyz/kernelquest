@@ -1,0 +1,278 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/composables/preview.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { useCookie, useRoute } from \"#imports\";\nlet showWarning = true;\nexport const useContentPreview = () => {\n  const getPreviewToken = () => {\n    return useCookie(\"previewToken\").value || process.client && sessionStorage.getItem(\"previewToken\") || void 0;\n  };\n  const setPreviewToken = (token) => {\n    useCookie(\"previewToken\").value = token;\n    useRoute().query.preview = token || \"\";\n    if (process.client) {\n      if (token) {\n        sessionStorage.setItem(\"previewToken\", token);\n      } else {\n        sessionStorage.removeItem(\"previewToken\");\n      }\n      window.location.reload();\n    }\n  };\n  const isEnabled = () => {\n    const query = useRoute().query;\n    if (Object.prototype.hasOwnProperty.call(query, \"preview\") && !query.preview) {\n      return false;\n    }\n    if (query.preview || useCookie(\"previewToken\").value) {\n      if (process.dev && showWarning) {\n        console.warn(\"[content] Client DB enabled since a preview token is set (either in query or cookie).\");\n        showWarning = false;\n      }\n      return true;\n    }\n    if (process.client && sessionStorage.getItem(\"previewToken\")) {\n      return true;\n    }\n    return false;\n  };\n  return {\n    isEnabled,\n    getPreviewToken,\n    setPreviewToken\n  };\n};\n",
+      "start": 1709737162301,
+      "end": 1709737162384,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162384,
+      "end": 1709737162384,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { useCookie, useRoute } from \"#imports\";\nlet showWarning = true;\nexport const useContentPreview = () => {\n  const getPreviewToken = () => {\n    return useCookie(\"previewToken\").value || false || void 0;\n  };\n  const setPreviewToken = (token) => {\n    useCookie(\"previewToken\").value = token;\n    useRoute().query.preview = token || \"\";\n    if (false) {\n      if (token) {\n        sessionStorage.setItem(\"previewToken\", token);\n      } else {\n        sessionStorage.removeItem(\"previewToken\");\n      }\n      (void 0).location.reload();\n    }\n  };\n  const isEnabled = () => {\n    const query = useRoute().query;\n    if (Object.prototype.hasOwnProperty.call(query, \"preview\") && !query.preview) {\n      return false;\n    }\n    if (query.preview || useCookie(\"previewToken\").value) {\n      if (false) {\n        console.warn(\"[content] Client DB enabled since a preview token is set (either in query or cookie).\");\n        showWarning = false;\n      }\n      return true;\n    }\n    if (false) {\n      return true;\n    }\n    return false;\n  };\n  return {\n    isEnabled,\n    getPreviewToken,\n    setPreviewToken\n  };\n};\n",
+      "start": 1709737162384,
+      "end": 1709737162452,
+      "order": "normal",
+      "sourcemaps": "{\n  \"version\": 3,\n  \"sources\": [\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/composables/preview.js\"],\n  \"sourcesContent\": [\"import { useCookie, useRoute } from \\\"#imports\\\";\\nlet showWarning = true;\\nexport const useContentPreview = () => {\\n  const getPreviewToken = () => {\\n    return useCookie(\\\"previewToken\\\").value || process.client && sessionStorage.getItem(\\\"previewToken\\\") || void 0;\\n  };\\n  const setPreviewToken = (token) => {\\n    useCookie(\\\"previewToken\\\").value = token;\\n    useRoute().query.preview = token || \\\"\\\";\\n    if (process.client) {\\n      if (token) {\\n        sessionStorage.setItem(\\\"previewToken\\\", token);\\n      } else {\\n        sessionStorage.removeItem(\\\"previewToken\\\");\\n      }\\n      window.location.reload();\\n    }\\n  };\\n  const isEnabled = () => {\\n    const query = useRoute().query;\\n    if (Object.prototype.hasOwnProperty.call(query, \\\"preview\\\") && !query.preview) {\\n      return false;\\n    }\\n    if (query.preview || useCookie(\\\"previewToken\\\").value) {\\n      if (process.dev && showWarning) {\\n        console.warn(\\\"[content] Client DB enabled since a preview token is set (either in query or cookie).\\\");\\n        showWarning = false;\\n      }\\n      return true;\\n    }\\n    if (process.client && sessionStorage.getItem(\\\"previewToken\\\")) {\\n      return true;\\n    }\\n    return false;\\n  };\\n  return {\\n    isEnabled,\\n    getPreviewToken,\\n    setPreviewToken\\n  };\\n};\\n\"],\n  \"mappings\": \"AAAA,SAAS,WAAW,gBAAgB;AACpC,IAAI,cAAc;AACX,aAAM,oBAAoB,MAAM;AACrC,QAAM,kBAAkB,MAAM;AAC5B,WAAO,UAAU,cAAc,EAAE,SAAS,SAA4D;AAAA,EACxG;AACA,QAAM,kBAAkB,CAAC,UAAU;AACjC,cAAU,cAAc,EAAE,QAAQ;AAClC,aAAS,EAAE,MAAM,UAAU,SAAS;AACpC,QAAI,OAAgB;AAClB,UAAI,OAAO;AACT,uBAAe,QAAQ,gBAAgB,KAAK;AAAA,MAC9C,OAAO;AACL,uBAAe,WAAW,cAAc;AAAA,MAC1C;AACA,eAAO,SAAS,OAAO;AAAA,IACzB;AAAA,EACF;AACA,QAAM,YAAY,MAAM;AACtB,UAAM,QAAQ,SAAS,EAAE;AACzB,QAAI,OAAO,UAAU,eAAe,KAAK,OAAO,SAAS,KAAK,CAAC,MAAM,SAAS;AAC5E,aAAO;AAAA,IACT;AACA,QAAI,MAAM,WAAW,UAAU,cAAc,EAAE,OAAO;AACpD,UAAI,OAA4B;AAC9B,gBAAQ,KAAK,uFAAuF;AACpG,sBAAc;AAAA,MAChB;AACA,aAAO;AAAA,IACT;AACA,QAAI,OAA0D;AAC5D,aAAO;AAAA,IACT;AACA,WAAO;AAAA,EACT;AACA,SAAO;AAAA,IACL;AAAA,IACA;AAAA,IACA;AAAA,EACF;AACF;\",\n  \"names\": []\n}\n"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162452,
+      "end": 1709737162452,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162452,
+      "end": 1709737162453,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162453,
+      "end": 1709737162453,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162453,
+      "end": 1709737162453,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { useCookie } from '#app/composables/cookie';\nimport { useRoute } from '#app/composables/router';\nlet showWarning = true;\nexport const useContentPreview = () => {\n  const getPreviewToken = () => {\n    return useCookie(\"previewToken\").value || false || void 0;\n  };\n  const setPreviewToken = (token) => {\n    useCookie(\"previewToken\").value = token;\n    useRoute().query.preview = token || \"\";\n    if (false) {\n      if (token) {\n        sessionStorage.setItem(\"previewToken\", token);\n      } else {\n        sessionStorage.removeItem(\"previewToken\");\n      }\n      (void 0).location.reload();\n    }\n  };\n  const isEnabled = () => {\n    const query = useRoute().query;\n    if (Object.prototype.hasOwnProperty.call(query, \"preview\") && !query.preview) {\n      return false;\n    }\n    if (query.preview || useCookie(\"previewToken\").value) {\n      if (false) {\n        console.warn(\"[content] Client DB enabled since a preview token is set (either in query or cookie).\");\n        showWarning = false;\n      }\n      return true;\n    }\n    if (false) {\n      return true;\n    }\n    return false;\n  };\n  return {\n    isEnabled,\n    getPreviewToken,\n    setPreviewToken\n  };\n};\n",
+      "start": 1709737162453,
+      "end": 1709737162456,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9D,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9G,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjB,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { useCookie } from '#app/composables/cookie';\nimport { useRoute } from '#app/composables/router';\nlet showWarning = true;\nexport const useContentPreview = () => {\n  const getPreviewToken = () => {\n    return useCookie(\"previewToken\").value || false || void 0;\n  };\n  const setPreviewToken = (token) => {\n    useCookie(\"previewToken\").value = token;\n    useRoute().query.preview = token || \"\";\n    if (false) {\n      if (token) {\n        sessionStorage.setItem(\"previewToken\", token);\n      } else {\n        sessionStorage.removeItem(\"previewToken\");\n      }\n      (void 0).location.reload();\n    }\n  };\n  const isEnabled = () => {\n    const query = useRoute().query;\n    if (Object.prototype.hasOwnProperty.call(query, \"preview\") && !query.preview) {\n      return false;\n    }\n    if (query.preview || useCookie(\"previewToken\").value) {\n      if (false) {\n        console.warn(\"[content] Client DB enabled since a preview token is set (either in query or cookie).\");\n        showWarning = false;\n      }\n      return true;\n    }\n    if (false) {\n      return true;\n    }\n    return false;\n  };\n  return {\n    isEnabled,\n    getPreviewToken,\n    setPreviewToken\n  };\n};\n",
+      "start": 1709737162453,
+      "end": 1709737162456,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9D,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9G,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjB,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162456,
+      "end": 1709737162456,
+      "order": "normal"
+    }
+  ]
+}

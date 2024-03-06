@@ -1,0 +1,229 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/pages/index.vue?macro=true",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<template>\n  <main class=\"w-100 flex flex-column items-center justify-start\">\n\n    <div class=\"bg-purple w-100 white bg-dark pv4 flex flex-column items-center\">\n      <div class=\"container tc\">\n        <h1 class=\"f1\">Explore the art of hacking</h1>\n        <h2 class=\"f3\">Reverse engineer your way into saving the kingdom against impossible odds</h2>\n      </div>\n    </div>\n\n    <div class=\"container ph6 tc pv4 black\">\n      <p class=\"ph3 pv\">\n        Kernel Quest is a text-based adventure hacking game about using programming to solve problems.\n      </p>\n\n      <!-- <h2 class=\"f1 tc\">Trailer</h2>\n      <iframe width=\"560\" height=\"315\" src=\"https://www.youtube-nocookie.com/embed/jSwBiXL6m-g\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\n\n      <h2 class=\"f1 tc\">Screenshots</h2>\n      <div class=\"flex flex-column\">\n        <div class=\"flex flex-row\">\n          <img class=\"w-50 ma2 ba\" src=\"/screenshot.png\">\n          <img class=\"w-50 ma2 ba\" src=\"/screenshot.png\">\n        </div>\n        <div class=\"flex flex-row\">\n          <img class=\"w-50 ma2 ba\" src=\"/screenshot.png\">\n          <img class=\"w-50 ma2 ba\" src=\"/screenshot.png\">\n        </div>\n      </div> -->\n    </div>\n  </main>\n</template>\n",
+      "start": 1709737160357,
+      "end": 1709737160393,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160393,
+      "end": 1709737160393,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "const _sfc_main = {}\nimport { createElementVNode as _createElementVNode, createStaticVNode as _createStaticVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"w-100 flex flex-column items-center justify-start\" }\nconst _hoisted_2 = /*#__PURE__*/_createStaticVNode(\"<div class=\\\"bg-purple w-100 white bg-dark pv4 flex flex-column items-center\\\"><div class=\\\"container tc\\\"><h1 class=\\\"f1\\\">Explore the art of hacking</h1><h2 class=\\\"f3\\\">Reverse engineer your way into saving the kingdom against impossible odds</h2></div></div><div class=\\\"container ph6 tc pv4 black\\\"><p class=\\\"ph3 pv\\\"> Kernel Quest is a text-based adventure hacking game about using programming to solve problems. </p></div>\", 2)\nconst _hoisted_4 = [\n  _hoisted_2\n]\n\nfunction _sfc_render(_ctx, _cache) {\n  return (_openBlock(), _createElementBlock(\"main\", _hoisted_1, _hoisted_4))\n}\n\n\nimport _export_sfc from '\u0000plugin-vue:export-helper'\nexport default /*#__PURE__*/_export_sfc(_sfc_main, [['render',_sfc_render]])",
+      "start": 1709737160393,
+      "end": 1709737160394,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160394,
+      "end": 1709737160394,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160394,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "result": "\nconst __nuxt_page_meta = null\nexport default __nuxt_page_meta\n",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": "AAAA;AAAA;AAAA;"
+      }
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160395,
+      "end": 1709737160395,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue?vue&type=script&setup=true&lang.ts",
+  "transforms": [
+    {
+      "name": "vite:vue",
+      "result": "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nimport { computed } from 'vue'\nimport { useContentPreview } from '../composables/preview'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ContentRendererMarkdown',\n  props: {\n  /**\n   * Content to render\n   */\n  value: {\n    type: Object,\n    required: true\n  },\n  /**\n   * Render only the excerpt\n   */\n  excerpt: {\n    type: Boolean,\n    default: false\n  },\n  /**\n   * Root tag to use for rendering\n   */\n  tag: {\n    type: String,\n    default: 'div'\n  },\n  /**\n   * The map of custom components to use for rendering.\n   */\n  components: {\n    type: Object,\n    default: () => ({})\n  },\n\n  data: {\n    type: Object,\n    default: () => ({})\n  }\n},\n  setup(__props) {\n\nconst props = __props\n\nconst debug = process.dev || useContentPreview().isEnabled()\n\nconst body = computed(() => {\n  let body = props.value.body || props.value\n  if (props.excerpt && props.value.excerpt) {\n    body = props.value.excerpt\n  }\n\n  return body\n})\n\nconst data = computed(() => {\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  const { body, excerpt, ...data } = props.value\n  return {\n    ...data,\n    ...props.data\n  }\n})\n\nconst mdcComponents = computed(() => {\n  return {\n    ...props.components,\n    ...(data.value._components || {})\n  }\n})\n\nreturn (_ctx: any,_cache: any) => {\n  const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\")!\n\n  return (_openBlock(), _createBlock(_component_MDCRenderer, {\n    body: body.value,\n    data: data.value,\n    tag: __props.tag,\n    components: mdcComponents.value,\n    \"data-content-id\": _unref(debug) ? __props.value._id : undefined\n  }, null, 8, [\"body\", \"data\", \"tag\", \"components\", \"data-content-id\"]))\n}\n}\n\n})",
+      "start": 1709737160467,
+      "end": 1709737160467
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160467,
+      "end": 1709737160467,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160467,
+      "end": 1709737160468,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160468,
+      "end": 1709737160468,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160468,
+      "end": 1709737160468,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160468,
+      "end": 1709737160468,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \"vue\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = process.dev || useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _cache) => {\n      const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\");\n      return _openBlock(), _createBlock(_component_MDCRenderer, {\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, null, 8, [\"body\", \"data\", \"tag\", \"components\", \"data-content-id\"]);\n    };\n  }\n});\n",
+      "start": 1709737160468,
+      "end": 1709737160484,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue?vue&type=script&setup=true&lang.ts"
+        ],
+        "sourcesContent": [
+          "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nimport { computed } from 'vue'\nimport { useContentPreview } from '../composables/preview'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ContentRendererMarkdown',\n  props: {\n  /**\n   * Content to render\n   */\n  value: {\n    type: Object,\n    required: true\n  },\n  /**\n   * Render only the excerpt\n   */\n  excerpt: {\n    type: Boolean,\n    default: false\n  },\n  /**\n   * Root tag to use for rendering\n   */\n  tag: {\n    type: String,\n    default: 'div'\n  },\n  /**\n   * The map of custom components to use for rendering.\n   */\n  components: {\n    type: Object,\n    default: () => ({})\n  },\n\n  data: {\n    type: Object,\n    default: () => ({})\n  }\n},\n  setup(__props) {\n\nconst props = __props\n\nconst debug = process.dev || useContentPreview().isEnabled()\n\nconst body = computed(() => {\n  let body = props.value.body || props.value\n  if (props.excerpt && props.value.excerpt) {\n    body = props.value.excerpt\n  }\n\n  return body\n})\n\nconst data = computed(() => {\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  const { body, excerpt, ...data } = props.value\n  return {\n    ...data,\n    ...props.data\n  }\n})\n\nconst mdcComponents = computed(() => {\n  return {\n    ...props.components,\n    ...(data.value._components || {})\n  }\n})\n\nreturn (_ctx: any,_cache: any) => {\n  const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\")!\n\n  return (_openBlock(), _createBlock(_component_MDCRenderer, {\n    body: body.value,\n    data: data.value,\n    tag: __props.tag,\n    components: mdcComponents.value,\n    \"data-content-id\": _unref(debug) ? __props.value._id : undefined\n  }, null, 8, [\"body\", \"data\", \"tag\", \"components\", \"data-content-id\"]))\n}\n}\n\n})"
+        ],
+        "mappings": "AAAA,SAAS,mBAAmB,wBAAwB;AACpD,SAAS,SAAS,QAAQ,oBAAoB,mBAAmB,aAAa,YAAY,eAAe,oBAAoB;AAE7H,SAAS,gBAAgB;AACzB,SAAS,yBAAyB;AAGlC,eAA4B,iCAAiB;AAAA,EAC3C,QAAQ;AAAA,EACR,OAAO;AAAA;AAAA;AAAA;AAAA,IAIP,OAAO;AAAA,MACL,MAAM;AAAA,MACN,UAAU;AAAA,IACZ;AAAA;AAAA;AAAA;AAAA,IAIA,SAAS;AAAA,MACP,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,KAAK;AAAA,MACH,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,YAAY;AAAA,MACV,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,IAEA,MAAM;AAAA,MACJ,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,EACF;AAAA,EACE,MAAM,SAAS;AAEjB,UAAM,QAAQ;AAEd,UAAM,QAAQ,QAAQ,OAAO,kBAAkB,EAAE,UAAU;AAE3D,UAAM,OAAO,SAAS,MAAM;AAC1B,UAAIA,QAAO,MAAM,MAAM,QAAQ,MAAM;AACrC,UAAI,MAAM,WAAW,MAAM,MAAM,SAAS;AACxC,QAAAA,QAAO,MAAM,MAAM;AAAA,MACrB;AAEA,aAAOA;AAAA,IACT,CAAC;AAED,UAAM,OAAO,SAAS,MAAM;AAE1B,YAAM,EAAE,MAAAA,OAAM,SAAS,GAAGC,MAAK,IAAI,MAAM;AACzC,aAAO;AAAA,QACL,GAAGA;AAAA,QACH,GAAG,MAAM;AAAA,MACX;AAAA,IACF,CAAC;AAED,UAAM,gBAAgB,SAAS,MAAM;AACnC,aAAO;AAAA,QACL,GAAG,MAAM;AAAA,QACT,GAAI,KAAK,MAAM,eAAe,CAAC;AAAA,MACjC;AAAA,IACF,CAAC;AAED,WAAO,CAAC,MAAU,WAAgB;AAChC,YAAM,yBAAyB,kBAAkB,aAAa;AAE9D,aAAQ,WAAW,GAAG,aAAa,wBAAwB;AAAA,QACzD,MAAM,KAAK;AAAA,QACX,MAAM,KAAK;AAAA,QACX,KAAK,QAAQ;AAAA,QACb,YAAY,cAAc;AAAA,QAC1B,mBAAmB,OAAO,KAAK,IAAI,QAAQ,MAAM,MAAM;AAAA,MACzD,GAAG,MAAM,GAAG,CAAC,QAAQ,QAAQ,OAAO,cAAc,iBAAiB,CAAC;AAAA,IACtE;AAAA,EACA;AAEA,CAAC;",
+        "names": [
+          "body",
+          "data"
+        ]
+      }
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160485,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160487,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160487,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160487,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \"vue\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _cache) => {\n      const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\");\n      return _openBlock(), _createBlock(_component_MDCRenderer, {\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, null, 8, [\"body\", \"data\", \"tag\", \"components\", \"data-content-id\"]);\n    };\n  }\n});\n",
+      "start": 1709737160488,
+      "end": 1709737160603,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160604,
+      "end": 1709737160604,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160619,
+      "end": 1709737160620,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160620,
+      "end": 1709737160620,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160621,
+      "end": 1709737160621,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160621,
+      "end": 1709737160621,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160621,
+      "end": 1709737160622,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160623,
+      "end": 1709737160624,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160625,
+      "end": 1709737160625,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/home/jdupre/code/kernelquest/www/node_modules/@nuxtjs/mdc/dist/runtime/components/MDCRenderer\";\nimport { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock } from \"vue\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _cache) => {\n      const _component_MDCRenderer = __nuxt_component_0;\n      return _openBlock(), _createBlock(_component_MDCRenderer, {\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, null, 8, [\"body\", \"data\", \"tag\", \"components\", \"data-content-id\"]);\n    };\n  }\n});\n",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160626,
+      "end": 1709737160626,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160627,
+      "end": 1709737160627,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160630,
+      "end": 1709737160630,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/unstorage/dist/shared/unstorage.8581f561.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "function wrapToPromise(value) {\n  if (!value || typeof value.then !== \"function\") {\n    return Promise.resolve(value);\n  }\n  return value;\n}\nfunction asyncCall(function_, ...arguments_) {\n  try {\n    return wrapToPromise(function_(...arguments_));\n  } catch (error) {\n    return Promise.reject(error);\n  }\n}\nfunction isPrimitive(value) {\n  const type = typeof value;\n  return value === null || type !== \"object\" && type !== \"function\";\n}\nfunction isPureObject(value) {\n  const proto = Object.getPrototypeOf(value);\n  return !proto || proto.isPrototypeOf(Object);\n}\nfunction stringify(value) {\n  if (isPrimitive(value)) {\n    return String(value);\n  }\n  if (isPureObject(value) || Array.isArray(value)) {\n    return JSON.stringify(value);\n  }\n  if (typeof value.toJSON === \"function\") {\n    return stringify(value.toJSON());\n  }\n  throw new Error(\"[unstorage] Cannot stringify value!\");\n}\nfunction checkBufferSupport() {\n  if (typeof Buffer === void 0) {\n    throw new TypeError(\"[unstorage] Buffer is not supported!\");\n  }\n}\nconst BASE64_PREFIX = \"base64:\";\nfunction serializeRaw(value) {\n  if (typeof value === \"string\") {\n    return value;\n  }\n  checkBufferSupport();\n  const base64 = Buffer.from(value).toString(\"base64\");\n  return BASE64_PREFIX + base64;\n}\nfunction deserializeRaw(value) {\n  if (typeof value !== \"string\") {\n    return value;\n  }\n  if (!value.startsWith(BASE64_PREFIX)) {\n    return value;\n  }\n  checkBufferSupport();\n  return Buffer.from(value.slice(BASE64_PREFIX.length), \"base64\");\n}\n\nconst storageKeyProperties = [\n  \"hasItem\",\n  \"getItem\",\n  \"getItemRaw\",\n  \"setItem\",\n  \"setItemRaw\",\n  \"removeItem\",\n  \"getMeta\",\n  \"setMeta\",\n  \"removeMeta\",\n  \"getKeys\",\n  \"clear\",\n  \"mount\",\n  \"unmount\"\n];\nfunction prefixStorage(storage, base) {\n  base = normalizeBaseKey(base);\n  if (!base) {\n    return storage;\n  }\n  const nsStorage = { ...storage };\n  for (const property of storageKeyProperties) {\n    nsStorage[property] = (key = \"\", ...args) => (\n      // @ts-ignore\n      storage[property](base + key, ...args)\n    );\n  }\n  nsStorage.getKeys = (key = \"\", ...arguments_) => storage.getKeys(base + key, ...arguments_).then((keys) => keys.map((key2) => key2.slice(base.length)));\n  return nsStorage;\n}\nfunction normalizeKey(key) {\n  if (!key) {\n    return \"\";\n  }\n  return key.split(\"?\")[0].replace(/[/\\\\]/g, \":\").replace(/:+/g, \":\").replace(/^:|:$/g, \"\");\n}\nfunction joinKeys(...keys) {\n  return normalizeKey(keys.join(\":\"));\n}\nfunction normalizeBaseKey(base) {\n  base = normalizeKey(base);\n  return base ? base + \":\" : \"\";\n}\n\nexport { normalizeKey as a, asyncCall as b, serializeRaw as c, deserializeRaw as d, joinKeys as j, normalizeBaseKey as n, prefixStorage as p, stringify as s };\n",
+      "start": 1709737160872,
+      "end": 1709737160889,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160889,
+      "end": 1709737160889,
+      "order": "normal"
+    }
+  ]
+}

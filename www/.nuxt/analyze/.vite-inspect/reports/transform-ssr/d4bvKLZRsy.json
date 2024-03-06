@@ -1,0 +1,294 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue?vue&type=script&setup=true&lang.ts",
+  "transforms": [
+    {
+      "name": "vite:vue",
+      "result": "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \"vue\"\nimport { ssrRenderComponent as _ssrRenderComponent } from \"vue/server-renderer\"\n\nimport { computed } from 'vue'\nimport { useContentPreview } from '../composables/preview'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ContentRendererMarkdown',\n  __ssrInlineRender: true,\n  props: {\n  /**\n   * Content to render\n   */\n  value: {\n    type: Object,\n    required: true\n  },\n  /**\n   * Render only the excerpt\n   */\n  excerpt: {\n    type: Boolean,\n    default: false\n  },\n  /**\n   * Root tag to use for rendering\n   */\n  tag: {\n    type: String,\n    default: 'div'\n  },\n  /**\n   * The map of custom components to use for rendering.\n   */\n  components: {\n    type: Object,\n    default: () => ({})\n  },\n\n  data: {\n    type: Object,\n    default: () => ({})\n  }\n},\n  setup(__props) {\n\nconst props = __props\n\nconst debug = process.dev || useContentPreview().isEnabled()\n\nconst body = computed(() => {\n  let body = props.value.body || props.value\n  if (props.excerpt && props.value.excerpt) {\n    body = props.value.excerpt\n  }\n\n  return body\n})\n\nconst data = computed(() => {\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  const { body, excerpt, ...data } = props.value\n  return {\n    ...data,\n    ...props.data\n  }\n})\n\nconst mdcComponents = computed(() => {\n  return {\n    ...props.components,\n    ...(data.value._components || {})\n  }\n})\n\nreturn (_ctx: any,_push: any,_parent: any,_attrs: any) => {\n  const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\")!\n\n  _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\n    body: body.value,\n    data: data.value,\n    tag: __props.tag,\n    components: mdcComponents.value,\n    \"data-content-id\": _unref(debug) ? __props.value._id : undefined\n  }, _attrs), null, _parent))\n}\n}\n\n})",
+      "start": 1709737162209,
+      "end": 1709737162209,
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue"
+        ],
+        "sourcesContent": [
+          "<template>\n  <MDCRenderer\n    :body=\"body\"\n    :data=\"data\"\n    :tag=\"tag\"\n    :components=\"mdcComponents\"\n    :data-content-id=\"debug ? value._id : undefined\"\n  />\n</template>\n\n<script setup lang=\"ts\">\nimport { computed } from 'vue'\nimport { useContentPreview } from '../composables/preview'\n\nconst props = defineProps({\n  /**\n   * Content to render\n   */\n  value: {\n    type: Object,\n    required: true\n  },\n  /**\n   * Render only the excerpt\n   */\n  excerpt: {\n    type: Boolean,\n    default: false\n  },\n  /**\n   * Root tag to use for rendering\n   */\n  tag: {\n    type: String,\n    default: 'div'\n  },\n  /**\n   * The map of custom components to use for rendering.\n   */\n  components: {\n    type: Object,\n    default: () => ({})\n  },\n\n  data: {\n    type: Object,\n    default: () => ({})\n  }\n})\n\nconst debug = process.dev || useContentPreview().isEnabled()\n\nconst body = computed(() => {\n  let body = props.value.body || props.value\n  if (props.excerpt && props.value.excerpt) {\n    body = props.value.excerpt\n  }\n\n  return body\n})\n\nconst data = computed(() => {\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  const { body, excerpt, ...data } = props.value\n  return {\n    ...data,\n    ...props.data\n  }\n})\n\nconst mdcComponents = computed(() => {\n  return {\n    ...props.components,\n    ...(data.value._components || {})\n  }\n})\n</script>\n"
+        ],
+        "names": [],
+        "mappings": "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"
+      }
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162209,
+      "end": 1709737162209,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162209,
+      "end": 1709737162209,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162209,
+      "end": 1709737162210,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162209,
+      "end": 1709737162210,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162210,
+      "end": 1709737162210,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162210,
+      "end": 1709737162210,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162210,
+      "end": 1709737162210,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162210,
+      "end": 1709737162210,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderComponent as _ssrRenderComponent } from \"vue/server-renderer\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  __ssrInlineRender: true,\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = process.dev || useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _push, _parent, _attrs) => {\n      const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\");\n      _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, _attrs), null, _parent));\n    };\n  }\n});\n",
+      "start": 1709737162210,
+      "end": 1709737162262,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue?vue&type=script&setup=true&lang.ts"
+        ],
+        "sourcesContent": [
+          "import { defineComponent as _defineComponent } from 'vue'\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \"vue\"\nimport { ssrRenderComponent as _ssrRenderComponent } from \"vue/server-renderer\"\n\nimport { computed } from 'vue'\nimport { useContentPreview } from '../composables/preview'\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ContentRendererMarkdown',\n  __ssrInlineRender: true,\n  props: {\n  /**\n   * Content to render\n   */\n  value: {\n    type: Object,\n    required: true\n  },\n  /**\n   * Render only the excerpt\n   */\n  excerpt: {\n    type: Boolean,\n    default: false\n  },\n  /**\n   * Root tag to use for rendering\n   */\n  tag: {\n    type: String,\n    default: 'div'\n  },\n  /**\n   * The map of custom components to use for rendering.\n   */\n  components: {\n    type: Object,\n    default: () => ({})\n  },\n\n  data: {\n    type: Object,\n    default: () => ({})\n  }\n},\n  setup(__props) {\n\nconst props = __props\n\nconst debug = process.dev || useContentPreview().isEnabled()\n\nconst body = computed(() => {\n  let body = props.value.body || props.value\n  if (props.excerpt && props.value.excerpt) {\n    body = props.value.excerpt\n  }\n\n  return body\n})\n\nconst data = computed(() => {\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  const { body, excerpt, ...data } = props.value\n  return {\n    ...data,\n    ...props.data\n  }\n})\n\nconst mdcComponents = computed(() => {\n  return {\n    ...props.components,\n    ...(data.value._components || {})\n  }\n})\n\nreturn (_ctx: any,_push: any,_parent: any,_attrs: any) => {\n  const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\")!\n\n  _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\n    body: body.value,\n    data: data.value,\n    tag: __props.tag,\n    components: mdcComponents.value,\n    \"data-content-id\": _unref(debug) ? __props.value._id : undefined\n  }, _attrs), null, _parent))\n}\n}\n\n})"
+        ],
+        "mappings": "AAAA,SAAS,mBAAmB,wBAAwB;AACpD,SAAS,SAAS,QAAQ,oBAAoB,mBAAmB,cAAc,mBAAmB;AAClG,SAAS,sBAAsB,2BAA2B;AAE1D,SAAS,gBAAgB;AACzB,SAAS,yBAAyB;AAGlC,eAA4B,iCAAiB;AAAA,EAC3C,QAAQ;AAAA,EACR,mBAAmB;AAAA,EACnB,OAAO;AAAA;AAAA;AAAA;AAAA,IAIP,OAAO;AAAA,MACL,MAAM;AAAA,MACN,UAAU;AAAA,IACZ;AAAA;AAAA;AAAA;AAAA,IAIA,SAAS;AAAA,MACP,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,KAAK;AAAA,MACH,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,YAAY;AAAA,MACV,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,IAEA,MAAM;AAAA,MACJ,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,EACF;AAAA,EACE,MAAM,SAAS;AAEjB,UAAM,QAAQ;AAEd,UAAM,QAAQ,QAAQ,OAAO,kBAAkB,EAAE,UAAU;AAE3D,UAAM,OAAO,SAAS,MAAM;AAC1B,UAAIA,QAAO,MAAM,MAAM,QAAQ,MAAM;AACrC,UAAI,MAAM,WAAW,MAAM,MAAM,SAAS;AACxC,QAAAA,QAAO,MAAM,MAAM;AAAA,MACrB;AAEA,aAAOA;AAAA,IACT,CAAC;AAED,UAAM,OAAO,SAAS,MAAM;AAE1B,YAAM,EAAE,MAAAA,OAAM,SAAS,GAAGC,MAAK,IAAI,MAAM;AACzC,aAAO;AAAA,QACL,GAAGA;AAAA,QACH,GAAG,MAAM;AAAA,MACX;AAAA,IACF,CAAC;AAED,UAAM,gBAAgB,SAAS,MAAM;AACnC,aAAO;AAAA,QACL,GAAG,MAAM;AAAA,QACT,GAAI,KAAK,MAAM,eAAe,CAAC;AAAA,MACjC;AAAA,IACF,CAAC;AAED,WAAO,CAAC,MAAU,OAAW,SAAa,WAAgB;AACxD,YAAM,yBAAyB,kBAAkB,aAAa;AAE9D,YAAM,oBAAoB,wBAAwB,YAAY;AAAA,QAC5D,MAAM,KAAK;AAAA,QACX,MAAM,KAAK;AAAA,QACX,KAAK,QAAQ;AAAA,QACb,YAAY,cAAc;AAAA,QAC1B,mBAAmB,OAAO,KAAK,IAAI,QAAQ,MAAM,MAAM;AAAA,MACzD,GAAG,MAAM,GAAG,MAAM,OAAO,CAAC;AAAA,IAC5B;AAAA,EACA;AAEA,CAAC;",
+        "names": [
+          "body",
+          "data"
+        ]
+      }
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162262,
+      "end": 1709737162262,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162263,
+      "end": 1709737162263,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162264,
+      "end": 1709737162264,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162264,
+      "end": 1709737162266,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderComponent as _ssrRenderComponent } from \"vue/server-renderer\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  __ssrInlineRender: true,\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _push, _parent, _attrs) => {\n      const _component_MDCRenderer = _resolveComponent(\"MDCRenderer\");\n      _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, _attrs), null, _parent));\n    };\n  }\n});\n",
+      "start": 1709737162266,
+      "end": 1709737162277,
+      "order": "normal",
+      "sourcemaps": "{\n  \"version\": 3,\n  \"sources\": [\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentRendererMarkdown.vue?vue&type=script&setup=true&lang.ts\"],\n  \"sourcesContent\": [\"import { defineComponent as _defineComponent } from \\\"vue\\\";\\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \\\"vue\\\";\\nimport { ssrRenderComponent as _ssrRenderComponent } from \\\"vue/server-renderer\\\";\\nimport { computed } from \\\"vue\\\";\\nimport { useContentPreview } from \\\"../composables/preview\\\";\\nexport default /* @__PURE__ */ _defineComponent({\\n  __name: \\\"ContentRendererMarkdown\\\",\\n  __ssrInlineRender: true,\\n  props: {\\n    /**\\n     * Content to render\\n     */\\n    value: {\\n      type: Object,\\n      required: true\\n    },\\n    /**\\n     * Render only the excerpt\\n     */\\n    excerpt: {\\n      type: Boolean,\\n      default: false\\n    },\\n    /**\\n     * Root tag to use for rendering\\n     */\\n    tag: {\\n      type: String,\\n      default: \\\"div\\\"\\n    },\\n    /**\\n     * The map of custom components to use for rendering.\\n     */\\n    components: {\\n      type: Object,\\n      default: () => ({})\\n    },\\n    data: {\\n      type: Object,\\n      default: () => ({})\\n    }\\n  },\\n  setup(__props) {\\n    const props = __props;\\n    const debug = process.dev || useContentPreview().isEnabled();\\n    const body = computed(() => {\\n      let body2 = props.value.body || props.value;\\n      if (props.excerpt && props.value.excerpt) {\\n        body2 = props.value.excerpt;\\n      }\\n      return body2;\\n    });\\n    const data = computed(() => {\\n      const { body: body2, excerpt, ...data2 } = props.value;\\n      return {\\n        ...data2,\\n        ...props.data\\n      };\\n    });\\n    const mdcComponents = computed(() => {\\n      return {\\n        ...props.components,\\n        ...data.value._components || {}\\n      };\\n    });\\n    return (_ctx, _push, _parent, _attrs) => {\\n      const _component_MDCRenderer = _resolveComponent(\\\"MDCRenderer\\\");\\n      _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\\n        body: body.value,\\n        data: data.value,\\n        tag: __props.tag,\\n        components: mdcComponents.value,\\n        \\\"data-content-id\\\": _unref(debug) ? __props.value._id : void 0\\n      }, _attrs), null, _parent));\\n    };\\n  }\\n});\\n\"],\n  \"mappings\": \"AAAA,SAAS,mBAAmB,wBAAwB;AACpD,SAAS,SAAS,QAAQ,oBAAoB,mBAAmB,cAAc,mBAAmB;AAClG,SAAS,sBAAsB,2BAA2B;AAC1D,SAAS,gBAAgB;AACzB,SAAS,yBAAyB;AAClC,eAA+B,iCAAiB;AAAA,EAC9C,QAAQ;AAAA,EACR,mBAAmB;AAAA,EACnB,OAAO;AAAA;AAAA;AAAA;AAAA,IAIL,OAAO;AAAA,MACL,MAAM;AAAA,MACN,UAAU;AAAA,IACZ;AAAA;AAAA;AAAA;AAAA,IAIA,SAAS;AAAA,MACP,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,KAAK;AAAA,MACH,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA;AAAA;AAAA;AAAA,IAIA,YAAY;AAAA,MACV,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,IACA,MAAM;AAAA,MACJ,MAAM;AAAA,MACN,SAAS,OAAO,CAAC;AAAA,IACnB;AAAA,EACF;AAAA,EACA,MAAM,SAAS;AACb,UAAM,QAAQ;AACd,UAAM,QAAuB,kBAAkB,EAAE,UAAU;AAC3D,UAAM,OAAO,SAAS,MAAM;AAC1B,UAAI,QAAQ,MAAM,MAAM,QAAQ,MAAM;AACtC,UAAI,MAAM,WAAW,MAAM,MAAM,SAAS;AACxC,gBAAQ,MAAM,MAAM;AAAA,MACtB;AACA,aAAO;AAAA,IACT,CAAC;AACD,UAAM,OAAO,SAAS,MAAM;AAC1B,YAAM,EAAE,MAAM,OAAO,SAAS,GAAG,MAAM,IAAI,MAAM;AACjD,aAAO;AAAA,QACL,GAAG;AAAA,QACH,GAAG,MAAM;AAAA,MACX;AAAA,IACF,CAAC;AACD,UAAM,gBAAgB,SAAS,MAAM;AACnC,aAAO;AAAA,QACL,GAAG,MAAM;AAAA,QACT,GAAG,KAAK,MAAM,eAAe,CAAC;AAAA,MAChC;AAAA,IACF,CAAC;AACD,WAAO,CAAC,MAAM,OAAO,SAAS,WAAW;AACvC,YAAM,yBAAyB,kBAAkB,aAAa;AAC9D,YAAM,oBAAoB,wBAAwB,YAAY;AAAA,QAC5D,MAAM,KAAK;AAAA,QACX,MAAM,KAAK;AAAA,QACX,KAAK,QAAQ;AAAA,QACb,YAAY,cAAc;AAAA,QAC1B,mBAAmB,OAAO,KAAK,IAAI,QAAQ,MAAM,MAAM;AAAA,MACzD,GAAG,MAAM,GAAG,MAAM,OAAO,CAAC;AAAA,IAC5B;AAAA,EACF;AACF,CAAC;\",\n  \"names\": []\n}\n"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162277,
+      "end": 1709737162277,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162277,
+      "end": 1709737162277,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162277,
+      "end": 1709737162277,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162277,
+      "end": 1709737162277,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162278,
+      "end": 1709737162278,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162278,
+      "end": 1709737162278,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162278,
+      "end": 1709737162278,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162278,
+      "end": 1709737162278,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162278,
+      "end": 1709737162278,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162278,
+      "end": 1709737162279,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162278,
+      "end": 1709737162279,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162279,
+      "end": 1709737162279,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162279,
+      "end": 1709737162279,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162282,
+      "end": 1709737162282,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162282,
+      "end": 1709737162282,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162282,
+      "end": 1709737162282,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/home/jdupre/code/kernelquest/www/node_modules/@nuxtjs/mdc/dist/runtime/components/MDCRenderer\";\nimport { defineComponent as _defineComponent } from \"vue\";\nimport { unref as _unref, resolveComponent as _resolveComponent, mergeProps as _mergeProps } from \"vue\";\nimport { ssrRenderComponent as _ssrRenderComponent } from \"vue/server-renderer\";\nimport { computed } from \"vue\";\nimport { useContentPreview } from \"../composables/preview\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ContentRendererMarkdown\",\n  __ssrInlineRender: true,\n  props: {\n    /**\n     * Content to render\n     */\n    value: {\n      type: Object,\n      required: true\n    },\n    /**\n     * Render only the excerpt\n     */\n    excerpt: {\n      type: Boolean,\n      default: false\n    },\n    /**\n     * Root tag to use for rendering\n     */\n    tag: {\n      type: String,\n      default: \"div\"\n    },\n    /**\n     * The map of custom components to use for rendering.\n     */\n    components: {\n      type: Object,\n      default: () => ({})\n    },\n    data: {\n      type: Object,\n      default: () => ({})\n    }\n  },\n  setup(__props) {\n    const props = __props;\n    const debug = useContentPreview().isEnabled();\n    const body = computed(() => {\n      let body2 = props.value.body || props.value;\n      if (props.excerpt && props.value.excerpt) {\n        body2 = props.value.excerpt;\n      }\n      return body2;\n    });\n    const data = computed(() => {\n      const { body: body2, excerpt, ...data2 } = props.value;\n      return {\n        ...data2,\n        ...props.data\n      };\n    });\n    const mdcComponents = computed(() => {\n      return {\n        ...props.components,\n        ...data.value._components || {}\n      };\n    });\n    return (_ctx, _push, _parent, _attrs) => {\n      const _component_MDCRenderer = __nuxt_component_0;\n      _push(_ssrRenderComponent(_component_MDCRenderer, _mergeProps({\n        body: body.value,\n        data: data.value,\n        tag: __props.tag,\n        components: mdcComponents.value,\n        \"data-content-id\": _unref(debug) ? __props.value._id : void 0\n      }, _attrs), null, _parent));\n    };\n  }\n});\n",
+      "start": 1709737162282,
+      "end": 1709737162282,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxG,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACZ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACX,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC;AACJ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACR,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACR,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,kBAAgC,CAAC;AACtE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACN,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162285,
+      "end": 1709737162285,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162285,
+      "end": 1709737162285,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162285,
+      "end": 1709737162285,
+      "order": "normal"
+    }
+  ]
+}

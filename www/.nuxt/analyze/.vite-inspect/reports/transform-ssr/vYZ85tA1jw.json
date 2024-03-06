@@ -1,0 +1,274 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue?nuxt_component=async&nuxt_component_name=ContentSlot",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script>\nimport { defineComponent, h, resolveComponent } from \"vue\";\nexport default defineComponent({\n  props: {\n    /**\n     * A slot name or function\n     */\n    use: {\n      type: Function,\n      default: void 0\n    },\n    /**\n     * Tags to unwrap separated by spaces\n     * Example: 'ul li'\n     */\n    unwrap: {\n      type: [Boolean, String],\n      default: false\n    }\n  },\n  render(props) {\n    return h(resolveComponent(\"MDCSlot\"), props);\n  }\n});\n</script>\n",
+      "start": 1709737161896,
+      "end": 1709737161967,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737161967,
+      "end": 1709737161967,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "\nimport { defineComponent, h, resolveComponent } from \"vue\";\nconst _sfc_main = defineComponent({\n  props: {\n    /**\n     * A slot name or function\n     */\n    use: {\n      type: Function,\n      default: void 0\n    },\n    /**\n     * Tags to unwrap separated by spaces\n     * Example: 'ul li'\n     */\n    unwrap: {\n      type: [Boolean, String],\n      default: false\n    }\n  },\n  render(props) {\n    return h(resolveComponent(\"MDCSlot\"), props);\n  }\n});\n\n\n\n\nimport { useSSRContext as __vite_useSSRContext } from 'vue'\nconst _sfc_setup = _sfc_main.setup\n_sfc_main.setup = (props, ctx) => {\n  const ssrContext = __vite_useSSRContext()\n  ;(ssrContext.modules || (ssrContext.modules = new Set())).add(\"node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue\")\n  return _sfc_setup ? _sfc_setup(props, ctx) : undefined\n}\nexport default _sfc_main",
+      "start": 1709737161967,
+      "end": 1709737161968,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue"
+        ],
+        "names": [],
+        "mappings": ";AACA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC;AAC1D,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;EAC7B,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC;KACD,EAAE,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;KACxB,CAAC;IACF,CAAC,CAAC,CAAC,EAAE;MACH,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;MACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE;IAChB,CAAC;IACD,CAAC,CAAC;KACD,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC;KACnC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC;KACjB,CAAC;IACF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACN,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;MACvB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC;IACf;EACF,CAAC;EACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACZ,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;EAC9C;AACF,CAAC,CAAC",
+        "file": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue",
+        "sourceRoot": "",
+        "sourcesContent": [
+          "<script>\nimport { defineComponent, h, resolveComponent } from \"vue\";\nexport default defineComponent({\n  props: {\n    /**\n     * A slot name or function\n     */\n    use: {\n      type: Function,\n      default: void 0\n    },\n    /**\n     * Tags to unwrap separated by spaces\n     * Example: 'ul li'\n     */\n    unwrap: {\n      type: [Boolean, String],\n      default: false\n    }\n  },\n  render(props) {\n    return h(resolveComponent(\"MDCSlot\"), props);\n  }\n});\n</script>\n"
+        ]
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "result": "import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue\").then(r => r.default))",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "replace",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737161968,
+      "end": 1709737161968,
+      "order": "normal"
+    }
+  ]
+}
