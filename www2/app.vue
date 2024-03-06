@@ -1,7 +1,7 @@
 <template>
   <div class="flex w-100 vh-100 flex-column overflow-y-scroll">
     <nav-bar/>
-    <NuxtPage class="vh-100" />
+    <NuxtPage class="" />
     <layout-footer/>
   </div>
 </template>

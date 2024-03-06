@@ -33,6 +33,10 @@ body {
   font-size: 16;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Nunito Sans";
+}
+
 .avatar {
   background-color: #414161;
   background-image: url('/kareniel.png');
@@ -65,7 +69,7 @@ body {
 }
 
 .bg-dark {
-  background-color: #38344E;
+  background-color: #25203d;
 }
 
 .bg-darkest {
