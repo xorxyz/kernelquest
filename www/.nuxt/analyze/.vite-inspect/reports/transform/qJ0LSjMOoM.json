@@ -1,0 +1,228 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/Prose/ProsePre.vue?vue&type=script&setup=true&lang.ts",
+  "transforms": [
+    {
+      "name": "vite:vue",
+      "result": "import { defineComponent as _defineComponent } from 'vue'\nimport { renderSlot as _renderSlot, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ProsePre',\n  props: {\n  code: {\n    type: String,\n    default: ''\n  },\n  language: {\n    type: String,\n    default: null\n  },\n  filename: {\n    type: String,\n    default: null\n  },\n  highlights: {\n    type: Array as () => number[],\n    default: () => []\n  },\n  meta: {\n    type: String,\n    default: null\n  },\n  class: {\n    type: String,\n    default: null\n  },\n  style: {\n    type: [String, Object],\n    default: null\n  }\n},\n  setup(__props) {\n\n\n\nreturn (_ctx: any,_cache: any) => {\n  const _component_ProseCode = _resolveComponent(\"ProseCode\")!\n\n  return (_openBlock(), _createBlock(_component_ProseCode, {\n    code: __props.code,\n    language: __props.language,\n    filename: __props.filename,\n    highlights: __props.highlights,\n    meta: __props.meta\n  }, {\n    default: _withCtx(() => [\n      _createElementVNode(\"pre\", {\n        class: _normalizeClass(_ctx.$props.class),\n        style: _normalizeStyle(__props.style)\n      }, [\n        _renderSlot(_ctx.$slots, \"default\")\n      ], 6)\n    ]),\n    _: 3\n  }, 8, [\"code\", \"language\", \"filename\", \"highlights\", \"meta\"]))\n}\n}\n\n})",
+      "start": 1709737160470,
+      "end": 1709737160470
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160470,
+      "end": 1709737160470,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160470,
+      "end": 1709737160470,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160470,
+      "end": 1709737160470,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160470,
+      "end": 1709737160470,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160470,
+      "end": 1709737160470,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "result": "import { defineComponent as _defineComponent } from \"vue\";\nimport { renderSlot as _renderSlot, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ProsePre\",\n  props: {\n    code: {\n      type: String,\n      default: \"\"\n    },\n    language: {\n      type: String,\n      default: null\n    },\n    filename: {\n      type: String,\n      default: null\n    },\n    highlights: {\n      type: Array,\n      default: () => []\n    },\n    meta: {\n      type: String,\n      default: null\n    },\n    class: {\n      type: String,\n      default: null\n    },\n    style: {\n      type: [String, Object],\n      default: null\n    }\n  },\n  setup(__props) {\n    return (_ctx, _cache) => {\n      const _component_ProseCode = _resolveComponent(\"ProseCode\");\n      return _openBlock(), _createBlock(_component_ProseCode, {\n        code: __props.code,\n        language: __props.language,\n        filename: __props.filename,\n        highlights: __props.highlights,\n        meta: __props.meta\n      }, {\n        default: _withCtx(() => [\n          _createElementVNode(\"pre\", {\n            class: _normalizeClass(_ctx.$props.class),\n            style: _normalizeStyle(__props.style)\n          }, [\n            _renderSlot(_ctx.$slots, \"default\")\n          ], 6)\n        ]),\n        _: 3\n      }, 8, [\"code\", \"language\", \"filename\", \"highlights\", \"meta\"]);\n    };\n  }\n});\n",
+      "start": 1709737160470,
+      "end": 1709737160484,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/Prose/ProsePre.vue?vue&type=script&setup=true&lang.ts"
+        ],
+        "sourcesContent": [
+          "import { defineComponent as _defineComponent } from 'vue'\nimport { renderSlot as _renderSlot, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\n\nexport default /*#__PURE__*/_defineComponent({\n  __name: 'ProsePre',\n  props: {\n  code: {\n    type: String,\n    default: ''\n  },\n  language: {\n    type: String,\n    default: null\n  },\n  filename: {\n    type: String,\n    default: null\n  },\n  highlights: {\n    type: Array as () => number[],\n    default: () => []\n  },\n  meta: {\n    type: String,\n    default: null\n  },\n  class: {\n    type: String,\n    default: null\n  },\n  style: {\n    type: [String, Object],\n    default: null\n  }\n},\n  setup(__props) {\n\n\n\nreturn (_ctx: any,_cache: any) => {\n  const _component_ProseCode = _resolveComponent(\"ProseCode\")!\n\n  return (_openBlock(), _createBlock(_component_ProseCode, {\n    code: __props.code,\n    language: __props.language,\n    filename: __props.filename,\n    highlights: __props.highlights,\n    meta: __props.meta\n  }, {\n    default: _withCtx(() => [\n      _createElementVNode(\"pre\", {\n        class: _normalizeClass(_ctx.$props.class),\n        style: _normalizeStyle(__props.style)\n      }, [\n        _renderSlot(_ctx.$slots, \"default\")\n      ], 6)\n    ]),\n    _: 3\n  }, 8, [\"code\", \"language\", \"filename\", \"highlights\", \"meta\"]))\n}\n}\n\n})"
+        ],
+        "mappings": "AAAA,SAAS,mBAAmB,wBAAwB;AACpD,SAAS,cAAc,aAAa,kBAAkB,iBAAiB,kBAAkB,iBAAiB,sBAAsB,qBAAqB,oBAAoB,mBAAmB,WAAW,UAAU,aAAa,YAAY,eAAe,oBAAoB;AAG7Q,eAA4B,iCAAiB;AAAA,EAC3C,QAAQ;AAAA,EACR,OAAO;AAAA,IACP,MAAM;AAAA,MACJ,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA,IACA,UAAU;AAAA,MACR,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA,IACA,UAAU;AAAA,MACR,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA,IACA,YAAY;AAAA,MACV,MAAM;AAAA,MACN,SAAS,MAAM,CAAC;AAAA,IAClB;AAAA,IACA,MAAM;AAAA,MACJ,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA,IACA,OAAO;AAAA,MACL,MAAM;AAAA,MACN,SAAS;AAAA,IACX;AAAA,IACA,OAAO;AAAA,MACL,MAAM,CAAC,QAAQ,MAAM;AAAA,MACrB,SAAS;AAAA,IACX;AAAA,EACF;AAAA,EACE,MAAM,SAAS;AAIjB,WAAO,CAAC,MAAU,WAAgB;AAChC,YAAM,uBAAuB,kBAAkB,WAAW;AAE1D,aAAQ,WAAW,GAAG,aAAa,sBAAsB;AAAA,QACvD,MAAM,QAAQ;AAAA,QACd,UAAU,QAAQ;AAAA,QAClB,UAAU,QAAQ;AAAA,QAClB,YAAY,QAAQ;AAAA,QACpB,MAAM,QAAQ;AAAA,MAChB,GAAG;AAAA,QACD,SAAS,SAAS,MAAM;AAAA,UACtB,oBAAoB,OAAO;AAAA,YACzB,OAAO,gBAAgB,KAAK,OAAO,KAAK;AAAA,YACxC,OAAO,gBAAgB,QAAQ,KAAK;AAAA,UACtC,GAAG;AAAA,YACD,YAAY,KAAK,QAAQ,SAAS;AAAA,UACpC,GAAG,CAAC;AAAA,QACN,CAAC;AAAA,QACD,GAAG;AAAA,MACL,GAAG,GAAG,CAAC,QAAQ,YAAY,YAAY,cAAc,MAAM,CAAC;AAAA,IAC9D;AAAA,EACA;AAEA,CAAC;",
+        "names": []
+      }
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160485,
+      "end": 1709737160485,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160485,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160487,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160487,
+      "end": 1709737160487,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160487,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160488,
+      "end": 1709737160488,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160489,
+      "end": 1709737160489,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160489,
+      "end": 1709737160489,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160489,
+      "end": 1709737160489,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160489,
+      "end": 1709737160489,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160491,
+      "end": 1709737160491,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160492,
+      "end": 1709737160492,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160492,
+      "end": 1709737160492,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160492,
+      "end": 1709737160492,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/Prose/ProseCode.vue\";\nimport { defineComponent as _defineComponent } from \"vue\";\nimport { renderSlot as _renderSlot, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\";\nexport default /* @__PURE__ */ _defineComponent({\n  __name: \"ProsePre\",\n  props: {\n    code: {\n      type: String,\n      default: \"\"\n    },\n    language: {\n      type: String,\n      default: null\n    },\n    filename: {\n      type: String,\n      default: null\n    },\n    highlights: {\n      type: Array,\n      default: () => []\n    },\n    meta: {\n      type: String,\n      default: null\n    },\n    class: {\n      type: String,\n      default: null\n    },\n    style: {\n      type: [String, Object],\n      default: null\n    }\n  },\n  setup(__props) {\n    return (_ctx, _cache) => {\n      const _component_ProseCode = __nuxt_component_0;\n      return _openBlock(), _createBlock(_component_ProseCode, {\n        code: __props.code,\n        language: __props.language,\n        filename: __props.filename,\n        highlights: __props.highlights,\n        meta: __props.meta\n      }, {\n        default: _withCtx(() => [\n          _createElementVNode(\"pre\", {\n            class: _normalizeClass(_ctx.$props.class),\n            style: _normalizeStyle(__props.style)\n          }, [\n            _renderSlot(_ctx.$slots, \"default\")\n          ], 6)\n        ]),\n        _: 3\n      }, 8, [\"code\", \"language\", \"filename\", \"highlights\", \"meta\"]);\n    };\n  }\n});\n",
+      "start": 1709737160493,
+      "end": 1709737160493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160493,
+      "end": 1709737160493,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160493,
+      "end": 1709737160493,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160493,
+      "end": 1709737160493,
+      "order": "normal"
+    }
+  ]
+}

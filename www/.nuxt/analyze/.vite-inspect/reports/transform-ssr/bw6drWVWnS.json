@@ -1,0 +1,258 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/query/match/pipeline.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { joinURL } from \"ufo\";\nimport { apply, ensureArray, sortList, withoutKeys, withKeys, omit } from \"./utils.js\";\nimport { createMatch } from \"./index.js\";\nexport function createPipelineFetcher(getContentsList) {\n  const match = createMatch();\n  const surround = (data, { query, before, after }) => {\n    const matchQuery = typeof query === \"string\" ? { _path: query } : query;\n    const index = data.findIndex((item) => match(item, matchQuery));\n    before = before ?? 1;\n    after = after ?? 1;\n    const slice = new Array(before + after).fill(null, 0);\n    return index === -1 ? slice : slice.map((_, i) => data[index - before + i + Number(i >= before)] || null);\n  };\n  const matchingPipelines = [\n    // Conditions\n    (state, params) => {\n      const filtered = state.result.filter((item) => ensureArray(params.where).every((matchQuery) => match(item, matchQuery)));\n      return {\n        ...state,\n        result: filtered,\n        total: filtered.length\n      };\n    },\n    // Sort data\n    (state, params) => ensureArray(params.sort).forEach((options) => sortList(state.result, options)),\n    function fetchSurround(state, params, db) {\n      if (params.surround) {\n        let _surround = surround(state.result?.length === 1 ? db : state.result, params.surround);\n        _surround = apply(withoutKeys(params.without))(_surround);\n        _surround = apply(withKeys(params.only))(_surround);\n        state.surround = _surround;\n      }\n      return state;\n    }\n  ];\n  const transformingPiples = [\n    // Skip first items\n    (state, params) => {\n      if (params.skip) {\n        return {\n          ...state,\n          result: state.result.slice(params.skip),\n          skip: params.skip\n        };\n      }\n    },\n    // Pick first items\n    (state, params) => {\n      if (params.limit) {\n        return {\n          ...state,\n          result: state.result.slice(0, params.limit),\n          limit: params.limit\n        };\n      }\n    },\n    function fetchDirConfig(state, params, db) {\n      if (params.dirConfig) {\n        const path = state.result[0]?._path || params.where?.find((w) => w._path)?._path;\n        if (typeof path === \"string\") {\n          const dirConfig = db.find((item) => item._path === joinURL(path, \"_dir\"));\n          if (dirConfig) {\n            state.dirConfig = { _path: dirConfig._path, ...withoutKeys([\"_\"])(dirConfig) };\n          }\n        }\n      }\n      return state;\n    },\n    // Remove unwanted fields\n    (state, params) => ({\n      ...state,\n      result: apply(withoutKeys(params.without))(state.result)\n    }),\n    // Select only wanted fields\n    (state, params) => ({\n      ...state,\n      result: apply(withKeys(params.only))(state.result)\n    })\n  ];\n  return async (query) => {\n    const db = await getContentsList();\n    const params = query.params();\n    const result1 = {\n      result: db,\n      limit: 0,\n      skip: 0,\n      total: db.length\n    };\n    const matchedData = matchingPipelines.reduce(($data, pipe) => pipe($data, params, db) || $data, result1);\n    if (params.count) {\n      return {\n        result: matchedData.result.length\n      };\n    }\n    const result = transformingPiples.reduce(($data, pipe) => pipe($data, params, db) || $data, matchedData);\n    if (params.first) {\n      return {\n        ...omit([\"skip\", \"limit\", \"total\"])(result),\n        result: result.result[0]\n      };\n    }\n    return result;\n  };\n}\n",
+      "start": 1709737162477,
+      "end": 1709737162485,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162485,
+      "end": 1709737162485,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162485,
+      "end": 1709737162486,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162486,
+      "end": 1709737162486,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+import{_ as r,j as s,o as i,c as a,a as c}from"./entry.BOW7OJZK.js";const l={setup(){const{loginWithRedirect:o}=s();return{login:()=>{o()}}}};function d(o,n,p,e,u,_){return i(),a("div",null,[c("button",{onClick:n[0]||(n[0]=(...t)=>e.login&&e.login(...t))},"Log in")])}const g=r(l,[["render",d]]);export{g as default};

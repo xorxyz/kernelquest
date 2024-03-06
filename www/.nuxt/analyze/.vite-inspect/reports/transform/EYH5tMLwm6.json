@@ -1,0 +1,216 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/unstorage/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import destr from 'destr';\nimport { n as normalizeBaseKey, a as normalizeKey, b as asyncCall, d as deserializeRaw, s as stringify, c as serializeRaw, j as joinKeys } from './shared/unstorage.8581f561.mjs';\nexport { p as prefixStorage } from './shared/unstorage.8581f561.mjs';\n\nfunction defineDriver(factory) {\n  return factory;\n}\n\nconst DRIVER_NAME = \"memory\";\nconst memory = defineDriver(() => {\n  const data = /* @__PURE__ */ new Map();\n  return {\n    name: DRIVER_NAME,\n    options: {},\n    hasItem(key) {\n      return data.has(key);\n    },\n    getItem(key) {\n      return data.get(key) ?? null;\n    },\n    getItemRaw(key) {\n      return data.get(key) ?? null;\n    },\n    setItem(key, value) {\n      data.set(key, value);\n    },\n    setItemRaw(key, value) {\n      data.set(key, value);\n    },\n    removeItem(key) {\n      data.delete(key);\n    },\n    getKeys() {\n      return Array.from(data.keys());\n    },\n    clear() {\n      data.clear();\n    },\n    dispose() {\n      data.clear();\n    }\n  };\n});\n\nfunction createStorage(options = {}) {\n  const context = {\n    mounts: { \"\": options.driver || memory() },\n    mountpoints: [\"\"],\n    watching: false,\n    watchListeners: [],\n    unwatch: {}\n  };\n  const getMount = (key) => {\n    for (const base of context.mountpoints) {\n      if (key.startsWith(base)) {\n        return {\n          base,\n          relativeKey: key.slice(base.length),\n          driver: context.mounts[base]\n        };\n      }\n    }\n    return {\n      base: \"\",\n      relativeKey: key,\n      driver: context.mounts[\"\"]\n    };\n  };\n  const getMounts = (base, includeParent) => {\n    return context.mountpoints.filter(\n      (mountpoint) => mountpoint.startsWith(base) || includeParent && base.startsWith(mountpoint)\n    ).map((mountpoint) => ({\n      relativeBase: base.length > mountpoint.length ? base.slice(mountpoint.length) : void 0,\n      mountpoint,\n      driver: context.mounts[mountpoint]\n    }));\n  };\n  const onChange = (event, key) => {\n    if (!context.watching) {\n      return;\n    }\n    key = normalizeKey(key);\n    for (const listener of context.watchListeners) {\n      listener(event, key);\n    }\n  };\n  const startWatch = async () => {\n    if (context.watching) {\n      return;\n    }\n    context.watching = true;\n    for (const mountpoint in context.mounts) {\n      context.unwatch[mountpoint] = await watch(\n        context.mounts[mountpoint],\n        onChange,\n        mountpoint\n      );\n    }\n  };\n  const stopWatch = async () => {\n    if (!context.watching) {\n      return;\n    }\n    for (const mountpoint in context.unwatch) {\n      await context.unwatch[mountpoint]();\n    }\n    context.unwatch = {};\n    context.watching = false;\n  };\n  const runBatch = (items, commonOptions, cb) => {\n    const batches = /* @__PURE__ */ new Map();\n    const getBatch = (mount) => {\n      let batch = batches.get(mount.base);\n      if (!batch) {\n        batch = {\n          driver: mount.driver,\n          base: mount.base,\n          items: []\n        };\n        batches.set(mount.base, batch);\n      }\n      return batch;\n    };\n    for (const item of items) {\n      const isStringItem = typeof item === \"string\";\n      const key = normalizeKey(isStringItem ? item : item.key);\n      const value = isStringItem ? void 0 : item.value;\n      const options2 = isStringItem || !item.options ? commonOptions : { ...commonOptions, ...item.options };\n      const mount = getMount(key);\n      getBatch(mount).items.push({\n        key,\n        value,\n        relativeKey: mount.relativeKey,\n        options: options2\n      });\n    }\n    return Promise.all([...batches.values()].map((batch) => cb(batch))).then(\n      (r) => r.flat()\n    );\n  };\n  const storage = {\n    // Item\n    hasItem(key, opts = {}) {\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      return asyncCall(driver.hasItem, relativeKey, opts);\n    },\n    getItem(key, opts = {}) {\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      return asyncCall(driver.getItem, relativeKey, opts).then(\n        (value) => destr(value)\n      );\n    },\n    getItems(items, commonOptions) {\n      return runBatch(items, commonOptions, (batch) => {\n        if (batch.driver.getItems) {\n          return asyncCall(\n            batch.driver.getItems,\n            batch.items.map((item) => ({\n              key: item.relativeKey,\n              options: item.options\n            })),\n            commonOptions\n          ).then(\n            (r) => r.map((item) => ({\n              key: joinKeys(batch.base, item.key),\n              value: destr(item.value)\n            }))\n          );\n        }\n        return Promise.all(\n          batch.items.map((item) => {\n            return asyncCall(\n              batch.driver.getItem,\n              item.relativeKey,\n              item.options\n            ).then((value) => ({\n              key: item.key,\n              value: destr(value)\n            }));\n          })\n        );\n      });\n    },\n    getItemRaw(key, opts = {}) {\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      if (driver.getItemRaw) {\n        return asyncCall(driver.getItemRaw, relativeKey, opts);\n      }\n      return asyncCall(driver.getItem, relativeKey, opts).then(\n        (value) => deserializeRaw(value)\n      );\n    },\n    async setItem(key, value, opts = {}) {\n      if (value === void 0) {\n        return storage.removeItem(key);\n      }\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      if (!driver.setItem) {\n        return;\n      }\n      await asyncCall(driver.setItem, relativeKey, stringify(value), opts);\n      if (!driver.watch) {\n        onChange(\"update\", key);\n      }\n    },\n    async setItems(items, commonOptions) {\n      await runBatch(items, commonOptions, async (batch) => {\n        if (batch.driver.setItems) {\n          await asyncCall(\n            batch.driver.setItems,\n            batch.items.map((item) => ({\n              key: item.relativeKey,\n              value: stringify(item.value),\n              options: item.options\n            })),\n            commonOptions\n          );\n        }\n        if (!batch.driver.setItem) {\n          return;\n        }\n        await Promise.all(\n          batch.items.map((item) => {\n            return asyncCall(\n              batch.driver.setItem,\n              item.relativeKey,\n              stringify(item.value),\n              item.options\n            );\n          })\n        );\n      });\n    },\n    async setItemRaw(key, value, opts = {}) {\n      if (value === void 0) {\n        return storage.removeItem(key, opts);\n      }\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      if (driver.setItemRaw) {\n        await asyncCall(driver.setItemRaw, relativeKey, value, opts);\n      } else if (driver.setItem) {\n        await asyncCall(driver.setItem, relativeKey, serializeRaw(value), opts);\n      } else {\n        return;\n      }\n      if (!driver.watch) {\n        onChange(\"update\", key);\n      }\n    },\n    async removeItem(key, opts = {}) {\n      if (typeof opts === \"boolean\") {\n        opts = { removeMeta: opts };\n      }\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      if (!driver.removeItem) {\n        return;\n      }\n      await asyncCall(driver.removeItem, relativeKey, opts);\n      if (opts.removeMeta || opts.removeMata) {\n        await asyncCall(driver.removeItem, relativeKey + \"$\", opts);\n      }\n      if (!driver.watch) {\n        onChange(\"remove\", key);\n      }\n    },\n    // Meta\n    async getMeta(key, opts = {}) {\n      if (typeof opts === \"boolean\") {\n        opts = { nativeOnly: opts };\n      }\n      key = normalizeKey(key);\n      const { relativeKey, driver } = getMount(key);\n      const meta = /* @__PURE__ */ Object.create(null);\n      if (driver.getMeta) {\n        Object.assign(meta, await asyncCall(driver.getMeta, relativeKey, opts));\n      }\n      if (!opts.nativeOnly) {\n        const value = await asyncCall(\n          driver.getItem,\n          relativeKey + \"$\",\n          opts\n        ).then((value_) => destr(value_));\n        if (value && typeof value === \"object\") {\n          if (typeof value.atime === \"string\") {\n            value.atime = new Date(value.atime);\n          }\n          if (typeof value.mtime === \"string\") {\n            value.mtime = new Date(value.mtime);\n          }\n          Object.assign(meta, value);\n        }\n      }\n      return meta;\n    },\n    setMeta(key, value, opts = {}) {\n      return this.setItem(key + \"$\", value, opts);\n    },\n    removeMeta(key, opts = {}) {\n      return this.removeItem(key + \"$\", opts);\n    },\n    // Keys\n    async getKeys(base, opts = {}) {\n      base = normalizeBaseKey(base);\n      const mounts = getMounts(base, true);\n      let maskedMounts = [];\n      const allKeys = [];\n      for (const mount of mounts) {\n        const rawKeys = await asyncCall(\n          mount.driver.getKeys,\n          mount.relativeBase,\n          opts\n        );\n        const keys = rawKeys.map((key) => mount.mountpoint + normalizeKey(key)).filter((key) => !maskedMounts.some((p) => key.startsWith(p)));\n        allKeys.push(...keys);\n        maskedMounts = [\n          mount.mountpoint,\n          ...maskedMounts.filter((p) => !p.startsWith(mount.mountpoint))\n        ];\n      }\n      return base ? allKeys.filter((key) => key.startsWith(base) && !key.endsWith(\"$\")) : allKeys.filter((key) => !key.endsWith(\"$\"));\n    },\n    // Utils\n    async clear(base, opts = {}) {\n      base = normalizeBaseKey(base);\n      await Promise.all(\n        getMounts(base, false).map(async (m) => {\n          if (m.driver.clear) {\n            return asyncCall(m.driver.clear, m.relativeBase, opts);\n          }\n          if (m.driver.removeItem) {\n            const keys = await m.driver.getKeys(m.relativeBase || \"\", opts);\n            return Promise.all(\n              keys.map((key) => m.driver.removeItem(key, opts))\n            );\n          }\n        })\n      );\n    },\n    async dispose() {\n      await Promise.all(\n        Object.values(context.mounts).map((driver) => dispose(driver))\n      );\n    },\n    async watch(callback) {\n      await startWatch();\n      context.watchListeners.push(callback);\n      return async () => {\n        context.watchListeners = context.watchListeners.filter(\n          (listener) => listener !== callback\n        );\n        if (context.watchListeners.length === 0) {\n          await stopWatch();\n        }\n      };\n    },\n    async unwatch() {\n      context.watchListeners = [];\n      await stopWatch();\n    },\n    // Mount\n    mount(base, driver) {\n      base = normalizeBaseKey(base);\n      if (base && context.mounts[base]) {\n        throw new Error(`already mounted at ${base}`);\n      }\n      if (base) {\n        context.mountpoints.push(base);\n        context.mountpoints.sort((a, b) => b.length - a.length);\n      }\n      context.mounts[base] = driver;\n      if (context.watching) {\n        Promise.resolve(watch(driver, onChange, base)).then((unwatcher) => {\n          context.unwatch[base] = unwatcher;\n        }).catch(console.error);\n      }\n      return storage;\n    },\n    async unmount(base, _dispose = true) {\n      base = normalizeBaseKey(base);\n      if (!base || !context.mounts[base]) {\n        return;\n      }\n      if (context.watching && base in context.unwatch) {\n        context.unwatch[base]();\n        delete context.unwatch[base];\n      }\n      if (_dispose) {\n        await dispose(context.mounts[base]);\n      }\n      context.mountpoints = context.mountpoints.filter((key) => key !== base);\n      delete context.mounts[base];\n    },\n    getMount(key = \"\") {\n      key = normalizeKey(key) + \":\";\n      const m = getMount(key);\n      return {\n        driver: m.driver,\n        base: m.base\n      };\n    },\n    getMounts(base = \"\", opts = {}) {\n      base = normalizeKey(base);\n      const mounts = getMounts(base, opts.parents);\n      return mounts.map((m) => ({\n        driver: m.driver,\n        base: m.mountpoint\n      }));\n    }\n  };\n  return storage;\n}\nasync function snapshot(storage, base) {\n  base = normalizeBaseKey(base);\n  const keys = await storage.getKeys(base);\n  const snapshot2 = {};\n  await Promise.all(\n    keys.map(async (key) => {\n      snapshot2[key.slice(base.length)] = await storage.getItem(key);\n    })\n  );\n  return snapshot2;\n}\nasync function restoreSnapshot(driver, snapshot2, base = \"\") {\n  base = normalizeBaseKey(base);\n  await Promise.all(\n    Object.entries(snapshot2).map((e) => driver.setItem(base + e[0], e[1]))\n  );\n}\nfunction watch(driver, onChange, base) {\n  return driver.watch ? driver.watch((event, key) => onChange(event, base + key)) : () => {\n  };\n}\nasync function dispose(driver) {\n  if (typeof driver.dispose === \"function\") {\n    await asyncCall(driver.dispose);\n  }\n}\n\nconst builtinDrivers = {\n  azureAppConfiguration: \"unstorage/drivers/azure-app-configuration\",\n  azureCosmos: \"unstorage/drivers/azure-cosmos\",\n  azureKeyVault: \"unstorage/drivers/azure-key-vault\",\n  azureStorageBlob: \"unstorage/drivers/azure-storage-blob\",\n  azureStorageTable: \"unstorage/drivers/azure-storage-table\",\n  cloudflareKVBinding: \"unstorage/drivers/cloudflare-kv-binding\",\n  cloudflareKVHTTP: \"unstorage/drivers/cloudflare-kv-http\",\n  cloudflareR2Binding: \"unstorage/drivers/cloudflare-r2-binding\",\n  fs: \"unstorage/drivers/fs\",\n  fsLite: \"unstorage/drivers/fs-lite\",\n  github: \"unstorage/drivers/github\",\n  http: \"unstorage/drivers/http\",\n  indexedb: \"unstorage/drivers/indexedb\",\n  localStorage: \"unstorage/drivers/localstorage\",\n  lruCache: \"unstorage/drivers/lru-cache\",\n  memory: \"unstorage/drivers/memory\",\n  mongodb: \"unstorage/drivers/mongodb\",\n  netlifyBlobs: \"unstorage/drivers/netlify-blobs\",\n  overlay: \"unstorage/drivers/overlay\",\n  planetscale: \"unstorage/drivers/planetscale\",\n  redis: \"unstorage/drivers/redis\",\n  sessionStorage: \"unstorage/drivers/session-storage\",\n  vercelKV: \"unstorage/drivers/vercel-kv\",\n  /** @deprecated */\n  \"cloudflare-kv-binding\": \"unstorage/drivers/cloudflare-kv-binding\",\n  /** @deprecated */\n  \"cloudflare-kv-http\": \"unstorage/drivers/cloudflare-kv-http\"\n};\n\nexport { builtinDrivers, createStorage, defineDriver, joinKeys, normalizeBaseKey, normalizeKey, restoreSnapshot, snapshot };\n",
+      "start": 1709737160835,
+      "end": 1709737160859,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160859,
+      "end": 1709737160859,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160859,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160860,
+      "end": 1709737160860,
+      "order": "normal"
+    }
+  ]
+}

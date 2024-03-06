@@ -1,0 +1,239 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/plugins/auth0.ts",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { createAuth0 } from '@auth0/auth0-vue'\n\nexport default defineNuxtPlugin((nuxtApp) => {\n  const auth0 = createAuth0({\n    domain: 'kernelquest.us.auth0.com',\n    clientId: 'lvI0iFB0FiRMzSe7zrXHap4BpKzGMbp6',\n  });\n\n  if (process.client) {\n    nuxtApp.vueApp.use(auth0)\n  }\n\n  addRouteMiddleware('auth', () => {\n    if (process.client) {\n      auth0.checkSession()\n      if (!auth0.isAuthenticated.value) {\n        auth0.loginWithRedirect({\n          appState: {\n            target: useRoute().path,\n          },\n        })\n      }\n    }\n  })\n})\n",
+      "start": 1709737159856,
+      "end": 1709737159953,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737159953,
+      "end": 1709737159953,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737159953,
+      "end": 1709737159953,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737159953,
+      "end": 1709737159953,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737159953,
+      "end": 1709737159953,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737159953,
+      "end": 1709737159953,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "result": "import { createAuth0 } from \"@auth0/auth0-vue\";\nexport default defineNuxtPlugin((nuxtApp) => {\n  const auth0 = createAuth0({\n    domain: \"kernelquest.us.auth0.com\",\n    clientId: \"lvI0iFB0FiRMzSe7zrXHap4BpKzGMbp6\"\n  });\n  if (process.client) {\n    nuxtApp.vueApp.use(auth0);\n  }\n  addRouteMiddleware(\"auth\", () => {\n    if (process.client) {\n      auth0.checkSession();\n      if (!auth0.isAuthenticated.value) {\n        auth0.loginWithRedirect({\n          appState: {\n            target: useRoute().path\n          }\n        });\n      }\n    }\n  });\n});\n",
+      "start": 1709737159953,
+      "end": 1709737160042,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/plugins/auth0.ts"
+        ],
+        "sourcesContent": [
+          "import { createAuth0 } from '@auth0/auth0-vue'\n\nexport default defineNuxtPlugin((nuxtApp) => {\n  const auth0 = createAuth0({\n    domain: 'kernelquest.us.auth0.com',\n    clientId: 'lvI0iFB0FiRMzSe7zrXHap4BpKzGMbp6',\n  });\n\n  if (process.client) {\n    nuxtApp.vueApp.use(auth0)\n  }\n\n  addRouteMiddleware('auth', () => {\n    if (process.client) {\n      auth0.checkSession()\n      if (!auth0.isAuthenticated.value) {\n        auth0.loginWithRedirect({\n          appState: {\n            target: useRoute().path,\n          },\n        })\n      }\n    }\n  })\n})\n"
+        ],
+        "mappings": "AAAA,SAAS,mBAAmB;AAE5B,eAAe,iBAAiB,CAAC,YAAY;AAC3C,QAAM,QAAQ,YAAY;AAAA,IACxB,QAAQ;AAAA,IACR,UAAU;AAAA,EACZ,CAAC;AAED,MAAI,QAAQ,QAAQ;AAClB,YAAQ,OAAO,IAAI,KAAK;AAAA,EAC1B;AAEA,qBAAmB,QAAQ,MAAM;AAC/B,QAAI,QAAQ,QAAQ;AAClB,YAAM,aAAa;AACnB,UAAI,CAAC,MAAM,gBAAgB,OAAO;AAChC,cAAM,kBAAkB;AAAA,UACtB,UAAU;AAAA,YACR,QAAQ,SAAS,EAAE;AAAA,UACrB;AAAA,QACF,CAAC;AAAA,MACH;AAAA,IACF;AAAA,EACF,CAAC;AACH,CAAC;",
+        "names": []
+      }
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160042,
+      "end": 1709737160042,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160042,
+      "end": 1709737160042,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160042,
+      "end": 1709737160042,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160042,
+      "end": 1709737160042,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160042,
+      "end": 1709737160042,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160042,
+      "end": 1709737160043,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160043,
+      "end": 1709737160043,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160043,
+      "end": 1709737160043,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160043,
+      "end": 1709737160043,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160043,
+      "end": 1709737160043,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { createAuth0 } from \"@auth0/auth0-vue\";\nexport default defineNuxtPlugin((nuxtApp) => {\n  const auth0 = createAuth0({\n    domain: \"kernelquest.us.auth0.com\",\n    clientId: \"lvI0iFB0FiRMzSe7zrXHap4BpKzGMbp6\"\n  });\n  if (true) {\n    nuxtApp.vueApp.use(auth0);\n  }\n  addRouteMiddleware(\"auth\", () => {\n    if (true) {\n      auth0.checkSession();\n      if (!auth0.isAuthenticated.value) {\n        auth0.loginWithRedirect({\n          appState: {\n            target: useRoute().path\n          }\n        });\n      }\n    }\n  });\n});\n",
+      "start": 1709737160043,
+      "end": 1709737160061,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "result": "import { defineNuxtPlugin } from '#app/nuxt';\nimport { addRouteMiddleware, useRoute } from '#app/composables/router';\nimport { createAuth0 } from \"@auth0/auth0-vue\";\nexport default defineNuxtPlugin((nuxtApp) => {\n  const auth0 = createAuth0({\n    domain: \"kernelquest.us.auth0.com\",\n    clientId: \"lvI0iFB0FiRMzSe7zrXHap4BpKzGMbp6\"\n  });\n  if (true) {\n    nuxtApp.vueApp.use(auth0);\n  }\n  addRouteMiddleware(\"auth\", () => {\n    if (true) {\n      auth0.checkSession();\n      if (!auth0.isAuthenticated.value) {\n        auth0.loginWithRedirect({\n          appState: {\n            target: useRoute().path\n          }\n        });\n      }\n    }\n  });\n});\n",
+      "start": 1709737160061,
+      "end": 1709737160061,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": ";;AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChD,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACb,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9B,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACpC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACX,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACX,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160061,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160062,
+      "end": 1709737160062,
+      "order": "normal"
+    }
+  ]
+}

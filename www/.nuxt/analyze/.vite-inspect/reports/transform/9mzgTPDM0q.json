@@ -1,0 +1,216 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/scule/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "const NUMBER_CHAR_RE = /\\d/;\nconst STR_SPLITTERS = [\"-\", \"_\", \"/\", \".\"];\nfunction isUppercase(char = \"\") {\n  if (NUMBER_CHAR_RE.test(char)) {\n    return void 0;\n  }\n  return char !== char.toLowerCase();\n}\nfunction splitByCase(str, separators) {\n  const splitters = separators ?? STR_SPLITTERS;\n  const parts = [];\n  if (!str || typeof str !== \"string\") {\n    return parts;\n  }\n  let buff = \"\";\n  let previousUpper;\n  let previousSplitter;\n  for (const char of str) {\n    const isSplitter = splitters.includes(char);\n    if (isSplitter === true) {\n      parts.push(buff);\n      buff = \"\";\n      previousUpper = void 0;\n      continue;\n    }\n    const isUpper = isUppercase(char);\n    if (previousSplitter === false) {\n      if (previousUpper === false && isUpper === true) {\n        parts.push(buff);\n        buff = char;\n        previousUpper = isUpper;\n        continue;\n      }\n      if (previousUpper === true && isUpper === false && buff.length > 1) {\n        const lastChar = buff.at(-1);\n        parts.push(buff.slice(0, Math.max(0, buff.length - 1)));\n        buff = lastChar + char;\n        previousUpper = isUpper;\n        continue;\n      }\n    }\n    buff += char;\n    previousUpper = isUpper;\n    previousSplitter = isSplitter;\n  }\n  parts.push(buff);\n  return parts;\n}\nfunction upperFirst(str) {\n  return str ? str[0].toUpperCase() + str.slice(1) : \"\";\n}\nfunction lowerFirst(str) {\n  return str ? str[0].toLowerCase() + str.slice(1) : \"\";\n}\nfunction pascalCase(str, opts) {\n  return str ? (Array.isArray(str) ? str : splitByCase(str)).map((p) => upperFirst(opts?.normalize ? p.toLowerCase() : p)).join(\"\") : \"\";\n}\nfunction camelCase(str, opts) {\n  return lowerFirst(pascalCase(str || \"\", opts));\n}\nfunction kebabCase(str, joiner) {\n  return str ? (Array.isArray(str) ? str : splitByCase(str)).map((p) => p.toLowerCase()).join(joiner ?? \"-\") : \"\";\n}\nfunction snakeCase(str) {\n  return kebabCase(str || \"\", \"_\");\n}\nfunction flatCase(str) {\n  return kebabCase(str || \"\", \"\");\n}\nfunction trainCase(str, opts) {\n  return (Array.isArray(str) ? str : splitByCase(str)).filter(Boolean).map((p) => upperFirst(opts?.normalize ? p.toLowerCase() : p)).join(\"-\");\n}\nconst titleCaseExceptions = /^(a|an|and|as|at|but|by|for|if|in|is|nor|of|on|or|the|to|with)$/i;\nfunction titleCase(str, opts) {\n  return (Array.isArray(str) ? str : splitByCase(str)).filter(Boolean).map(\n    (p) => titleCaseExceptions.test(p) ? p.toLowerCase() : upperFirst(opts?.normalize ? p.toLowerCase() : p)\n  ).join(\" \");\n}\n\nexport { camelCase, flatCase, isUppercase, kebabCase, lowerFirst, pascalCase, snakeCase, splitByCase, titleCase, trainCase, upperFirst };\n",
+      "start": 1709737160819,
+      "end": 1709737160853,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160853,
+      "end": 1709737160853,
+      "order": "normal"
+    }
+  ]
+}

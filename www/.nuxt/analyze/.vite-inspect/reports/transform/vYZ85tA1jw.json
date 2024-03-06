@@ -1,0 +1,224 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue?nuxt_component=async&nuxt_component_name=ContentSlot",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script>\nimport { defineComponent, h, resolveComponent } from \"vue\";\nexport default defineComponent({\n  props: {\n    /**\n     * A slot name or function\n     */\n    use: {\n      type: Function,\n      default: void 0\n    },\n    /**\n     * Tags to unwrap separated by spaces\n     * Example: 'ul li'\n     */\n    unwrap: {\n      type: [Boolean, String],\n      default: false\n    }\n  },\n  render(props) {\n    return h(resolveComponent(\"MDCSlot\"), props);\n  }\n});\n</script>\n",
+      "start": 1709737159929,
+      "end": 1709737160075,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160075,
+      "end": 1709737160075,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "\nimport { defineComponent, h, resolveComponent } from \"vue\";\nconst _sfc_main = defineComponent({\n  props: {\n    /**\n     * A slot name or function\n     */\n    use: {\n      type: Function,\n      default: void 0\n    },\n    /**\n     * Tags to unwrap separated by spaces\n     * Example: 'ul li'\n     */\n    unwrap: {\n      type: [Boolean, String],\n      default: false\n    }\n  },\n  render(props) {\n    return h(resolveComponent(\"MDCSlot\"), props);\n  }\n});\n\n\n\n\nexport default _sfc_main",
+      "start": 1709737160075,
+      "end": 1709737160076,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "result": "import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue\").then(r => r.default))",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "replace",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160076,
+      "end": 1709737160076,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160076,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "result": "import { __vitePreload } from \"\u0000vite/preload-helper.js\";import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => __vitePreload(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentSlot.vue\"),__VITE_IS_MODERN__?\"__VITE_PRELOAD__\":void 0,import.meta.url).then(r => r.default))",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160077,
+      "end": 1709737160077,
+      "order": "normal"
+    }
+  ]
+}

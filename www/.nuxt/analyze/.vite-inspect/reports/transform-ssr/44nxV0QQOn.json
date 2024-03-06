@@ -1,0 +1,272 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentList.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script>\nimport { defineComponent, h, useSlots } from \"vue\";\nimport ContentQuery from \"./ContentQuery.vue\";\nconst emptyNode = (slot, data) => h(\"pre\", null, JSON.stringify({ message: \"You should use slots with <ContentList>\", slot, data }, null, 2));\nconst ContentList = defineComponent({\n  name: \"ContentList\",\n  props: {\n    /**\n     * Query props\n     */\n    /**\n     * The path of the content to load from content source.\n     * @default '/'\n     */\n    path: {\n      type: String,\n      required: false,\n      default: void 0\n    },\n    /**\n     * A query builder params object to be passed to <ContentQuery /> component.\n     */\n    query: {\n      type: Object,\n      required: false,\n      default: void 0\n    }\n  },\n  /**\n   * Content empty fallback\n   * @slot empty\n   */\n  /**\n   * Content not found fallback\n   * @slot not-found\n   */\n  render(ctx) {\n    const slots = useSlots();\n    const { path, query } = ctx;\n    const contentQueryProps = {\n      ...query || {},\n      path: path || query?.path || \"/\"\n    };\n    return h(\n      ContentQuery,\n      contentQueryProps,\n      {\n        // Default slot\n        default: slots?.default ? ({ data, refresh, isPartial }) => slots.default({ list: data, refresh, isPartial, ...this.$attrs }) : (bindings) => emptyNode(\"default\", bindings.data),\n        // Empty slot\n        empty: (bindings) => slots?.empty ? slots.empty(bindings) : emptyNode(\"default\", bindings?.data),\n        // Not Found slot\n        \"not-found\": (bindings) => slots?.[\"not-found\"] ? slots?.[\"not-found\"]?.(bindings) : emptyNode(\"not-found\", bindings?.data)\n      }\n    );\n  }\n});\nexport default ContentList;\n</script>\n",
+      "start": 1709737162030,
+      "end": 1709737162083,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "\nimport { defineComponent, h, useSlots } from \"vue\";\nimport ContentQuery from \"./ContentQuery.vue\";\nconst emptyNode = (slot, data) => h(\"pre\", null, JSON.stringify({ message: \"You should use slots with <ContentList>\", slot, data }, null, 2));\nconst ContentList = defineComponent({\n  name: \"ContentList\",\n  props: {\n    /**\n     * Query props\n     */\n    /**\n     * The path of the content to load from content source.\n     * @default '/'\n     */\n    path: {\n      type: String,\n      required: false,\n      default: void 0\n    },\n    /**\n     * A query builder params object to be passed to <ContentQuery /> component.\n     */\n    query: {\n      type: Object,\n      required: false,\n      default: void 0\n    }\n  },\n  /**\n   * Content empty fallback\n   * @slot empty\n   */\n  /**\n   * Content not found fallback\n   * @slot not-found\n   */\n  render(ctx) {\n    const slots = useSlots();\n    const { path, query } = ctx;\n    const contentQueryProps = {\n      ...query || {},\n      path: path || query?.path || \"/\"\n    };\n    return h(\n      ContentQuery,\n      contentQueryProps,\n      {\n        // Default slot\n        default: slots?.default ? ({ data, refresh, isPartial }) => slots.default({ list: data, refresh, isPartial, ...this.$attrs }) : (bindings) => emptyNode(\"default\", bindings.data),\n        // Empty slot\n        empty: (bindings) => slots?.empty ? slots.empty(bindings) : emptyNode(\"default\", bindings?.data),\n        // Not Found slot\n        \"not-found\": (bindings) => slots?.[\"not-found\"] ? slots?.[\"not-found\"]?.(bindings) : emptyNode(\"not-found\", bindings?.data)\n      }\n    );\n  }\n});\nconst _sfc_main = ContentList;\n\n\n\n\nimport { useSSRContext as __vite_useSSRContext } from 'vue'\nconst _sfc_setup = _sfc_main.setup\n_sfc_main.setup = (props, ctx) => {\n  const ssrContext = __vite_useSSRContext()\n  ;(ssrContext.modules || (ssrContext.modules = new Set())).add(\"node_modules/@nuxt/content/dist/runtime/components/ContentList.vue\")\n  return _sfc_setup ? _sfc_setup(props, ctx) : undefined\n}\nexport default _sfc_main",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentList.vue"
+        ],
+        "names": [],
+        "mappings": ";AACA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC;AAClD,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC7C,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;AAC7I,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,C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C,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC;MACN,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;MACZ,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;MACjB;QACE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;QACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;QACjL,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;QACZ,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;QAChG,CAAC,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;QAChB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;MAC5H;IACF,CAAC;EACH;AACF,CAAC,CAAC;AACF,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC",
+        "file": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentList.vue",
+        "sourceRoot": "",
+        "sourcesContent": [
+          "<script>\nimport { defineComponent, h, useSlots } from \"vue\";\nimport ContentQuery from \"./ContentQuery.vue\";\nconst emptyNode = (slot, data) => h(\"pre\", null, JSON.stringify({ message: \"You should use slots with <ContentList>\", slot, data }, null, 2));\nconst ContentList = defineComponent({\n  name: \"ContentList\",\n  props: {\n    /**\n     * Query props\n     */\n    /**\n     * The path of the content to load from content source.\n     * @default '/'\n     */\n    path: {\n      type: String,\n      required: false,\n      default: void 0\n    },\n    /**\n     * A query builder params object to be passed to <ContentQuery /> component.\n     */\n    query: {\n      type: Object,\n      required: false,\n      default: void 0\n    }\n  },\n  /**\n   * Content empty fallback\n   * @slot empty\n   */\n  /**\n   * Content not found fallback\n   * @slot not-found\n   */\n  render(ctx) {\n    const slots = useSlots();\n    const { path, query } = ctx;\n    const contentQueryProps = {\n      ...query || {},\n      path: path || query?.path || \"/\"\n    };\n    return h(\n      ContentQuery,\n      contentQueryProps,\n      {\n        // Default slot\n        default: slots?.default ? ({ data, refresh, isPartial }) => slots.default({ list: data, refresh, isPartial, ...this.$attrs }) : (bindings) => emptyNode(\"default\", bindings.data),\n        // Empty slot\n        empty: (bindings) => slots?.empty ? slots.empty(bindings) : emptyNode(\"default\", bindings?.data),\n        // Not Found slot\n        \"not-found\": (bindings) => slots?.[\"not-found\"] ? slots?.[\"not-found\"]?.(bindings) : emptyNode(\"not-found\", bindings?.data)\n      }\n    );\n  }\n});\nexport default ContentList;\n</script>\n"
+        ]
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162083,
+      "end": 1709737162083,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/components/content/NavBar.vue?nuxt_component=async&nuxt_component_name=NavBar",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<template>\n  <nav class=\"bg-darkest w-100 flex h3 justify-center items-center mb0 pv4\">\n    <div class=\"container h-100 flex items-center justify-between\">\n      <a\n        href=\"/\"\n        class=\"link pv0 mr3 grow flex items-center h-100\">\n        <img src=\"/kernelquest-horizontal-white.svg\" class=\"h2 pt2\"/>\n      </a>\n      <div class=\"flex justify-end items-center w-100 h-100 pt1\">\n        <div class=\"h-100 flex items-center mh4 f6\">\n          <a\n            href=\"/blog\"\n            class=\"tab link grow mh2 ph2 pv2 white pointer\">\n            Blog\n          </a>\n        </div>\n      </div>\n      <div class=\"flex items-center\">\n        <div class=\"mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100 \">\n          <a\n            href=\"https://play.kernel.quest\"\n            class=\"tab link grow mh2 ph3 pv2 white pointer button\">\n            Playtest\n          </a>\n        </div>\n      </div>\n    </div>\n  </nav>\n</template>\n\n<!-- <script lang=\"ts\">\n  import * as v from '@auth0/auth0-vue';\n\n  console.log('v', v);\n\n  export default {\n    setup() {\n      const { user, isAuthenticated } = v.useAuth0();\n\n      return {\n        user,\n        isAuthenticated\n      };\n    }\n  };\n</script> -->\n",
+      "start": 1709737159878,
+      "end": 1709737160028,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160028,
+      "end": 1709737160028,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "const _sfc_main = {}\nimport { createElementVNode as _createElementVNode, createStaticVNode as _createStaticVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\nimport _imports_0 from '/kernelquest-horizontal-white.svg'\n\n\nconst _hoisted_1 = { class: \"bg-darkest w-100 flex h3 justify-center items-center mb0 pv4\" }\nconst _hoisted_2 = /*#__PURE__*/_createStaticVNode(\"<div class=\\\"container h-100 flex items-center justify-between\\\"><a href=\\\"/\\\" class=\\\"link pv0 mr3 grow flex items-center h-100\\\"><img src=\\\"\" + _imports_0 + \"\\\" class=\\\"h2 pt2\\\"></a><div class=\\\"flex justify-end items-center w-100 h-100 pt1\\\"><div class=\\\"h-100 flex items-center mh4 f6\\\"><a href=\\\"/blog\\\" class=\\\"tab link grow mh2 ph2 pv2 white pointer\\\"> Blog </a></div></div><div class=\\\"flex items-center\\\"><div class=\\\"mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100\\\"><a href=\\\"https://play.kernel.quest\\\" class=\\\"tab link grow mh2 ph3 pv2 white pointer button\\\"> Playtest </a></div></div></div>\", 1)\nconst _hoisted_3 = [\n  _hoisted_2\n]\n\nfunction _sfc_render(_ctx, _cache) {\n  return (_openBlock(), _createElementBlock(\"nav\", _hoisted_1, _hoisted_3))\n}\n\n\nimport _export_sfc from '\u0000plugin-vue:export-helper'\nexport default /*#__PURE__*/_export_sfc(_sfc_main, [['render',_sfc_render]])",
+      "start": 1709737160028,
+      "end": 1709737160030,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "result": "import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => import(\"/home/jdupre/code/kernelquest/www/components/content/NavBar.vue\").then(r => r.default))",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "replace",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160030,
+      "end": 1709737160030,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160030,
+      "end": 1709737160031,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160031,
+      "end": 1709737160031,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160031,
+      "end": 1709737160031,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "result": "import { __vitePreload } from \"\u0000vite/preload-helper.js\";import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => __vitePreload(() => import(\"/home/jdupre/code/kernelquest/www/components/content/NavBar.vue\"),__VITE_IS_MODERN__?\"__VITE_PRELOAD__\":void 0,import.meta.url).then(r => r.default))",
+      "start": 1709737160031,
+      "end": 1709737160031,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160031,
+      "end": 1709737160031,
+      "order": "normal"
+    }
+  ]
+}

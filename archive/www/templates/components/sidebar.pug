@@ -1,7 +1,0 @@
-nav.mr4.pa3
-  .container.pv3.ph4.mw5.bg-dark-purple.br2
-    ul.list.pl0
-      each d in dir.filter(f => f !== 'index.md')
-        - var page = d.replace('.md', '')
-        li.pv1
-          a.bsn.link.pointer(href=page) #{ page }

@@ -1,0 +1,224 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentNavigation.vue?nuxt_component=async&nuxt_component_name=ContentNavigation",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script>\nimport { toRefs, defineComponent, h, useSlots, computed } from \"vue\";\nimport { hash } from \"ohash\";\nimport { useAsyncData, fetchContentNavigation, useState, useContent } from \"#imports\";\nimport { NuxtLink } from \"#components\";\nconst ContentNavigation = defineComponent({\n  name: \"ContentNavigation\",\n  props: {\n    /**\n     * A query to be passed to `fetchContentNavigation()`.\n     */\n    query: {\n      type: Object,\n      required: false,\n      default: void 0\n    }\n  },\n  async setup(props) {\n    const {\n      query\n    } = toRefs(props);\n    const queryBuilder = computed(() => {\n      if (typeof query.value?.params === \"function\") {\n        return query.value.params();\n      }\n      return query.value;\n    });\n    if (!queryBuilder.value && useState(\"dd-navigation\").value) {\n      const { navigation: navigation2 } = useContent();\n      return { navigation: navigation2 };\n    }\n    const { data: navigation } = await useAsyncData(\n      `content-navigation-${hash(queryBuilder.value)}`,\n      () => fetchContentNavigation(queryBuilder.value)\n    );\n    return { navigation };\n  },\n  /**\n   * Navigation empty fallback\n   * @slot empty\n   */\n  render(ctx) {\n    const slots = useSlots();\n    const { navigation } = ctx;\n    const renderLink = (link) => h(NuxtLink, { to: link._path }, () => link.title);\n    const renderLinks = (data, level) => h(\n      \"ul\",\n      level ? { \"data-level\": level } : null,\n      data.map((link) => {\n        if (link.children) {\n          return h(\"li\", null, [renderLink(link), renderLinks(link.children, level + 1)]);\n        }\n        return h(\"li\", null, renderLink(link));\n      })\n    );\n    const defaultNode = (data) => renderLinks(data, 0);\n    return slots?.default ? slots.default({ navigation, ...this.$attrs }) : defaultNode(navigation);\n  }\n});\nexport default ContentNavigation;\n</script>\n",
+      "start": 1709737159891,
+      "end": 1709737160051,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737160051,
+      "end": 1709737160051,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "\nimport { toRefs, defineComponent, h, useSlots, computed } from \"vue\";\nimport { hash } from \"ohash\";\nimport { useAsyncData, fetchContentNavigation, useState, useContent } from \"#imports\";\nimport { NuxtLink } from \"#components\";\nconst ContentNavigation = defineComponent({\n  name: \"ContentNavigation\",\n  props: {\n    /**\n     * A query to be passed to `fetchContentNavigation()`.\n     */\n    query: {\n      type: Object,\n      required: false,\n      default: void 0\n    }\n  },\n  async setup(props) {\n    const {\n      query\n    } = toRefs(props);\n    const queryBuilder = computed(() => {\n      if (typeof query.value?.params === \"function\") {\n        return query.value.params();\n      }\n      return query.value;\n    });\n    if (!queryBuilder.value && useState(\"dd-navigation\").value) {\n      const { navigation: navigation2 } = useContent();\n      return { navigation: navigation2 };\n    }\n    const { data: navigation } = await useAsyncData(\n      `content-navigation-${hash(queryBuilder.value)}`,\n      () => fetchContentNavigation(queryBuilder.value)\n    );\n    return { navigation };\n  },\n  /**\n   * Navigation empty fallback\n   * @slot empty\n   */\n  render(ctx) {\n    const slots = useSlots();\n    const { navigation } = ctx;\n    const renderLink = (link) => h(NuxtLink, { to: link._path }, () => link.title);\n    const renderLinks = (data, level) => h(\n      \"ul\",\n      level ? { \"data-level\": level } : null,\n      data.map((link) => {\n        if (link.children) {\n          return h(\"li\", null, [renderLink(link), renderLinks(link.children, level + 1)]);\n        }\n        return h(\"li\", null, renderLink(link));\n      })\n    );\n    const defaultNode = (data) => renderLinks(data, 0);\n    return slots?.default ? slots.default({ navigation, ...this.$attrs }) : defaultNode(navigation);\n  }\n});\nconst _sfc_main = ContentNavigation;\n\n\n\n\nexport default _sfc_main",
+      "start": 1709737160051,
+      "end": 1709737160054,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "result": "import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentNavigation.vue\").then(r => r.default))",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "replace",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737160054,
+      "end": 1709737160054,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "result": "import { __vitePreload } from \"\u0000vite/preload-helper.js\";import { defineAsyncComponent } from \"vue\"\nexport default defineAsyncComponent(() => __vitePreload(() => import(\"/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/components/ContentNavigation.vue\"),__VITE_IS_MODERN__?\"__VITE_PRELOAD__\":void 0,import.meta.url).then(r => r.default))",
+      "start": 1709737160054,
+      "end": 1709737160055,
+      "order": "normal",
+      "sourcemaps": null
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737160055,
+      "end": 1709737160055,
+      "order": "normal"
+    }
+  ]
+}

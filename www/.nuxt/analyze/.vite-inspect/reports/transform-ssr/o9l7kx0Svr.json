@@ -1,0 +1,258 @@
+{
+  "resolvedId": "/home/jdupre/code/kernelquest/www/node_modules/@nuxt/content/dist/runtime/query/match/index.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { assertArray, ensureArray, get } from \"./utils.js\";\nexport function createMatch(opts = {}) {\n  const operators = createOperators(match, opts.operators);\n  function match(item, conditions) {\n    if (typeof conditions !== \"object\" || conditions instanceof RegExp) {\n      return operators.$eq(item, conditions);\n    }\n    return Object.keys(conditions || {}).every((key) => {\n      const condition = conditions[key];\n      if (key.startsWith(\"$\") && operators[key]) {\n        const fn = operators[key];\n        return typeof fn === \"function\" ? fn(item, condition) : false;\n      }\n      return match(get(item, key), condition);\n    });\n  }\n  return match;\n}\nfunction createOperators(match, operators = {}) {\n  return {\n    $match: (item, condition) => match(item, condition),\n    /**\n     * Match if item equals condition\n     **/\n    $eq: (item, condition) => condition instanceof RegExp ? condition.test(item) : item === condition,\n    /**\n     * Match if item not equals condition\n     **/\n    $ne: (item, condition) => condition instanceof RegExp ? !condition.test(item) : item !== condition,\n    /**\n     * Match is condition is false\n     **/\n    $not: (item, condition) => !match(item, condition),\n    /**\n     * Match only if all of nested conditions are true\n     **/\n    $and: (item, condition) => {\n      assertArray(condition, \"$and requires an array as condition\");\n      return condition.every((cond) => match(item, cond));\n    },\n    /**\n     * Match if any of nested conditions is true\n     **/\n    $or: (item, condition) => {\n      assertArray(condition, \"$or requires an array as condition\");\n      return condition.some((cond) => match(item, cond));\n    },\n    /**\n     * Match if item is in condition array\n     **/\n    $in: (item, condition) => ensureArray(condition).some(\n      (cond) => Array.isArray(item) ? match(item, { $contains: cond }) : match(item, cond)\n    ),\n    /**\n     * Match if item contains every condition or math every rule in condition array\n     **/\n    $contains: (item, condition) => {\n      item = Array.isArray(item) ? item : String(item);\n      return ensureArray(condition).every((i) => item.includes(i));\n    },\n    /**\n     * Ignore case contains\n     **/\n    $icontains: (item, condition) => {\n      if (typeof condition !== \"string\") {\n        throw new TypeError(\"$icontains requires a string, use $contains instead\");\n      }\n      item = String(item).toLocaleLowerCase();\n      return ensureArray(condition).every((i) => item.includes(i.toLocaleLowerCase()));\n    },\n    /**\n     * Match if item contains at least one rule from condition array\n     */\n    $containsAny: (item, condition) => {\n      assertArray(condition, \"$containsAny requires an array as condition\");\n      item = Array.isArray(item) ? item : String(item);\n      return condition.some((i) => item.includes(i));\n    },\n    /**\n     * Check key existence\n     */\n    $exists: (item, condition) => condition ? typeof item !== \"undefined\" : typeof item === \"undefined\",\n    /**\n     * Match if type of item equals condition\n     */\n    $type: (item, condition) => typeof item === String(condition),\n    /**\n     * Provides regular expression capabilities for pattern matching strings.\n     */\n    $regex: (item, condition) => {\n      if (!(condition instanceof RegExp)) {\n        const matched = String(condition).match(/\\/(.*)\\/([dgimsuy]*)$/);\n        condition = matched ? new RegExp(matched[1], matched[2] || \"\") : new RegExp(condition);\n      }\n      return condition.test(String(item || \"\"));\n    },\n    /**\n     * Check if item is less than condition\n     */\n    $lt: (item, condition) => {\n      return item < condition;\n    },\n    /**\n     * Check if item is less than or equal to condition\n     */\n    $lte: (item, condition) => {\n      return item <= condition;\n    },\n    /**\n     * Check if item is greater than condition\n     */\n    $gt: (item, condition) => {\n      return item > condition;\n    },\n    /**\n     * Check if item is greater than or equal to condition\n     */\n    $gte: (item, condition) => {\n      return item >= condition;\n    },\n    ...operators || {}\n  };\n}\n",
+      "start": 1709737162490,
+      "end": 1709737162492,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "content-slot",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1709737162492,
+      "end": 1709737162492,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1709737162493,
+      "end": 1709737162493,
+      "order": "normal"
+    }
+  ]
+}
