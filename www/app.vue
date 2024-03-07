@@ -39,6 +39,9 @@ useHead({
     href: "https://fonts.googleapis.com/css?family=Nunito+Sans&amp;display=swap"
   }, {
     rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap"
+  }, {
+    rel: "stylesheet",
     href: "https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"
   }, {
     rel: "stylesheet",

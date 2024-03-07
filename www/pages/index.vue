@@ -3,8 +3,8 @@
 
     <div class="bg-purple w-100 white bg-dark pv4 flex flex-column items-center">
       <div class="container tc ph2">
-        <h1 class="f1">Find meaning through computing</h1>
-        <h2 class="f3">Reverse engineer systems to save the kingdom against impossible odds</h2>
+        <h1 class="f2">Explore meaning through computing</h1>
+        <h2 class="f3">Design machines to solve open-ended puzzles in a fantasy world</h2>
       </div>
     </div>
 
@@ -13,7 +13,7 @@
       <img class="w-60-l" src="/screenshot.png">
       
       <p class="ph3 pv">
-        Kernel Quest is a text-based adventure hacking game about finding the truth.
+        Kernel Quest is a text-based adventure hacking game about the nature of reality.
       </p>
 
       <!-- <h2 class="f1 tc">Trailer</h2>
@@ -33,3 +33,7 @@
     </div>
   </main>
 </template>
+
+<!-- Reverse engineer systems to save the kingdom against impossible odds -->
+<!-- finding the beauty hidden in plain sight -->
+<!-- find the truth -->
