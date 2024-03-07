@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="bw05 flex flex-column pa1 w-100 h3 f4 items-end h-100 bg-black-80 br2">
     <div
       id="messages"
@@ -58,4 +58,4 @@ export default defineComponent({
   },
 });
 
-</script>
+</script> -->

@@ -8,6 +8,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+declare var twemoji: { parse: Function }
+
 export default defineComponent({
   data() {
     return {
@@ -15,6 +17,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    if (!this.$slots.default) return;
     const vnode = this.$slots.default();
     const text = vnode.map((v) => v.children).join(' ');
 
