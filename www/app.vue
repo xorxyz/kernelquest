@@ -1,8 +1,8 @@
 <template>
   <div class="flex w-100 vh-100 flex-column overflow-y-scroll">
-    <nav-bar/>
+    <NavBar/>
     <NuxtPage class="" />
-    <layout-footer/>
+    <Footer/>
   </div>
 </template>
 
