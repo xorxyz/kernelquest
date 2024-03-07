@@ -13,7 +13,7 @@
       <img class="w-60-l" src="/screenshot.png">
       
       <p class="ph3 pv">
-        Kernel Quest is a text-based adventure hacking game about the nature of reality.
+        Kernel Quest is a text-based adventure hacking game about discovering the nature of reality.
       </p>
 
       <!-- <h2 class="f1 tc">Trailer</h2>
