@@ -1,5 +1,5 @@
 <template>
-  <main class="w-100 flex flex-column items-center justify-start h-100">
+  <main class="w-100 flex flex-column items-center justify-start">
 
     <div class="bg-purple w-100 white bg-dark pv4 flex flex-column items-center">
       <div class="container tc ph2">
