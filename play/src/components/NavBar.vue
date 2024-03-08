@@ -40,24 +40,29 @@
         </div>
         <div class="mv0 pv0 flex-auto tr flex flex-row justify-end items-center h-100 ">
           <div class="pv0 flex h-100 items-center">
-            <input
-              id="user-menu-toggle"
-              type="checkbox"
-              class="dn">
-            <label
-              for="user-menu-toggle"
-              class="mv0 pv0 pointer link avatar is-empty grow w2 h2 dib br-pill ba bw1 b--border" />
-            <!-- <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4">
+            <button
+              @click="openMenu"
+              id="menu-button"
+              class="mv0 pv0 pointer link avatar is-empty grow w2 h2 dib br-pill ba bw1 b--border">
+            </button>
+
+            <div id="user-menu-dropdown" class="absolute right-0 top-2 mt4 mh2" v-if="isOpen">
               <div class="mt2 ph2 absolute top-3 right-0 bg-white black br3 shadow flex flex-column w5 pv2 z-5">
                 <div>
-                  <div class="pointer br3 ma1 black hover-bg-purple pv2 ph2 flex flex-row items-center">
+                  <div class="br3 ma1 black pv2 ph2 flex flex-row items-center">
+                    <span></span>
+                    <span class="mh2">{{ user.email }}</span>
+                  </div>
+                </div>
+                <div>
+                  <div @click="logout" class="pointer br3 ma1 black hover-bg-light-gray pv2 ph2 flex flex-row items-center">
                     <span>⇥</span>
-                    <span class="mh2">Log In</span>
+                    <span class="mh2">Log Out</span>
                   </div>
                 </div>
               </div>
               <div class="modal-bg z-4 fixed top-0 left-0 w-100 h-100 bg-black-40 mt0 pointer"></div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -65,19 +70,39 @@
   </nav>
 </template>
 
-<!-- <script lang="ts">
-  import * as v from '@auth0/auth0-vue';
-
-  console.log('v', v);
+<script lang="ts">
+  import { useAuth0 } from '@auth0/auth0-vue';
+  import { onBeforeUnmount, onMounted, ref } from 'vue';
 
   export default {
     setup() {
-      const { user, isAuthenticated } = v.useAuth0();
+      const { user, logout } = useAuth0();
+      const isOpen = ref(false);
+
+      const closeMenu = (event: any) => {
+        if (isOpen.value && event.target?.id !== 'menu-button') {
+          isOpen.value = false;
+        }
+      };
+
+      onMounted(() => {
+        window.addEventListener('click', closeMenu);
+      });
+
+      onBeforeUnmount(() => {
+        window.removeEventListener('click', closeMenu);
+      });
 
       return {
         user,
-        isAuthenticated
+        isOpen: isOpen,
+        openMenu() {
+          isOpen.value = true;
+        },
+        logout: () => {
+          logout({ logoutParams: { returnTo: window.location.origin } });
+        }
       };
     }
   };
-</script> -->
+</script>

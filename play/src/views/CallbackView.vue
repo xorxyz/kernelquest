@@ -1,5 +1,5 @@
 <template>
   <div>
-    <h1>This is the login page</h1>
+    <h1>This is the callback page</h1>
   </div>
 </template>
