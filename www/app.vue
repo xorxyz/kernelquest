@@ -25,7 +25,7 @@ useHead({
     content: "Jonathan Dupré",
   }],
   script: [{
-    src: "https://www.googletagmanager.com/gtag/js?id=XXX-A1A1A1A1",
+    src: "https://www.googletagmanager.com/gtag/js?id=GTM-M9CZ2HQL",
     async: true
   }, {
     src: "https://f.convertkit.com/ckjs/ck.5.js",
