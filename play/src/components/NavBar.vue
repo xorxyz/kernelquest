@@ -51,7 +51,7 @@
                 <div>
                   <div class="br3 ma1 black pv2 ph2 flex flex-row items-center">
                     <span></span>
-                    <span class="mh2">{{ user.email }}</span>
+                    <span class="mh2">{{ user?.email }}</span>
                   </div>
                 </div>
                 <div>
