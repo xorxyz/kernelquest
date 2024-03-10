@@ -1,13 +1,15 @@
 <template>
-  <nav class="bg-darkest w-100 flex h3 justify-center items-center mb0 pb2">
-    <div class="container h-100 flex items-center justify-between">
-      <router-link
-        to="/"
-        class="link pv0 mr3 grow flex items-center h-100">
-        <!-- <Emoji class="icon f2">🏰</Emoji> -->
-        <img src="/kernelquest-horizontal-white.svg" class="h2 pt2"/>
-      </router-link>
-      <div class="flex justify-between items-center w-100 h-100 pt1">
+  <nav class="bg-darkest w-100 flex h3 justify-center items-center mb0">
+    <div class="w-100 h-100 flex items-center justify-between pv0 ph4">
+      <div class="flex items-center justify-center h-100">
+        <router-link
+          to="/"
+          class="link">
+          <!-- <Emoji class="icon f2">🏰</Emoji> -->
+          <img src="/kernelquest-horizontal-white.svg" class="h2 pt2"/>
+        </router-link>
+      </div>
+      <div class="flex justify-between items-center h-100 pt1">
         <div class="h-100 flex items-center mh4 f6">
           <!-- <router-link
             to="/game"

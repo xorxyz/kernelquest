@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
-
 const levels = [
   {id: 0, title: 'hello world', style: 'Quest', difficulty: 'easy', published_on: '2024-03-05'}
 ];
